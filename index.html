@@ -45,9 +45,9 @@ input[type=date].sel{padding:6px 10px}
 .side{padding:14px 10px 30px;overflow:auto;max-height:calc(100vh - 57px);position:sticky;top:57px;border-right:1px solid var(--line)}
 .side h4{margin:16px 10px 6px;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
 .side h4:first-child{margin-top:4px}
-.sitem{display:flex;gap:9px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:10px;font-size:13px;font-weight:500;color:var(--ink);transition:background .15s}
+.sitem{display:flex;align-items:center;gap:2px;border-radius:10px;transition:background .15s}.sgo{flex:1;min-width:0;display:flex;gap:9px;align-items:center;text-align:left;border:0;background:none;padding:7px 4px 7px 10px;font-size:13px;font-weight:500;color:var(--ink)}.sitem .st{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sitem .st small{display:block;font-size:10.5px;color:var(--muted);font-weight:500}.eye{border:0;background:none;color:var(--muted);width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex-shrink:0}.eye:hover{background:var(--line);color:var(--ink)}.eye svg{width:17px;height:17px}.sitem.off .sgo{opacity:.45}.sitem.off .eye{color:#FF9F0A}
 .sitem:hover{background:var(--hover)}
-.sitem.act{background:var(--ytint);font-weight:700}
+.sitem.act{background:var(--ytint)}.sitem.act .sgo{font-weight:700}
 .sitem .no{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:18px}
 .sitem .dot{margin-left:auto;width:6px;height:6px;border-radius:50%;background:var(--line);flex-shrink:0}
 .sitem .dot.ok{background:#34C759}
@@ -105,6 +105,9 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .mgroup{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:8px;flex-wrap:wrap}
 .mgroup h4{margin:0;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
 .mact{display:flex;gap:6px;flex-wrap:wrap}
+.chipt{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;background:var(--hover);padding:4px 10px 4px 7px;border-radius:999px;cursor:pointer}.chipt input{accent-color:#1D1D1F;margin:0}
+.lbl2{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--muted);margin-left:auto}
+.olist{display:flex;flex-direction:column;gap:6px;margin-top:12px}.orow{display:flex;gap:12px;align-items:flex-start;background:var(--bg);border-radius:12px;padding:10px 12px}.orow.off .oname b{opacity:.5}.oname{flex:1;min-width:0}.oname b{font-size:13.5px}.oname small{display:block;color:var(--muted);font-size:11px}.oblk{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.omove{display:flex;gap:4px}
 .note{font-size:12px;color:var(--muted);background:var(--bg);padding:11px 13px;border-radius:12px;line-height:1.5;margin-top:12px}
 /* presentation */
 #pres{position:fixed;inset:0;background:#000;z-index:200;display:flex;align-items:center;justify-content:center}
@@ -321,17 +324,34 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .ty img.w{width:16cqw;margin-top:3.6cqw;opacity:.9}
 .empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8cqw;text-align:center;border:1.5px dashed rgba(0,0,0,.12);border-radius:var(--r);color:#8E8E93;font-size:var(--t-body);padding:2cqw}
 .empty b{color:#1D1D1F;font-size:1.6cqw;font-weight:700;letter-spacing:-.01em}
-/* animation states */
-.slide [data-a]{opacity:0;transform:translateY(1.4cqw);filter:blur(4px)}
-.slide.in [data-a]{opacity:1;transform:none;filter:none;transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1),filter .7s ease;transition-delay:calc(var(--i,0)*70ms + 80ms)}
-.slide.in .vb .b{transform:scaleY(1);transition:transform 1s cubic-bezier(.2,.85,.25,1) calc(.35s + var(--j,0)*28ms)}
-.slide.in .hb .f,.slide.in .gi .f{transform:scaleX(1);transition:transform 1.1s cubic-bezier(.2,.85,.25,1) calc(.35s + var(--j,0)*60ms)}
-.slide.in .dn .seg2{stroke-dasharray:var(--da);transition:stroke-dasharray 1.2s cubic-bezier(.3,.8,.25,1) calc(.35s + var(--j,0)*140ms)}
-.slide.in .ring .pr{stroke-dasharray:var(--da);transition:stroke-dasharray 1.4s cubic-bezier(.3,.8,.25,1) .45s}
-.slide.in .ln .plot{clip-path:inset(0 0 0 0);transition:clip-path 1.6s cubic-bezier(.4,.1,.2,1) .35s}
+/* animation states — calm: fade in, charts grow once, no count-up */
+.slide [data-a]{opacity:0}
+.slide.in [data-a]{opacity:1;transition:opacity .4s ease-out;transition-delay:calc(var(--i,0)*30ms)}
+.slide.in .vb .b{transform:scaleY(1);transition:transform .55s cubic-bezier(.25,.8,.3,1) .1s}
+.slide.in .hb .f,.slide.in .gi .f{transform:scaleX(1);transition:transform .6s cubic-bezier(.25,.8,.3,1) .1s}
+.slide.in .dn .seg2{stroke-dasharray:var(--da);transition:stroke-dasharray .7s ease-out .1s}
+.slide.in .ring .pr{stroke-dasharray:var(--da);transition:stroke-dasharray .8s ease-out .1s}
+.slide.in .ln .plot{clip-path:inset(0 0 0 0);transition:clip-path .8s ease-out .1s}
+.slide.in .spark i{transform:scaleY(1)}
 .slide.static *,.slide.static{transition:none!important;animation:none!important}
-@media (prefers-reduced-motion:reduce){.slide *{transition-duration:.01ms!important;transition-delay:0s!important}.slide [data-a]{filter:none}}
-
+@media (prefers-reduced-motion:reduce){.slide *{transition-duration:.01ms!important;transition-delay:0s!important}}
+/* condensed layouts */
+.row{display:flex;gap:var(--gap);min-height:0;min-width:0}
+.row.grow{flex:1;margin-top:var(--gap)}
+.row.grow:first-child{margin-top:0}
+.row>.card,.row>.stack{flex:var(--f,1);min-width:0}
+.stack{display:flex;flex-direction:column;gap:var(--gap);min-height:0}
+.tile.sm{padding:1.1cqw 1.3cqw;gap:.9cqw}
+.tile.sm .ico{width:2.5cqw;height:2.5cqw;border-radius:.8cqw}.tile.sm .ico svg{width:1.3cqw;height:1.3cqw}
+.tile.sm .tval{font-size:2.45cqw}.tile.sm .tlab,.tile.sm .tfoot{font-size:.78cqw}
+.dn.sm svg{max-height:15cqw}.dn.sm{gap:1.6cqw}
+.impact .ring svg{width:11cqw;height:11cqw}.impact .ring .big{font-size:2.3cqw}.impact{gap:1.2cqw}
+.pl{display:flex;justify-content:space-between;gap:1cqw;font-size:var(--t-small);padding:.45cqw 0;border-bottom:1px solid rgba(0,0,0,.05)}
+.pl span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chron .cr{padding:.9cqw 1.2cqw}.chron{gap:.8cqw;margin-top:var(--gap)}
+.chron .tk{max-height:6.2cqw;padding:.6cqw .8cqw}.chron .cr .mt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chron .cr .cnt{margin-top:.3cqw}.chron .cr .cid{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vb.rot .x{writing-mode:vertical-rl;transform:rotate(180deg);height:6.5cqw;text-align:left;overflow:visible}
+.dn.sm .lg .nm{white-space:normal}
 /* ---- narrow (phone) layout: same slides, stacked & scrollable ---- */
 @container deck (max-width:719px){
   .slide{--t-title:26px;--t-lede:15px;--t-body:14px;--t-small:12px;--t-kpi:30px;--r:18px;--gap:12px;--pad-x:18px;--pad-t:22px;--pad-b:18px;overflow-y:auto;-webkit-overflow-scrolling:touch}
@@ -377,8 +397,8 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
   .ty img.m{width:52px;margin-bottom:20px}.ty h1{font-size:64px}.ty p{font-size:15px;margin-top:14px}.ty img.w{width:150px;margin-top:26px}
   .empty{gap:8px;border-radius:18px;padding:28px 18px;min-height:240px}.empty b{font-size:18px}
   .only-w{display:none}.only-n{display:block}
+  .row{flex-direction:column}.row.grow{flex:none}.tile.sm .ico{width:30px;height:30px}.tile.sm .ico svg{width:16px;height:16px}.tile.sm .tval{font-size:24px}.tile.sm .tlab,.tile.sm .tfoot{font-size:11px}.tile.sm{padding:12px}.dn.sm svg{height:170px}.impact .ring svg{width:130px;height:130px}.impact .ring .big{font-size:24px}.pl{font-size:13px;padding:6px 0}.chron .tk{max-height:none}
   .vb.many .n{display:none}.vb.many .xf{display:none}.vb.many .xn{display:inline}.vb.many .x{font-size:10px;text-overflow:clip}
-  .slide [data-a]{transform:translateY(12px)}
 }
 @media print{
   @page{size:1280px 720px;margin:0}
@@ -395,7 +415,7 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
   <select class="sel" id="period" aria-label="Report period"><option value="all">All imported dates</option><option value="7">Last 7 days of data</option><option value="month">Latest month in data</option><option value="custom">Custom range</option></select>
   <input type="date" class="sel hidden" id="pFrom" aria-label="From date"><input type="date" class="sel hidden" id="pTo" aria-label="To date">
   <button class="btn" id="importBtn">Import data</button>
-  <button class="btn" id="manageBtn">Manage Sections</button>
+  <button class="btn" id="manageBtn">Customize Present</button>
   <button class="btn hide-m" id="editBtn">Edit text</button>
   <button class="btn hide-m" id="printBtn">Print / PDF</button>
   <button class="btn pri" id="presentBtn">▶ Present</button>
@@ -420,11 +440,13 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
   </div>
 </div>
 <div class="modal hidden" id="manageModal" role="dialog" aria-modal="true" aria-labelledby="manTitle">
-  <div class="dialog" style="width:min(840px,100%)">
-    <div class="dhead"><div><div class="eyebrow">Presentation</div><h2 id="manTitle">Manage Sections</h2><div class="sub">Pilih slide yang tampil di daftar slide, Present, dan Print/PDF.</div></div><button class="btn" data-close="manageModal">Close</button></div>
-    <div class="mact"><button class="btn sm" id="mShowAll">Show All</button><button class="btn sm" id="mHideAll">Hide All</button><button class="btn sm" id="mReset">Reset to Default</button><button class="btn sm" id="mExport">Export Settings</button><button class="btn sm" id="mImport">Import Settings</button><input type="file" id="mFile" accept=".json,application/json" class="hidden"></div>
+  <div class="dialog" style="width:min(860px,100%)">
+    <div class="dhead"><div><div class="eyebrow">Presentation</div><h2 id="manTitle">Customize Present</h2><div class="sub" id="mSummary"></div></div><button class="btn" data-close="manageModal">Close</button></div>
+    <div class="mact"><button class="btn sm" id="mShowAll">Show All</button><button class="btn sm" id="mHideAll">Hide All</button><button class="btn sm" id="mReset">Reset to Default</button><button class="btn sm" id="mExport">Export Settings</button><button class="btn sm" id="mImport">Import Settings</button><input type="file" id="mFile" accept=".json,application/json" class="hidden">
+      <label class="lbl2">Animasi <select class="sel" id="animSel"><option value="subtle">Halus</option><option value="off">Tanpa animasi</option></select></label></div>
+    <div class="note" style="margin-top:12px">Switch = slide ikut di Present & Print/PDF. Chip = bagian di dalam slide. Panah ↑↓ = urutan slide.</div>
     <div id="mList"></div>
-    <div class="note">Pilihan disimpan di browser ini dan tidak otomatis sinkron ke user atau device lain. Pakai Export/Import Settings untuk memindahkannya.</div>
+    <div class="note">Disimpan di browser ini. Pakai Export/Import Settings untuk dipakai di device lain.</div>
   </div>
 </div>
 <div id="pres" class="hidden"><div class="pstage" id="pstage"></div><div class="hud"><button id="pPrev" aria-label="Previous">‹</button><span id="pCount"></span><button id="pNext" aria-label="Next">›</button><button id="pExit">Exit</button></div></div>
@@ -467,11 +489,11 @@ function rangeLabel(a,b,long){
 const shortRange=(a,b)=>{const A=new Date(a),B=new Date(b);return A.getMonth()===B.getMonth()?`${MS[A.getMonth()]} ${A.getDate()}–${B.getDate()}`:`${MS[A.getMonth()]} ${A.getDate()} – ${MS[B.getMonth()]} ${B.getDate()}`};
 
 /* ---------- settings ---------- */
-const LS='gxcs-report-v3';
+const LS='gxcs-report-v4';
 const DEF_RC={hdOrigin:'Sales Representative',vipOrigin:'VIP WhatsApp Group',actValues:'Activation',complaintOnly:true,skipCanceled:true,excludeCats:'Billing, Account, Package, Termination, Administration'};
-const DEF_S=()=>({vis:{},edits:{},chart:{},rc:{...DEF_RC},period:{mode:'all',from:'',to:''},cur:'cover'});
+const DEF_S=()=>({vis:{},edits:{},chart:{},blocks:{},order:[],anim:'subtle',rc:{...DEF_RC},period:{mode:'all',from:'',to:''},cur:'cover'});
 let S=DEF_S();
-try{const o=JSON.parse(localStorage.getItem(LS)||'null');if(o&&typeof o==='object')S={...S,...o,rc:{...DEF_RC,...(o.rc||{})},period:{...S.period,...(o.period||{})},chart:o.chart||{},vis:o.vis||{},edits:o.edits||{}}}catch(e){}
+try{const o=JSON.parse(localStorage.getItem(LS)||'null');if(o&&typeof o==='object')S={...S,...o,rc:{...DEF_RC,...(o.rc||{})},period:{...S.period,...(o.period||{})},chart:o.chart||{},vis:o.vis||{},edits:o.edits||{},blocks:o.blocks||{},order:Array.isArray(o.order)?o.order:[],anim:o.anim||'subtle'}}catch(e){}
 let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}},200)}
 
 /* ---------- imported data (IndexedDB) ---------- */
@@ -706,6 +728,83 @@ const body=(h,style='')=>`<div class="sl-body" style="${style}">${h}</div>`;
 const dayItems=(m,o={})=>{const avg=m.avg,peak=avg*1.5;return m.daily.map((d,i)=>{const dt=new Date(d.day);return {label:(m.daily.length>20?String(dt.getDate()):String(dt.getDate()).padStart(2,'0')+' '+MS[dt.getMonth()]),short:String(dt.getDate()),full:isoDay(d.day),value:d.value,color:d.value>=peak?'#F5C518':d.value>=avg?(o.dark||'#1D1D1F'):'#C7C7CC'}})};
 
 /* ---------- slides ---------- */
+const on=(sid,b)=>S.blocks[sid+'.'+b]!==false;
+const sm=(tone,icon,label,value,foot,f='int',vcls='')=>tile(tone,icon,label,value,foot,f,vcls).replace('class="card tile','class="card tile sm');
+function afrTile(m){return m.afr!=null?`<div class="card tile sm t-b" data-a><div class="ico">${ICON.clock}</div><div style="min-width:0"><div class="tlab">Avg first response</div><div class="tval">${f1(m.afr)}<span style="font-size:.5em;font-weight:600">m</span></div><div class="tfoot">${fInt(m.afrN)} tickets with AFR</div></div></div>`:sm('b','cal','Avg cases / day',m.avg,`across ${m.nDays} day${m.nDays>1?'s':''}`,'d1')}
+function dailyCard(id,m,title){const t=ctype(id,'bar'),items=dayItems(m).map(x=>({...x,label:x.short,short:null}));
+  return `<div class="card fill1" data-a style="--f:1.75"><div class="ctitle">${title} · ${esc(C.short)} · avg ${f1(m.avg)}/day</div>${t==='line'?lineChart(items.map(x=>({...x,color:x.color==='#C7C7CC'?'#8E8E93':x.color})),{id}):vbars(items)}<div class="legend"><span><i style="background:#F5C518"></i>Peak ≥ ${fInt(Math.ceil(m.avg*1.5))}</span><span><i style="background:#1D1D1F"></i>Above avg</span><span><i style="background:#C7C7CC"></i>Below avg</span></div></div>`}
+function weekTable(m){return `<table class="tbl"><thead><tr><th>Week</th><th class="n">Cases</th><th class="n">Inv.</th><th class="n">After inv.</th><th class="n">Overall</th></tr></thead><tbody>${m.weeks.map(w=>`<tr><td class="b">${w.name} <span style="color:#8E8E93;font-weight:400">${shortRange(w.s,w.e)}</span></td><td class="n">${fInt(w.cases)}</td><td class="n">${fInt(w.inv)}</td><td class="n">${fPct(w.afterInv)}</td><td class="n b ${w.rate>=90?'c-g':w.rate<80?'c-o':''}">${fPct(w.rate)}</td></tr>`).join('')}</tbody></table>`}
+const row=(...cards)=>{const c=cards.filter(Boolean);return c.length?`<div class="row grow">${c.join('')}</div>`:''};
+const stack=(f,...cards)=>{const c=cards.filter(Boolean);return c.length?`<div class="stack" style="--f:${f}">${c.join('')}</div>`:''};
+const allOff=()=>empty('Semua bagian slide ini dimatikan','Aktifkan lagi di Customize Present.');
+
+function sCsOverview(){const id='cs-overview',m=C.cs,title='Customer Support overview';const tg=on(id,'daily')?seg(id,['bar','line']):'';
+  if(!m)return head(id,'cs',title,'',tg)+body(needCS());
+  const gap=m.rateAdj-90;
+  const lede=`${fInt(m.total)} cases in ${m.nDays} days. Resolution <b>${fPct(m.rateAdj,2)}</b> after H+1 — ${gap>=0?`<b>${f1(gap)} pts above</b>`:`<b>${f1(-gap)} pts below</b>`} the ≥90% target.`;
+  const k=on(id,'kpi')?`<div class="tiles" style="--cols:5">${sm('y','list','Total cases',m.total,`avg ${f1(m.avg)}/day`)}${sm('g','check','Solved',m.adj,`${fInt(m.recl)} via H+1`,'int','c-g')}${sm('g','gauge','Resolution',m.rateAdj,`official ${fPct(m.rateOff,2)}`,'p2','c-g')}${sm('o','alert','No response',m.nrAfter,`${fInt(m.bc2A)} BC2 · ${fInt(m.acA)} AC`,'int','c-o')}${afrTile(m)}</div>`:'';
+  const r=row(on(id,'daily')&&dailyCard(id,m,'Daily case volume'),on(id,'weeks')&&`<div class="card" data-a style="--f:1;overflow:hidden"><div class="ctitle">Week performance</div>${weekTable(m)}</div>`);
+  return head(id,'cs',title,lede,tg)+body(k+r||allOff())}
+function sCsResolution(){const id='cs-resolution',m=C.cs,title='Resolution & no response';
+  if(!m)return head(id,'cs',title)+body(needCS());
+  const lede=`H+1 investigation validated <b>${fInt(m.recl)} of ${fInt(m.nrTotal)}</b> no-response cases, lifting resolution from ${fPct(m.rateOff,2)} to <b>${fPct(m.rateAdj,2)}</b>.`;
+  const ring=(v,col,lab)=>`<div class="ring"><svg viewBox="0 0 36 36"><circle class="tr" cx="18" cy="18" r="15.9155"/><circle class="pr" cx="18" cy="18" r="15.9155" stroke="${col}" style="--da:${Math.min(100,v)} 100"/></svg><div class="in"><div class="big">${fPct(v,2)}</div><div class="lb">${lab}</div></div></div>`;
+  const imp=on(id,'impact')&&`<div class="card" data-a style="--f:1.15;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">Before vs after H+1</div><div class="impact"><div class="ic">${ring(m.rateOff,'#FF9F0A','Official')}<p>${fInt(m.off)} solved · ${fInt(m.nrTotal)} no response</p></div><div class="arrow"><b>+${f1(m.rateAdj-m.rateOff)} pts</b><svg viewBox="0 0 40 20" fill="none" stroke="#C7C7CC" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10h34M28 3l8 7-8 7"/></svg></div><div class="ic">${ring(m.rateAdj,'#34C759','Adjusted')}<p>${fInt(m.adj)} solved · ${fInt(m.nrAfter)} still no response</p></div></div>${m.hasInv?'':'<div class="legend">Kolom Investigation outcome belum dimapping — adjusted = official.</div>'}</div>`;
+  const nr=on(id,'noresp')&&`<div class="card" data-a style="--f:1;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">No response · before → after</div>${hbars([{label:'No Resp BC2',meta:'before',value:m.bc2,color:'#FF9F0A',sv:fPct(pct(m.bc2,m.total),2)},{label:'No Resp BC2',meta:'after H+1',value:m.bc2A,color:'#FFD60A',sv:fPct(pct(m.bc2A,m.total),2)},{label:'No Resp After Connected',meta:'before',value:m.ac,color:'#FF3B30',sv:fPct(pct(m.ac,m.total),2)},{label:'No Resp After Connected',meta:'after H+1',value:m.acA,color:'#FF8A80',sv:fPct(pct(m.acA,m.total),2)}],{style:'--hg:1.3cqw;--bh:.7cqw'})}</div>`;
+  return head(id,'cs',title,lede)+body(row(imp,nr)||allOff())}
+function sComposition(){const id='cs-composition',m=C.cs,title='Where the cases come from';
+  if(!m)return head(id,'cs',title)+body(needCS());
+  const it=m.issue.slice(0,3).map((x,j)=>({...x,color:x.label==='Internet'?'#F5C518':x.label==='Administration'?'#1D1D1F':'#8E8E93'}));const ar=m.sub[0];
+  const lede=`<b>${esc(it[0].label)}</b> ${fPct(pct(it[0].value,m.total))} of cases; <b>${esc(ar.label)}</b> carries ${fPct(pct(ar.value,m.total))}.${m.hasIncident?` Largest incident group: <b>${esc(m.incident[0].label)}</b>.`:''}`;
+  const issue=on(id,'issue')&&`<div class="card" data-a style="--f:1.25;display:flex;flex-direction:column"><div class="ctitle">Issue type</div><div class="dn sm">${donut(it,fInt(m.total),'cases')}${legend(it,m.total)}</div></div>`;
+  const area=on(id,'area')&&`<div class="card" data-a style="--f:1;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">Sub area</div>${hbars(m.sub.slice(0,5).map((x,j)=>({label:x.label,value:x.value,meta:`${fPct(pct(x.adj,x.value))} resolved · ${f1(x.value/m.nDays)}/day`,sv:fPct(pct(x.value,m.total)),color:j?'#0A84FF':'#F5C518'})))}</div>`;
+  const inc=on(id,'incident')&&`<div class="card" data-a style="--f:1;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">Service incident</div>${m.hasIncident?hbars(m.incident.slice(0,5).map((x,j)=>({label:x.label,value:x.value,sv:fPct(pct(x.value,m.total)),color:['#0A84FF','#FF9F0A','#30B0C7','#5E5CE6','#8E8E93'][j]}))):'<div class="legend">Kolom Service Incident belum dimapping.</div>'}</div>`;
+  return head(id,'cs',title,lede)+body(row(issue,area,inc)||allOff())}
+function topList(a,o={}){return hbars(a.map(x=>({label:x.label,value:x.value,meta:o.meta?o.meta(x):esc(x.team),color:o.color||'#3A3A3C'})).map((x,j)=>j===0?{...x,color:'#F5C518'}:x),{style:'--hg:.95cqw;--bh:.45cqw'})}
+function sCsTeam(){const id='cs-team',m=C.cs,title='Team & agent performance';
+  if(!m)return head(id,'cs',title)+body(needCS());
+  const t=m.teams.slice(0,7),hand=m.hand.filter(x=>x.team!=='AI'),mon=m.mon;
+  const rated=t.filter(x=>x.label!=='Unassigned'&&x.value>=Math.max(5,m.total*.01)).sort((a,b)=>pct(b.adj,b.value)-pct(a.adj,a.value));
+  const lede=`<b>${esc(t[0].label)}</b> handled the most (${fInt(t[0].value)})${rated.length?`; best resolution <b>${esc(rated[0].label)} ${fPct(pct(rated[0].adj,rated[0].value))}</b>`:''}.${hand[0]?` Top handler: <b>${esc(hand[0].label)}</b> (${fInt(hand[0].value)}).`:''}`;
+  const cols=['#F5C518','#0A84FF','#34C759','#5E5CE6','#FF9F0A','#30B0C7','#8E8E93'];
+  const teams=on(id,'teams')&&`<div class="card" data-a style="--f:1.25;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">Handling teams</div>${hbars(t.map((x,j)=>({label:x.label,value:x.value,color:x.label==='Unassigned'?'#C7C7CC':cols[j%cols.length],meta:`${fPct(pct(x.adj,x.value))} resolved · NR ${fInt(x.nr)}`,sv:fPct(pct(x.value,m.total))})),{style:'--hg:1cqw;--bh:.5cqw'})}</div>`;
+  const h=on(id,'handling')&&`<div class="card" data-a style="--f:1;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">Top handling · excl. AI</div>${hand.length?topList(hand.slice(0,6),{meta:x=>`${esc(x.team)} · ${fPct(pct(x.adj,x.value))} resolved`}):'<div class="legend">Kolom Handled By belum dimapping.</div>'}</div>`;
+  const mo=on(id,'monitoring')&&`<div class="card" data-a style="--f:1;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">Top monitoring</div>${mon.length?topList(mon.slice(0,6)):'<div class="legend">Kolom Monitored By belum dimapping.</div>'}</div>`;
+  return head(id,'cs',title,lede)+body(row(teams,h,mo)||allOff())}
+function sAgentsDetail(){const id='cs-agents',m=C.cs,title='Agent volume detail';
+  if(!m)return head(id,'cs',title)+body(needCS());
+  const col=x=>x.team==='Helpdesk'?'#F5C518':x.team==='Contact Center'?'#0A84FF':x.team==='AI'?'#5E5CE6':'#8E8E93';
+  const ch=(a,t)=>`<div class="card fill1" data-a style="--f:1"><div class="ctitle">${t} · ${a.length} agents</div>${a.length?`<div class="only-w fill1">${vbars(a.slice(0,16).map(x=>({label:x.label.replace(' - ','-'),full:x.label,value:x.value,color:col(x)})),{cls:'notrack rot'})}</div><div class="only-n">${hbars(a.slice(0,10))}</div>`:'<div class="legend">Kolom belum dimapping.</div>'}</div>`;
+  return head(id,'cs',title,`Top 16 agents per role. Yellow = Helpdesk, blue = Contact Center, purple = AI.`)+body(row(on(id,'monitoring')&&ch(m.mon,'Monitoring'),on(id,'handling')&&ch(m.hand,'Handling'))||allOff())}
+function chronoRows(r,rep,max){return r.top.map((x,i)=>{const t=x.tickets,show=t.length>max?t.slice(0,max-1):t,more=t.length-show.length;
+    return `<div class="card cr" data-a><div class="who"><span class="rkc">${i+1}</span><div style="min-width:0"><div class="cid">${esc(x.cid)}</div><div class="mt">${esc(x.name)}${x.product?' · '+esc(x.product):''}</div>${ed(`rc.${rep}.cid.${keyOf(x.cid)}`,'','div','mt','style="color:#D70015"')}<span class="cnt">${x.count} tickets · ${x.np} problem${x.np>1?'s':''}</span></div></div>
+     <div class="tl">${show.map((k,j)=>`${j?'<span class="ar">›</span>':''}<div class="tk"><div class="d ${k.wo?'wo':''}">${ddmm(k.date)}${k.wo?' · WO':''}${k.ctso&&!k.wo?' · CTSO':''}</div><div class="p">${esc(k.problem)}</div>${ed(`rc.${rep}.${k.k}`,esc(k.note),'div','')}</div>`).join('')}${more?`<span class="ar">›</span><div class="tk more">+${more}</div>`:''}</div></div>`}).join('')}
+function sRepeat(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}`;const title=vip?'VIP repeat complaints':'Repeat complaints — Customer Support';
+  if(!r)return head(id,'rc',title)+body(needRC());
+  const o=vip?S.rc.vipOrigin:S.rc.hdOrigin;
+  const lede=`<b>${fInt(r.cand.length)} customers</b> complained 2+ times — ${fInt(r.repTickets)} of ${fInt(r.elig.length)} complaint tickets (${fPct(pct(r.repTickets,r.elig.length))}). Via ${esc(o)}.`;
+  const k=on(id,'kpi')&&`<div class="tiles" style="--cols:3;flex:3">${sm('y','doc','Complaints',r.elig.length,'eligible tickets')}${sm('o','alert','Repeat CIDs',r.cand.length,'2+ tickets','int','c-o')}${sm('r','list','Repeat tickets',r.repTickets,'from repeat CIDs','int','c-r')}</div>`;
+  const pr=on(id,'problems')&&`<div class="card" data-a style="flex:2;min-width:0"><div class="ctitle">Top problems</div>${r.prob.slice(0,3).map((x,j)=>`<div class="pl"><span>${esc(x.label)}</span><b>${fInt(x.value)}</b></div>`).join('')}</div>`;
+  const top=on(id,'top3')&&(r.top.length?`<div class="chron">${chronoRows(r,rep,(k||pr)?4:5)}</div>`:empty('Tidak ada repeat complaint','Tidak ada CID dengan 2+ tiket di periode ini.'));
+  const first=(k||pr)?`<div class="row" style="flex:none">${k||''}${pr||''}</div>`:'';
+  return head(id,'rc',title,lede)+body((first+(top||''))||allOff())}
+function sVipOverview(){const id='vip-overview',m=C.vip,title='VIP Group overview';const tg=on(id,'daily')?seg(id,['bar','line']):'';
+  if(!m)return head(id,'vip',title,'',tg)+body(needVIP());
+  const it=m.issue.slice(0,3).map(x=>({...x,color:x.label==='Internet'?'#F5C518':x.label==='Administration'?'#1D1D1F':'#8E8E93'}));
+  const lede=`<b>${fPct(m.rateAdj,2)}</b> of ${fInt(m.total)} VIP cases resolved; ${fInt(m.hold+m.nrAfter)} on hold or without response. ${esc(it[0].label)} ${fPct(pct(it[0].value,m.total))}.`;
+  const k=on(id,'kpi')?`<div class="tiles" style="--cols:5">${sm('y','list','VIP cases',m.total,`avg ${f1(m.avg)}/day`)}${sm('g','check','Solved',m.adj,`out of ${fInt(m.total)}`,'int','c-g')}${sm('g','gauge','Resolution',m.rateAdj,'target ≥95%','p2','c-g')}${sm('o','alert','Hold / no resp',m.hold+m.nrAfter,`${fInt(m.hold)} hold · ${fInt(m.nrAfter)} NR`,'int','c-o')}${afrTile(m)}</div>`:'';
+  const mix=on(id,'mix')&&`<div class="card" data-a style="--f:1;display:flex;flex-direction:column"><div class="ctitle">Issue mix</div><div class="dn sm">${donut(it,fInt(m.total),'VIP cases')}${legend(it,m.total)}</div></div>`;
+  return head(id,'vip',title,lede,tg)+body(k+row(on(id,'daily')&&dailyCard(id,m,'Daily VIP volume'),mix)||allOff())}
+function sVipHandling(){const id='vip-handling',m=C.vip,title='VIP handling & top issues';
+  if(!m)return head(id,'vip',title)+body(needVIP());
+  const t=m.teams.filter(x=>x.label!=='Unassigned').slice(0,4),top=m.prob.slice(0,6),max=Math.max(1,...top.map(x=>x.value));
+  const lede=`<b>${esc(t[0]?t[0].label:'—')}</b> handled ${fPct(pct(t[0]?t[0].value:0,m.total))} of VIP cases. #1 issue: <b>${esc(top[0].label)}</b> (${fInt(top[0].value)}).`;
+  const cols=['#F5C518','#0A84FF','#34C759','#8E8E93'];
+  const teams=on(id,'teams')&&`<div class="card" data-a style="--f:.9;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">Teams</div>${hbars(t.map((x,j)=>({label:x.label,value:x.value,color:cols[j],meta:`Hold ${fInt(x.hold)} · ${fPct(pct(x.adj,x.value))} resolved`,sv:fPct(pct(x.value,m.total))})),{style:'--hg:1cqw;--bh:.5cqw'})}</div>`;
+  const hs=on(id,'handlers')&&`<div class="card" data-a style="--f:.9;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">Top handlers</div>${topList(m.hand.slice(0,6),{meta:x=>`${esc(x.team)} · Hold ${fInt(x.hold)}`})}</div>`;
+  const badge=x=>{const r=m.list.find(z=>z.problem===x.label),iss=r?r.issue:'';return `<span class="badge ${iss==='Administration'?'ad':iss==='Internet'?'':'ot'}">${iss==='Administration'?'ADMIN':iss==='Internet'?'INTERNET':esc(String(iss).toUpperCase().slice(0,8))}</span>`};
+  const iss=on(id,'issues')&&`<div class="card" data-a style="--f:1.3;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">Top issue categories</div><div class="rank">${top.map((x,j)=>`<div class="rk-row"><div class="no">${String(j+1).padStart(2,'0')}</div><div class="hb"><div class="r"><div class="lab">${badge(x)}${esc(x.label)}</div><div></div><div class="trk"><div class="f" style="--w:${x.value/max*100}%;--fc:${j?'#3A3A3C':'#F5C518'}"></div></div></div></div><div class="v">${fInt(x.value)}<small>${fPct(pct(x.value,m.total))}</small></div></div>`).join('')}</div></div>`;
+  return head(id,'vip',title,lede)+body(row(teams,hs,iss)||allOff())}
 function sCover(){const m=C.cs||C.vip;const t=C.days>=28?'Monthly Report':C.days>=6?'Weekly Report':'Report';
   return `<div class="cv"><div class="cv-top" data-a><img class="m" src="${MARK}" alt=""><img class="w" src="${WORDW}" alt="globalxtreme"></div>
   ${ed('cover.eyb','After Sales Meeting','div','cv-eyb','data-a')}
@@ -715,102 +814,6 @@ function sCover(){const m=C.cs||C.vip;const t=C.days>=28?'Monthly Report':C.days
   <div class="cv-foot" data-a><span>Aftersales Helpdesk CSO · Customer Service Division</span><span>Internal · Confidential</span></div></div>`}
 function sThanks(){return `<div class="ty"><img class="m" src="${MARK}" alt="" data-a><h1 data-a>Thank you.</h1>${ed('thanks.sub',`Aftersales Helpdesk CSO · ${esc(C.long)}`,'p','','data-a')}<img class="w" src="${WORDW}" alt="globalxtreme" data-a></div>`}
 
-function sGlance(kind){const m=C[kind],vip=kind==='vip',id=kind+'-glance';
-  const title=vip?'VIP Group at a glance':'Customer Support at a glance';
-  if(!m)return head(id,kind,title)+body(vip?needVIP():needCS());
-  const gap=m.rateAdj-90;
-  const lede=vip?`<b>${fPct(m.rateAdj,2)}</b> of ${fInt(m.total)} VIP cases resolved — ${fInt(m.hold+m.nrAfter)} still on hold or without response.`
-    :`Resolution reached <b>${fPct(m.rateAdj,2)}</b> after H+1 investigation — ${gap>=0?`<b>${f1(gap)} pts above</b>`:`<b>${f1(-gap)} pts below</b>`} the ≥90% target.`;
-  const afr=m.afr!=null?tile('b','clock','Avg first response',null,`${fInt(m.afrN)} tickets with AFR`).replace('<div class="tval ">—</div>',`<div class="tval">${f1(m.afr)}<span style="font-size:.5em;font-weight:600">m</span></div>`):tile('b','cal','Avg cases per day',m.avg,`across ${m.nDays} day${m.nDays>1?'s':''}`,'d1');
-  return head(id,kind,title,lede)+body(`<div class="tiles" style="--cols:3;flex:1;align-content:center">
-    ${tile('y','list',vip?'Total VIP cases':'Total cases',m.total,`${m.nDays}-day period · avg ${f1(m.avg)}/day`)}
-    ${tile('g','check','Cases solved',m.adj,`out of ${fInt(m.total)} received${m.recl?` · ${fInt(m.recl)} via H+1`:''}`,'int','c-g')}
-    ${tile('g','gauge','Resolution rate',m.rateAdj,vip?'solved ÷ all VIP cases':`official ${fPct(m.rateOff,2)} → adjusted`,'p2','c-g')}
-    ${tile('o','alert',vip?'Hold / no response':'No response',vip?m.hold+m.nrAfter:m.nrAfter,vip?`${fInt(m.hold)} hold · ${fInt(m.nrAfter)} no response`:`${fInt(m.bc2A)} BC2 · ${fInt(m.acA)} after connected`,'int','c-o')}
-    ${afr}
-    ${tile('k','wifi','Internet vs admin',null,'').replace('<div class="tval ">—</div>',`<div class="tval">${fPct(pct((m.issue.find(x=>x.label==='Internet')||{value:0}).value,m.total),0)}<span style="font-size:.45em;font-weight:600;color:#8E8E93"> / ${fPct(pct((m.issue.find(x=>x.label==='Administration')||{value:0}).value,m.total),0)}</span></div>`).replace('<div class="tfoot"></div>','<div class="tfoot">Internet / Administration share</div>')}
-  </div>`)}
-function sImpact(){const m=C.cs,id='cs-impact';const title='H+1 investigation lifts resolution';
-  if(!m)return head(id,'cs',title)+body(needCS());
-  const lede=`${fInt(m.recl)} of ${fInt(m.nrTotal)} no-response cases were validated as solved, raising the rate by <b>${f1(m.rateAdj-m.rateOff)} pts</b>.`;
-  const ring=(v,col,lab)=>`<div class="ring"><svg viewBox="0 0 36 36"><circle class="tr" cx="18" cy="18" r="15.9155"/><circle class="pr" cx="18" cy="18" r="15.9155" stroke="${col}" style="--da:${Math.min(100,v)} 100"/></svg><div class="in"><div class="big">${num(v,'p2')}</div><div class="lb">${lab}</div></div></div>`;
-  return head(id,'cs',title,lede)+body(`<div class="impact">
-   <div class="ic" data-a>${ring(m.rateOff,'#FF9F0A','Official')}<h3>Before investigation</h3><p>${fInt(m.off)} solved · ${fInt(m.nrTotal)} no response (${fInt(m.bc2)} BC2, ${fInt(m.ac)} after connected)</p></div>
-   <div class="arrow" data-a><b>+${f1(m.rateAdj-m.rateOff)} pts</b><svg viewBox="0 0 40 20" fill="none" stroke="#C7C7CC" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10h34M28 3l8 7-8 7"/></svg><span>${fInt(m.recl)} reclassified</span></div>
-   <div class="ic" data-a>${ring(m.rateAdj,'#34C759','Adjusted')}<h3>After H+1 investigation</h3><p>${fInt(m.adj)} solved · ${fInt(m.nrAfter)} genuine no response left (${fInt(m.bc2A)} BC2, ${fInt(m.acA)} after connected)</p></div></div>
-   ${m.hasInv?'':'<div class="legend" style="justify-content:center">Kolom Investigation outcome belum dimapping — adjusted rate sama dengan official.</div>'}`)}
-function sNoResp(){const m=C.cs,id='cs-noresp';const title='No response, before and after H+1';
-  if(!m)return head(id,'cs',title)+body(needCS());
-  const lede=`Genuine no response dropped from <b>${fInt(m.nrTotal)}</b> to <b>${fInt(m.nrAfter)}</b> cases (${fPct(pct(m.nrAfter,m.total),2)} of total).`;
-  const items=[{label:'No Resp BC2',value:m.bc2,meta:'before investigation',color:'#FF9F0A',sv:fPct(pct(m.bc2,m.total),2)},{label:'No Resp BC2',value:m.bc2A,meta:'after H+1',color:'#FFD60A',sv:fPct(pct(m.bc2A,m.total),2)},{label:'No Resp After Connected',value:m.ac,meta:'before investigation',color:'#FF3B30',sv:fPct(pct(m.ac,m.total),2)},{label:'No Resp After Connected',value:m.acA,meta:'after H+1',color:'#FF8A80',sv:fPct(pct(m.acA,m.total),2)}];
-  return head(id,'cs',title,lede)+body(`<div class="g2"><div class="card fill1" data-a style="justify-content:center"><div class="ctitle">Cases by no-response type</div>${hbars(items)}</div>
-    <div class="col" style="display:flex;flex-direction:column;gap:var(--gap)">${tile('o','alert','Before investigation',m.nrTotal,`${fPct(pct(m.nrTotal,m.total),2)} of total received`,'int','c-o')}${tile('g','check','Reclassified as solved',m.recl,'validated in H+1 investigation','int','c-g')}${tile('r','alert','Still no response',m.nrAfter,'needs further follow-up','int','c-r')}</div></div>`)}
-function sDaily(kind){const m=C[kind],vip=kind==='vip',id=kind+'-daily';const title=vip?'VIP daily case volume':'Daily case volume';
-  const t=ctype(id,'bar');const tg=seg(id,['bar','line']);
-  if(!m)return head(id,kind,title,'',tg)+body(vip?needVIP():needCS());
-  const pk=m.daily.reduce((a,b)=>b.value>a.value?b:a,m.daily[0]),lo=m.daily.reduce((a,b)=>b.value<a.value?b:a,m.daily[0]);
-  const lede=`Average <b>${f1(m.avg)} cases/day</b>. Busiest day ${rangeLabel(pk.day,pk.day)} with <b>${fInt(pk.value)}</b>; quietest ${rangeLabel(lo.day,lo.day)} with ${fInt(lo.value)}.`;
-  const items=dayItems(m);
-  const chart=t==='line'?lineChart(items.map(x=>({...x,color:x.color==='#C7C7CC'?'#8E8E93':x.color})),{id}):vbars(items);
-  return head(id,kind,title,lede,tg)+body(`<div class="card fill1" data-a>${chart}<div class="legend"><span><i style="background:#F5C518"></i>Peak (≥ ${fInt(Math.ceil(m.avg*1.5))})</span><span><i style="background:#1D1D1F"></i>Above avg (≥ ${fInt(Math.ceil(m.avg))})</span><span><i style="background:#C7C7CC"></i>Below avg</span><span class="rt">Total ${fInt(m.total)} · ${m.nDays} days</span></div></div>`)}
-function sWeeks(kind){const m=C[kind],vip=kind==='vip',id=kind+'-weeks';const title=vip?'VIP weekly volume':'Week-over-week performance';
-  if(!m)return head(id,kind,title)+body(vip?needVIP():needCS());
-  const ws=m.weeks;const best=[...ws].sort((a,b)=>b.rate-a.rate)[0],busy=[...ws].sort((a,b)=>b.cases-a.cases)[0];
-  if(vip){const items=ws.map((w,i)=>({label:`${w.name}  ${shortRange(w.s,w.e)}`,value:w.cases,meta:`${fInt(w.solved)} solved · ${fPct(w.rate,1)}`,color:w===busy?'#F5C518':'#3A3A3C'}));
-    return head(id,kind,title,`Busiest week was <b>${busy.name} (${shortRange(busy.s,busy.e)})</b> with ${fInt(busy.cases)} VIP cases.`)+body(`<div class="card fill1" data-a style="justify-content:center">${hbars(items)}</div>`)}
-  const lede=`Best week: <b>${best.name} at ${fPct(best.rate,1)}</b> resolution. Busiest: ${busy.name} with ${fInt(busy.cases)} cases.`;
-  const cols=['#F5C518','#0A84FF','#34C759','#FF9F0A','#5E5CE6','#FF375F'];
-  return head(id,kind,title,lede)+body(`<div class="weeks" style="--wn:${Math.min(ws.length,5)}">${ws.slice(0,10).map((w,i)=>`<div class="card wk" data-a><div style="display:flex;align-items:center;gap:.6cqw"><span style="width:.9cqw;height:.9cqw;border-radius:50%;background:${cols[i%cols.length]}"></span><span class="wn">${w.name}</span></div><div class="wr">${shortRange(w.s,w.e)}</div><div class="wp ${w.rate>=90?'c-g':w.rate>=80?'':'c-o'}">${num(w.rate,'p')}</div><div class="wl">overall resolution</div><div class="spark">${(()=>{const mx=Math.max(1,...m.daily.map(d=>d.value));return w.days.map((d,j)=>`<i style="--h:${Math.max(4,d.value/mx*100)}%;--j:${j}" title="${isoDay(d.day)}: ${d.value}"></i>`).join('')})()}</div><dl><dt>Cases</dt><dd>${fInt(w.cases)}</dd><dt>Official</dt><dd>${fPct(w.off,1)}</dd><dt>Investigated</dt><dd>${fInt(w.inv)}</dd><dt>After inv.</dt><dd>${fPct(w.afterInv,1)}</dd></dl></div>`).join('')}</div>`)}
-function catSlide(kind,id,title,items,total,lede,o={}){const t=ctype(id,o.def||'bar');const tg=seg(id,['bar','pie']);
-  const it=items.map((x,j)=>({...x,color:x.color||(o.colors||PAL)[j%(o.colors||PAL).length]}));
-  const chart=t==='pie'?pieBlock(it,total,fInt(total),o.center||'cases',{val:x=>fInt(x.value)}):`<div class="card fill1" data-a>${vbars(it)}</div>`;
-  const side=o.side?`<div class="card" data-a style="overflow:hidden">${o.side}</div>`:'';
-  return head(id,kind,title,lede,tg)+body(side?`<div class="g2">${t==='pie'?`<div class="card fill1" data-a>${chart}</div>`:chart}${side}</div>`:(t==='pie'?`<div class="card fill1" data-a>${chart}</div>`:chart))}
-function sIncident(){const m=C.cs,id='cs-incident';const title='Service incident origin';
-  if(!m)return head(id,'cs',title)+body(needCS());
-  if(!m.hasIncident)return head(id,'cs',title)+body(needCol('Service Incident','Customer Support'));
-  const it=m.incident.slice(0,8),top=it[0];
-  return catSlide('cs',id,title,it,m.total,`<b>${esc(top.label)}</b> accounts for ${fPct(pct(top.value,m.total))} of cases (${fInt(top.value)}).`,{colors:['#0A84FF','#FF9F0A','#30B0C7','#5E5CE6','#8E8E93','#34C759','#FF375F','#AC8E68'],
-    side:`<div class="ctitle">Detail</div><table class="tbl"><thead><tr><th>Incident</th><th class="n">Cases</th><th class="n">Share</th></tr></thead><tbody>${it.map(x=>`<tr><td class="b">${esc(x.label)}</td><td class="n">${fInt(x.value)}</td><td class="n">${fPct(pct(x.value,m.total))}</td></tr>`).join('')}</tbody></table>`})}
-function sArea(){const m=C.cs,id='cs-area';const title='Cases by sub area';
-  if(!m)return head(id,'cs',title)+body(needCS());
-  const it=m.sub.slice(0,8),top=it[0];
-  return catSlide('cs',id,title,it,m.total,`<b>${esc(top.label)}</b> carries ${fPct(pct(top.value,m.total))} of all cases, at ${fPct(pct(top.adj,top.value))} resolution.`,{colors:['#F5C518','#0A84FF','#1D1D1F','#FF9F0A','#34C759','#5E5CE6','#8E8E93','#30B0C7'],
-    side:`<div class="ctitle">Detail</div><table class="tbl"><thead><tr><th>Area</th><th class="n">Cases</th><th class="n">Rate</th><th class="n">Share</th><th class="n">Avg/day</th></tr></thead><tbody>${it.map(x=>`<tr><td class="b">${esc(x.label)}</td><td class="n">${fInt(x.value)}</td><td class="n">${fPct(pct(x.adj,x.value))}</td><td class="n">${fPct(pct(x.value,m.total))}</td><td class="n">${f1(x.value/m.nDays)}</td></tr>`).join('')}</tbody></table>`})}
-function sIssue(kind){const m=C[kind],vip=kind==='vip',id=kind+'-issue';const title=vip?'VIP issue mix':'Internet vs administration';
-  if(!m)return head(id,kind,title)+body(vip?needVIP():needCS());
-  const it=m.issue.slice(0,4).map((x,j)=>({...x,color:x.label==='Internet'?'#F5C518':x.label==='Administration'?'#1D1D1F':['#0A84FF','#8E8E93'][j%2],meta:`avg ${f1(x.value/m.nDays)}/day · ${fPct(pct(x.adj,x.value))} resolved`}));
-  const top=it[0];
-  const ex=it.slice(0,2).map(x=>{const p=groupCount(m.list.filter(r=>r.issue===x.label),'problem').slice(0,4).map(y=>esc(y.label)).join(' · ');return `<div style="margin-top:1.2cqw;font-size:var(--t-small);color:#6E6E73;line-height:1.5"><b style="color:#1D1D1F">${esc(x.label)}:</b> ${p}</div>`}).join('');
-  const t=ctype(id,'pie');const tg=seg(id,['pie','bar']);
-  const chart=t==='pie'?`<div class="card fill1" data-a>${pieBlock(it,m.total,fInt(m.total),vip?'VIP cases':'cases',{val:x=>fInt(x.value)})}${ex}</div>`:`<div class="card fill1" data-a>${vbars(it)}${ex}</div>`;
-  return head(id,kind,title,`<b>${esc(top.label)}</b> issues make up ${fPct(pct(top.value,m.total))} of ${vip?'VIP ':''}cases.`,tg)+body(chart)}
-function sTeam(kind){const m=C[kind],vip=kind==='vip',id=kind+'-team';const title=vip?'VIP handling teams':'Handling team distribution';
-  if(!m)return head(id,kind,title)+body(vip?needVIP():needCS());
-  const t=m.teams.filter(x=>x.label!=='Unassigned'||x.value>0).slice(0,8);
-  const rated=t.filter(x=>x.label!=='Unassigned'&&x.value>=Math.max(5,m.total*.01));const best=[...rated].sort((a,b)=>pct(b.adj,b.value)-pct(a.adj,a.value));
-  const lede=best.length?`<b>${esc(t[0].label)}</b> handled the most (${fInt(t[0].value)}). Highest resolution: <b>${esc(best[0].label)} ${fPct(pct(best[0].adj,best[0].value))}</b>${best.length>1?`; lowest: ${esc(best[best.length-1].label)} ${fPct(pct(best[best.length-1].adj,best[best.length-1].value))}`:''}.`:'';
-  const cols=['#F5C518','#0A84FF','#34C759','#5E5CE6','#FF9F0A','#30B0C7','#FF375F','#8E8E93'];
-  const items=t.map((x,j)=>{const hs=[...x.h].sort((a,b)=>b[1]-a[1]).slice(0,3).map(([n,v])=>`${n} ${v}`).join(' · ');return {label:x.label,value:x.value,color:x.label==='Unassigned'?'#C7C7CC':cols[j%cols.length],meta:`${fPct(pct(x.adj,x.value))} resolved · ${vip?`Hold ${fInt(x.hold)}`:`NR ${fInt(x.nr)}`}${vip&&hs?' · '+esc(hs):''}`,sv:fPct(pct(x.value,m.total))+' share'}});
-  return head(id,kind,title,lede)+body(`<div class="card fill1" data-a style="justify-content:center">${hbars(items,{style:items.length>6?'--hg:1.05cqw;--bh:.6cqw':''})}</div>`)}
-function sAgents(key){const m=C.cs,mon=key==='monitored',id='cs-'+(mon?'mon':'hand');const title=mon?'Monitoring volume by agent':'Handling volume by agent';
-  if(!m)return head(id,'cs',title)+body(needCS());
-  const a=mon?m.mon:m.hand;if(!a.length)return head(id,'cs',title)+body(needCol(mon?'Monitored By':'Handled By','Customer Support'));
-  const tot=a.reduce((s,x)=>s+x.value,0),top3=a.slice(0,3).reduce((s,x)=>s+x.value,0);
-  const lede=`${a.length} agents ${mon?'monitored':'handled'} ${fInt(tot)} cases. The top 3 carry <b>${fPct(pct(top3,tot))}</b> of the load.`;
-  const col=x=>x.team==='Helpdesk'||x.team==='Account Manager'?'#F5C518':x.team==='Contact Center'?'#0A84FF':x.team==='AI'?'#5E5CE6':'#8E8E93';
-  const teams=[...new Set(a.slice(0,30).map(x=>x.team))];
-  const items=a.slice(0,30).map(x=>({label:x.label.replace(' - ','-'),full:x.label,value:x.value,color:col(x)}));
-  return head(id,'cs',title,lede)+body(`<div class="card fill1" data-a><div class="only-w fill1">${vbars(items,{cls:'notrack',style:'--vx:.66cqw'})}</div><div class="only-n">${hbars(items.slice(0,12))}</div><div class="legend">${teams.slice(0,5).map(t=>`<span><i style="background:${col({team:t})}"></i>${esc(t)}</span>`).join('')}<span class="rt">${a.length>30?`Top 30 of ${a.length} agents`:'All agents'} · ranked by volume</span></div></div>`)}
-function sBest(kind,key){const m=C[kind],vip=kind==='vip',mon=key==='monitored',id=`${kind}-best-${mon?'mon':'hand'}`;
-  const title=vip?'Top VIP handlers':mon?'Best monitoring performance':'Best handling performance';
-  if(!m)return head(id,kind,title)+body(vip?needVIP():needCS());
-  let a=mon?m.mon:m.hand;if(!mon&&!vip)a=a.filter(x=>x.team!=='AI');
-  if(!a.length)return head(id,kind,title)+body(needCol(mon?'Monitored By':'Handled By',vip?'VIP Group':'Customer Support'));
-  const f=a[0];const lede=`<b>${esc(f.label)}</b> leads with ${fInt(f.value)} cases ${mon?'monitored':'handled'}${!mon?` at ${fPct(pct(f.adj,f.value))} resolution`:''}.${!mon&&!vip?' AI excluded.':''}`;
-  const sub=x=>mon?`${esc(x.team)} · cases monitored`:vip?`${esc(x.team)} · Solved ${fInt(x.value-x.hold)} | Hold ${fInt(x.hold)}`:`${esc(x.team)} · Solved ${fInt(x.solved)} | NR ${fInt(x.nr)}`;
-  return head(id,kind,title,lede)+body(`<div class="pod">${a.slice(0,3).map((x,i)=>`<div class="card pd ${i===0?'first':''}" data-a><span class="rk">${i+1}</span><div class="nm">${esc(x.label)}</div><div class="v">${num(x.value)}</div><div class="t">${sub(x)}</div></div>`).join('')}</div>
-   ${a.length>3?`<div class="nextl">${a.slice(3,8).map(x=>`<div class="card nx" data-a><div class="nm">${esc(x.label)}</div><div class="v">${fInt(x.value)}</div><div class="t">${esc(x.team)}</div></div>`).join('')}</div>`:''}`,'justify-content:center')}
 function sTopCat(kind){const m=C[kind],vip=kind==='vip',id=kind+'-topcat';const title=vip?'Top VIP issue categories':'Top complaint categories';
   const t=ctype(id,'bar');const tg=seg(id,['bar','pie']);
   if(!m)return head(id,kind,title,'',tg)+body(vip?needVIP():needCS());
@@ -828,92 +831,58 @@ function sGroups(){const m=C.vip,id='vip-groups';const title='Top VIP groups by 
   const lede=`<b>${esc(top[0].label)}</b> raised the most VIP cases (${fInt(top[0].value)}). The top ${top.length} groups account for ${fPct(pct(sum,m.total))}.`;
   return head(id,'vip',title,lede)+body(`<div class="grp">${top.map((x,i)=>{const p=groupCount(m.list.filter(r=>r.company===x.label),'problem').slice(0,3).map(y=>`${y.label} (${y.value})`).join(', ');
     return `<div class="card gi ${i===0?'first':''}" data-a><div class="top"><span class="no">${String(i+1).padStart(2,'0')}</span><span class="nm">${esc(x.label)}</span><span class="v">${fInt(x.value)} <span style="font-weight:500;color:${i===0?'#AEAEB2':'#8E8E93'};font-size:var(--t-small)">${fPct(pct(x.value,m.total))}</span></span></div>${ed('grp.'+keyOf(x.label),esc(p),'div','ds')}<div class="trk"><div class="f" style="--w:${x.value/max*100}%;--j:${i}"></div></div></div>`}).join('')}</div>`,'justify-content:center')}
-function sRcOverview(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}-ov`;const title=vip?'VIP repeat complaints':'Customer Support repeat complaints';
-  if(!r)return head(id,'rc',title)+body(needRC());
-  const o=vip?S.rc.vipOrigin:S.rc.hdOrigin;
-  const lede=`<b>${fInt(r.cand.length)} customers</b> complained 2+ times, producing ${fInt(r.repTickets)} of ${fInt(r.elig.length)} complaint tickets (${fPct(pct(r.repTickets,r.elig.length))}).`;
-  const filt=`<b>Filter:</b> ${r.complaintOnly?'Type = Complaint · ':''}Via Origin = ${esc(o)}${!vip&&S.rc.actValues?` · tanpa ${esc(S.rc.actValues)}`:''}${S.rc.excludeCats?` · kategori administratif dikeluarkan`:''} · canceled & duplikat dihapus${r.hasOrigin?'':' · <span style="color:#D70015">kolom Via Origin tidak ditemukan</span>'}`;
-  const tb=r.cand.slice(0,5);
-  return head(id,'rc',title,lede)+body(`<div class="tiles" style="--cols:3">${tile('y','doc','Complaint tickets',r.elig.length,'eligible after filters')}${tile('o','alert','Repeat CIDs',r.cand.length,'customers with 2+ tickets','int','c-o')}${tile('r','list','Repeat tickets',r.repTickets,`${fPct(pct(r.repTickets,r.elig.length))} of complaint tickets`,'int','c-r')}</div>
-   <div class="g2e" style="margin-top:var(--gap)"><div class="card fill1" data-a><div class="ctitle">Top problem sub-types</div>${hbars(r.prob.slice(0,5).map((x,j)=>({...x,color:j?'#3A3A3C':'#F5C518'})),{style:'--hg:1.2cqw;--bh:.6cqw'})}</div>
-    <div class="card" data-a style="overflow:hidden"><div class="ctitle">Repeat CIDs</div>${tb.length?`<table class="tbl"><thead><tr><th>CID</th><th>Customer</th><th class="n">Tickets</th><th class="n">Problems</th></tr></thead><tbody>${tb.map(x=>`<tr><td class="b">${esc(x.cid)}</td><td>${esc(x.name||'—')}</td><td class="n">${x.count}</td><td class="n">${x.np}</td></tr>`).join('')}</tbody></table>${r.cand.length>tb.length?`<div class="legend">+${r.cand.length-tb.length} more repeat CIDs</div>`:''}`:'<div class="legend">Tidak ada CID dengan 2+ tiket di periode ini.</div>'}</div></div>
-   <div class="filt" data-a style="margin-top:var(--gap)">${filt}</div>`)}
-function sRcTop3(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}-top3`;const title=vip?'Top 3 VIP repeat complainants':'Top 3 repeat complaints';
-  if(!r)return head(id,'rc',title)+body(needRC());
-  if(!r.top.length)return head(id,'rc',title)+body(empty('Tidak ada repeat complaint','Tidak ada CID dengan 2+ tiket di periode & filter ini.'));
-  const lede=`Case-by-case chronology. <b>${esc(r.top[0].cid)}</b> reported ${r.top[0].count} times; recurrence within days means the first fix did not hold.`;
-  const MAXC=5;
-  return head(id,'rc',title,lede)+body(`<div class="chron">${r.top.map((x,i)=>{const t=x.tickets,show=t.length>MAXC?t.slice(0,MAXC-1):t,more=t.length-show.length;
-    return `<div class="card cr" data-a><div class="who"><span class="rkc">${i+1}</span><div style="min-width:0"><div class="cid">${esc(x.cid)}</div><div class="mt">${esc(x.name)}${x.product?'<br>'+esc(x.product):''}${x.branch?' · '+esc(x.branch):''}</div>${ed(`rc.${rep}.cid.${keyOf(x.cid)}`,'','div','mt','style="color:#D70015"')}<span class="cnt">${x.count} tickets · ${x.np} problem${x.np>1?'s':''}</span></div></div>
-     <div class="tl">${show.map((k,j)=>`${j?'<span class="ar">›</span>':''}<div class="tk"><div class="d ${k.wo?'wo':''}">${ddmm(k.date)}${k.wo?' · WO':''}${k.ctso&&!k.wo?' · CTSO':''}</div><div class="p">${esc(k.problem)}</div>${ed(`rc.${rep}.${k.k}`,esc(k.note),'div','')}</div>`).join('')}${more?`<span class="ar">›</span><div class="tk more">+${more}</div>`:''}</div></div>`}).join('')}</div>`)}
-
 const SLIDES=[
  {id:'cover',g:'gen',t:'Cover',r:sCover,dark:1},
- {id:'cs-glance',g:'cs',t:'At a glance',r:()=>sGlance('cs'),need:'cs'},
- {id:'cs-impact',g:'cs',t:'H+1 resolution impact',r:sImpact,need:'cs'},
- {id:'cs-noresp',g:'cs',t:'No response before / after',r:sNoResp,need:'cs'},
- {id:'cs-daily',g:'cs',t:'Daily case volume',r:()=>sDaily('cs'),need:'cs'},
- {id:'cs-weeks',g:'cs',t:'Week performance',r:()=>sWeeks('cs'),need:'cs'},
- {id:'cs-incident',g:'cs',t:'Service incident',r:sIncident,need:'cs'},
- {id:'cs-area',g:'cs',t:'Sub area',r:sArea,need:'cs'},
- {id:'cs-issue',g:'cs',t:'Issue type',r:()=>sIssue('cs'),need:'cs'},
- {id:'cs-team',g:'cs',t:'Handling teams',r:()=>sTeam('cs'),need:'cs'},
- {id:'cs-mon',g:'cs',t:'Monitoring by agent',r:()=>sAgents('monitored'),need:'cs'},
- {id:'cs-best-mon',g:'cs',t:'Best monitoring',r:()=>sBest('cs','monitored'),need:'cs'},
- {id:'cs-hand',g:'cs',t:'Handling by agent',r:()=>sAgents('handler'),need:'cs'},
- {id:'cs-best-hand',g:'cs',t:'Best handling',r:()=>sBest('cs','handler'),need:'cs'},
+ {id:'cs-overview',g:'cs',t:'Customer Support overview',r:sCsOverview,need:'cs',blocks:[['kpi','KPI tiles'],['daily','Daily volume'],['weeks','Week table']]},
+ {id:'cs-resolution',g:'cs',t:'Resolution & no response',r:sCsResolution,need:'cs',blocks:[['impact','Before vs after H+1'],['noresp','No response breakdown']]},
+ {id:'cs-composition',g:'cs',t:'Issue type, sub area & incident',r:sComposition,need:'cs',blocks:[['issue','Issue type'],['area','Sub area'],['incident','Service incident']]},
  {id:'cs-topcat',g:'cs',t:'Top complaint categories',r:()=>sTopCat('cs'),need:'cs'},
- {id:'rc-hd-ov',g:'rc',t:'Repeat complaints — CS',r:()=>sRcOverview('hd'),need:'rc'},
- {id:'rc-hd-top3',g:'rc',t:'Top 3 repeat — CS',r:()=>sRcTop3('hd'),need:'rc',top3:'hd'},
- {id:'vip-glance',g:'vip',t:'At a glance',r:()=>sGlance('vip'),need:'vip'},
- {id:'vip-issue',g:'vip',t:'Issue mix',r:()=>sIssue('vip'),need:'vip'},
- {id:'vip-weeks',g:'vip',t:'Weekly volume',r:()=>sWeeks('vip'),need:'vip'},
- {id:'vip-daily',g:'vip',t:'Daily case volume',r:()=>sDaily('vip'),need:'vip'},
- {id:'vip-team',g:'vip',t:'Handling teams',r:()=>sTeam('vip'),need:'vip'},
- {id:'vip-best-hand',g:'vip',t:'Top handlers',r:()=>sBest('vip','handler'),need:'vip'},
- {id:'vip-topcat',g:'vip',t:'Top issue categories',r:()=>sTopCat('vip'),need:'vip'},
+ {id:'cs-team',g:'cs',t:'Team & agent performance',r:sCsTeam,need:'cs',blocks:[['teams','Handling teams'],['handling','Top handling'],['monitoring','Top monitoring']]},
+ {id:'cs-agents',g:'cs',t:'Agent volume detail',r:sAgentsDetail,need:'cs',off:1,blocks:[['monitoring','Monitoring'],['handling','Handling']]},
+ {id:'rc-hd',g:'rc',t:'Repeat complaints — CS',r:()=>sRepeat('hd'),need:'rc',top3:'hd',blocks:[['kpi','KPI tiles'],['problems','Top problems'],['top3','Top 3 chronology']]},
+ {id:'vip-overview',g:'vip',t:'VIP Group overview',r:sVipOverview,need:'vip',blocks:[['kpi','KPI tiles'],['daily','Daily volume'],['mix','Issue mix']]},
+ {id:'vip-handling',g:'vip',t:'VIP handling & top issues',r:sVipHandling,need:'vip',blocks:[['teams','Teams'],['handlers','Top handlers'],['issues','Top issue categories']]},
  {id:'vip-groups',g:'vip',t:'Top VIP groups',r:sGroups,need:'vip'},
- {id:'rc-vip-ov',g:'rc',t:'Repeat complaints — VIP',r:()=>sRcOverview('vip'),need:'rc'},
- {id:'rc-vip-top3',g:'rc',t:'Top 3 repeat — VIP',r:()=>sRcTop3('vip'),need:'rc',top3:'vip'},
+ {id:'rc-vip',g:'rc',t:'Repeat complaints — VIP',r:()=>sRepeat('vip'),need:'rc',top3:'vip',blocks:[['kpi','KPI tiles'],['problems','Top problems'],['top3','Top 3 chronology']]},
  {id:'thanks',g:'gen',t:'Thank you',r:sThanks,dark:1}
 ];
-const GROUPS=[['gen','Opening & closing'],['cs','Customer Support'],['rc','Repeat Complaint (import sendiri)'],['vip','VIP Group']];
-const visible=()=>SLIDES.filter(s=>S.vis[s.id]!==false);
+const GROUPS=[['gen','Opening & closing'],['cs','Customer Support'],['rc','Repeat Complaint'],['vip','VIP Group']];
+const isOn=s=>S.vis[s.id]!==undefined?S.vis[s.id]!==false:!s.off;
+function ordered(){const ix=id=>{const i=(S.order||[]).indexOf(id);return i<0?1000+SLIDES.findIndex(x=>x.id===id):i};return [...SLIDES].sort((a,b)=>ix(a.id)-ix(b.id))}
+const visible=()=>ordered().filter(isOn);
 const hasData=s=>!s.need||(s.need==='rc'?!!DS.rc:s.need==='cs'?!!C.cs:!!C.vip);
 
 /* ---------- render ---------- */
 function makeSlide(s,{anim=true,mode=''}={}){const el=document.createElement('div');el.className='slide'+(s.dark?' dark':'')+(mode?' '+mode:'');el.dataset.id=s.id;
   let html;try{html=s.r()}catch(err){console.error(err);html=head(s.id,s.g==='gen'?'gen':s.g,esc(s.t))+body(empty('Slide error',esc(err.message)))}
-  if(!s.dark){const v=visible(),i=v.indexOf(s);html+=`<footer class="sl-foot"><span><img src="${MARK}" alt="">GlobalXtreme · Internal · Confidential</span><span>${esc(SECTION[s.g][1])} · ${String(i+1).padStart(2,'0')} / ${String(v.length).padStart(2,'0')}</span></footer>`}
-  el.innerHTML=html;$$('[data-a]',el).forEach((e,i)=>e.style.setProperty('--i',Math.min(i,14)));
-  if(!anim)el.classList.add('in','static');return el}
-function enter(el){requestAnimationFrame(()=>requestAnimationFrame(()=>{el.classList.add('in');countUp(el)}))}
-function countUp(el){const items=$$('[data-n]',el);if(!items.length||matchMedia('(prefers-reduced-motion: reduce)').matches)return;const t0=performance.now()+250,D=1100;
-  items.forEach(e=>e.textContent=fmtN(0,e.dataset.f));
-  const step=t=>{const k=Math.max(0,Math.min(1,(t-t0)/D)),q=1-Math.pow(1-k,4);items.forEach(e=>e.textContent=fmtN(+e.dataset.n*q,e.dataset.f));if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step);
-  setTimeout(()=>items.forEach(e=>e.textContent=fmtN(+e.dataset.n,e.dataset.f)),D+600)}
+  if(!s.dark){const v=visible(),i=v.indexOf(s);html+=`<footer class="sl-foot"><span><img src="${MARK}" alt="">GlobalXtreme · Internal · Confidential</span><span>${esc(SECTION[s.g][1])} · ${i<0?'not in Present':String(i+1).padStart(2,'0')+' / '+String(v.length).padStart(2,'0')}</span></footer>`}
+  el.innerHTML=html;$$('[data-a]',el).forEach((e,i)=>e.style.setProperty('--i',Math.min(i,8)));
+  if(!anim||S.anim==='off')el.classList.add('in','static');return el}
+function enter(el){if(el.classList.contains('static'))return;requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('in')))}
 function swap(host,el,dir){const old=[...host.children];host.appendChild(el);
-  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(old.length&&dir&&el.animate&&!reduce){const dx=dir>0?4:-4;
-    old.forEach(o=>{o.style.pointerEvents='none';const a=o.animate([{opacity:1,transform:'none'},{opacity:0,transform:`translateX(${-dx}%) scale(.985)`}],{duration:420,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});a.onfinish=()=>o.remove()});
-    el.animate([{opacity:0,transform:`translateX(${dx}%) scale(.985)`},{opacity:1,transform:'none'}],{duration:620,easing:'cubic-bezier(.2,.8,.2,1)'});
-  }else old.forEach(o=>o.remove());
+  const calm=S.anim==='off'||matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(old.length&&dir&&el.animate&&!calm){old.forEach(o=>{o.style.pointerEvents='none';const a=o.animate([{opacity:1},{opacity:0}],{duration:220,easing:'ease-out',fill:'forwards'});a.onfinish=()=>o.remove()});el.animate([{opacity:0},{opacity:1}],{duration:280,easing:'ease-out'})}
+  else old.forEach(o=>o.remove());
   enter(el)}
-function curSlide(){const v=visible();let s=v.find(x=>x.id===S.cur);if(!s){s=v[0];if(s)S.cur=s.id}return s}
-function renderSide(){const v=visible();let html='',lastG=null;
-  v.forEach((s,i)=>{if(s.g!==lastG){html+=`<h4>${GROUPS.find(x=>x[0]===s.g)[1]}</h4>`;lastG=s.g}
-    html+=`<button class="sitem ${s.id===S.cur?'act':''}" data-go="${s.id}"><span class="no">${i+1}</span><span>${esc(s.t)}</span><span class="dot ${hasData(s)?'ok':''}" title="${hasData(s)?'Data ready':'Needs data'}"></span></button>`});
-  if(!v.length)html='<div class="note">Semua slide disembunyikan. Buka Manage Sections untuk menampilkan lagi.</div>';
+function curSlide(){const all=ordered();let s=all.find(x=>x.id===S.cur);if(!s){s=visible()[0]||all[0];if(s)S.cur=s.id}return s}
+const EYE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></svg>';
+const EYEOFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3l18 18M10.6 6a9.8 9.8 0 0 1 1.4-.1c6 0 9.5 6.1 9.5 6.1a16 16 0 0 1-2.6 3.3M6.6 7.4C4 9.1 2.5 12 2.5 12s3.5 6.5 9.5 6.5a9 9 0 0 0 4.4-1.1"/><path d="M9.9 9.9a2.8 2.8 0 0 0 4 4"/></svg>';
+function renderSide(){const all=ordered(),v=visible();let html='<h4>Slides · klik mata untuk atur Present</h4>';
+  all.forEach(s=>{const o=isOn(s),n=v.indexOf(s);
+    html+=`<div class="sitem ${s.id===S.cur?'act':''} ${o?'':'off'}"><button class="sgo" data-go="${s.id}"><span class="no">${o?n+1:'–'}</span><span class="st">${esc(s.t)}<small>${esc(SECTION[s.g][1])}</small></span><span class="dot ${hasData(s)?'ok':''}" title="${hasData(s)?'Data ready':'Needs data'}"></span></button><button class="eye" data-eye="${s.id}" title="${o?'Tampil di Present — klik untuk sembunyikan':'Tidak tampil di Present — klik untuk tampilkan'}" aria-label="Toggle in Present">${o?EYE:EYEOFF}</button></div>`});
   $('#side').innerHTML=html;$$('#side [data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+  $$('#side [data-eye]').forEach(b=>b.onclick=()=>{const s=SLIDES.find(x=>x.id===b.dataset.eye);S.vis[s.id]=!isOn(s);afterVis()});
   const a=$('#side .act');if(a&&a.scrollIntoView&&innerWidth<=900)a.scrollIntoView({block:'nearest',inline:'center'})}
-function renderDock(){const v=visible(),s=curSlide(),i=s?v.indexOf(s):-1;
-  $('#count').textContent=v.length?`${i+1} / ${v.length}`:'0 / 0';$('#progBar').style.width=v.length?((i+1)/v.length*100)+'%':'0';
-  $('#prevBtn').disabled=i<=0;$('#nextBtn').disabled=i<0||i>=v.length-1;
+function renderDock(){const all=ordered(),v=visible(),s=curSlide(),i=s?all.indexOf(s):-1;
+  $('#count').textContent=`${i+1} / ${all.length} · ${v.length} di Present`;$('#progBar').style.width=all.length?((i+1)/all.length*100)+'%':'0';
+  $('#prevBtn').disabled=i<=0;$('#nextBtn').disabled=i<0||i>=all.length-1;
   let html='';
-  if(s&&s.top3&&C.rc[s.top3]&&C.rc[s.top3].cand.length){const r=C.rc[s.top3];const opts=sel=>r.cand.slice(0,80).map(x=>`<option value="${esc(x.cid)}" ${x.cid===sel?'selected':''}>${esc(x.cid)} · ${x.count} tiket${x.name?' · '+esc(x.name):''}</option>`).join('');
-    html+=`<span class="lbl">Pilih Top 3:</span>${[0,1,2].map(k=>`<select class="sel" data-top="${k}" aria-label="Rank ${k+1}">${opts(r.top[k]?.cid)}</select>`).join('')}<button class="btn sm" id="tAuto">Auto</button>`}
+  if(s&&s.blocks){html+=`<span class="lbl">Tampilkan:</span>${s.blocks.map(([b,l])=>`<label class="chipt"><input type="checkbox" data-blk="${s.id}.${b}" ${on(s.id,b)?'checked':''}>${esc(l)}</label>`).join('')}`}
+  if(s&&s.top3&&C.rc[s.top3]&&C.rc[s.top3].cand.length&&on(s.id,'top3')){const r=C.rc[s.top3];const opts=sel=>r.cand.slice(0,80).map(x=>`<option value="${esc(x.cid)}" ${x.cid===sel?'selected':''}>${esc(x.cid)} · ${x.count} tiket${x.name?' · '+esc(x.name):''}</option>`).join('');
+    html+=`<span class="lbl" style="margin-left:6px">Top 3:</span>${[0,1,2].map(k=>`<select class="sel" data-top="${k}" aria-label="Rank ${k+1}">${opts(r.top[k]?.cid)}</select>`).join('')}<button class="btn sm" id="tAuto">Auto</button>`}
   if(editing&&s)html+=`<button class="btn sm danger" id="tResetText">Reset text on this slide</button>`;
   $('#tools').innerHTML=html;
+  $$('#tools [data-blk]').forEach(c=>c.onchange=()=>{S.blocks[c.dataset.blk]=c.checked;save();renderStage(0);renderDock()});
   $$('#tools [data-top]').forEach(sel=>sel.onchange=()=>{const rep=s.top3,r=C.rc[rep];const cur=r.top.map(x=>x.cid);cur[+sel.dataset.top]=sel.value;S.edits['top3.'+rep]=[...new Set(cur)];save();refresh(0)});
   const ta=$('#tAuto');if(ta)ta.onclick=()=>{delete S.edits['top3.'+s.top3];save();refresh(0)};
   const tr=$('#tResetText');if(tr)tr.onclick=()=>{$$('[data-edit]',$('#stage')).forEach(e=>delete S.edits['t.'+e.dataset.edit]);save();refresh(0)}}
@@ -921,13 +890,11 @@ function renderStage(dir=0){const st=$('#stage'),s=curSlide();if(!s){st.innerHTM
 function renderNotice(){const chip=(k,l)=>`<span class="chip"><i class="${DS[k]?'ok':''}"></i>${l}: ${DS[k]?esc(DS[k].name):'belum ada'}</span>`;
   $('#notice').innerHTML=`${chip('cs','Customer Support')}${DS.vip?chip('vip','VIP'):`<span class="chip"><i class="${C.vip?'ok':''}"></i>VIP: ${C.vip?'dari kolom VIP flag':'belum ada'}</span>`}${chip('rc','Repeat Complaint')}<span>Periode: <b>${esc(C.long)}</b></span>`}
 function refresh(dir=0){buildContext();renderSide();renderNotice();renderStage(dir);renderDock();save()}
-function go(id,dir){const v=visible(),a=v.findIndex(x=>x.id===S.cur),b=v.findIndex(x=>x.id===id);S.cur=id;save();renderSide();renderStage(dir??(b>=a?1:-1));renderDock();if(presenting)presRender(dir??(b>=a?1:-1))}
-function step(d){const v=visible(),s=curSlide();if(!s)return;const i=v.indexOf(s)+d;if(i>=0&&i<v.length)go(v[i].id,d)}
+function go(id,dir){const L=presenting?visible():ordered(),a=L.findIndex(x=>x.id===S.cur),b=L.findIndex(x=>x.id===id);const d=dir??(b>=a?1:-1);S.cur=id;save();renderSide();renderStage(d);renderDock();if(presenting)presRender(d)}
+function step(d){const L=presenting?visible():ordered(),s=curSlide();if(!s)return;let i=L.indexOf(s);if(i<0){i=d>0?-1:L.length}i+=d;if(i>=0&&i<L.length)go(L[i].id,d)}
 $('#prevBtn').onclick=()=>step(-1);$('#nextBtn').onclick=()=>step(1);
-/* chart-type toggle (inside slides) */
-function onSeg(e){const b=e.target.closest('[data-ct]');if(!b)return;e.stopPropagation();S.chart[b.dataset.sid]=b.dataset.ct;save();const host=b.closest('.stage,.pstage');const s=curSlide();const el=makeSlide(s);host.innerHTML='';host.appendChild(el);if(host.id==='pstage')el.style.cssText=presStyle;enter(el);applyEditing()}
+function onSeg(e){const b=e.target.closest('[data-ct]');if(!b)return;e.stopPropagation();S.chart[b.dataset.sid]=b.dataset.ct;save();renderStage(0)}
 $('#stage').addEventListener('click',onSeg);
-/* swipe */
 function swipe(node,fn){let x0=null,y0=null;node.addEventListener('touchstart',e=>{const t=e.touches[0];x0=t.clientX;y0=t.clientY},{passive:true});node.addEventListener('touchend',e=>{if(x0==null)return;const t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;x0=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.4)fn(dx<0?1:-1)},{passive:true})}
 swipe($('#stage'),d=>step(d));
 
@@ -969,20 +936,24 @@ function closeModal(id){$('#'+id).classList.add('hidden')}
 $$('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
 $$('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id)}));
 
-/* ---------- Manage Sections ---------- */
-function renderManage(){
-  $('#mList').innerHTML=GROUPS.map(([g,label])=>{const list=SLIDES.filter(s=>s.g===g);return `<div class="mgroup"><h4>${label}</h4><span class="mact"><button class="btn sm" data-gon="${g}">Show group</button><button class="btn sm" data-goff="${g}">Hide group</button></span></div><div class="mlist">${list.map(s=>`<label class="mitem"><input type="checkbox" class="switch" data-vis="${s.id}" ${S.vis[s.id]!==false?'checked':''}><span>${esc(s.t)}<small>${S.vis[s.id]!==false?'Visible':'Hidden'}</small></span></label>`).join('')}</div>`}).join('');
-  $$('[data-vis]').forEach(c=>c.onchange=()=>{S.vis[c.dataset.vis]=c.checked;afterVis()});
-  $$('[data-gon]').forEach(b=>b.onclick=()=>{SLIDES.filter(s=>s.g===b.dataset.gon).forEach(s=>S.vis[s.id]=true);afterVis()});
-  $$('[data-goff]').forEach(b=>b.onclick=()=>{SLIDES.filter(s=>s.g===b.dataset.goff).forEach(s=>S.vis[s.id]=false);afterVis()})}
-function afterVis(){save();renderManage();renderSide();renderStage(0);renderDock()}
+/* ---------- Customize Present ---------- */
+function renderManage(){const all=ordered();
+  $('#animSel').value=S.anim||'subtle';
+  $('#mList').innerHTML=`<div class="olist">${all.map((s,i)=>{const o=isOn(s);return `<div class="orow ${o?'':'off'}"><input type="checkbox" class="switch" data-vis="${s.id}" ${o?'checked':''} aria-label="Show ${esc(s.t)} in Present"><div class="oname"><b>${esc(s.t)}</b><small>${esc(SECTION[s.g][1])}${s.off&&S.vis[s.id]===undefined?' · opsional':''}</small>${s.blocks?`<div class="oblk">${s.blocks.map(([b,l])=>`<label class="chipt"><input type="checkbox" data-blk="${s.id}.${b}" ${on(s.id,b)?'checked':''} ${o?'':'disabled'}>${esc(l)}</label>`).join('')}</div>`:''}</div><div class="omove"><button class="btn sm" data-up="${s.id}" ${i===0?'disabled':''} aria-label="Move up">↑</button><button class="btn sm" data-dn="${s.id}" ${i===all.length-1?'disabled':''} aria-label="Move down">↓</button></div></div>`}).join('')}</div>`;
+  $$('#mList [data-vis]').forEach(c=>c.onchange=()=>{S.vis[c.dataset.vis]=c.checked;afterVis()});
+  $$('#mList [data-blk]').forEach(c=>c.onchange=()=>{S.blocks[c.dataset.blk]=c.checked;afterVis()});
+  const mv=(id,d)=>{const ids=ordered().map(x=>x.id),i=ids.indexOf(id),j=i+d;if(j<0||j>=ids.length)return;[ids[i],ids[j]]=[ids[j],ids[i]];S.order=ids;afterVis()};
+  $$('#mList [data-up]').forEach(b=>b.onclick=()=>mv(b.dataset.up,-1));$$('#mList [data-dn]').forEach(b=>b.onclick=()=>mv(b.dataset.dn,1));
+  $('#mSummary').textContent=`${visible().length} dari ${all.length} slide tampil di Present & Print.`}
+function afterVis(){save();if(!$('#manageModal').classList.contains('hidden'))renderManage();renderSide();renderStage(0);renderDock()}
 $('#manageBtn').onclick=()=>{renderManage();openModal('manageModal')};
 $('#mShowAll').onclick=()=>{SLIDES.forEach(s=>S.vis[s.id]=true);afterVis()};
 $('#mHideAll').onclick=()=>{SLIDES.forEach(s=>S.vis[s.id]=false);afterVis()};
-$('#mReset').onclick=()=>{S.vis={};afterVis()};
-$('#mExport').onclick=()=>{const vis={};SLIDES.forEach(s=>vis[s.id]=S.vis[s.id]!==false);const b=new Blob([JSON.stringify({version:3,visibility:vis,rules:S.rc,charts:S.chart},null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='gxcs-report-settings.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+$('#mReset').onclick=()=>{S.vis={};S.order=[];S.blocks={};afterVis()};
+$('#animSel').onchange=()=>{S.anim=$('#animSel').value;save();renderStage(0)};
+$('#mExport').onclick=()=>{const vis={};SLIDES.forEach(s=>vis[s.id]=isOn(s));const b=new Blob([JSON.stringify({version:4,visibility:vis,order:ordered().map(s=>s.id),blocks:S.blocks,anim:S.anim,rules:S.rc,charts:S.chart},null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='gxcs-present-settings.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)};
 $('#mImport').onclick=()=>$('#mFile').click();
-$('#mFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());const v=d.visibility||d;SLIDES.forEach(s=>{if(s.id in v)S.vis[s.id]=v[s.id]!==false});if(d.rules)S.rc={...DEF_RC,...d.rules};if(d.charts)S.chart=d.charts;afterVis();refresh(0)}catch(err){alert('File settings tidak valid.')}e.target.value=''};
+$('#mFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());const v=d.visibility||{};SLIDES.forEach(s=>{if(s.id in v)S.vis[s.id]=v[s.id]!==false});if(Array.isArray(d.order))S.order=d.order;if(d.blocks)S.blocks=d.blocks;if(d.anim)S.anim=d.anim;if(d.rules)S.rc={...DEF_RC,...d.rules};if(d.charts)S.chart=d.charts;afterVis();refresh(0)}catch(err){alert('File settings tidak valid.')}e.target.value=''};
 
 /* ---------- period ---------- */
 function syncPeriod(){$('#period').value=S.period.mode;$('#pFrom').value=S.period.from||'';$('#pTo').value=S.period.to||'';const c=S.period.mode==='custom';$('#pFrom').classList.toggle('hidden',!c);$('#pTo').classList.toggle('hidden',!c)}
@@ -993,7 +964,7 @@ $('#pFrom').onchange=()=>{S.period.from=$('#pFrom').value;refresh(0)};$('#pTo').
 let presenting=false,presStyle='';
 function presSize(){const W=innerWidth,H=innerHeight;const host=$('#pstage');if(W<760||H>W){host.style.width=W+'px';host.style.height=H+'px';host.style.borderRadius='0'}else{const k=Math.min(W/16,H/9);host.style.width=16*k+'px';host.style.height=9*k+'px';host.style.borderRadius='0'}}
 function presRender(dir=0){const s=curSlide(),host=$('#pstage');if(!s)return;presSize();const el=makeSlide(s,{mode:'presenting'});swap(host,el,dir);const v=visible();$('#pCount').textContent=`${v.indexOf(s)+1} / ${v.length}`}
-function presStart(){if(!visible().length){alert('Semua slide disembunyikan. Aktifkan minimal satu slide di Manage Sections.');return}presenting=true;document.body.style.overflow='hidden';$('#pres').classList.remove('hidden');try{const p=$('#pres').requestFullscreen?.();if(p&&p.catch)p.catch(()=>{})}catch(e){}$('#pstage').innerHTML='';presRender(0)}
+function presStart(){const v=visible();if(!v.length){alert('Belum ada slide yang dipilih untuk Present. Aktifkan di Customize Present.');return}if(!v.some(x=>x.id===S.cur))S.cur=v[0].id;presenting=true;document.body.style.overflow='hidden';$('#pres').classList.remove('hidden');try{const p=$('#pres').requestFullscreen?.();if(p&&p.catch)p.catch(()=>{})}catch(e){}$('#pstage').innerHTML='';presRender(0)}
 function presStop(){presenting=false;document.body.style.overflow='';$('#pres').classList.add('hidden');$('#pstage').innerHTML='';try{if(document.fullscreenElement){const p=document.exitFullscreen();if(p&&p.catch)p.catch(()=>{})}}catch(e){}renderSide();renderStage(0);renderDock()}
 function presStep(d){step(d)}
 $('#presentBtn').onclick=presStart;
@@ -1010,8 +981,8 @@ document.addEventListener('keydown',e=>{
   if(open)return;
   if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();step(1)}
   if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();step(-1)}
-  if(e.key==='Home'){const v=visible();if(v.length)go(v[0].id,-1)}
-  if(e.key==='End'){const v=visible();if(v.length)go(v[v.length-1].id,1)}
+  if(e.key==='Home'){const v=presenting?visible():ordered();if(v.length)go(v[0].id,-1)}
+  if(e.key==='End'){const v=presenting?visible():ordered();if(v.length)go(v[v.length-1].id,1)}
 });
 
 /* ---------- print ---------- */

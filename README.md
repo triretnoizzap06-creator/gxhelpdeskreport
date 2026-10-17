@@ -1,6 +1,6 @@
 # GX CS Report — Helpdesk CSO & VIP presentation
 
-A static, single-file presentation website (`index.html`) for the GlobalXtreme Customer Service After Sales meeting. It turns ticket exports into slides: one chart or key insight per slide, with an opening cover and a closing "Thank you" slide.
+A static, single-file presentation website (`index.html`) for the GlobalXtreme Customer Service After Sales meeting. It turns ticket exports into a compact deck (12 slides by default): cover, Customer Support overview, resolution & no response, issue type/sub area/incident, top complaint categories, team & agent performance, repeat complaints (CS), VIP overview, VIP handling & top issues, top VIP groups, repeat complaints (VIP), and a closing "Thank you" slide. An optional "Agent volume detail" slide is off by default.
 
 Everything runs in the browser. Imported files are not uploaded anywhere.
 
@@ -31,7 +31,7 @@ Imported rows are kept in the browser (IndexedDB), so a reload keeps the report.
 ## Using it
 
 - **Period**: All imported dates, Last 7 days of data, Latest month in data, or a custom range. It applies to all three data sets.
-- **Manage Sections**: show or hide individual slides or whole groups. Hidden slides are skipped in the slide list, Present and Print/PDF. Settings persist in the browser; Export/Import Settings moves them to another device.
+- **Customize Present**: choose which slides appear in Present and Print/PDF (switch per slide, or the eye icon in the slide list), change their order with ↑↓, and turn individual parts of a slide on or off (for example KPI tiles, daily volume, week table). The chips under the preview do the same for the current slide. Animation can be set to *Halus* (subtle fade, charts grow once) or *Tanpa animasi*. Settings persist in the browser; Export/Import Settings moves them to another device. Hidden slides stay viewable in the editor.
 - **Chart toggle**: Bar/Line or Bar/Pie on chart slides (hidden while presenting).
 - **Edit text**: edit slide takeaways, Top 3 notes and VIP group descriptions in place.
 - **Top 3 repeat**: choose the three CIDs from the dropdowns below the slide, or Auto.

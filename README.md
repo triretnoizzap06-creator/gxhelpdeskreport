@@ -2,9 +2,9 @@
 
 A static, single-file presentation website (`index.html`) for the GlobalXtreme Customer Service After Sales meeting. It turns ticket exports into an executive deck titled **Helpdesk Report**. Every content slide shows a section tab (Customer Support Report / VIP Report) at the top, so there are no separate divider slides.
 
-- **Customer Support Report** (7 slides): Overview · Handling Team Distribution (share + team detail) · Resolution & No Response · Case Composition & Top Complaints · Agent Performance (handling + monitoring) · Best Performance (handling + monitoring) · Repeat Complaints (Ticket & Work Order).
+- **Customer Support Report** (7 slides): No Response Analysis & Resolution Rate Impact (before vs after H+1) · Customer Support Snapshot · Handling Team Distribution (share + team detail) · Case Composition & Top Complaints · Agent Performance (handling + monitoring) · Best Performance (handling + monitoring) · Repeat Complaints (Ticket & Work Order).
 - **VIP Report** (5 slides): VIP Overview · VIP Handling Team Distribution · VIP Top Issues & Top Groups · VIP Best Performance · VIP Repeat Complaints.
-- Optional, off by default: Handling/Monitoring Agents — Ranked tables, VIP Agent Performance, VIP Handling Agents — Ranked.
+- Optional, off by default: Resolution & No Response (ring view), Handling/Monitoring Agents — Ranked tables, VIP Agent Performance, VIP Handling Agents — Ranked.
 
 Titles and charts are in English; every content slide has a **Key highlights** strip in Bahasa Indonesia, generated from the data and editable.
 
@@ -22,17 +22,22 @@ Columns are detected automatically and can be changed under **Column mapping**. 
 
 Imported rows are kept in the browser (IndexedDB), so a reload keeps the report. **Delete all data & edits** clears it.
 
-## Calculation rules
+## Calculation rules (GX CS Connect · Analytics Formulas)
 
-- Eligible case: has a created date, Category and Problem. Canceled tickets are removed and duplicate ticket numbers are counted once. In a combined file, VIP = Yes rows go to VIP and are excluded from Customer Support.
-- Official solved = status Solved/Closed/Resolved (and a first response, if that column is mapped).
-- No response: status containing "No Response". BC 2 → *No Resp BC2*, otherwise → *No Resp After Connected*.
-- H+1 reclassification: no-response case whose investigation outcome is Solved / Solved by Our Side / traffic normal. Unresolved stays unresolved.
-- Adjusted resolution rate = (official solved + reclassified) ÷ total cases.
-- Weeks: 7-day blocks from the first day. A tail of fewer than 4 days that ends on the last day of a month is merged into the previous week.
-- Team: taken from the agent prefix (HD → Helpdesk, or Account Manager for VIP; CC → Contact Center; CSO → CSO Lobby; Disp → Dispatcher; CTSO; AI). Falls back to the Sub Division column.
-- Daily chart colours: peak ≥ 1.5 × daily average, above average, below average.
-- Repeat complaint (same rules as repeatcomplainthd.vercel.app): filter by Via Origin (CS = Sales Representative, VIP = VIP WhatsApp Group), exclude Activation for CS, Type = Complaint only, skip Canceled, exclude administrative categories, dedupe tickets, then rank CIDs with 2+ tickets by count → number of different problems → latest ticket. Rules are editable under Import data → Repeat Complaint → Filter rules.
+- **Eligible ticket**: Category and Problem Type both filled, created in the selected period, duplicates counted once. Tickets whose Monitor By / Handle By / Reporter is an excluded user (default `DotAI, AI` — editable in Import data → Customer Support → Analytics rules) are not counted.
+- **Split by VIP flag**: VIP = No (or empty) → Customer Support Report; VIP = Yes → VIP Report. A separate VIP file can also be imported.
+- **Solved resmi** = status Solved **and** a first response exists (when the First Response column is mapped).
+- **Official rate** = Solved resmi ÷ Total Cases (kotak "Tanpa Investigasi H+1").
+- **Identified Resolved / Cases Solved** = Solved resmi + No Response BC2 / After Connected whose Investigation outcome is Solved or Solved by Our Side. **Adj. / Overall Resolution Rate** = that ÷ Total Cases (target ≥90%).
+- **No Response (after H+1)** = BC2 + After Connected not concluded Solved / Solved by Our Side (Unresolved stays Genuine No Response). Reclassified = before − after.
+- **Non Investigated Rate** = status Solved ÷ CS tickets without an Investigation note.
+- **Resolved per group** (team, agent, sub area, week, VIP): with Investigation → outcome Solved or Solved by Our Side; without Investigation → status Solved.
+- **Week Performance**: After Investigation % = (Solved + Solved by Our Side) ÷ investigated tickets that week; Overall % = resolved ÷ total.
+- **Handling Team** = Sub Division of the Handle By agent (column "Handle By Sub Division"); no handler or no Sub Division → Unassigned. If the column is absent, the agent prefix (HD/CC/CSO/Disp/CTSO) is used as a fallback. No Resp in team/agent tables = raw status BC2 + After Connected.
+- **AFR** = minutes from ticket created to first take Monitor By (AFR Taken At / AFR minutes). Per agent = AFR Taken By (first-take agent), not Handle By; first takes by DotAI/AI are excluded; agents without a first take show "—".
+- **VIP**: Total Solved by the investigation rule; Hold / No Resp = Total − Solved; one Resolution Rate (target ≥95%).
+- **Top 5 Corporate Groups** = tickets with a company name, VIP flag ignored (CS + VIP).
+- **Repeat complaints** (own import, Trouble Ticket Summary): CIDs with 2+ tickets, severity ≥6 HIGH, ≥5 MONITOR, ≥3 MEDIUM, otherwise LOW; "Resolved" only when every ticket of the CID is solved/closed.
 
 ## Using it
 

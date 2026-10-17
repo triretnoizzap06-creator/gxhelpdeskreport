@@ -62,3 +62,12 @@ Framework preset **Other**, no build command, output directory `.`. Upload the c
 - SheetJS 0.18.5 is loaded from jsDelivr, so importing needs an internet connection.
 - Data and edits live in each viewer's browser and are not shared between users. Each viewer imports the files themselves.
 - Validate figures against GX CS Connect before using them as an official report.
+
+
+## Slide order
+- Drag a slide in the sidebar list (⋮⋮ grip) to move it, or use ↑↓ in **Customize Present**. The order is saved in the browser and included in Export settings.
+
+## H+1 investigation outcome
+- The outcome column is detected by name (invest / H+1 / outcome) **or by its values** ("Solved", "Solved by Our Side", "Solved By Our-Side", "Unresolved", "Belum selesai"…).
+- If the outcome lives on another sheet of the same workbook, it is joined to the main sheet by ticket number automatically.
+- **Data check** shows "Kolom H+1 dipakai: <column>". If it warns that none was found, set it manually in Column mapping → *Investigation outcome (H+1)*.

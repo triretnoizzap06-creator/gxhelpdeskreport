@@ -45,7 +45,7 @@ input[type=date].sel{padding:6px 10px}
 .side{padding:14px 10px 30px;overflow:auto;max-height:calc(100vh - 57px);position:sticky;top:57px;border-right:1px solid var(--line)}
 .side h4{margin:16px 10px 6px;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
 .side h4:first-child{margin-top:4px}
-.sitem{display:flex;align-items:center;gap:2px;border-radius:10px;transition:background .15s}.sgo{flex:1;min-width:0;display:flex;gap:9px;align-items:center;text-align:left;border:0;background:none;padding:7px 4px 7px 10px;font-size:13px;font-weight:500;color:var(--ink)}.sitem .st{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sitem .st small{display:block;font-size:10.5px;color:var(--muted);font-weight:500}.eye{border:0;background:none;color:var(--muted);width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex-shrink:0}.eye:hover{background:var(--line);color:var(--ink)}.eye svg{width:17px;height:17px}.sitem.off .sgo{opacity:.45}.sitem.off .eye{color:#FF9F0A}
+.sitem{display:flex;align-items:center;gap:2px;border-radius:10px;transition:background .15s}.sgo{flex:1;min-width:0;display:flex;gap:9px;align-items:center;text-align:left;border:0;background:none;padding:7px 4px 7px 10px;font-size:13px;font-weight:500;color:var(--ink)}.sitem .st{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sitem .st small{display:block;font-size:10.5px;color:var(--muted);font-weight:500}.eye{border:0;background:none;color:var(--muted);width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex-shrink:0}.eye:hover{background:var(--line);color:var(--ink)}.eye svg{width:17px;height:17px}.sitem.off .sgo{opacity:.45}.grip{cursor:grab;color:var(--muted);font-size:11px;letter-spacing:-2px;padding:0 2px 0 6px;user-select:none;opacity:.5}.sitem:hover .grip{opacity:1}.sitem.dragging{opacity:.4}.sitem.dropb{box-shadow:inset 0 2px 0 #F5C518}.sitem.dropa{box-shadow:inset 0 -2px 0 #F5C518}.sitem.off .eye{color:#FF9F0A}
 .sitem:hover{background:var(--hover)}
 .sitem.act{background:var(--ytint)}.sitem.act .sgo{font-weight:700}
 .sitem .no{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:18px}
@@ -730,25 +730,33 @@ function detect(headers,fields,rows){const map={},used=new Set();for(const f of 
     if(!map.team){const c=headers.filter(h=>free(h)&&/sub ?div/.test(norm(h)));take('team',c.find(h=>/handl/.test(norm(h)))||c.find(h=>!/monit/.test(norm(h))))}
     if(!map.monTeam){take('monTeam',headers.find(h=>free(h)&&/sub ?div/.test(norm(h))&&/monit/.test(norm(h))))}
     if(!map.inv)take('inv',headers.find(h=>free(h)&&/invest|h ?1|outcome/.test(norm(h))));
-    if(!map.inv&&rows){let best=null,bs=0;headers.forEach((h,j)=>{if(!free(h))return;let sc=0;for(const r of rows.slice(0,3000)){const v=norm(r[j]);if(v==='solved by our side'||v==='unresolved')sc++}if(sc>bs){bs=sc;best=h}});if(bs>0)take('inv',best)}
+    if(!map.inv&&rows){let best=null,bs=0;headers.forEach((h,j)=>{if(!free(h))return;let sc=0;for(const r of rows.slice(0,5000)){if(isOutcomeVal(r[j]))sc++}if(sc>bs){bs=sc;best=h}});if(bs>0)take('inv',best)}
     if(!map.vip)take('vip',headers.find(h=>free(h)&&/\bvip\b/.test(norm(h))&&!/group|handler|name/.test(norm(h))));
     if(!map.fr)take('fr',headers.find(h=>free(h)&&/first response/.test(norm(h))&&!/afr|avg|minute/.test(norm(h))));
   }
   if(fields===RC_FIELDS){if(!map.kendala)take('kendala',headers.find(h=>free(h)&&/kendala|root cause|cause/.test(norm(h))));if(!map.action)take('action',headers.find(h=>free(h)&&/action|tindakan|penanganan|resolution|perbaikan/.test(norm(h))))}
   return map}
+function sheetTable(rows){rows=rows.filter(r=>r.some(x=>String(x??'').trim()!==''));if(rows.length<2)return null;let hi=0,hb=-1;rows.slice(0,10).forEach((r,i)=>{const c=r.filter(x=>String(x??'').trim()!=='').length;if(c>hb){hb=c;hi=i}});
+  const headers=rows[hi].map((h,i)=>String(h??'').trim()||('Column '+(i+1)));return {headers,rows:rows.slice(hi+1).map(r=>headers.map((_,j)=>{const v=r[j];return v instanceof Date?v.toISOString():(v??'')}))}}
 async function readTable(file){
   if(!window.XLSX)throw new Error('Pembaca Excel belum termuat. Cek koneksi internet lalu coba lagi.');
   let wb;
   if(/\.csv$/i.test(file.name)){let t=await file.text();t=t.replace(/^﻿/,'');const first=t.split(/\r?\n/,1)[0];if(first.split(';').length>first.split(',').length&&!/^sep=/i.test(first))t='sep=;\n'+t;wb=XLSX.read(t,{type:'string',raw:true})}
   else wb=XLSX.read(await file.arrayBuffer(),{type:'array'});
-  let best=null;
-  for(const n of wb.SheetNames){const r=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:'',blankrows:false});if(!best||r.length>best.rows.length)best={sheet:n,rows:r}}
-  const rows=(best?best.rows:[]).filter(r=>r.some(x=>String(x??'').trim()!==''));
-  if(rows.length<2)throw new Error('File tidak berisi baris data.');
-  let hi=0,hb=-1;rows.slice(0,10).forEach((r,i)=>{const c=r.filter(x=>String(x??'').trim()!=='').length;if(c>hb){hb=c;hi=i}});
-  const headers=rows[hi].map((h,i)=>String(h??'').trim()||('Column '+(i+1)));
-  const data=rows.slice(hi+1).map(r=>headers.map((_,j)=>{const v=r[j];return v instanceof Date?v.toISOString():(v??'')}));
-  return {name:file.name,sheet:best.sheet,headers,rows:data};
+  const sheets=wb.SheetNames.map(n=>({name:n,t:sheetTable(XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:'',blankrows:false}))})).filter(x=>x.t);
+  if(!sheets.length)throw new Error('File tidak berisi baris data.');
+  sheets.sort((a,b)=>b.t.rows.length-a.t.rows.length);
+  const main=sheets[0],T=main.t;const out={name:file.name,sheet:main.name,headers:T.headers.slice(),rows:T.rows,joined:[]};
+  /* join H+1 investigation outcome from another sheet (matched by ticket number) */
+  const tkIdx=T.headers.findIndex(h=>/^(ticket number|ticket no|ticket id|no tiket|ticket|case id|case number|ticket code|nomor tiket)$/.test(norm(h)));
+  const hasOutcome=T.headers.some((h,j)=>T.rows.slice(0,5000).some(r=>isOutcomeVal(r[j])));
+  if(tkIdx>=0&&!hasOutcome){const keys=new Set(T.rows.map(r=>String(r[tkIdx]).trim()).filter(Boolean));
+    for(const sh of sheets.slice(1)){const H=sh.t.headers,R=sh.t.rows;let kj=-1,best=0;
+      H.forEach((h,j)=>{let c=0;for(const r of R.slice(0,3000))if(keys.has(String(r[j]).trim()))c++;if(c>best){best=c;kj=j}});
+      if(kj<0||best<1)continue;let oj=-1,ob=0;H.forEach((h,j)=>{if(j===kj)return;let c=0;for(const r of R.slice(0,3000))if(isOutcomeVal(r[j])||/^solved$/i.test(String(r[j]).trim()))c++;if(c>ob&&R.slice(0,3000).some(r=>isOutcomeVal(r[j]))){ob=c;oj=j}});
+      if(oj<0)continue;const m=new Map();for(const r of R){const k=String(r[kj]).trim();if(k&&String(r[oj]).trim())m.set(k,r[oj])}
+      const col='Investigation Outcome ('+sh.name+')';out.headers.push(col);out.rows=out.rows.map(r=>r.concat([m.get(String(r[tkIdx]).trim())??'']));out.joined.push(`${col}: ${m.size} tiket`);break}}
+  return out;
 }
 
 /* ---------- analytics (Customer Support & VIP) — GX CS Connect Analytics Formulas ---------- */
@@ -777,7 +785,8 @@ function probType(p,cat){const s=String(p||'')+' ';
   return issueType(cat)==='Internet'?'Internet Problem':(issueType(cat)==='Administration'?'Administration':(cat||'Other'));
 }
 /* Investigation outcome: Solved / Solved by Our Side = resolved; Unresolved = not resolved */
-function invResolved(v){const s=norm(v);return s==='solved'||s==='solved by our side'||s==='solved by ourside'}
+function invResolved(v){const s=norm(v);if(!s||/unresolv|unsolv|not solved|belum|tidak/.test(s))return false;return /^solved\b|^resolved\b|^selesai\b/.test(s)}
+const isOutcomeVal=v=>{const s=norm(v);return /^solved (by|from) (our|us)|^solved our ?side|^unresolved|^not resolved|^belum selesai/.test(s)};
 const statusSolved=s=>/^(solved|sudah selesai|selesai)$/i.test(String(s||'').trim())||/^solved\b/i.test(String(s||'').trim());
 const exclList=()=>String(S.excl??'DotAI, AI').split(',').map(norm).filter(Boolean);
 function prepMain(ds,kind,fromCs){
@@ -1262,10 +1271,18 @@ function swap(host,el,dir){const old=[...host.children];host.appendChild(el);
 function curSlide(){const all=ordered();let s=all.find(x=>x.id===S.cur);if(!s){s=visible()[0]||all[0];if(s)S.cur=s.id}return s}
 const EYE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></svg>';
 const EYEOFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3l18 18M10.6 6a9.8 9.8 0 0 1 1.4-.1c6 0 9.5 6.1 9.5 6.1a16 16 0 0 1-2.6 3.3M6.6 7.4C4 9.1 2.5 12 2.5 12s3.5 6.5 9.5 6.5a9 9 0 0 0 4.4-1.1"/><path d="M9.9 9.9a2.8 2.8 0 0 0 4 4"/></svg>';
-function renderSide(){const all=ordered(),v=visible();let html='<h4>Slides · klik mata untuk atur Present</h4>';
+function renderSide(){const all=ordered(),v=visible();let html='<h4>Slides · drag untuk ubah urutan · mata = tampil di Present</h4>';
   all.forEach(s=>{const o=isOn(s),n=v.indexOf(s);
-    html+=`<div class="sitem ${s.id===S.cur?'act':''} ${o?'':'off'}"><button class="sgo" data-go="${s.id}"><span class="no">${o?n+1:'–'}</span><span class="st">${esc(s.t)}<small>${esc(SECTION[s.g][1])}</small></span><span class="dot ${hasData(s)?'ok':''}" title="${hasData(s)?'Data ready':'Needs data'}"></span></button><button class="eye" data-eye="${s.id}" title="${o?'Tampil di Present — klik untuk sembunyikan':'Tidak tampil di Present — klik untuk tampilkan'}" aria-label="Toggle in Present">${o?EYE:EYEOFF}</button></div>`});
+    html+=`<div class="sitem ${s.id===S.cur?'act':''} ${o?'':'off'}" draggable="true" data-drag="${s.id}"><span class="grip" title="Drag untuk ubah urutan" aria-hidden="true">⋮⋮</span><button class="sgo" data-go="${s.id}"><span class="no">${o?n+1:'–'}</span><span class="st">${esc(s.t)}<small>${esc(SECTION[s.g][1])}</small></span><span class="dot ${hasData(s)?'ok':''}" title="${hasData(s)?'Data ready':'Needs data'}"></span></button><button class="eye" data-eye="${s.id}" title="${o?'Tampil di Present — klik untuk sembunyikan':'Tidak tampil di Present — klik untuk tampilkan'}" aria-label="Toggle in Present">${o?EYE:EYEOFF}</button></div>`});
   $('#side').innerHTML=html;$$('#side [data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+  let dragId=null;
+  $$('#side [data-drag]').forEach(el=>{
+    el.addEventListener('dragstart',e=>{dragId=el.dataset.drag;el.classList.add('dragging');try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',dragId)}catch(_){}});
+    el.addEventListener('dragend',()=>{el.classList.remove('dragging');$$('#side .dropb,#side .dropa').forEach(x=>x.classList.remove('dropb','dropa'))});
+    el.addEventListener('dragover',e=>{if(!dragId||dragId===el.dataset.drag)return;e.preventDefault();const r=el.getBoundingClientRect(),after=e.clientY>r.top+r.height/2;el.classList.toggle('dropa',after);el.classList.toggle('dropb',!after)});
+    el.addEventListener('dragleave',()=>el.classList.remove('dropb','dropa'));
+    el.addEventListener('drop',e=>{e.preventDefault();const tgt=el.dataset.drag;if(!dragId||dragId===tgt)return;const r=el.getBoundingClientRect(),after=e.clientY>r.top+r.height/2;
+      const ids=ordered().map(x=>x.id).filter(x=>x!==dragId);let i=ids.indexOf(tgt)+(after?1:0);ids.splice(i,0,dragId);S.order=ids;dragId=null;afterVis()})});
   $$('#side [data-eye]').forEach(b=>b.onclick=()=>{const s=SLIDES.find(x=>x.id===b.dataset.eye);S.vis[s.id]=!isOn(s);afterVis()});
   const a=$('#side .act');if(a&&a.scrollIntoView&&innerWidth<=900)a.scrollIntoView({block:'nearest',inline:'center'})}
 function renderDock(){const all=ordered(),v=visible(),s=curSlide(),i=s?all.indexOf(s):-1;
@@ -1311,7 +1328,7 @@ function dataCheck(ds,k){if(!ds||k==='rc')return '';const I=idx(ds,MAIN_FIELDS),
    <div>${fInt(n)} baris · ${fInt(noCat)} tanpa Category/Problem (tidak dihitung) · ${fInt(ex)} user dikecualikan</div>
    ${I.vip>=0?`<div>VIP = Yes: <b>${fInt(vy)}</b> → ${k==='cs'?'VIP Report':'dipakai'} · VIP = No/kosong: <b>${fInt(vn)}</b> → ${k==='cs'?'Customer Support':'diabaikan'}</div>`:`<div class="warn">Kolom VIP belum dimapping — ${k==='cs'?'semua baris dianggap Customer Support':'semua baris dianggap VIP'}.</div>`}
    <div>Status Solved: ${fInt(sol)}${I.fr>=0?` · dengan first response: ${fInt(fr)} (= Solved resmi)`:' · <span class="warn">kolom First Response belum dimapping</span>'} · No Resp BC2/After Conn.: ${fInt(nr)}</div>
-   <div>Investigation outcome: ${oc}</div></div>`}
+   <div>Kolom H+1 dipakai: <b>${esc(ds.map.inv||'— belum ada')}</b> · isi: ${oc}</div>${!ds.map.inv?'<div class="warn">Hasil investigasi H+1 belum terbaca, jadi before = after. Pilih kolomnya di Column mapping → "Investigation outcome (H+1)".</div>':''}</div>`}
 
 /* ---------- import ---------- */
 const DSINFO={cs:{t:'Customer Support data',tag:'HELPDESK CSO',d:'Export monitoring Helpdesk CSO (CSV/XLSX). Wajib: Created, Category, Problem, Status. Untuk slide agent, map juga Monitored By & Handled By.'},
@@ -1321,7 +1338,7 @@ function renderImport(){
   $('#dsgrid').innerHTML=['cs','vip','rc'].map(k=>{const ds=DS[k],F=FIELDS_OF(k),info=DSINFO[k];const miss=ds?F.filter(f=>f.req&&!ds.map[f.k]).map(f=>f.l):[];
     return `<div class="dscard"><div><span class="tag">${info.tag}</span></div><h3>${info.t}</h3><div class="sub">${info.d}</div>
      <div class="drop"><input type="file" accept=".csv,.xlsx,.xls" data-file="${k}" aria-label="${info.t}"></div>
-     <div class="fstatus ${ds?(miss.length?'err':'ok'):''}" id="st-${k}">${ds?`${esc(ds.name)} · ${fInt(ds.rows.length)} rows · ${ds.headers.length} columns${miss.length?'<br>Kolom wajib belum dimapping: '+esc(miss.join(', ')):''}`:'Belum ada file.'}</div>
+     <div class="fstatus ${ds?(miss.length?'err':'ok'):''}" id="st-${k}">${ds?`${esc(ds.name)} · ${fInt(ds.rows.length)} rows · ${ds.headers.length} columns${ds.joined&&ds.joined.length?'<br>Digabung dari sheet lain: '+esc(ds.joined.join(', ')):''}${miss.length?'<br>Kolom wajib belum dimapping: '+esc(miss.join(', ')):''}`:'Belum ada file.'}</div>
      ${dataCheck(ds,k)}
      ${ds?`<details ${miss.length?'open':''}><summary>Column mapping</summary><div class="maps">${F.map(f=>`<label>${esc(f.l)}${f.req?' <span class="req">*</span>':''}<select data-map="${k}" data-key="${f.k}"><option value="">— not mapped —</option>${ds.headers.map(h=>`<option ${ds.map[f.k]===h?'selected':''}>${esc(h)}</option>`).join('')}</select></label>`).join('')}</div></details><div><button class="btn sm danger" data-clear="${k}">Remove file</button></div>`:''}
      ${k==='cs'?`<details><summary>Analytics rules</summary><div class="rules"><label>User yang dikecualikan (Monitor / Handle / Reporter, pisahkan koma)<input type="text" data-excl value="${esc(S.excl??'DotAI, AI')}"></label><span class="sub">Ticket dengan user ini tidak dihitung (sesuai Analytics Formulas: DotAI / Software Development).</span></div></details>`:''}

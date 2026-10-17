@@ -72,3 +72,10 @@ Framework preset **Other**, no build command, output directory `.`. Upload the c
 - If the outcome lives on another sheet of the same workbook, it is joined to the main sheet by ticket number automatically.
 - Free-text columns such as "Investigation Notes" are never used as the outcome; "Investigation Status" (Solved / Solved by our side / Unresolved) is preferred.
 - **Data check** shows "Kolom H+1 dipakai: <column>". If it warns that none was found, set it manually in Column mapping → *Investigation outcome (H+1)*.
+
+## Split date/time columns & AFR
+- Exports that split "X Date" + "X Time" (e.g. Created Date/Time, First Response Date/Time) are merged into "X At" columns on import.
+- AFR = minutes from Created to the **first take by Monitor By** (AFR Taken At / afr_taken_at). If the export has no AFR lock column, "Monitoring Date + Time" is used. First Response is never used for AFR; Handle By never counts; DotAI/AI first takes are excluded. Snapshot shows average and median.
+
+## Corporate groups
+- Top 5 corporate groups use the **VIP Group** column (most cases in the period, CS + VIP). Falls back to Company Name only when no group column exists.

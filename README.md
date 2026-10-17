@@ -70,4 +70,5 @@ Framework preset **Other**, no build command, output directory `.`. Upload the c
 ## H+1 investigation outcome
 - The outcome column is detected by name (invest / H+1 / outcome) **or by its values** ("Solved", "Solved by Our Side", "Solved By Our-Side", "Unresolved", "Belum selesai"…).
 - If the outcome lives on another sheet of the same workbook, it is joined to the main sheet by ticket number automatically.
+- Free-text columns such as "Investigation Notes" are never used as the outcome; "Investigation Status" (Solved / Solved by our side / Unresolved) is preferred.
 - **Data check** shows "Kolom H+1 dipakai: <column>". If it warns that none was found, set it manually in Column mapping → *Investigation outcome (H+1)*.

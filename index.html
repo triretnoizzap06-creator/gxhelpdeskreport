@@ -690,7 +690,7 @@ const MAIN_FIELDS=[
  {k:'category',l:'Category',req:1,a:['category','kategori','issue type','case category']},
  {k:'problem',l:'Problem',req:1,a:['problem type','problem','sub category','subcategory','subject','issue']},
  {k:'status',l:'Status',req:1,a:['status','ticket status','final status','case status']},
- {k:'inv',l:'Investigation outcome (H+1)',a:['investigation outcome','investigation result','investigation','h 1 investigation','hasil investigasi','outcome','reclassification','reklasifikasi']},
+ {k:'inv',l:'Investigation outcome (H+1)',a:['investigation outcome','investigation result','investigation status','status investigasi','investigation','h 1 investigation','hasil investigasi','outcome','reclassification','reklasifikasi']},
  {k:'incident',l:'Service Incident',a:['service incident','incident','incident side','fault side']},
  {k:'monitored',l:'Monitored By',a:['monitored by','monitor by','monitoring by','monitored','monitor']},
  {k:'handler',l:'Handled By',a:['handled by','handle by','handler','handled','agent','assigned to']},
@@ -729,7 +729,10 @@ function detect(headers,fields,rows){const map={},used=new Set();for(const f of 
   if(fields===MAIN_FIELDS){
     if(!map.team){const c=headers.filter(h=>free(h)&&/sub ?div/.test(norm(h)));take('team',c.find(h=>/handl/.test(norm(h)))||c.find(h=>!/monit/.test(norm(h))))}
     if(!map.monTeam){take('monTeam',headers.find(h=>free(h)&&/sub ?div/.test(norm(h))&&/monit/.test(norm(h))))}
-    if(!map.inv)take('inv',headers.find(h=>free(h)&&/invest|h ?1|outcome/.test(norm(h))));
+    const outScore=h=>{const j=headers.indexOf(h);let c=0;if(j<0||!rows)return 0;for(const r of rows.slice(0,5000))if(isOutcomeVal(r[j]))c++;return c};
+    if(map.inv&&rows&&!outScore(map.inv)){used.delete(map.inv);map.inv=''}
+    if(!map.inv&&rows){let best=null,bs=0;headers.forEach(h=>{if(!free(h))return;const sc=outScore(h);if(sc>bs){bs=sc;best=h}});if(bs>0)take('inv',best)}
+    if(!map.inv)take('inv',headers.find(h=>free(h)&&/invest|h ?1|outcome/.test(norm(h))&&!/note|catatan|keterangan|date|time|tanggal|jam|\bby\b|oleh/.test(norm(h))));
     if(!map.inv&&rows){let best=null,bs=0;headers.forEach((h,j)=>{if(!free(h))return;let sc=0;for(const r of rows.slice(0,5000)){if(isOutcomeVal(r[j]))sc++}if(sc>bs){bs=sc;best=h}});if(bs>0)take('inv',best)}
     if(!map.vip)take('vip',headers.find(h=>free(h)&&/\bvip\b/.test(norm(h))&&!/group|handler|name/.test(norm(h))));
     if(!map.fr)take('fr',headers.find(h=>free(h)&&/first response/.test(norm(h))&&!/afr|avg|minute/.test(norm(h))));
@@ -1432,7 +1435,7 @@ addEventListener('beforeprint',buildPrint);addEventListener('afterprint',()=>{$(
 $('#printBtn').onclick=()=>{if(!visible().length){alert('Tidak ada slide yang ditampilkan.');return}buildPrint();print()};
 
 /* ---------- start ---------- */
-(async()=>{for(const k of ['cs','vip','rc']){const d=await idbGet(k);if(d&&d.headers&&d.rows){const f=detect(d.headers,FIELDS_OF(k),d.rows);d.map=d.map||{};let ch=0;for(const x in f)if(!d.map[x]&&f[x]&&!Object.values(d.map).includes(f[x])){d.map[x]=f[x];ch=1}if(ch)idbPut(k,d);DS[k]=d}}syncPeriod();refresh(0)})();
+(async()=>{for(const k of ['cs','vip','rc']){const d=await idbGet(k);if(d&&d.headers&&d.rows){const f=detect(d.headers,FIELDS_OF(k),d.rows);d.map=d.map||{};let ch=0;if(k!=='rc'&&f.inv&&d.map.inv!==f.inv){const j=d.headers.indexOf(d.map.inv);if(j<0||!d.rows.slice(0,5000).some(r=>isOutcomeVal(r[j]))){d.map.inv=f.inv;ch=1}}for(const x in f)if(!d.map[x]&&f[x]&&!Object.values(d.map).includes(f[x])){d.map[x]=f[x];ch=1}if(ch)idbPut(k,d);DS[k]=d}}syncPeriod();refresh(0)})();
 </script>
 </body>
 </html>

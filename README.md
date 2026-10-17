@@ -95,3 +95,5 @@ Framework preset **Other**, no build command, output directory `.`. Upload the c
 - Top 3 tampil sebagai tiga kolom (satu per user): strip ringkasan + bar status keseluruhan di atas, bar status per user, lalu kartu tiap tiket dengan dropdown status serta kolom Kendala & Action. Level (HIGH/MEDIUM/LOW) tidak ditampilkan lagi. Slide Other Repeat Complaints: donut/bar status (toggle Pie/Bar), bar user teratas, dan kolom status per user.
 - Keterbacaan: ukuran font minimum di seluruh deck dinaikkan ke ±11px (pada lebar 1280px).
 - Saat Present / Print, dropdown dan kolom isian tampil sebagai teks statis.
+- Header kolom Top 3: **User ID** besar, lalu satu baris kecil `CID · Product`. Kolom User ID juga dicari lewat isi kolom (alfanumerik, mis. `kregeugenG342A`) bila namanya tidak standar; bila masih salah, pilih manual di Column mapping → *User ID*.
+- Tiap tanggal punya baris `Kendala :` dan `Action :` selebar kartu; tingginya menyesuaikan panjang teks (auto-fit).

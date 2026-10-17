@@ -2,9 +2,9 @@
 
 A static, single-file presentation website (`index.html`) for the GlobalXtreme Customer Service After Sales meeting. It turns ticket exports into an executive deck titled **Helpdesk Report**. Every content slide shows a section tab (Customer Support Report / VIP Report) at the top, so there are no separate divider slides.
 
-- **Customer Support Report** (7 slides): No Response Analysis & Resolution Rate Impact (before vs after H+1) · Customer Support Snapshot · Handling Team Distribution (share + team detail) · Case Composition & Top Complaints · Agent Performance (handling + monitoring) · Best Performance (handling + monitoring) · Repeat Complaints (Ticket & Work Order).
+- **Customer Support Report** (6 slides): No Response Analysis & Resolution Rate Impact (before vs after H+1 + daily volume, AFR, non-investigated rate) · Handling Team Distribution (share + team detail) · Case Composition & Top Complaints · Agent Performance (handling + monitoring) · Best Performance (handling + monitoring) · Repeat Complaints (Ticket & Work Order).
 - **VIP Report** (5 slides): VIP Overview · VIP Handling Team Distribution · VIP Top Issues & Top Groups · VIP Best Performance · VIP Repeat Complaints.
-- Optional, off by default: Resolution & No Response (ring view), Handling/Monitoring Agents — Ranked tables, VIP Agent Performance, VIP Handling Agents — Ranked.
+- Optional, off by default: Customer Support Snapshot, Resolution & No Response (ring view), Handling/Monitoring Agents — Ranked tables, VIP Agent Performance, VIP Handling Agents — Ranked.
 
 Titles and charts are in English; every content slide has a **Key highlights** strip in Bahasa Indonesia, generated from the data and editable.
 
@@ -25,7 +25,8 @@ Imported rows are kept in the browser (IndexedDB), so a reload keeps the report.
 ## Calculation rules (GX CS Connect · Analytics Formulas)
 
 - **Eligible ticket**: Category and Problem Type both filled, created in the selected period, duplicates counted once. Tickets whose Monitor By / Handle By / Reporter is an excluded user (default `DotAI, AI` — editable in Import data → Customer Support → Analytics rules) are not counted.
-- **Split by VIP flag**: VIP = No (or empty) → Customer Support Report; VIP = Yes → VIP Report. A separate VIP file can also be imported.
+- **Split by VIP flag**: VIP = No (or empty) → Customer Support Report; VIP = Yes → VIP Report. The same combined file can be imported in both slots — the VIP slot only keeps VIP = Yes. A *Data check* under each import shows how many rows went to each report, Solved / first response counts and the investigation outcomes found.
+- Values such as `-`, `null`, `N/A` in First Response / Investigation columns are treated as empty.
 - **Solved resmi** = status Solved **and** a first response exists (when the First Response column is mapped).
 - **Official rate** = Solved resmi ÷ Total Cases (kotak "Tanpa Investigasi H+1").
 - **Identified Resolved / Cases Solved** = Solved resmi + No Response BC2 / After Connected whose Investigation outcome is Solved or Solved by Our Side. **Adj. / Overall Resolution Rate** = that ÷ Total Cases (target ≥90%).

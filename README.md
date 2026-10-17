@@ -2,7 +2,7 @@
 
 A static, single-file presentation website (`index.html`) for the GlobalXtreme Customer Service After Sales meeting. It turns ticket exports into an executive deck titled **Helpdesk Report**. Every content slide shows a section tab (Customer Support Report / VIP Report) at the top, so there are no separate divider slides.
 
-- **Customer Support Report**: No Response Analysis & Resolution Rate Impact (before/after KPI rows, before-vs-after H+1 rings, no response before → after) · Handling Team Distribution (every Sub Division + detail table) · Case Composition & Top Complaints (issue type, sub area and service incident as pies) · Best Performance (handling + monitoring) · Top 3 Repeat Complaints (Ticket, Work Order, Kendala, Action) · Other Repeat Complaints.
+- **Customer Support Report**: No Response Analysis & Resolution Rate Impact (before/after KPI rows, before-vs-after H+1 rings, no response before → after) · Handling Team Distribution (every Sub Division + detail table) · Case Composition & Top Complaints (issue type, sub area and service incident as pies) · Best Performance (handling + monitoring) · Top 3 Repeat Complaints (User ID, status dropdown, Work Order, Kendala & Action yang bisa diisi, plus grafik status) · Other Repeat Complaints.
 - **VIP Report**: VIP Overview · VIP Handling Team Distribution · VIP Top Issues & Top 5 Corporate Groups · VIP Best Performance · VIP Top 3 Repeat Complaints · VIP Other Repeat Complaints.
 - Optional, off by default: Customer Support Snapshot, Handling / Monitoring Agents — Ranked, VIP Handling Agents — Ranked.
 
@@ -86,3 +86,11 @@ Framework preset **Other**, no build command, output directory `.`. Upload the c
 - Baris dengan first take lebih awal dari Created, waktu tak terbaca, atau agen first take kosong dibuang dan **dihitung di Data check** beserta rata-rata & median.
 - Data check memperingatkan bila kolom yang dipakai bukan kolom lock (mis. Monitoring Date/Time) atau kolom AFR taken by tidak ada.
 - Tile AFR menampilkan **rata-rata** (angka utama, sama dengan GX Connect), **median**, dan **% first take ≤ 5 menit** (`AFR_SLA` di index.html). Median dan % ≤ 5 menit lebih tahan terhadap tiket ekstrem, berguna selama ekspor belum punya kolom lock.
+
+
+## Repeat complaint — redesign (User ID, status, Kendala & Action)
+- Slide memakai **User ID** sebagai identitas utama; CID tampil kecil di bawahnya. Kolom User ID dideteksi otomatis (`User ID`, `UserID`, `username`, `PPPoE`…) dan bisa diubah di Column mapping → *User ID*. Pengelompokan repeat tetap per CID; bila tidak ada kolom User ID, CID dipakai sebagai gantinya.
+- Tiap tiket di Top 3 punya **dropdown status**: Open, WO In Progress, Closed, Cancelled. Nilai awal dibaca dari kolom Status export (Solved/Closed → Closed, Cancel → Cancelled, In Progress/WO → WO In Progress, sisanya Open).
+- **Kendala** dan **Action** adalah kolom isian langsung di slide (tanpa perlu Edit text). Jika export sudah punya kolom Kendala/Action, nilainya jadi isian awal. Isian tersimpan di browser dan ikut Export settings; tombol **Reset isian** di bawah preview menghapusnya.
+- Grafik: ringkasan Repeat users / tickets / belum closed, bar status per user, dan donut status Top 3. Slide Other Repeat Complaints punya donut/bar level (toggle Pie/Bar), bar user teratas, dan kolom status per user.
+- Saat Present / Print, dropdown dan kolom isian tampil sebagai teks statis.

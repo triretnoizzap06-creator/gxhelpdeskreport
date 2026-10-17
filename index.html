@@ -304,6 +304,60 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .tk .p{font-weight:600;color:#1D1D1F}
 .tk.more{display:grid;place-items:center;font-weight:700;flex:.4}
 .tl .ar{display:grid;place-items:center;color:#C7C7CC;font-size:var(--t-small);flex-shrink:0}
+/* ===== Repeat complaint redesign ===== */
+.rt{display:grid;grid-template-columns:22cqw minmax(0,1fr);gap:1.2cqw;flex:1;min-height:0}
+.rt-side{display:flex;flex-direction:column;gap:1cqw;min-height:0}
+.rt-side .card{padding:1cqw 1.2cqw}.rt-side .ctitle{font-size:.7cqw;margin-bottom:.7cqw}
+.rt-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:.6cqw;flex-shrink:0}
+.rt-kpis div{background:#1D1D1F;color:#fff;border-radius:1cqw;padding:.7cqw .6cqw;text-align:center}
+.rt-kpis b{display:block;font-size:1.7cqw;letter-spacing:-.03em;color:#F5C518;line-height:1.1}
+.rt-kpis span{font-size:.62cqw;color:#AEAEB2;font-weight:600;letter-spacing:.03em}
+.rt-bars{display:flex;flex-direction:column;gap:.8cqw}
+.rb .rbl{display:flex;justify-content:space-between;gap:.6cqw;font-size:.82cqw;font-weight:700}
+.rb .rbl span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rb .rbl em{font-style:normal;color:#8E8E93;font-weight:600;white-space:nowrap}
+.sbt{background:#EAEFF5;border-radius:999px;margin-top:.3cqw;overflow:hidden}
+.sbar{display:flex;height:.7cqw;border-radius:999px;overflow:hidden;gap:.12cqw}.sbar i{display:block;height:100%;min-width:.3cqw}
+.rt-dn{display:flex;flex-direction:column}
+.rt-dn .dn{flex-direction:column;gap:.6cqw;align-items:stretch}
+.rt-dn .dn svg{height:9.5cqw;max-height:none;flex:none;align-self:center}
+.rt-dn .lg{display:grid;grid-template-columns:1fr 1fr;gap:.3cqw .8cqw;flex:none}
+.rt-dn .lg .it{font-size:.72cqw;grid-template-columns:.7cqw minmax(0,1fr) auto;gap:.4cqw}.rt-dn .lg .sw{width:.7cqw;height:.7cqw}.rt-dn .lg .pv small{display:none}
+.rt-dn .lg .nm small{font-size:.6cqw}
+.rt-dn .vb{height:12cqw;flex:none}
+.rt-side .hb{--hg:.8cqw;--bh:.45cqw}.rt-side .hb .lab{font-size:.8cqw}.rt-side .hb .meta{font-size:.62cqw}.rt-side .hb .val{font-size:.8cqw}.rt-side .card{overflow:hidden}
+.rt-rows{display:flex;flex-direction:column;gap:.8cqw;min-height:0}
+.ru{flex:1;min-height:0;display:grid;grid-template-columns:13.5cqw minmax(0,1fr);gap:1cqw;padding:.8cqw 1cqw}
+.ru-h{display:flex;flex-direction:column;gap:.25cqw;min-width:0;padding-right:.9cqw;border-right:1px solid rgba(0,0,0,.07)}
+.ru-top{display:flex;align-items:center;gap:.5cqw}
+.ru .rkc{width:1.7cqw;height:1.7cqw;border-radius:50%;background:#1D1D1F;color:#F5C518;display:grid;place-items:center;font-weight:700;font-size:.82cqw;flex-shrink:0}
+.ru-lb{font-size:.58cqw;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8E8E93}
+.ru-id{font-size:1.3cqw;font-weight:700;letter-spacing:-.02em;line-height:1.1;word-break:break-all}
+.ru-nm{font-size:.76cqw;font-weight:600;color:#3A3A3C;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ru-cid{font-size:.66cqw;color:#8E8E93;font-weight:500}
+.ru-note{font-size:.66cqw}.ru-note:empty{display:none}.editing .ru-note:empty{display:block;min-height:1em}
+.ru-m{display:flex;flex-wrap:wrap;gap:.3cqw;align-items:center;margin-top:auto}
+.ru .cnt{font-size:.66cqw;font-weight:700;background:#FFF3C4;color:#7A5C00;padding:.12cqw .5cqw;border-radius:999px;white-space:nowrap}.ru .sev{margin-top:0}
+.ru-more{font-size:.62cqw;color:#8E8E93;font-weight:600}
+.ru-tk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7cqw;min-height:0}
+.tkc{background:#F7F7F9;border-radius:.8cqw;border-top:.25cqw solid var(--sc,#D1D1D6);padding:.5cqw .65cqw .6cqw;display:flex;flex-direction:column;gap:.3cqw;min-width:0;min-height:0;overflow:hidden}
+.tkc .t1{display:flex;align-items:center;justify-content:space-between;gap:.4cqw}
+.tkc .dt{font-size:.8cqw;font-weight:700;white-space:nowrap}.tkc .dt span{color:#8E8E93;font-weight:600;font-size:.7cqw}
+.tkc .t2{display:flex;align-items:center;gap:.4cqw;min-width:0}
+.tkc .pb{flex:1;min-width:0;font-size:.76cqw;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tkc .wo{margin-top:0;flex-shrink:0;max-width:55%}.tkc .wo-a,.tkc .wo-add,.tkc .wo-s{font-size:.66cqw;padding:.12cqw .5cqw}.tkc .wo-e{width:1.2cqw;height:1.2cqw}.tkc .wo-e svg{width:.7cqw;height:.7cqw}
+.stw{display:inline-flex;position:relative;flex-shrink:0}
+.stsel,.st-s{font:inherit;font-size:.66cqw;font-weight:700;border-radius:999px;background-color:var(--sbg);color:var(--sfg);line-height:1.3;white-space:nowrap}
+.stsel{appearance:none;-webkit-appearance:none;border:0;padding:.18cqw 1.25cqw .18cqw .6cqw;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23555' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .45cqw center;background-size:.6cqw}
+.stsel:focus-visible{outline:2px solid #E0A800}
+.st-s{display:none;padding:.18cqw .65cqw}
+.fld{display:grid;grid-template-columns:3cqw minmax(0,1fr);gap:.4cqw;align-items:start;flex:1;min-height:2.3cqw}
+.fld label{font-size:.56cqw;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#8E8E93;padding-top:.35cqw}
+.fld textarea{width:100%;resize:none;border:1px solid rgba(0,0,0,.09);background:#fff;border-radius:.45cqw;font:inherit;font-size:.72cqw;line-height:1.25;padding:.25cqw .45cqw;height:100%;min-height:2.3cqw;color:#1D1D1F;display:block}
+.fld textarea::placeholder{color:#B5B5BA}.fld textarea:focus{outline:2px solid #E0A800;background:#FFFBEA}
+.fld .fld-s{display:none;font-size:.72cqw;line-height:1.25;padding-top:.25cqw;overflow:hidden;max-height:2.4cqw}
+.presenting .stsel,.printing .stsel,.presenting .fld textarea,.printing .fld textarea{display:none}
+.presenting .st-s,.printing .st-s{display:inline-block}.presenting .fld .fld-s,.printing .fld .fld-s{display:block}
+.rl .stc{min-width:7cqw}.rl .stc .sbar{height:.55cqw}
 /* dark slides */
 .slide.dark{color:#F5F5F7;background:radial-gradient(70% 80% at 85% 10%,rgba(245,197,24,.32) 0%,rgba(245,197,24,0) 55%),radial-gradient(60% 70% at 5% 100%,rgba(94,92,230,.22) 0%,rgba(94,92,230,0) 60%),linear-gradient(160deg,#141416 0%,#000 100%)}
 .cv{position:absolute;inset:0;padding:5cqw 6cqw;display:flex;flex-direction:column}
@@ -571,6 +625,17 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 
   .row{flex-direction:column}.row.grow{flex:none}.tile.sm .ico{width:30px;height:30px}.tile.sm .ico svg{width:16px;height:16px}.tile.sm .tval{font-size:24px}.tile.sm .tlab,.tile.sm .tfoot{font-size:11px}.tile.sm{padding:12px}.dn.sm svg{height:170px}.impact .ring svg{width:130px;height:130px}.impact .ring .big{font-size:24px}.pl{font-size:13px;padding:6px 0}.chron .tk{max-height:none}
   .vb.many .n{display:none}.vb.many .xf{display:none}.vb.many .xn{display:inline}.vb.many .x{font-size:10px;text-overflow:clip}
+  .rt{grid-template-columns:1fr;flex:none}.rt-side{flex:none}.rt-rows{flex:none}.rt-dn{flex:none!important}
+  .rt-side .card{padding:14px}.rt-side .ctitle{font-size:11px;margin-bottom:10px}
+  .rt-kpis b{font-size:22px}.rt-kpis span{font-size:11px}.rt-kpis div{padding:10px 6px;border-radius:14px}
+  .rb .rbl{font-size:13px}.sbar{height:8px}.rt-bars{gap:12px}
+  .rt-dn .dn svg{height:150px;max-height:none}.rt-dn .lg .it{font-size:12px;grid-template-columns:9px minmax(0,1fr) auto;gap:6px}.rt-dn .lg .sw{width:9px;height:9px}.rt-dn .vb{height:160px}
+  .ru{grid-template-columns:1fr;padding:14px;gap:12px}.ru-h{border-right:0;border-bottom:1px solid rgba(0,0,0,.07);padding:0 0 12px;gap:4px}
+  .ru .rkc{width:26px;height:26px;font-size:12px}.ru-lb{font-size:10px}.ru-id{font-size:20px}.ru-nm{font-size:13px}.ru-cid,.ru-note,.ru-more{font-size:12px}.ru .cnt{font-size:11px;padding:2px 8px}
+  .ru-tk{grid-template-columns:1fr;gap:10px}.tkc{padding:10px 12px 12px;gap:8px;border-radius:14px;border-top-width:3px}
+  .tkc .dt{font-size:14px}.tkc .dt span{font-size:12px}.tkc .pb{font-size:13px}.stsel,.st-s{font-size:12px}.stsel{padding:4px 24px 4px 10px;background-position:right 9px center;background-size:10px}
+  .fld{grid-template-columns:58px minmax(0,1fr);gap:8px}.fld label{font-size:10px;padding-top:8px}.fld textarea{font-size:14px;height:58px;padding:6px 9px;border-radius:9px}
+  .rl .stc{min-width:90px}.rl .stc .sbar{height:7px}
 }
 @media print{
   @page{size:1280px 720px;margin:0}
@@ -709,6 +774,7 @@ const MAIN_FIELDS=[
 const RC_FIELDS=[
  {k:'origin',l:'Via Origin',a:['via origin','origin','source','channel']},
  {k:'cid',l:'CID / UID',req:1,a:['cid','uid','customer id','circuit id','user id']},
+ {k:'uid',l:'User ID (ditampilkan di slide)',a:['user id','userid','user_id','user name','username','uid','pppoe','pppoe user','login']},
  {k:'name',l:'Customer name',a:['customer','customer name','nama pelanggan','nama']},
  {k:'ticket',l:'Ticket number',a:['ticket number','ticket id','ticket','no tiket','case id']},
  {k:'date',l:'Created date',req:1,a:['created','date','created date','created at','tanggal']},
@@ -875,6 +941,11 @@ function metrics(list,kind){
 }
 const fAfr=v=>v==null?'—':(v>=100?fInt(v):f1(v))+'m';
 
+/* ---------- repeat complaint status (dropdown per tiket) ---------- */
+const RC_ST=['Open','WO In Progress','Closed','Cancelled'];
+const RC_STC={'Open':{c:'#FF9F0A',bg:'#FFF0D6',fg:'#A85A00'},'WO In Progress':{c:'#0A84FF',bg:'#DCEBFF',fg:'#0A5FCC'},'Closed':{c:'#34C759',bg:'#DFF6E5',fg:'#1E7A35'},'Cancelled':{c:'#AEAEB2',bg:'#EDEDF0',fg:'#6E6E73'}};
+function rcStatus(raw){const s=String(raw||'').toLowerCase();if(/cancel|batal/.test(s))return 'Cancelled';if(/^(solved|closed|resolved|done|selesai|complete)/.test(s))return 'Closed';if(/\bwo\b|work ?order|progress|proses|process|on ?going|visit|dispatch|assign/.test(s))return 'WO In Progress';return 'Open'}
+const rcDone=s=>s==='Closed'||s==='Cancelled';
 /* ---------- repeat complaint (same rules as repeatcomplainthd) ---------- */
 function rcAnalyze(rep){
   const R=DS.rc;if(!R)return null;
@@ -897,15 +968,16 @@ function rcAnalyze(rep){
     if(dt!=null){min=min==null?dt:Math.min(min,dt);max=max==null?dt:Math.max(max,dt)}
     const kendala=g(r,'kendala'),action=g(r,'action'),res=[kendala,action].filter(Boolean).join(' → ');
     const note=res||[g(r,'status'),g(r,'ctso')?'CTSO: '+g(r,'ctso'):(g(r,'cso')?'CSO: '+g(r,'cso'):'')].filter(Boolean).join(' · ');
-    const t={k:keyOf(tk||cid+'_'+dt),kendala,action,ticket:tk,date:dt??0,problem:g(r,'problem')||'(problem kosong)',category:cat,status:g(r,'status'),wo:g(r,'wo'),note,ctso:!!g(r,'ctso'),name:g(r,'name'),branch:g(r,'branch').replace(/^GlobalXtreme\s*/i,''),product:g(r,'product')};
+    const t={k:keyOf(tk||cid+'_'+dt),kendala,action,ticket:tk,date:dt??0,problem:g(r,'problem')||'(problem kosong)',category:cat,status:g(r,'status'),wo:g(r,'wo'),note,ctso:!!g(r,'ctso'),uid:g(r,'uid'),name:g(r,'name'),branch:g(r,'branch').replace(/^GlobalXtreme\s*/i,''),product:g(r,'product')};
+    {const eS=S.edits['rc.st.'+t.k],eK=S.edits['rc.kd.'+t.k],eA=S.edits['rc.ac.'+t.k];t.status=RC_ST.includes(eS)?eS:rcStatus(t.status);if(eK!==undefined)t.kendala=eK;if(eA!==undefined)t.action=eA}
     elig.push(t);if(!G.has(cid))G.set(cid,[]);G.get(cid).push(t);
   }
   const sev=n=>n>=6?'HIGH':n>=5?'MONITOR':n>=3?'MEDIUM':'LOW';
-  const list=[...G].map(([cid,t])=>{t.sort((a,b)=>a.date-b.date);return {sev:sev(t.length),allRes:t.every(k=>/^(solved|closed|resolved|done|selesai)/i.test(k.status)),cid,name:t.find(x=>x.name)?.name||'',branch:t.find(x=>x.branch)?.branch||'',product:t.find(x=>x.product)?.product||'',count:t.length,np:new Set(t.map(x=>x.problem)).size,latest:t[t.length-1].date,tickets:t}});
+  const list=[...G].map(([cid,t])=>{t.sort((a,b)=>a.date-b.date);const uc=groupCount(t,'uid');return {sev:sev(t.length),allRes:t.every(k=>rcDone(k.status)),cid,uid:uc.length?uc[0].label:cid,name:t.find(x=>x.name)?.name||'',branch:t.find(x=>x.branch)?.branch||'',product:t.find(x=>x.product)?.product||'',count:t.length,np:new Set(t.map(x=>x.problem)).size,latest:t[t.length-1].date,tickets:t}});
   const cand=list.filter(x=>x.count>=2).sort((a,b)=>b.count-a.count||b.np-a.np||b.latest-a.latest);
   const sel=(S.edits['top3.'+rep]||[]).map(id=>cand.find(x=>x.cid===id)).filter(Boolean);
   const top=[];for(const x of sel)if(top.length<3&&!top.includes(x))top.push(x);for(const x of cand)if(top.length<3&&!top.includes(x))top.push(x);
-  return {elig,list,cand,top,repTickets:cand.reduce((n,x)=>n+x.count,0),prob:groupCount(elig,'problem'),min,max,hasOrigin:I.origin>=0,complaintOnly:st.complaintOnly&&hasComplaint};
+  return {elig,list,cand,top,repTickets:cand.reduce((n,x)=>n+x.count,0),openN:cand.reduce((n,x)=>n+x.tickets.filter(k=>!rcDone(k.status)).length,0),prob:groupCount(elig,'problem'),min,max,hasOrigin:I.origin>=0,complaintOnly:st.complaintOnly&&hasComplaint};
 }
 
 /* ---------- period filter ---------- */
@@ -1189,24 +1261,38 @@ function woChip(wo){const u=woUrl(wo),L=esc(/^wo\b|^wo[-_ ]/i.test(wo)?wo:'WO '+
 function chronoRows(r,rep,max){return r.top.map((x,i)=>{const t=x.tickets,show=t.length>max?t.slice(0,max-1):t,more=t.length-show.length,wos=t.filter(k=>k.wo).length;
     return `<div class="card cr" data-a><div class="who"><span class="rkc">${i+1}</span><div style="min-width:0"><div class="cid">${esc(x.cid)}</div><div class="mt">${esc(x.name)}${x.product?' · '+esc(x.product):''}</div>${ed(`rc.${rep}.cid.${keyOf(x.cid)}`,'','div','mt','style="color:#D70015"')}<span class="cnt">${x.count} tickets · ${wos} WO</span> <span class="sev ${x.sev.toLowerCase()}">${x.sev}</span>${x.allRes?' <span class="sev ok">Resolved</span>':''}</div></div>
      <div class="tl">${show.map((k,j)=>`${j?'<span class="ar">›</span>':''}<div class="tk ${k.wo?'has-wo':''}"><div class="d">${ddmm(k.date)}${k.ticket?` <span class="tno">#${esc(k.ticket)}</span>`:''}</div><div class="p">${esc(k.problem)}</div>${k.wo?woChip(k.wo):''}${ed(`rc.${rep}.${k.k}`,esc(k.note),'div','nt')}</div>`).join('')}${more?`<span class="ar">›</span><div class="tk more">+${more}</div>`:''}</div></div>`}).join('')}
+/* ---- Repeat complaint redesign: User ID, status dropdown, kendala & action bisa diisi ---- */
+const stCnt=tk=>RC_ST.map(s=>({label:s,value:tk.filter(k=>k.status===s).length,color:RC_STC[s].c}));
+function sbar(tk,max){const c=stCnt(tk).filter(x=>x.value),w=max?tk.length/max*100:100;return `<div class="sbt"><div class="sbar" style="width:${w}%" title="${esc(c.map(x=>x.label+' '+x.value).join(' · '))}">${c.map(x=>`<i style="flex:${x.value};background:${x.color}"></i>`).join('')}</div></div>`}
+function stSel(k){const m=RC_STC[k.status];return `<span class="stw" style="--sbg:${m.bg};--sfg:${m.fg}"><select class="stsel" data-rcst="${esc(k.k)}" aria-label="Status tiket">${RC_ST.map(s=>`<option ${s===k.status?'selected':''}>${s}</option>`).join('')}</select><span class="st-s">${esc(k.status)}</span></span>`}
+const fxField=(lab,kind,k,val,ph)=>`<div class="fld"><label>${lab}</label><textarea data-rcf="${kind}" data-k="${esc(k.k)}" rows="2" placeholder="${ph}" spellcheck="false">${esc(val)}</textarea><div class="fld-s ${val?'':'mut'}">${val?esc(val):'—'}</div></div>`;
+function tkCell(k){const m=RC_STC[k.status];return `<div class="tkc" style="--sc:${m.c}"><div class="t1"><div class="dt">${ddmm(k.date)}${k.ticket?` <span>#${esc(k.ticket)}</span>`:''}</div>${stSel(k)}</div><div class="t2"><div class="pb" title="${esc(k.problem)}">${esc(k.problem)}</div>${k.wo?woChip(k.wo):''}</div>${fxField('Kendala','kd',k,k.kendala,'Isi kendala…')}${fxField('Action','ac',k,k.action,'Isi action…')}</div>`}
+const SEVC={HIGH:'#FF375F',MONITOR:'#FF9F0A',MEDIUM:'#F5C518',LOW:'#9DB8D9'};
 function sRepeat(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}`,sec=vip?'vip':'cs';const title=vip?'VIP Top 3 Repeat Complaints':'Top 3 Repeat Complaints';
   if(!r)return head(id,sec,title)+body(needRC());
   const o=vip?S.rc.vipOrigin:S.rc.hdOrigin;
-  if(!r.top.length)return head(id,sec,title)+body(empty('Tidak ada repeat complaint','Tidak ada CID dengan 2+ tiket di periode ini.'));
-  const MAX=3;
-  const blocks=r.top.map((x,i)=>{const t=x.tickets,show=t.length>MAX?t.slice(-MAX):t,more=t.length-show.length;
-    return `<div class="card r3" data-a><div class="r3h"><span class="rkc">${i+1}</span><b class="cid">${esc(x.cid)}</b><span class="mut">${esc(x.name)}${x.product?' · '+esc(x.product):''}${x.branch?' · '+esc(x.branch):''}</span><span class="cnt">${x.count} tickets · ${t.filter(k=>k.wo).length} WO</span><span class="sev ${x.sev.toLowerCase()}">${x.sev}</span>${x.allRes?'<span class="sev ok">Resolved</span>':''}</div>
-     <table class="tbl r3t"><thead><tr><th style="width:7%">Date</th><th style="width:11%">Ticket</th><th style="width:16%">Problem</th><th style="width:13%">Work Order</th><th>Kendala</th><th>Action</th></tr></thead><tbody>${show.map(k=>`<tr><td class="b">${ddmm(k.date)}</td><td class="mut">${esc(k.ticket||'—')}</td><td class="b">${esc(k.problem)}</td><td>${k.wo?woChip(k.wo):'<span class="mut">—</span>'}</td><td>${ed(`rc.${rep}.${k.k}.kd`,esc(k.kendala||'—'),'div','')}</td><td>${ed(`rc.${rep}.${k.k}.ac`,esc(k.action||k.status||'—'),'div','')}</td></tr>`).join('')}${more?`<tr><td colspan="6" class="mut">+${more} tiket sebelumnya — lihat Other Repeat Complaints</td></tr>`:''}</tbody></table></div>`}).join('');
-  return head(id,sec,title,`Via ${esc(o)} · ${fInt(r.cand.length)} repeat customers · Ticket, Work Order, Kendala & Action`)+body(`<div class="r3wrap">${blocks}</div>`)}
+  if(!r.top.length)return head(id,sec,title)+body(empty('Tidak ada repeat complaint','Tidak ada user dengan 2+ tiket di periode ini.'));
+  const MAX=3,all=r.top.flatMap(x=>x.tickets),mx=Math.max(1,...r.top.map(x=>x.count)),openTop=all.filter(k=>!rcDone(k.status)).length;
+  const kpis=`<div class="rt-kpis" data-a><div><b>${fInt(r.cand.length)}</b><span>Repeat users</span></div><div><b>${fInt(r.repTickets)}</b><span>Repeat tickets</span></div><div><b>${fInt(r.openN)}</b><span>Belum closed</span></div></div>`;
+  const bars=`<div class="card" data-a><div class="ctitle">Tickets per user · status</div><div class="rt-bars">${r.top.map(x=>`<div class="rb"><div class="rbl"><span title="${esc(x.uid)}">${esc(x.uid)}</span><em>${x.count} tickets</em></div>${sbar(x.tickets,mx)}</div>`).join('')}</div></div>`;
+  const dn=`<div class="card rt-dn" data-a style="flex:1;min-height:0"><div class="ctitle">Status Top 3 · ${all.length} tickets</div>${pieBlock(stCnt(all),all.length,String(openTop),'belum closed',{})}</div>`;
+  const rows=r.top.map((x,i)=>{const t=x.tickets,show=t.length>MAX?t.slice(-MAX):t,more=t.length-show.length;
+    return `<div class="card ru" data-a><div class="ru-h"><div class="ru-top"><span class="rkc">${i+1}</span><span class="ru-lb">User ID</span></div><div class="ru-id" title="${esc(x.uid)}">${esc(x.uid)}</div><div class="ru-nm">${esc(x.name)}${x.product?' · '+esc(x.product):''}</div><div class="ru-cid">CID ${esc(x.cid)}${x.branch?' · '+esc(x.branch):''}</div>${ed(`rc.${rep}.cid.${keyOf(x.cid)}`,'','div','ru-note','style="color:#D70015"')}<div class="ru-m"><span class="cnt">${x.count} tickets · ${t.filter(k=>k.wo).length} WO</span><span class="sev ${x.sev.toLowerCase()}">${x.sev}</span>${x.allRes?'<span class="sev ok">Resolved</span>':''}</div>${more?`<div class="ru-more">+${more} tiket sebelumnya</div>`:''}</div><div class="ru-tk">${show.map(tkCell).join('')}</div></div>`}).join('');
+  return head(id,sec,title,`Via ${esc(o)} · ${fInt(r.cand.length)} repeat users · isi Status, Kendala & Action langsung di slide`)+body(`<div class="rt"><div class="rt-side">${kpis}${bars}${dn}</div><div class="rt-rows">${rows}</div></div>`)}
 function sRepeatList(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}-list`,sec=vip?'vip':'cs';const title=vip?'VIP Other Repeat Complaints':'Other Repeat Complaints';
   if(!r)return head(id,sec,title)+body(needRC());
   const rest=r.cand.filter(x=>!r.top.includes(x));
-  if(!rest.length)return head(id,sec,title)+body(empty('Tidak ada repeat complaint lain','Semua repeat customer sudah tampil di Top 3.'));
-  const rows=rest.map((x,i)=>{const pr=groupCount(x.tickets,'problem').map(p=>`${esc(p.label)}${p.value>1?` ×${p.value}`:''}`).join(', ');const wos=x.tickets.filter(k=>k.wo);
-    return `<tr><td class="mut">${i+4}</td><td class="b">${esc(x.cid)}<div class="mut sm2">${esc(x.name)}</div></td><td class="n b">${x.count}</td><td class="pr">${pr}</td><td>${wos.length?wos.slice(0,2).map(k=>woChip(k.wo)).join(' ')+(wos.length>2?` <span class="mut">+${wos.length-2}</span>`:''):'<span class="mut">—</span>'}</td><td class="mut">${ddmm(x.tickets[0].date)} – ${ddmm(x.latest)}</td><td><span class="sev ${x.sev.toLowerCase()}">${x.sev}</span>${x.allRes?' <span class="sev ok">Resolved</span>':''}</td></tr>`}).join('');
+  if(!rest.length)return head(id,sec,title)+body(empty('Tidak ada repeat complaint lain','Semua repeat user sudah tampil di Top 3.'));
+  const rows=rest.map((x,i)=>{const pr=groupCount(x.tickets,'problem').map(p=>`${esc(p.label)}${p.value>1?` ×${p.value}`:''}`).join(', ');const wos=x.tickets.filter(k=>k.wo),dn=x.tickets.filter(k=>rcDone(k.status)).length;
+    return `<tr><td class="mut">${i+4}</td><td class="b">${esc(x.uid)}<div class="mut sm2">${esc(x.name||'')}${x.name?' · ':''}CID ${esc(x.cid)}</div></td><td class="n b">${x.count}</td><td class="pr">${pr}</td><td>${wos.length?wos.slice(0,2).map(k=>woChip(k.wo)).join(' ')+(wos.length>2?` <span class="mut">+${wos.length-2}</span>`:''):'<span class="mut">—</span>'}</td><td class="mut">${ddmm(x.tickets[0].date)} – ${ddmm(x.latest)}</td><td class="stc">${sbar(x.tickets)}<div class="mut sm2">${dn}/${x.count} selesai</div></td><td><span class="sev ${x.sev.toLowerCase()}">${x.sev}</span></td></tr>`}).join('');
   const hi=rest.filter(x=>x.sev==='HIGH'||x.sev==='MONITOR').length;
-  const h=hl(id,[`${fInt(rest.length)} customer lain komplain ≥2 kali di ${esc(C.short)}.`,hi?`${hi} di antaranya level HIGH / MONITOR (≥5 tiket).`:'Tidak ada level HIGH / MONITOR di luar Top 3.',`${fInt(rest.filter(x=>!x.allRes).length)} customer masih punya tiket yang belum resolved.`]);
-  return head(id,sec,title,`Repeat customers beyond the Top 3 · ${esc(C.long)}`)+body(`<div class="card scroll fill1" data-a><table class="tbl rk rl"><thead><tr><th>No</th><th>CID / Customer</th><th class="n">Tickets</th><th>Problems</th><th>Work Order</th><th>Period</th><th>Level</th></tr></thead><tbody>${rows}</tbody></table></div>`+h)}
+  const h=hl(id,[`${fInt(rest.length)} user lain komplain ≥2 kali di ${esc(C.short)}.`,hi?`${hi} di antaranya level HIGH / MONITOR (≥5 tiket).`:'Tidak ada level HIGH / MONITOR di luar Top 3.',`${fInt(rest.filter(x=>!x.allRes).length)} user masih punya tiket yang belum closed.`]);
+  const lv=[['HIGH','≥6 tiket'],['MONITOR','5 tiket'],['MEDIUM','3–4 tiket'],['LOW','2 tiket']].map(([s,m])=>({label:s,value:rest.filter(x=>x.sev===s).length,color:SEVC[s]}));
+  const t=ctype(id,'pie');
+  const lvl=t==='bar'?vbars(lv):pieBlock(lv,rest.length,String(rest.length),'users',{});
+  const mx2=Math.max(1,...rest.map(x=>x.count)),topU=`<div class="rt-bars">${rest.slice(0,4).map(x=>`<div class="rb"><div class="rbl"><span title="${esc(x.uid)}">${esc(x.uid)}</span><em>${x.count} tickets</em></div><div class="sbt"><div class="sbar" style="width:${x.count/mx2*100}%"><i style="flex:1;background:${SEVC[x.sev]}"></i></div></div></div>`).join('')}</div>`;
+  const side=`<div class="rt-side"><div class="card rt-dn" data-a style="flex:none"><div class="ctitle">Repeat level · ${rest.length} users</div>${lvl}</div><div class="card" data-a style="flex:1;min-height:0"><div class="ctitle">Top users · tickets</div>${topU}</div></div>`;
+  return head(id,sec,title,`Repeat users beyond the Top 3 · ${esc(C.long)}`,seg(id,['pie','bar']))+body(`<div class="rt rt-list">${side}<div class="card scroll fill1" data-a><table class="tbl rk rl"><thead><tr><th>No</th><th>User ID / Customer</th><th class="n">Tickets</th><th>Problems</th><th>Work Order</th><th>Period</th><th>Status</th><th>Level</th></tr></thead><tbody>${rows}</tbody></table></div></div>`+h)}
 function sVipOverview(){const id='vip-overview',m=C.vip,title='VIP Overview';const tg=on(id,'daily')?seg(id,['bar','line']):'';
   if(!m)return head(id,'vip',title,'',tg)+body(needVIP());
   const it=m.issue.slice(0,3).map(x=>({...x,color:x.label==='Internet'?'#F5C518':x.label==='Administration'?'#1F3A5F':'#3E6E9E'}));const pk=peakDay(m);
@@ -1312,12 +1398,13 @@ function renderDock(){const all=ordered(),v=visible(),s=curSlide(),i=s?all.index
   $('#prevBtn').disabled=i<=0;$('#nextBtn').disabled=i<0||i>=all.length-1;
   let html='';
   if(s&&s.blocks){html+=`<span class="lbl">Tampilkan:</span>${s.blocks.map(([b,l])=>`<label class="chipt"><input type="checkbox" data-blk="${s.id}.${b}" ${on(s.id,b)?'checked':''}>${esc(l)}</label>`).join('')}`}
-  if(s&&s.top3&&C.rc[s.top3]&&C.rc[s.top3].cand.length&&on(s.id,'top3')){const r=C.rc[s.top3];const opts=sel=>r.cand.slice(0,80).map(x=>`<option value="${esc(x.cid)}" ${x.cid===sel?'selected':''}>${esc(x.cid)} · ${x.count} tiket${x.name?' · '+esc(x.name):''}</option>`).join('');
-    html+=`<span class="lbl" style="margin-left:6px">Top 3:</span>${[0,1,2].map(k=>`<select class="sel" data-top="${k}" aria-label="Rank ${k+1}">${opts(r.top[k]?.cid)}</select>`).join('')}<button class="btn sm" id="tAuto">Auto</button>`}
+  if(s&&s.top3&&C.rc[s.top3]&&C.rc[s.top3].cand.length&&on(s.id,'top3')){const r=C.rc[s.top3];const opts=sel=>r.cand.slice(0,80).map(x=>`<option value="${esc(x.cid)}" ${x.cid===sel?'selected':''}>${esc(x.uid)} · ${x.count} tiket${x.name?' · '+esc(x.name):''}</option>`).join('');
+    html+=`<span class="lbl" style="margin-left:6px">Top 3:</span>${[0,1,2].map(k=>`<select class="sel" data-top="${k}" aria-label="Rank ${k+1}">${opts(r.top[k]?.cid)}</select>`).join('')}<button class="btn sm" id="tAuto">Auto</button><button class="btn sm" id="tFillReset" title="Hapus isian status, kendala & action di slide ini">Reset isian</button>`}
   if(editing&&s)html+=`<button class="btn sm danger" id="tResetText">Reset text on this slide</button>`;
   $('#tools').innerHTML=html;
   $$('#tools [data-blk]').forEach(c=>c.onchange=()=>{S.blocks[c.dataset.blk]=c.checked;save();renderStage(0);renderDock()});
   $$('#tools [data-top]').forEach(sel=>sel.onchange=()=>{const rep=s.top3,r=C.rc[rep];const cur=r.top.map(x=>x.cid);cur[+sel.dataset.top]=sel.value;S.edits['top3.'+rep]=[...new Set(cur)];save();refresh(0)});
+  const tf=$('#tFillReset');if(tf)tf.onclick=()=>{if(!confirm('Hapus semua isian Status, Kendala & Action pada Top 3 ini?'))return;const r=C.rc[s.top3];r.top.forEach(x=>x.tickets.forEach(k=>{['st','kd','ac'].forEach(p=>delete S.edits['rc.'+p+'.'+k.k])}));save();refresh(0)};
   const ta=$('#tAuto');if(ta)ta.onclick=()=>{delete S.edits['top3.'+s.top3];save();refresh(0)};
   const tr=$('#tResetText');if(tr)tr.onclick=()=>{$$('[data-edit]',$('#stage')).forEach(e=>delete S.edits['t.'+e.dataset.edit]);save();refresh(0)}}
 function renderStage(dir=0){const st=$('#stage'),s=curSlide();if(!s){st.innerHTML='';return}swap(st,makeSlide(s),dir);applyEditing()}
@@ -1453,6 +1540,11 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Home'){const v=presenting?visible():ordered();if(v.length)go(v[0].id,-1)}
   if(e.key==='End'){const v=presenting?visible():ordered();if(v.length)go(v[v.length-1].id,1)}
 });
+
+
+/* ---------- repeat complaint: status / kendala / action diisi langsung di slide ---------- */
+$('#stage').addEventListener('change',e=>{const s=e.target.closest('select[data-rcst]');if(!s)return;S.edits['rc.st.'+s.dataset.rcst]=s.value;save();refresh(0)});
+$('#stage').addEventListener('input',e=>{const t=e.target.closest('textarea[data-rcf]');if(!t)return;S.edits['rc.'+t.dataset.rcf+'.'+t.dataset.k]=t.value;const st=t.parentNode.querySelector('.fld-s');if(st){st.textContent=t.value.trim()||'—';st.classList.toggle('mut',!t.value.trim())}save()});
 
 /* ---------- work order links ---------- */
 let woCur='';

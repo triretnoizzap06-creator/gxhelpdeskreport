@@ -79,3 +79,9 @@ Framework preset **Other**, no build command, output directory `.`. Upload the c
 
 ## Corporate groups
 - Top 5 corporate groups use the **VIP Group** column (most cases in the period, CS + VIP). Falls back to Company Name only when no group column exists.
+
+## AFR (diperbaiki)
+- Sumber utama = kolom **AFR taken at** (`afr_taken_at`) dikurangi Created; agen = **AFR taken by** (`afr_taken_by`). Kolom AFR menit hanya fallback bila kolom lock tidak ada (sebelumnya kolom menit mengalahkan kolom lock).
+- Waktu ber-timezone (`Z`, `+07:00`) dibaca absolut; angka menit toleran format `1.234,5`.
+- Baris dengan first take lebih awal dari Created, waktu tak terbaca, atau agen first take kosong dibuang dan **dihitung di Data check** beserta rata-rata & median.
+- Data check memperingatkan bila kolom yang dipakai bukan kolom lock (mis. Monitoring Date/Time) atau kolom AFR taken by tidak ada.

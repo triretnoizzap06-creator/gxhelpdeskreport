@@ -804,6 +804,9 @@ function invResolved(v){const s=norm(v);if(!s||/unresolv|unsolv|not solved|belum
 const isOutcomeVal=v=>{const s=norm(v);return /^solved (by|from) (our|us)|^solved our ?side|^unresolved|^not resolved|^belum selesai/.test(s)};
 const statusSolved=s=>/^(solved|sudah selesai|selesai)$/i.test(String(s||'').trim())||/^solved\b/i.test(String(s||'').trim());
 const exclList=()=>String(S.excl??'DotAI, AI').split(',').map(norm).filter(Boolean);
+/* AFR helpers: waktu ber-timezone (Z / +07:00) dibaca absolut; angka menit toleran koma/titik */
+function tsOf(v){if(typeof v==='string'){const s=v.trim();if(/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}/.test(s)&&/(?:[zZ]|[+-]\d{2}:?\d{2})$/.test(s)){const t=Date.parse(s.replace(' ','T'));if(!isNaN(t))return t}}return parseDate(v)}
+function numAfr(v){let s=String(v==null?'':v).trim();if(!s||/^(-|null|n.a)$/i.test(s))return null;if(s.includes(',')&&s.includes('.'))s=s.replace(/\./g,'').replace(',','.');else s=s.replace(',','.');const x=parseFloat(s);return isFinite(x)&&x>=0?x:null}
 function prepMain(ds,kind,fromCs){
   if(!ds)return [];
   const I=idx(ds,MAIN_FIELDS),g=(r,k)=>I[k]<0?'':String(r[I[k]]??'').trim(),EX=exclList(),isEx=n=>!!n&&EX.includes(norm(n));
@@ -827,8 +830,8 @@ function prepMain(ds,kind,fromCs){
     const team=I.team>=0?(handler&&sub?sub:'Unassigned'):teamOf(handler,'',kind);   /* Handling Team = Sub Division Handle By */
     const monTeam=I.monTeam>=0?(msub||'Unassigned'):(I.team>=0&&monitored&&monitored===handler?team:teamOf(monitored,'',kind));
     let afr=null;const afrBy=agentName(g(r,'afrBy'));
-    if(I.afr>=0){const v=parseFloat(String(g(r,'afr')).replace(',','.'));if(isFinite(v)&&v>=0)afr=v}
-    else if(I.afrAt>=0){const t=parseDate(r[I.afrAt]);if(t!=null&&t>=date)afr=(t-date)/6e4}
+    if(I.afrAt>=0){if(filled(r[I.afrAt])){const t=tsOf(r[I.afrAt]),c0=tsOf(r[I.date]);if(t!=null&&c0!=null&&t>=c0)afr=(t-c0)/6e4}}   /* AFR lock = New -> first take Monitor By */
+    else afr=numAfr(g(r,'afr'));
     const afrAgent=I.afrBy>=0?afrBy:monitored;   /* AFR hanya first take Monitor By; first_response_at tidak dipakai */
     if(afr!=null&&(!afrAgent||isEx(afrAgent)||/^(ai|dotai)$/i.test(norm(afrAgent))))afr=null;   /* first take AI tidak dihitung */
     out.push({date,day:dayStart(date),status,nr,solved,sSolved,recl,adj:solved||recl,res,hasInv,inv,hold:/hold|pending/i.test(status),
@@ -837,7 +840,7 @@ function prepMain(ds,kind,fromCs){
   }
   return out;
 }
-function afrNote(){const m=(DS.cs||DS.vip||{}).map||{};return (m.afr||m.afrAt)?'AFR = first take Monitor By.':''}
+function afrNote(){const m=(DS.cs||DS.vip||{}).map||{};return (m.afr||m.afrAt)?'AFR = New → first take Monitor By (afr_taken_by).':''}
 function groupCount(list,key,filter){const m=new Map();for(const r of list){if(filter&&!filter(r))continue;const k=typeof key==='function'?key(r):r[key];if(!k)continue;m.set(k,(m.get(k)||0)+1)}return [...m].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value||String(a.label).localeCompare(String(b.label)))}
 /* group objects: value = cases, adj = resolved (aturan Investigation), nr = status No Response (BC2 + After Connected), hold = cases − resolved */
 function groupStats(list,key){const m=new Map();for(const r of list){const k=r[key];if(!k)continue;if(!m.has(k))m.set(k,{label:k,value:0,solved:0,adj:0,nr:0,hold:0});const a=m.get(k);a.value++;if(r.solved)a.solved++;if(r.res)a.adj++;if(r.nr)a.nr++}for(const a of m.values())a.hold=a.value-a.adj;return [...m.values()].sort((a,b)=>b.value-a.value)}
@@ -1333,11 +1336,26 @@ function applyEditing(){document.body.classList.toggle('editing',editing);$$('#s
 $('#editBtn').onclick=()=>{editing=!editing;$('#editBtn').classList.toggle('on',editing);$('#editBtn').textContent=editing?'Done editing':'Edit text';if(!editing){document.activeElement?.blur?.();refresh(0)}else{applyEditing();renderDock()}};
 
 /* ---------- data check (shown under the CS / VIP import) ---------- */
+function afrCheck(ds,I,A){
+  const col=I.afrAt>=0?ds.map.afrAt:(I.afr>=0?ds.map.afr:'');
+  if(!col)return '<div class="warn">Kolom AFR belum ada (AFR taken at / afr_taken_at) — AFR tidak bisa dihitung. Pilih di Column mapping.</div>';
+  const v=A.v.slice().sort((a,b)=>a-b),n=v.length,mean=n?v.reduce((s,x)=>s+x,0)/n:null,med=n?(n%2?v[n>>1]:(v[n/2-1]+v[n/2])/2):null;
+  const w=[];
+  if(I.afrAt>=0&&!/afr|first take|first taken/.test(norm(col)))w.push('Kolom "'+esc(col)+'" bukan kolom AFR lock — bisa berisi waktu monitor terakhir, bukan first take. Isi kolom AFR taken at / afr_taken_at.');
+  if(I.afrAt<0)w.push('Memakai kolom menit "'+esc(col)+'" (bukan timestamp lock) — pastikan satuannya menit dan first take Monitor By.');
+  if(I.afrBy<0)w.push('Kolom AFR taken by belum ada: agent diambil dari Monitor By saat ini, jadi setelah take over AFR per agent bisa salah.');
+  if(A.neg)w.push(fInt(A.neg)+' baris dibuang karena waktu take lebih awal dari Created (cek zona waktu / format).');
+  if(A.bad)w.push(fInt(A.bad)+' baris dibuang karena waktu tidak terbaca.');
+  if(A.noBy)w.push(fInt(A.noBy)+' baris dibuang karena agen first take kosong.');
+  return `<div>AFR dipakai: <b>${esc(col)}</b> · first take Monitor By: <b>${fInt(n)}</b> · rata-rata <b>${mean==null?'—':f1(mean)+'m'}</b> · median ${med==null?'—':f1(med)+'m'}${A.ai?` · ${fInt(A.ai)} first take AI/DotAI tidak dihitung`:''}</div>${w.map(x=>'<div class="warn">'+x+'</div>').join('')}`}
 function dataCheck(ds,k){if(!ds||k==='rc')return '';const I=idx(ds,MAIN_FIELDS),g=(r,f)=>I[f]<0?'':String(r[I[f]]??'').trim(),EX=exclList();
-  let n=0,noCat=0,vy=0,vn=0,ex=0,sol=0,fr=0,nr=0,o={};
+  let n=0,noCat=0,vy=0,vn=0,ex=0,sol=0,fr=0,nr=0,o={};const A={v:[],neg:0,bad:0,noBy:0,ai:0};
   for(const r of ds.rows){n++;if(!g(r,'category')||!g(r,'problem')){noCat++;continue}
     if(EX.includes(norm(g(r,'handler')))||EX.includes(norm(g(r,'monitored')))||EX.includes(norm(g(r,'reporter')))){ex++;continue}
     if(I.vip>=0){yes(g(r,'vip'))?vy++:vn++}
+    if(I.afrAt>=0||I.afr>=0){const vp=I.vip>=0?yes(g(r,'vip')):null;if(!(vp!=null&&((k==='cs'&&vp)||(k==='vip'&&!vp)))){let a=null;
+      if(I.afrAt>=0){if(filled(r[I.afrAt])){const t=tsOf(r[I.afrAt]),c0=tsOf(r[I.date]);if(t==null||c0==null)A.bad++;else if(t<c0)A.neg++;else a=(t-c0)/6e4}}else a=numAfr(g(r,'afr'));
+      if(a!=null){const by=I.afrBy>=0?agentName(g(r,'afrBy')):agentName(g(r,'monitored'));if(!by)A.noBy++;else if(EX.includes(norm(by))||/^(ai|dotai)$/i.test(norm(by)))A.ai++;else A.v.push(a)}}}
     const st=g(r,'status');if(statusSolved(st)){sol++;if(I.fr>=0&&filled(r[I.fr]))fr++}if(/no\s*-?\s*resp/i.test(st)&&/bc\s*-?\s*2|after|conn/i.test(st))nr++;
     const iv=g(r,'inv');if(filled(iv))o[iv]=(o[iv]||0)+1}
   const oc=Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([a,b])=>`${esc(a)} ${fInt(b)}`).join(' · ')||'—';
@@ -1345,6 +1363,7 @@ function dataCheck(ds,k){if(!ds||k==='rc')return '';const I=idx(ds,MAIN_FIELDS),
    <div>${fInt(n)} baris · ${fInt(noCat)} tanpa Category/Problem (tidak dihitung) · ${fInt(ex)} user dikecualikan</div>
    ${I.vip>=0?`<div>VIP = Yes: <b>${fInt(vy)}</b> → ${k==='cs'?'VIP Report':'dipakai'} · VIP = No/kosong: <b>${fInt(vn)}</b> → ${k==='cs'?'Customer Support':'diabaikan'}</div>`:`<div class="warn">Kolom VIP belum dimapping — ${k==='cs'?'semua baris dianggap Customer Support':'semua baris dianggap VIP'}.</div>`}
    <div>Status Solved: ${fInt(sol)}${I.fr>=0?` · dengan first response: ${fInt(fr)} (= Solved resmi)`:' · <span class="warn">kolom First Response belum dimapping</span>'} · No Resp BC2/After Conn.: ${fInt(nr)}</div>
+   ${afrCheck(ds,I,A)}
    <div>Kolom H+1 dipakai: <b>${esc(ds.map.inv||'— belum ada')}</b> · isi: ${oc}</div>${!ds.map.inv?'<div class="warn">Hasil investigasi H+1 belum terbaca, jadi before = after. Pilih kolomnya di Column mapping → "Investigation outcome (H+1)".</div>':''}</div>`}
 
 /* ---------- import ---------- */

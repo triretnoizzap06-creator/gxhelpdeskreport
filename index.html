@@ -449,6 +449,17 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .nrpair{display:grid;grid-template-columns:1fr 2.4cqw 1fr;gap:.8cqw;align-items:stretch;min-width:0}
 .nrpair .nrbox{display:flex;flex-direction:column;justify-content:center}
 .nrday{display:flex;flex-direction:column;min-height:0;padding:1cqw 1.3cqw}.nrday .vb{min-height:0;--vn:.66cqw;--vx:.66cqw}.nrday .ctitle{margin-bottom:.4cqw}.nrday .vb .x{overflow:visible;text-overflow:clip;font-size:.62cqw}.nrday .vb{--vg:.3cqw;--bw:80%}.nrday .ctitle{letter-spacing:.03em}
+.ring.sm svg{width:8.6cqw;height:8.6cqw}.ring.sm .big{font-size:1.75cqw}.ring.sm .lb{font-size:.7cqw}
+.nrring{display:flex;flex-direction:column;justify-content:center}.nrring .impact{gap:.8cqw}.nrring .ic{gap:.5cqw}.nrring .ic h3{font-size:1cqw;margin:0}.nrring .ic p{font-size:.78cqw}.nrring .arrow b{font-size:1.9cqw}.nrring .arrow svg{width:3cqw;height:1.5cqw}.legend.warn{color:#C93400}
+.r3wrap{display:flex;flex-direction:column;gap:.7cqw;flex:1;min-height:0}
+.r3{padding:.7cqw 1.1cqw;flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+.r3h{flex-shrink:0;display:flex;align-items:center;gap:.7cqw;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;margin-bottom:.3cqw}
+.r3h .rkc{width:1.8cqw;height:1.8cqw;border-radius:50%;background:#1D1D1F;color:#F5C518;display:grid;place-items:center;font-weight:700;font-size:.85cqw;flex-shrink:0}
+.r3h .cid{font-size:1.05cqw}.r3h .mut{font-size:.8cqw;overflow:hidden;text-overflow:ellipsis}.r3h .cnt{font-size:.72cqw;font-weight:700;background:#FFF3C4;color:#7A5C00;padding:.1cqw .55cqw;border-radius:999px}.r3h .sev{margin-top:0}
+.r3t{table-layout:fixed}.r3t th{font-size:.68cqw;padding:.2cqw .45cqw}.r3t td{font-size:.74cqw;padding:.18cqw .45cqw;vertical-align:top;line-height:1.3;overflow:hidden}
+.r3t td div{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}.r3t .wo{margin-top:0}
+.rl .pr{font-size:.76cqw;color:#3A3A3C;max-width:26cqw;white-space:normal}.rl .sm2{font-size:.7cqw;font-weight:400}.rl td{vertical-align:top}.rl .wo{margin-top:0}
+.nrbars .hb .lab{font-size:.95cqw}.nrbars .hb .val{font-size:.95cqw}
 /* full-bleed slides */
 .slide.full{padding:0}
 /* soft cover / divider / closing — yellow · white · black, calm */
@@ -538,6 +549,7 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
   .empty{gap:8px;border-radius:18px;padding:28px 18px;min-height:240px}.empty b{font-size:18px}
   .only-w{display:none}.only-n{display:block}
   .nrpair{grid-template-columns:1fr;gap:10px}.nrday .vb{height:200px;flex:none}.card.scroll{max-height:70vh}.tbl.rk td,.tbl.rk .agn b{font-size:12px}.tbl.rk .tm{font-size:11px}.stks{width:auto;grid-template-columns:1fr 1fr}.stk b{font-size:26px}
+  .ring.sm svg{width:120px;height:120px}.ring.sm .big{font-size:20px}.nrring .ic h3{font-size:13px}.nrring .ic p{font-size:11px}.r3{padding:12px}.r3h{flex-wrap:wrap;white-space:normal}.r3h .cid{font-size:15px}.r3h .rkc{width:26px;height:26px;font-size:12px}.r3h .mut,.r3h .cnt{font-size:11px}.r3t{display:block;overflow-x:auto}.r3t th,.r3t td{font-size:11px}.rl .pr,.rl .sm2{font-size:11px}
   .nrrow{grid-template-columns:1fr 1fr;gap:10px}.nrc{border-left-width:4px;border-radius:8px;padding:10px 12px;display:block}.nrc .v{font-size:24px}.nrc .l{font-size:13px}.nrc .f{font-size:11px}.nrlab{font-size:11px;margin:14px 0 8px}.nrimp{grid-template-columns:1fr;gap:10px;margin-top:12px}.nrarr{display:none}.nrbox{border-radius:10px;padding:12px 14px}.nrbox .t{font-size:13px}.nrbox .big{font-size:30px}.nrbox .s{font-size:12px}.nrsum{font-size:12px;padding:12px 14px;border-radius:10px}
   .tc2{grid-template-columns:1fr;gap:10px}.tc2 .rk-row{grid-template-columns:24px minmax(0,1fr) 60px;gap:10px}.dn.sm.col svg,.dn.sm.xs svg{height:160px;max-height:none}.gi2{padding:8px 0}.gi2 .ds{margin-left:28px}.gi2 .trk{height:5px}
   .br{grid-template-columns:28px minmax(0,1fr) auto;gap:10px;padding:10px 12px;border-radius:12px}.brk{width:26px;height:26px}.bn b{font-size:15px}.bn span{font-size:11px}.bv{font-size:24px}.bv small{font-size:11px}.bxl{grid-template-columns:1fr;gap:6px;padding-top:10px}.bx{grid-template-columns:18px auto 1fr auto;gap:6px}.bx .mut{font-size:11px}
@@ -706,12 +718,24 @@ const RC_FIELDS=[
  {k:'branch',l:'Branch',a:['branch office','branch','area','region']},
  {k:'wo',l:'WO number',a:['wo number','wo no','work order']},
  {k:'product',l:'Package',a:['product variant','product','paket']},
- {k:'resolution',l:'Kendala / Action',a:['resolution','repair result','hasil perbaikan','penyelesaian','action','kendala']},
+ {k:'kendala',l:'Kendala',a:['kendala','root cause','cause','keterangan kendala','issue detail']},
+ {k:'action',l:'Action',a:['action','tindakan','penanganan','resolution','repair result','hasil perbaikan','penyelesaian']},
  {k:'cso',l:'CSO',a:['cso']},
  {k:'ctso',l:'CTSO',a:['ctso']}
 ];
 const FIELDS_OF=k=>k==='rc'?RC_FIELDS:MAIN_FIELDS;
-function detect(headers,fields){const map={},used=new Set();for(const f of fields){map[f.k]='';for(const a of f.a){const h=headers.find(h=>!used.has(h)&&norm(h)===a);if(h){map[f.k]=h;used.add(h);break}}}return map}
+function detect(headers,fields,rows){const map={},used=new Set();for(const f of fields){map[f.k]='';for(const a of f.a){const h=headers.find(h=>!used.has(h)&&norm(h)===a);if(h){map[f.k]=h;used.add(h);break}}}
+  const free=h=>!used.has(h),take=(k,h)=>{if(h&&!map[k]){map[k]=h;used.add(h)}};
+  if(fields===MAIN_FIELDS){
+    if(!map.team){const c=headers.filter(h=>free(h)&&/sub ?div/.test(norm(h)));take('team',c.find(h=>/handl/.test(norm(h)))||c.find(h=>!/monit/.test(norm(h))))}
+    if(!map.monTeam){take('monTeam',headers.find(h=>free(h)&&/sub ?div/.test(norm(h))&&/monit/.test(norm(h))))}
+    if(!map.inv)take('inv',headers.find(h=>free(h)&&/invest|h ?1|outcome/.test(norm(h))));
+    if(!map.inv&&rows){let best=null,bs=0;headers.forEach((h,j)=>{if(!free(h))return;let sc=0;for(const r of rows.slice(0,3000)){const v=norm(r[j]);if(v==='solved by our side'||v==='unresolved')sc++}if(sc>bs){bs=sc;best=h}});if(bs>0)take('inv',best)}
+    if(!map.vip)take('vip',headers.find(h=>free(h)&&/\bvip\b/.test(norm(h))&&!/group|handler|name/.test(norm(h))));
+    if(!map.fr)take('fr',headers.find(h=>free(h)&&/first response/.test(norm(h))&&!/afr|avg|minute/.test(norm(h))));
+  }
+  if(fields===RC_FIELDS){if(!map.kendala)take('kendala',headers.find(h=>free(h)&&/kendala|root cause|cause/.test(norm(h))));if(!map.action)take('action',headers.find(h=>free(h)&&/action|tindakan|penanganan|resolution|perbaikan/.test(norm(h))))}
+  return map}
 async function readTable(file){
   if(!window.XLSX)throw new Error('Pembaca Excel belum termuat. Cek koneksi internet lalu coba lagi.');
   let wb;
@@ -843,9 +867,9 @@ function rcAnalyze(rep){
     const tk=g(r,'ticket');if(tk){if(seen.has(tk))continue;seen.add(tk)}
     const cid=g(r,'cid');if(!cid)continue;
     if(dt!=null){min=min==null?dt:Math.min(min,dt);max=max==null?dt:Math.max(max,dt)}
-    const res=g(r,'resolution');
+    const kendala=g(r,'kendala'),action=g(r,'action'),res=[kendala,action].filter(Boolean).join(' → ');
     const note=res||[g(r,'status'),g(r,'ctso')?'CTSO: '+g(r,'ctso'):(g(r,'cso')?'CSO: '+g(r,'cso'):'')].filter(Boolean).join(' · ');
-    const t={k:keyOf(tk||cid+'_'+dt),ticket:tk,date:dt??0,problem:g(r,'problem')||'(problem kosong)',category:cat,status:g(r,'status'),wo:g(r,'wo'),note,ctso:!!g(r,'ctso'),name:g(r,'name'),branch:g(r,'branch').replace(/^GlobalXtreme\s*/i,''),product:g(r,'product')};
+    const t={k:keyOf(tk||cid+'_'+dt),kendala,action,ticket:tk,date:dt??0,problem:g(r,'problem')||'(problem kosong)',category:cat,status:g(r,'status'),wo:g(r,'wo'),note,ctso:!!g(r,'ctso'),name:g(r,'name'),branch:g(r,'branch').replace(/^GlobalXtreme\s*/i,''),product:g(r,'product')};
     elig.push(t);if(!G.has(cid))G.set(cid,[]);G.get(cid).push(t);
   }
   const sev=n=>n>=6?'HIGH':n>=5?'MONITOR':n>=3?'MEDIUM':'LOW';
@@ -957,7 +981,7 @@ function sCsResolution(){const id='cs-resolution',m=C.cs,title='Resolution & No 
   if(!m)return head(id,'cs',title)+body(needCS());
   const ring=(v,col,lab)=>`<div class="ring"><svg viewBox="0 0 36 36"><circle class="tr" cx="18" cy="18" r="15.9155"/><circle class="pr" cx="18" cy="18" r="15.9155" stroke="${col}" style="--da:${Math.min(100,v)} 100"/></svg><div class="in"><div class="big">${fPct(v,2)}</div><div class="lb">${lab}</div></div></div>`;
   const imp=on(id,'impact')&&`<div class="card" data-a style="--f:1.15;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">Before vs after H+1 investigation</div><div class="impact"><div class="ic">${ring(m.rateOff,'#FF9F0A','Official')}<p>${fInt(m.off)} solved · ${fInt(m.nrTotal)} no response</p></div><div class="arrow"><b>+${f1(m.rateAdj-m.rateOff)} pts</b><svg viewBox="0 0 40 20" fill="none" stroke="#C7C7CC" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10h34M28 3l8 7-8 7"/></svg></div><div class="ic">${ring(m.rateAdj,'#34C759','Adjusted')}<p>${fInt(m.adj)} solved · ${fInt(m.nrAfter)} still no response</p></div></div>${m.hasInv?'':'<div class="legend">Kolom Investigation outcome belum dimapping — adjusted = official.</div>'}</div>`;
-  const nr=on(id,'noresp')&&`<div class="card" data-a style="--f:1;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">No response · before → after</div>${hbars([{label:'No Resp BC2',meta:'before',value:m.bc2,color:'#FF9F0A',sv:fPct(pct(m.bc2,m.total),2)},{label:'No Resp BC2',meta:'after H+1',value:m.bc2A,color:'#FFC46B',sv:fPct(pct(m.bc2A,m.total),2)},{label:'No Resp After Connected',meta:'before',value:m.ac,color:'#FF3B30',sv:fPct(pct(m.ac,m.total),2)},{label:'No Resp After Connected',meta:'after H+1',value:m.acA,color:'#FF8A80',sv:fPct(pct(m.acA,m.total),2)}],{style:'--hg:1.1cqw;--bh:.6cqw'})}</div>`;
+  const nr=on(id,'noresp')&&`<div class="card nrbars" data-a style="--f:1;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">No response · before → after H+1</div>${hbars([{label:'No Resp BC2 · before',value:m.bc2,color:'#FF9F0A',sv:''},{label:'No Resp BC2 · after H+1',value:m.bc2A,color:'#FFC46B'},{label:'No Resp After Conn. · before',value:m.ac,color:'#D70015'},{label:'No Resp After Conn. · after H+1',value:m.acA,color:'#F28B8B'}],{fmt:x=>`${fInt(x.value)} <span class="mut" style="font-weight:500">${fPct(pct(x.value,T),2)}</span>`,style:'--hg:.7cqw;--bh:.45cqw'})}</div>`;
   const h=hl(id,[`Investigasi H+1 memvalidasi <b>${fInt(m.recl)} dari ${fInt(m.nrTotal)}</b> kasus No Response sebagai solved.`,
     `Resolution naik dari ${fPct(m.rateOff,2)} menjadi <b>${fPct(m.rateAdj,2)}</b> (+${f1(m.rateAdj-m.rateOff)} poin).`,
     `Tersisa <b>${fInt(m.nrAfter)} kasus</b> genuine no response (${fInt(m.bc2A)} BC2, ${fInt(m.acA)} After Connected) untuk follow-up.`]);
@@ -1013,7 +1037,7 @@ function sTeamDetail(kind){const vip=kind==='vip',m=C[kind],id=kind+'-team-detai
     low?`Perlu perhatian: <b>${esc(low.label)}</b> dengan resolution ${fPct(rate(low))}.`:'']);
   return head(id,SECK(kind),title,`Cases, resolution and top agents per team`)+body(tb+h)}
 function rankTable(a,vip,mon,total){const max=Math.max(1,...a.map(x=>x.value));
-  return `<div class="card scroll fill1" data-a><table class="tbl rk"><thead><tr><th>#</th><th>Agent</th><th>Team</th><th class="n">${mon?'Monitored':'Handled'}</th><th class="n">Solved</th><th class="n">${vip?'Hold':'No resp'}</th><th class="n">Rate</th><th class="n">AFR</th></tr></thead><tbody>${a.map((x,i)=>`<tr><td class="mut">${i+1}</td><td><div class="agn"><i class="sw2" style="background:${tcol(x.team)}"></i><b>${esc(x.label)}</b></div><div class="mbar"><i style="width:${x.value/max*100}%;background:${i<3?'#F5C518':'#1F3A5F'}"></i></div></td><td class="mut tm">${esc(x.team)}</td><td class="n b">${fInt(x.value)}</td><td class="n">${fInt(x.adj)}</td><td class="n">${fInt(vip?x.hold:x.nr)}</td><td class="n">${x.value?fPct(rate(x)):'—'}</td><td class="n">${fAfr(x.afr)}</td></tr>`).join('')}</tbody></table></div><div class="legend"><span>${a.length} agents · total ${fInt(total)} cases · scroll untuk melihat semua</span></div>`}
+  return `<div class="card scroll fill1" data-a><table class="tbl rk"><thead><tr><th>No</th><th>Agent</th><th>Team</th><th class="n">${mon?'Monitored':'Handled'}</th><th class="n">Solved</th><th class="n">${vip?'Hold':'No resp'}</th><th class="n">Rate</th><th class="n">AFR</th></tr></thead><tbody>${a.map((x,i)=>`<tr><td class="mut">${i+1}</td><td><div class="agn"><i class="sw2" style="background:${tcol(x.team)}"></i><b>${esc(x.label)}</b></div><div class="mbar"><i style="width:${x.value/max*100}%;background:${i<3?'#F5C518':'#1F3A5F'}"></i></div></td><td class="mut tm">${esc(x.team)}</td><td class="n b">${fInt(x.value)}</td><td class="n">${fInt(x.adj)}</td><td class="n">${fInt(vip?x.hold:x.nr)}</td><td class="n">${x.value?fPct(rate(x)):'—'}</td><td class="n">${fAfr(x.afr)}</td></tr>`).join('')}</tbody></table></div><div class="legend"><span>${a.length} agents · total ${fInt(total)} cases · scroll untuk melihat semua</span></div>`}
 function sRanked(kind,key){const vip=kind==='vip',mon=key==='monitored',m=C[kind],id=`${kind}-${mon?'mon':'hand'}-rank`,title=`${vip?'VIP ':''}${mon?'Monitoring':'Handling'} Agents — Ranked`;
   if(!m)return head(id,SECK(kind),title)+body(vip?needVIP():needCS());
   const a=mon?m.mon:m.hand;if(!a.length)return head(id,SECK(kind),title)+body(needCol(mon?'Monitored By':'Handled By',vip?'VIP Group':'Customer Support'));
@@ -1063,7 +1087,7 @@ function sTeamDist(kind){const vip=kind==='vip',m=C[kind],id=kind+'-team-dist',t
   if(!m)return head(id,SECK(kind),title)+body(vip?needVIP():needCS());
   const t=m.teams,un=t.find(x=>x.label==='Unassigned');
   const rated=t.filter(x=>x.label!=='Unassigned'&&x.value>=Math.max(5,m.total*.01)).sort((a,b)=>rate(b)-rate(a));
-  const d=topN(t.map(x=>({label:x.label,value:x.value})),5).map(x=>({...x,color:x.label==='Others'?'#9DB8D9':tcol(x.label)}));
+  const d=t.map(x=>({label:x.label,value:x.value,color:tcol(x.label)}));
   const pie=on(id,'share')&&`<div class="card" data-a style="--f:.75;display:flex;flex-direction:column"><div class="ctitle">Share of cases</div><div class="dn sm col">${donut(d,fInt(m.total),'cases')}${legend(d,m.total)}</div></div>`;
   const tb=on(id,'detail')&&`<div class="card scroll" data-a style="--f:1.7"><div class="ctitle">Team detail</div>${teamTable(m,vip)}</div>`;
   const h=hl(id,[`<b>${esc(t[0].label)}</b> menangani porsi terbesar: ${fInt(t[0].value)} kasus (${fPct(pct(t[0].value,m.total))}).`,
@@ -1075,8 +1099,10 @@ function sComposition(){const id='cs-composition',m=C.cs,title='Case Composition
   const it=m.issue.slice(0,3).map(x=>({...x,color:x.label==='Internet'?'#F5C518':x.label==='Administration'?'#1F3A5F':'#3E6E9E'}));const ar=m.sub[0];
   const sb='--hg:.6cqw;--bh:.42cqw';
   const issue=on(id,'issue')&&`<div class="card" data-a style="--f:1.1;display:flex;flex-direction:column"><div class="ctitle">Issue type</div><div class="dn sm xs">${donut(it,fInt(m.total),'cases')}${legend(it,m.total)}</div></div>`;
-  const area=on(id,'area')&&`<div class="card" data-a style="--f:1;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">Sub area</div>${hbars(m.sub.slice(0,4).map((x,j)=>({label:x.label,value:x.value,meta:`${fPct(pct(x.adj,x.value))} resolved`,sv:fPct(pct(x.value,m.total)),color:j?'#1F3A5F':'#F5C518'})),{style:sb})}</div>`;
-  const inc=on(id,'incident')&&`<div class="card" data-a style="--f:1;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">Service incident</div>${m.hasIncident?hbars(m.incident.slice(0,4).map((x,j)=>({label:x.label,value:x.value,sv:fPct(pct(x.value,m.total)),color:j?'#1F3A5F':'#F5C518'})),{style:sb}):'<div class="legend">Kolom Service Incident belum dimapping.</div>'}</div>`;
+  const PIE=['#F5C518','#1F3A5F','#0A84FF','#9DB8D9','#34C759','#FF9F0A'];
+  const area=on(id,'area')&&`<div class="card" data-a style="--f:1.1;display:flex;flex-direction:column"><div class="ctitle">Sub area</div><div class="dn sm xs">${donut(topN(m.sub,4).map((x,j)=>({...x,color:PIE[j]})),fInt(m.total),'cases')}${legend(topN(m.sub,4).map((x,j)=>({...x,color:PIE[j],meta:x.adj!=null?`${fPct(pct(x.adj,x.value))} resolved`:''})),m.total)}</div></div>`;
+  const IPC={'ISP Side':'#0A84FF','Customer Side':'#FF9F0A','Administration':'#1F3A5F','Not set':'#9DB8D9'};
+  const inc=on(id,'incident')&&`<div class="card" data-a style="--f:1.1;display:flex;flex-direction:column"><div class="ctitle">Service incident</div>${m.hasIncident?`<div class="dn sm xs">${donut(topN(m.incident,4).map((x,j)=>({...x,color:IPC[x.label]||PIE[j]})),fInt(m.total),'cases')}${legend(topN(m.incident,4).map((x,j)=>({...x,color:IPC[x.label]||PIE[j]})),m.total)}</div>`:'<div class="legend">Kolom Service Incident belum dimapping.</div>'}</div>`;
   const top=m.prob.slice(0,6),max=Math.max(1,...top.map(x=>x.value));
   const badge=x=>{const r=m.list.find(z=>z.problem===x.label),iss=r?r.issue:'';return `<span class="badge ${iss==='Administration'?'ad':iss==='Internet'?'':'ot'}">${iss==='Administration'?'ADMIN':iss==='Internet'?'INTERNET':esc(String(iss).toUpperCase().slice(0,8))}</span>`};
   const cat=on(id,'topcat')&&`<div class="card" data-a style="margin-top:var(--gap)"><div class="ctitle">Top complaint categories</div><div class="tc2">${top.map((x,j)=>`<div class="rk-row"><div class="no">${String(j+1).padStart(2,'0')}</div><div class="hb"><div class="r"><div class="lab">${badge(x)}${esc(x.label)}</div><div></div><div class="trk"><div class="f" style="--w:${x.value/max*100}%;--fc:${j?'#1F3A5F':'#F5C518'}"></div></div></div></div><div class="v">${fInt(x.value)}<small>${fPct(pct(x.value,m.total))}</small></div></div>`).join('')}</div></div>`;
@@ -1105,23 +1131,24 @@ function sVipIssuesGroups(){const id='vip-issues',m=C.vip,title='VIP Top Issues 
     g.length?`Top ${g.length} corporate = <b>${fPct(pct(g.reduce((s,x)=>s+x.value,0),CR.length))}</b> dari ticket yang punya nama perusahaan.`:'']);
   return head(id,'vip',title,'What VIP customers report, and who reports most')+body((row(iss,grp)+h)||allOff())}
 function nrCard(c,v,l,f,cls){return `<div class="nrc ${cls||''}" style="--c:${c}" data-a><div class="v">${v}</div><div class="l">${l}</div><div class="f">${f}</div></div>`}
-function sNoResp(){const id='cs-nr',m=C.cs,title='No Response Analysis & Resolution Rate Impact';const tg=on(id,'daily')?seg(id,['bar','line']):'';
-  if(!m)return head(id,'cs',title,'',tg)+body(needCS());
+function sNoResp(){const id='cs-nr',m=C.cs,title='No Response Analysis & Resolution Rate Impact';
+  if(!m)return head(id,'cs',title)+body(needCS());
   const T=m.total,R=esc(C.long);
   const before=on(id,'before')&&`<div class="nrrow">${nrCard('#F5C518',fInt(T),'Total Cases',R,'k')}${nrCard('#248A3D',fInt(m.off),'Solved',`${fPct(m.rateOff,2)} official rate`)}${nrCard('#C93400',fInt(m.bc2),'No Resp BC2',`${fPct(pct(m.bc2,T),2)} of total cases`)}${nrCard('#D70015',fInt(m.ac),'No Resp After Conn.',`${fPct(pct(m.ac,T),2)} of total cases`)}</div>`;
   const after=on(id,'after')&&`<div class="nrlab" data-a>Resolution rate impact — H+1 investigation</div><div class="nrrow">${nrCard('#F5C518',fInt(T),'Total Cases',R,'k')}${nrCard('#248A3D',fInt(m.adj),'Identified Resolved Cases',`${fPct(m.rateAdj,2)} adj. rate`)}${nrCard('#C93400',fInt(m.bc2A),'No Resp BC2',`${fPct(pct(m.bc2A,T),2)} of total cases`)}${nrCard('#D70015',fInt(m.acA),'No Resp After Conn.',`${fPct(pct(m.acA,T),2)} of total cases`)}</div>`;
-  const imp=on(id,'impact')&&`<div class="nrpair" data-a style="--f:.95">
-    <div class="nrbox bad"><div class="t">Tanpa Investigasi H+1</div><div class="big">${fPct(m.rateOff,2)}</div><div class="s">${fInt(m.off)} solved · ${fInt(m.nrTotal)} Total No Resp</div></div>
-    <div class="nrarr"><svg viewBox="0 0 40 20" fill="none" stroke="#8E8E93" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10h34M28 3l8 7-8 7"/></svg></div>
-    <div class="nrbox good"><div class="t">Setelah Investigasi H+1</div><div class="big">${fPct(m.rateAdj,2)}</div><div class="s">${fInt(m.adj)} solved · Genuine No Response ${fInt(m.nrTotal)} → ${fInt(m.nrAfter)} cases · ${fInt(m.recl)} reclassified</div></div></div>`;
-  let daily='';if(on(id,'daily')){const t=ctype(id,'bar'),items=dayItems(m).map(x=>({...x,label:x.short,short:null}));
-    daily=`<div class="card nrday" data-a style="--f:1.35"><div class="ctitle">Daily case volume · avg ${f1(m.avg)}/day${m.afr!=null?` · AFR ${f1(m.afr)}m`:''} · non-inv. rate ${fPct(m.nonInvRate,1)}</div>${t==='line'?lineChart(items,{id}):vbars(items)}</div>`}
-  const bottom=(imp||daily)?`<div class="row grow" style="margin-top:.9cqw;min-height:14cqw">${imp||''}${daily}</div>`:'';
-  const pk=peakDay(m),gap=m.rateAdj-90;
-  const h=hl(id,[`Investigasi H+1 memvalidasi <b>${fInt(m.recl)} dari ${fInt(m.nrTotal)}</b> No Response; resolution naik ${fPct(m.rateOff,2)} → <b>${fPct(m.rateAdj,2)}</b>.`,
-    `Overall resolution ${gap>=0?`<b>${f1(gap)} poin di atas</b>`:`<b>${f1(-gap)} poin di bawah</b>`} target 90%. Tersisa ${fInt(m.nrAfter)} genuine no response.`,
-    `${fInt(T)} kasus dalam ${m.nDays} hari (avg ${f1(m.avg)}/hari); puncak ${ID_DATE(pk.day)} (${fInt(pk.value)}).`]);
-  return head(id,'cs',title,`Helpdesk CSO Team · ${fInt(T)} Total Cases${m.hasInv?'':' · Investigation outcome belum dimapping'}`,tg)+body(((before||'')+(after||'')+bottom+h)||allOff())}
+  const ring=(v,col,lab)=>`<div class="ring sm"><svg viewBox="0 0 36 36"><circle class="tr" cx="18" cy="18" r="15.9155"/><circle class="pr" cx="18" cy="18" r="15.9155" stroke="${col}" style="--da:${Math.min(100,v)} 100"/></svg><div class="in"><div class="big">${fPct(v,2)}</div><div class="lb">${lab}</div></div></div>`;
+  const imp=on(id,'impact')&&`<div class="card nrring" data-a style="--f:1.1"><div class="ctitle">Before vs after H+1 investigation</div><div class="impact">
+     <div class="ic">${ring(m.rateOff,'#D70015','Official')}<h3 class="c-r">Tanpa Investigasi H+1</h3><p>${fInt(m.off)} solved · ${fInt(m.nrTotal)} no response</p></div>
+     <div class="arrow"><b>+${f1(m.rateAdj-m.rateOff)} pts</b><svg viewBox="0 0 40 20" fill="none" stroke="#9DB8D9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10h34M28 3l8 7-8 7"/></svg><span>${fInt(m.recl)} reclassified</span></div>
+     <div class="ic">${ring(m.rateAdj,'#248A3D','Adjusted')}<h3 class="c-g">Setelah Investigasi H+1</h3><p>${fInt(m.adj)} solved · ${fInt(m.nrAfter)} still no response</p></div></div>
+     ${m.hasInv?'':'<div class="legend warn">Kolom Investigation outcome belum terbaca — cek Import data → Column mapping.</div>'}</div>`;
+  const nr=on(id,'noresp')&&`<div class="card nrbars" data-a style="--f:1;display:flex;flex-direction:column;justify-content:center"><div class="ctitle">No response · before → after H+1</div>${hbars([{label:'No Resp BC2 · before',value:m.bc2,color:'#FF9F0A'},{label:'No Resp BC2 · after H+1',value:m.bc2A,color:'#FFC46B'},{label:'No Resp After Conn. · before',value:m.ac,color:'#D70015'},{label:'No Resp After Conn. · after H+1',value:m.acA,color:'#F28B8B'}],{fmt:x=>`${fInt(x.value)} <span class="mut" style="font-weight:500">${fPct(pct(x.value,T),2)}</span>`,style:'--hg:.7cqw;--bh:.45cqw'})}</div>`;
+  const bottom=(imp||nr)?`<div class="row grow" style="margin-top:.9cqw">${imp||''}${nr||''}</div>`:'';
+  const gap=m.rateAdj-90;
+  const h=hl(id,[`Investigasi H+1 memvalidasi <b>${fInt(m.recl)} dari ${fInt(m.nrTotal)}</b> No Response sebagai Solved / Solved by Our Side.`,
+    `Resolution naik ${fPct(m.rateOff,2)} → <b>${fPct(m.rateAdj,2)}</b> (+${f1(m.rateAdj-m.rateOff)} poin), ${gap>=0?`${f1(gap)} poin di atas`:`${f1(-gap)} poin di bawah`} target 90%.`,
+    `Tersisa <b>${fInt(m.nrAfter)} kasus</b> genuine no response (${fInt(m.bc2A)} BC2, ${fInt(m.acA)} After Connected) untuk follow-up.`]);
+  return head(id,'cs',title,`Helpdesk CSO Team · ${fInt(T)} Total Cases`)+body(((before||'')+(after||'')+bottom+h)||allOff())}
 /* ---- Repeat complaint: ticket + work order ---- */
 function woUrl(wo){if(!wo)return '';const own=S.edits['wo.'+keyOf(wo)];if(own)return own;const tpl=String(S.rc.woLink||'').trim();return tpl?tpl.replace(/\{wo\}/g,encodeURIComponent(wo)):''}
 const LINK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg>';
@@ -1131,20 +1158,24 @@ function woChip(wo){const u=woUrl(wo),L=esc(/^wo\b|^wo[-_ ]/i.test(wo)?wo:'WO '+
 function chronoRows(r,rep,max){return r.top.map((x,i)=>{const t=x.tickets,show=t.length>max?t.slice(0,max-1):t,more=t.length-show.length,wos=t.filter(k=>k.wo).length;
     return `<div class="card cr" data-a><div class="who"><span class="rkc">${i+1}</span><div style="min-width:0"><div class="cid">${esc(x.cid)}</div><div class="mt">${esc(x.name)}${x.product?' · '+esc(x.product):''}</div>${ed(`rc.${rep}.cid.${keyOf(x.cid)}`,'','div','mt','style="color:#D70015"')}<span class="cnt">${x.count} tickets · ${wos} WO</span> <span class="sev ${x.sev.toLowerCase()}">${x.sev}</span>${x.allRes?' <span class="sev ok">Resolved</span>':''}</div></div>
      <div class="tl">${show.map((k,j)=>`${j?'<span class="ar">›</span>':''}<div class="tk ${k.wo?'has-wo':''}"><div class="d">${ddmm(k.date)}${k.ticket?` <span class="tno">#${esc(k.ticket)}</span>`:''}</div><div class="p">${esc(k.problem)}</div>${k.wo?woChip(k.wo):''}${ed(`rc.${rep}.${k.k}`,esc(k.note),'div','nt')}</div>`).join('')}${more?`<span class="ar">›</span><div class="tk more">+${more}</div>`:''}</div></div>`}).join('')}
-function sRepeat(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}`,sec=vip?'vip':'cs';const title=vip?'VIP Repeat Complaints':'Repeat Complaints — Customer Support';
+function sRepeat(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}`,sec=vip?'vip':'cs';const title=vip?'VIP Top 3 Repeat Complaints':'Top 3 Repeat Complaints';
   if(!r)return head(id,sec,title)+body(needRC());
   const o=vip?S.rc.vipOrigin:S.rc.hdOrigin;
-  const woT=r.elig.filter(k=>k.wo).length,woR=r.cand.reduce((n,x)=>n+x.tickets.filter(k=>k.wo).length,0);
-  const k=on(id,'kpi')&&`<div class="tiles" style="--cols:4;flex:3">${sm('y','doc','Tickets',r.elig.length,'complaint tickets')}${sm('b','wifi','Work orders',woT,`${fPct(pct(woT,r.elig.length))} of tickets`,'int','c-b')}${sm('o','alert','Repeat CIDs',r.cand.length,'2+ tickets','int','c-o')}${sm('r','list','Repeat tickets',r.repTickets,`${fInt(woR)} with WO`,'int','c-r')}</div>`;
-  const pr=on(id,'problems')&&`<div class="card" data-a style="flex:1.6;min-width:0"><div class="ctitle">Top problems</div>${r.prob.slice(0,3).map(x=>`<div class="pl"><span>${esc(x.label)}</span><b>${fInt(x.value)}</b></div>`).join('')}</div>`;
-  const top=on(id,'top3')&&(r.top.length?`<div class="chron">${chronoRows(r,rep,4)}</div>`:empty('Tidak ada repeat complaint','Tidak ada CID dengan 2+ tiket di periode ini.'));
-  const x0=r.top[0];
-  const h=hl(id,[`<b>${fInt(r.cand.length)} customer</b> komplain ≥2 kali: ${fInt(r.repTickets)} dari ${fInt(r.elig.length)} tiket (${fPct(pct(r.repTickets,r.elig.length))}).`,
-    x0?`<b>${esc(x0.cid)}</b> paling sering: ${x0.count} tiket, ${x0.tickets.filter(t=>t.wo).length} di antaranya dengan WO.`:'',
-    `${fInt(woR)} tiket repeat sudah dibuatkan Work Order — perbaikan pertama belum tuntas.`],true);
-  const first=(k||pr||h)?`<div class="row" style="flex:none">${k||''}${h||''}${pr||''}</div>`:'';
-  return head(id,sec,title,`Via ${esc(o)} · Ticket & Work Order`)+body((first+(top||''))||allOff())}
-
+  if(!r.top.length)return head(id,sec,title)+body(empty('Tidak ada repeat complaint','Tidak ada CID dengan 2+ tiket di periode ini.'));
+  const MAX=3;
+  const blocks=r.top.map((x,i)=>{const t=x.tickets,show=t.length>MAX?t.slice(-MAX):t,more=t.length-show.length;
+    return `<div class="card r3" data-a><div class="r3h"><span class="rkc">${i+1}</span><b class="cid">${esc(x.cid)}</b><span class="mut">${esc(x.name)}${x.product?' · '+esc(x.product):''}${x.branch?' · '+esc(x.branch):''}</span><span class="cnt">${x.count} tickets · ${t.filter(k=>k.wo).length} WO</span><span class="sev ${x.sev.toLowerCase()}">${x.sev}</span>${x.allRes?'<span class="sev ok">Resolved</span>':''}</div>
+     <table class="tbl r3t"><thead><tr><th style="width:7%">Date</th><th style="width:11%">Ticket</th><th style="width:16%">Problem</th><th style="width:13%">Work Order</th><th>Kendala</th><th>Action</th></tr></thead><tbody>${show.map(k=>`<tr><td class="b">${ddmm(k.date)}</td><td class="mut">${esc(k.ticket||'—')}</td><td class="b">${esc(k.problem)}</td><td>${k.wo?woChip(k.wo):'<span class="mut">—</span>'}</td><td>${ed(`rc.${rep}.${k.k}.kd`,esc(k.kendala||'—'),'div','')}</td><td>${ed(`rc.${rep}.${k.k}.ac`,esc(k.action||k.status||'—'),'div','')}</td></tr>`).join('')}${more?`<tr><td colspan="6" class="mut">+${more} tiket sebelumnya — lihat Other Repeat Complaints</td></tr>`:''}</tbody></table></div>`}).join('');
+  return head(id,sec,title,`Via ${esc(o)} · ${fInt(r.cand.length)} repeat customers · Ticket, Work Order, Kendala & Action`)+body(`<div class="r3wrap">${blocks}</div>`)}
+function sRepeatList(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}-list`,sec=vip?'vip':'cs';const title=vip?'VIP Other Repeat Complaints':'Other Repeat Complaints';
+  if(!r)return head(id,sec,title)+body(needRC());
+  const rest=r.cand.filter(x=>!r.top.includes(x));
+  if(!rest.length)return head(id,sec,title)+body(empty('Tidak ada repeat complaint lain','Semua repeat customer sudah tampil di Top 3.'));
+  const rows=rest.map((x,i)=>{const pr=groupCount(x.tickets,'problem').map(p=>`${esc(p.label)}${p.value>1?` ×${p.value}`:''}`).join(', ');const wos=x.tickets.filter(k=>k.wo);
+    return `<tr><td class="mut">${i+4}</td><td class="b">${esc(x.cid)}<div class="mut sm2">${esc(x.name)}</div></td><td class="n b">${x.count}</td><td class="pr">${pr}</td><td>${wos.length?wos.slice(0,2).map(k=>woChip(k.wo)).join(' ')+(wos.length>2?` <span class="mut">+${wos.length-2}</span>`:''):'<span class="mut">—</span>'}</td><td class="mut">${ddmm(x.tickets[0].date)} – ${ddmm(x.latest)}</td><td><span class="sev ${x.sev.toLowerCase()}">${x.sev}</span>${x.allRes?' <span class="sev ok">Resolved</span>':''}</td></tr>`}).join('');
+  const hi=rest.filter(x=>x.sev==='HIGH'||x.sev==='MONITOR').length;
+  const h=hl(id,[`${fInt(rest.length)} customer lain komplain ≥2 kali di ${esc(C.short)}.`,hi?`${hi} di antaranya level HIGH / MONITOR (≥5 tiket).`:'Tidak ada level HIGH / MONITOR di luar Top 3.',`${fInt(rest.filter(x=>!x.allRes).length)} customer masih punya tiket yang belum resolved.`]);
+  return head(id,sec,title,`Repeat customers beyond the Top 3 · ${esc(C.long)}`)+body(`<div class="card scroll fill1" data-a><table class="tbl rk rl"><thead><tr><th>No</th><th>CID / Customer</th><th class="n">Tickets</th><th>Problems</th><th>Work Order</th><th>Period</th><th>Level</th></tr></thead><tbody>${rows}</tbody></table></div>`+h)}
 function sVipOverview(){const id='vip-overview',m=C.vip,title='VIP Overview';const tg=on(id,'daily')?seg(id,['bar','line']):'';
   if(!m)return head(id,'vip',title,'',tg)+body(needVIP());
   const it=m.issue.slice(0,3).map(x=>({...x,color:x.label==='Internet'?'#F5C518':x.label==='Administration'?'#1F3A5F':'#3E6E9E'}));const pk=peakDay(m);
@@ -1192,23 +1223,22 @@ function sThanks(){return `<div class="cv2 ty2">${decor()}<div class="ty2-in"><d
 
 const SLIDES=[
  {id:'cover',g:'gen',t:'Cover',r:sCover,dark:1},
- {id:'cs-nr',g:'cs',t:'No Response Analysis & Resolution Rate Impact',r:sNoResp,need:'cs',blocks:[['before','Before investigation'],['after','After H+1 investigation'],['impact','Tanpa → Setelah H+1'],['daily','Daily case volume'],['hl','Key highlights']]},
+ {id:'cs-nr',g:'cs',t:'No Response Analysis & Resolution Rate Impact',r:sNoResp,need:'cs',blocks:[['before','Before investigation'],['after','After H+1 investigation'],['impact','Before vs after H+1'],['noresp','No response before → after'],['hl','Key highlights']]},
  {id:'cs-overview',g:'cs',t:'Customer Support Snapshot',r:sCsOverview,need:'cs',off:1,blocks:[['kpi','KPI tiles'],['daily','Daily volume'],['weeks','Week table'],['hl','Key highlights']]},
  {id:'cs-team-dist',g:'cs',t:'Handling Team Distribution',r:()=>sTeamDist('cs'),need:'cs',blocks:[['share','Share donut'],['detail','Team detail table'],['hl','Key highlights']]},
- {id:'cs-resolution',g:'cs',t:'Resolution & No Response (rings)',r:sCsResolution,need:'cs',off:1,blocks:[['impact','Before vs after H+1'],['noresp','No response breakdown'],['hl','Key highlights']]},
  {id:'cs-composition',g:'cs',t:'Case Composition & Top Complaints',r:sComposition,need:'cs',blocks:[['issue','Issue type'],['area','Sub area'],['incident','Service incident'],['topcat','Top complaint categories'],['hl','Key highlights']]},
- {id:'cs-agents',g:'cs',t:'Agent Performance',r:()=>sAgentPerf('cs'),need:'cs',blocks:[['handling','Handling'],['monitoring','Monitoring'],['hl','Key highlights']]},
  {id:'cs-best',g:'cs',t:'Best Performance',r:()=>sBestCombo('cs'),need:'cs',blocks:[['handling','Best handling'],['monitoring','Best monitoring'],['hl','Key highlights']]},
  {id:'cs-hand-rank',g:'cs',t:'Handling Agents — Ranked',r:()=>sRanked('cs','handler'),need:'cs',off:1,blocks:[['hl','Key highlights']]},
  {id:'cs-mon-rank',g:'cs',t:'Monitoring Agents — Ranked',r:()=>sRanked('cs','monitored'),need:'cs',off:1,blocks:[['hl','Key highlights']]},
- {id:'rc-hd',g:'cs',t:'Repeat Complaints — Customer Support',r:()=>sRepeat('hd'),need:'rc',top3:'hd',blocks:[['kpi','KPI tiles'],['hl','Key highlights'],['problems','Top problems',false],['top3','Top 3 chronology']]},
+ {id:'rc-hd',g:'cs',t:'Top 3 Repeat Complaints',r:()=>sRepeat('hd'),need:'rc',top3:'hd'},
+ {id:'rc-hd-list',g:'cs',t:'Other Repeat Complaints',r:()=>sRepeatList('hd'),need:'rc',blocks:[['hl','Key highlights']]},
  {id:'vip-overview',g:'vip',t:'VIP Overview',r:sVipOverview,need:'vip',blocks:[['kpi','KPI tiles'],['daily','Daily volume'],['mix','Issue mix'],['hl','Key highlights']]},
  {id:'vip-team-dist',g:'vip',t:'VIP Handling Team Distribution',r:()=>sTeamDist('vip'),need:'vip',blocks:[['share','Share donut'],['detail','Team detail table'],['hl','Key highlights']]},
  {id:'vip-issues',g:'vip',t:'VIP Top Issues & Top 5 Corporate Groups',r:sVipIssuesGroups,need:'vip',blocks:[['issues','Top issues'],['groups','Top 5 corporate groups'],['hl','Key highlights']]},
  {id:'vip-best',g:'vip',t:'VIP Best Performance',r:()=>sBestCombo('vip'),need:'vip',blocks:[['handling','Top handlers'],['monitoring','Best monitoring'],['hl','Key highlights']]},
- {id:'vip-agents',g:'vip',t:'VIP Agent Performance',r:()=>sAgentPerf('vip'),need:'vip',off:1,blocks:[['handling','Handling'],['monitoring','Monitoring'],['hl','Key highlights']]},
  {id:'vip-hand-rank',g:'vip',t:'VIP Handling Agents — Ranked',r:()=>sRanked('vip','handler'),need:'vip',off:1,blocks:[['hl','Key highlights']]},
- {id:'rc-vip',g:'vip',t:'VIP Repeat Complaints',r:()=>sRepeat('vip'),need:'rc',top3:'vip',blocks:[['kpi','KPI tiles'],['hl','Key highlights'],['problems','Top problems',false],['top3','Top 3 chronology']]},
+ {id:'rc-vip',g:'vip',t:'VIP Top 3 Repeat Complaints',r:()=>sRepeat('vip'),need:'rc',top3:'vip'},
+ {id:'rc-vip-list',g:'vip',t:'VIP Other Repeat Complaints',r:()=>sRepeatList('vip'),need:'rc',blocks:[['hl','Key highlights']]},
  {id:'thanks',g:'gen',t:'Thank You',r:sThanks,dark:1}
 ];
 const GROUPS=[['gen','Opening & closing'],['cs','Customer Support Report'],['vip','VIP Report']];
@@ -1305,7 +1335,7 @@ function renderImport(){
        <span class="chk"><input type="checkbox" data-rule="skipCanceled" ${S.rc.skipCanceled?'checked':''}> Abaikan tiket Canceled</span>
        <div><button class="btn sm" data-rule-reset>Reset rules</button></div></div></details>`:''}</div>`}).join('');
   $$('[data-file]').forEach(inp=>inp.onchange=async()=>{const f=inp.files[0];if(!f)return;const k=inp.dataset.file,st=$('#st-'+k);st.className='fstatus';st.textContent='Membaca file…';
-    try{const t=await readTable(f);t.map=detect(t.headers,FIELDS_OF(k));DS[k]=t;await idbPut(k,t);renderImport();refresh(0)}catch(err){st.className='fstatus err';st.textContent='Gagal membaca file: '+err.message}});
+    try{const t=await readTable(f);t.map=detect(t.headers,FIELDS_OF(k),t.rows);DS[k]=t;await idbPut(k,t);renderImport();refresh(0)}catch(err){st.className='fstatus err';st.textContent='Gagal membaca file: '+err.message}});
   $$('[data-map]').forEach(sel=>sel.onchange=async()=>{const k=sel.dataset.map;DS[k].map[sel.dataset.key]=sel.value;await idbPut(k,DS[k]);renderImport();refresh(0)});
   $$('[data-clear]').forEach(b=>b.onclick=async()=>{const k=b.dataset.clear;DS[k]=null;await idbPut(k,null);renderImport();refresh(0)});
   const ex=$('[data-excl]');if(ex)ex.onchange=()=>{S.excl=ex.value;save();refresh(0)};
@@ -1385,7 +1415,7 @@ addEventListener('beforeprint',buildPrint);addEventListener('afterprint',()=>{$(
 $('#printBtn').onclick=()=>{if(!visible().length){alert('Tidak ada slide yang ditampilkan.');return}buildPrint();print()};
 
 /* ---------- start ---------- */
-(async()=>{for(const k of ['cs','vip','rc']){const d=await idbGet(k);if(d&&d.headers&&d.rows)DS[k]=d}syncPeriod();refresh(0)})();
+(async()=>{for(const k of ['cs','vip','rc']){const d=await idbGet(k);if(d&&d.headers&&d.rows){const f=detect(d.headers,FIELDS_OF(k),d.rows);d.map=d.map||{};let ch=0;for(const x in f)if(!d.map[x]&&f[x]&&!Object.values(d.map).includes(f[x])){d.map[x]=f[x];ch=1}if(ch)idbPut(k,d);DS[k]=d}}syncPeriod();refresh(0)})();
 </script>
 </body>
 </html>

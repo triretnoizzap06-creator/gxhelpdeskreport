@@ -2,9 +2,11 @@
 
 A static, single-file presentation website (`index.html`) for the GlobalXtreme Customer Service After Sales meeting. It turns ticket exports into an executive deck titled **Helpdesk Report**. Every content slide shows a section tab (Customer Support Report / VIP Report) at the top, so there are no separate divider slides.
 
-- **Customer Support Report** (6 slides): No Response Analysis & Resolution Rate Impact (before vs after H+1 + daily volume, AFR, non-investigated rate) · Handling Team Distribution (share + team detail) · Case Composition & Top Complaints · Agent Performance (handling + monitoring) · Best Performance (handling + monitoring) · Repeat Complaints (Ticket & Work Order).
-- **VIP Report** (5 slides): VIP Overview · VIP Handling Team Distribution · VIP Top Issues & Top Groups · VIP Best Performance · VIP Repeat Complaints.
-- Optional, off by default: Customer Support Snapshot, Resolution & No Response (ring view), Handling/Monitoring Agents — Ranked tables, VIP Agent Performance, VIP Handling Agents — Ranked.
+- **Customer Support Report**: No Response Analysis & Resolution Rate Impact (before/after KPI rows, before-vs-after H+1 rings, no response before → after) · Handling Team Distribution (every Sub Division + detail table) · Case Composition & Top Complaints (issue type, sub area and service incident as pies) · Best Performance (handling + monitoring) · Top 3 Repeat Complaints (Ticket, Work Order, Kendala, Action) · Other Repeat Complaints.
+- **VIP Report**: VIP Overview · VIP Handling Team Distribution · VIP Top Issues & Top 5 Corporate Groups · VIP Best Performance · VIP Top 3 Repeat Complaints · VIP Other Repeat Complaints.
+- Optional, off by default: Customer Support Snapshot, Handling / Monitoring Agents — Ranked, VIP Handling Agents — Ranked.
+
+Column detection also reads cell values: a column containing "Solved by Our Side" / "Unresolved" is used as the H+1 Investigation outcome even when its header is named differently, and any header containing "Sub Div" is used as the Handle By Sub Division.
 
 Titles and charts are in English; every content slide has a **Key highlights** strip in Bahasa Indonesia, generated from the data and editable.
 

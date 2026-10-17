@@ -1,6 +1,12 @@
 # GX CS Report — Helpdesk CSO & VIP presentation
 
-A static, single-file presentation website (`index.html`) for the GlobalXtreme Customer Service After Sales meeting. It turns ticket exports into a compact deck (12 slides by default): cover, Customer Support overview, resolution & no response, issue type/sub area/incident, top complaint categories, team & agent performance, repeat complaints (CS), VIP overview, VIP handling & top issues, top VIP groups, repeat complaints (VIP), and a closing "Thank you" slide. An optional "Agent volume detail" slide is off by default.
+A static, single-file presentation website (`index.html`) for the GlobalXtreme Customer Service After Sales meeting. It turns ticket exports into an executive deck titled **Helpdesk Report**. Every content slide shows a section tab (Customer Support Report / VIP Report) at the top, so there are no separate divider slides.
+
+- **Customer Support Report** (7 slides): Overview · Handling Team Distribution (share + team detail) · Resolution & No Response · Case Composition & Top Complaints · Agent Performance (handling + monitoring) · Best Performance (handling + monitoring) · Repeat Complaints (Ticket & Work Order).
+- **VIP Report** (5 slides): VIP Overview · VIP Handling Team Distribution · VIP Top Issues & Top Groups · VIP Best Performance · VIP Repeat Complaints.
+- Optional, off by default: Handling/Monitoring Agents — Ranked tables, VIP Agent Performance, VIP Handling Agents — Ranked.
+
+Titles and charts are in English; every content slide has a **Key highlights** strip in Bahasa Indonesia, generated from the data and editable.
 
 Everything runs in the browser. Imported files are not uploaded anywhere.
 
@@ -34,7 +40,8 @@ Imported rows are kept in the browser (IndexedDB), so a reload keeps the report.
 - **Customize Present**: choose which slides appear in Present and Print/PDF (switch per slide, or the eye icon in the slide list), change their order with ↑↓, and turn individual parts of a slide on or off (for example KPI tiles, daily volume, week table). The chips under the preview do the same for the current slide. Animation can be set to *Halus* (subtle fade, charts grow once) or *Tanpa animasi*. Settings persist in the browser; Export/Import Settings moves them to another device. Hidden slides stay viewable in the editor.
 - **Chart toggle**: Bar/Line or Bar/Pie on chart slides (hidden while presenting).
 - **Edit text**: edit slide takeaways, Top 3 notes and VIP group descriptions in place.
-- **Top 3 repeat**: choose the three CIDs from the dropdowns below the slide, or Auto.
+- **Top 3 repeat**: choose the three CIDs from the dropdowns below the slide, or Auto. Each ticket card shows the date, ticket number, problem and, when present, the Work Order.
+- **Work Order links**: click a WO chip (`+ link`) to paste its GXOne link; it then opens in a new tab from the slide and in Present. Or set a **WO link template** (for example `https://<gxone>/work-order/{wo}`) under Import data → Repeat Complaint → Filter rules so every WO gets a link automatically. A link saved on a single WO overrides the template.
 - **Present**: full screen; ← → / Space / PageUp/PageDown, click, or swipe on mobile. Esc exits.
 - **Print / PDF**: one 16:9 page per visible slide.
 

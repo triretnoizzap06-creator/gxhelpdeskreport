@@ -97,3 +97,8 @@ Framework preset **Other**, no build command, output directory `.`. Upload the c
 - Saat Present / Print, dropdown dan kolom isian tampil sebagai teks statis.
 - Header kolom Top 3: **User ID** besar, lalu satu baris kecil `CID · Product`. Kolom User ID juga dicari lewat isi kolom (alfanumerik, mis. `kregeugenG342A`) bila namanya tidak standar; bila masih salah, pilih manual di Column mapping → *User ID*.
 - Tiap tanggal punya baris `Kendala :` dan `Action :` selebar kartu; tingginya menyesuaikan panjang teks (auto-fit).
+
+## Best Performance & AFR
+- Kartu Best handling / Best monitoring (CS dan VIP) bisa digulir: semua agent tampil (peringkat 4 dst), judul kartu tetap menempel di atas.
+- AFR handling = rata-rata New → first take dari tiket yang **ditangani** agent tsb (Handled By); first take AI tidak dihitung.
+- AFR monitoring = rata-rata New → first take dari tiket yang **di-first-take** agent tsb (kolom AFR taken by). Arahkan kursor ke baris untuk melihat jumlah tiket yang dipakai.

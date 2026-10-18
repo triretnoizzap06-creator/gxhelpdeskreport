@@ -463,7 +463,7 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .agn{display:flex;align-items:center;gap:.4cqw;white-space:nowrap;overflow:hidden}.agn b{font-weight:600}.agn .mut{font-size:.86cqw;margin-left:.3cqw}
 .mbar{height:.25cqw;background:#EAEFF5;border-radius:999px;margin-top:.2cqw;overflow:hidden}.mbar i{display:block;height:100%;border-radius:999px}
 /* best performance columns */
-.bcol{display:flex;flex-direction:column;gap:.7cqw;justify-content:center}
+.bcol{display:flex;flex-direction:column;gap:.7cqw;justify-content:flex-start;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}.bcol>*{flex-shrink:0}.bcol{padding-top:0;padding-bottom:1cqw}.bcol>.ctitle{position:sticky;top:0;z-index:2;background:#fff;padding:1.5cqw 0 .6cqw;margin-bottom:0}
 .br{display:grid;grid-template-columns:2.4cqw minmax(0,1fr) auto;gap:1cqw;align-items:center;padding:.9cqw 1.1cqw;border-radius:1.1cqw;background:#F7F7F9}
 .br.first{background:#111;color:#fff}
 .brk{width:2.2cqw;height:2.2cqw;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:var(--t-small);background:#fff;border:1px solid rgba(0,0,0,.1)}
@@ -919,7 +919,7 @@ function prepMain(ds,kind,fromCs){
   }
   return out;
 }
-function afrNote(){const m=(DS.cs||DS.vip||{}).map||{};return (m.afr||m.afrAt)?'AFR = New → first take Monitor By (afr_taken_by).':''}
+function afrNote(){const m=(DS.cs||DS.vip||{}).map||{};return (m.afr||m.afrAt)?'AFR handling = tiket yang ditangani; AFR monitoring = tiket yang di-first-take (afr_taken_by).':''}
 function groupCount(list,key,filter){const m=new Map();for(const r of list){if(filter&&!filter(r))continue;const k=typeof key==='function'?key(r):r[key];if(!k)continue;m.set(k,(m.get(k)||0)+1)}return [...m].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value||String(a.label).localeCompare(String(b.label)))}
 /* group objects: value = cases, adj = resolved (aturan Investigation), nr = status No Response (BC2 + After Connected), hold = cases − resolved */
 function groupStats(list,key){const m=new Map();for(const r of list){const k=r[key];if(!k)continue;if(!m.has(k))m.set(k,{label:k,value:0,solved:0,adj:0,nr:0,hold:0});const a=m.get(k);a.value++;if(r.solved)a.solved++;if(r.res)a.adj++;if(r.nr)a.nr++}for(const a of m.values())a.hold=a.value-a.adj;return [...m.values()].sort((a,b)=>b.value-a.value)}
@@ -941,11 +941,13 @@ function metrics(list,kind){
   const tm=new Map();for(const r of list){if(!tm.has(r.team))tm.set(r.team,{label:r.team,value:0,solved:0,adj:0,nr:0,hold:0,h:new Map()});const t=tm.get(r.team);t.value++;if(r.solved)t.solved++;if(r.res)t.adj++;if(r.nr)t.nr++;if(r.handler)t.h.set(r.handler,(t.h.get(r.handler)||0)+1)}
   for(const t of tm.values())t.hold=t.value-t.adj;
   const teams=[...tm.values()].sort((a,b)=>(a.label==='Unassigned')-(b.label==='Unassigned')||b.value-a.value);
-  /* AFR per agent = first take Monitor By (afr_taken_by) */
-  const afrMap=new Map();for(const r of list){if(r.afr==null||!r.afrAgent)continue;const x=afrMap.get(r.afrAgent)||{s:0,n:0};x.s+=r.afr;x.n++;afrMap.set(r.afrAgent,x)}
-  const agent=key=>{const m=new Map();for(const r of list){const k=r[key];if(!k)continue;if(!m.has(k))m.set(k,{label:k,value:0,solved:0,adj:0,nr:0,hold:0,team:key==='monitored'?r.monTeam:r.team});const a=m.get(k);a.value++;if(r.solved)a.solved++;if(r.res)a.adj++;if(r.nr)a.nr++}
-    for(const [k,x] of afrMap)if(!m.has(k))m.set(k,{label:k,value:0,solved:0,adj:0,nr:0,hold:0,team:teamOf(k,'',kind),firstOnly:1});
-    for(const a of m.values()){a.hold=a.value-a.adj;const x=afrMap.get(a.label);a.afr=x?x.s/x.n:null}
+  /* AFR per role:
+     - Monitoring: rata-rata New -> first take untuk tiket yang DI-TAKE PERTAMA oleh agent tsb (afr_taken_by)
+     - Handling  : rata-rata New -> first take untuk tiket yang DITANGANI agent tsb (Handled By); first take AI tidak dihitung */
+  const afrBy=key=>{const mp=new Map();for(const r of list){if(r.afr==null)continue;const k=key==='handler'?r.handler:r.afrAgent;if(!k)continue;const x=mp.get(k)||{s:0,n:0};x.s+=r.afr;x.n++;mp.set(k,x)}return mp};
+  const agent=key=>{const afrMap=afrBy(key),m=new Map();for(const r of list){const k=r[key];if(!k)continue;if(!m.has(k))m.set(k,{label:k,value:0,solved:0,adj:0,nr:0,hold:0,team:key==='monitored'?r.monTeam:r.team});const a=m.get(k);a.value++;if(r.solved)a.solved++;if(r.res)a.adj++;if(r.nr)a.nr++}
+    if(key==='monitored')for(const [k,x] of afrMap)if(!m.has(k))m.set(k,{label:k,value:0,solved:0,adj:0,nr:0,hold:0,team:teamOf(k,'',kind),firstOnly:1});
+    for(const a of m.values()){a.hold=a.value-a.adj;const x=afrMap.get(a.label);a.afr=x?x.s/x.n:null;a.afrN=x?x.n:0}
     return [...m.values()].sort((a,b)=>b.value-a.value||a.label.localeCompare(b.label))};
   const afrs=list.map(r=>r.afr).filter(v=>v!=null);
   return {total,off,bc2,ac,nrTotal:bc2+ac,recl,adj,bc2A,acA,nrAfter:vip?0:bc2A+acA,hold,resN,nonInvRate,nonInvN:nonInv.length,rateOff:pct(off,total),rateAdj:pct(adj,total),min,max,daily,nDays,avg:total/nDays,weeks,teams,
@@ -1092,7 +1094,7 @@ function sCsOverview(){const id='cs-overview',m=C.cs,title='Customer Support Sna
   const r=row(on(id,'daily')&&dailyCard(id,m,'Daily case volume'),on(id,'weeks')&&`<div class="card" data-a style="--f:1;overflow:hidden"><div class="ctitle">Week performance</div>${weekTable(m)}</div>`);
   const h=hl(id,[`Total <b>${fInt(m.total)} kasus</b> dalam ${m.nDays} hari, rata-rata ${f1(m.avg)} kasus/hari.`,
     `Resolution rate <b>${fPct(m.rateAdj,2)}</b>, ${gap>=0?`di atas target 90% (+${f1(gap)} poin)`:`masih ${f1(-gap)} poin di bawah target 90%`}.`,
-    m.afr!=null?`AFR rata-rata <b>${f1(m.afr)} menit</b> (median ${f1(afrMed(m))} menit; ${fPct(afrWithin(m),0)} first take ≤${AFR_SLA} menit) dari ${fInt(m.afrN)} first takes Monitor By (New → first take), tanpa DotAI.`:`Puncak kasus ${ID_DATE(pk.day)} (${fInt(pk.value)} kasus)${m.weeks.length>1?`; minggu terbaik ${bw.name} (${fPct(bw.rate)})`:''}.`]);
+    m.afr!=null?`AFR rata-rata <b>${f1(m.afr)} menit</b> (median ${f1(afrMed(m))} menit; ${fPct(afrWithin(m),0)} first take ≤${AFR_SLA} menit) dari ${fInt(m.afrN)} first take.`:`Puncak kasus ${ID_DATE(pk.day)} (${fInt(pk.value)} kasus)${m.weeks.length>1?`; minggu terbaik ${bw.name} (${fPct(bw.rate)})`:''}.`]);
   return head(id,'cs',title,`${fInt(m.total)} cases · ${m.nDays} days`,tg)+body((k+r+h)||allOff())}
 function sCsResolution(){const id='cs-resolution',m=C.cs,title='Resolution & No Response';
   if(!m)return head(id,'cs',title)+body(needCS());
@@ -1182,12 +1184,13 @@ function sBest(kind,key){const vip=kind==='vip',mon=key==='monitored',m=C[kind],
   const tot=a.reduce((s,x)=>s+x.value,0);
   const h=hl(id,[`<b>${esc(a[0].label)}</b> memimpin dengan ${fInt(a[0].value)} kasus ${mon?'dimonitor':'ditangani'} (${fPct(rate(a[0]))} resolved).`,
     a[2]?`Top 3 (${esc(a[0].label)}, ${esc(a[1].label)}, ${esc(a[2].label)}) = <b>${fPct(pct(a[0].value+a[1].value+a[2].value,tot))}</b> dari total.`:'',
-    !mon&&!vip?'AI tidak dihitung di ranking ini.':'']);
-  return head(id,SECK(kind),title,`Ranked by ${mon?'monitoring':'handling'} volume${!mon&&!vip?' · excl. AI':''}`)+body(`<div class="fill1" style="justify-content:center;display:flex;flex-direction:column"><div class="pod">${a.slice(0,3).map((x,i)=>`<div class="card pd ${i===0?'first':''}" data-a><span class="rk">${i+1}</span><div class="nm">${esc(x.label)}</div><div class="v">${fInt(x.value)}</div><div class="t">${sub(x)}</div></div>`).join('')}</div>${a.length>3?`<div class="nextl">${a.slice(3,8).map((x,i)=>`<div class="card nx" data-a><div class="nm"><span class="mut">${i+4}</span> ${esc(x.label)}</div><div class="v">${fInt(x.value)}</div><div class="t">${esc(x.team)} · ${fPct(rate(x))}</div></div>`).join('')}</div>`:''}</div>`+h)}
+    '']);
+  return head(id,SECK(kind),title,`Ranked by ${mon?'monitoring':'handling'} volume`)+body(`<div class="fill1" style="justify-content:center;display:flex;flex-direction:column"><div class="pod">${a.slice(0,3).map((x,i)=>`<div class="card pd ${i===0?'first':''}" data-a><span class="rk">${i+1}</span><div class="nm">${esc(x.label)}</div><div class="v">${fInt(x.value)}</div><div class="t">${sub(x)}</div></div>`).join('')}</div>${a.length>3?`<div class="nextl">${a.slice(3,8).map((x,i)=>`<div class="card nx" data-a><div class="nm"><span class="mut">${i+4}</span> ${esc(x.label)}</div><div class="v">${fInt(x.value)}</div><div class="t">${esc(x.team)} · ${fPct(rate(x))}</div></div>`).join('')}</div>`:''}</div>`+h)}
 function bestCol(a,title,mon,vip){if(!a.length)return `<div class="card bcol" data-a style="--f:1"><div class="ctitle">${title}</div><div class="legend">Kolom ${mon?'Monitored By':'Handled By'} belum dimapping.</div></div>`;
   const tot=a.reduce((s,x)=>s+x.value,0);
-  const top=a.slice(0,3).map((x,i)=>`<div class="br ${i===0?'first':''}"><span class="brk">${i+1}</span><div class="bn"><b>${esc(x.label)}</b><span>${esc(x.team)} · Solved ${fInt(x.adj)} · ${vip?`Hold ${fInt(x.hold)}`:`NR ${fInt(x.nr)}`} · AFR ${fAfr(x.afr)}</span></div><div class="bv">${fInt(x.value)}<small>${fPct(pct(x.value,tot))}</small></div></div>`).join('');
-  const nx=a.slice(3,7).map((x,i)=>`<div class="bx"><span class="mut">${i+4}</span><b>${esc(x.label)}</b><span class="mut">${esc(x.team)} · AFR ${fAfr(x.afr)}</span><em>${fInt(x.value)}</em></div>`).join('');
+  const tip=x=>`AFR ${mon?'first take oleh agent ini':'tiket yang ditangani agent ini'}: ${x.afrN||0} tiket`;
+  const top=a.slice(0,3).map((x,i)=>`<div class="br ${i===0?'first':''}"><span class="brk">${i+1}</span><div class="bn" title="${esc(tip(x))}"><b>${esc(x.label)}</b><span>${esc(x.team)} · Solved ${fInt(x.adj)} · ${vip?`Hold ${fInt(x.hold)}`:`NR ${fInt(x.nr)}`} · AFR ${fAfr(x.afr)}</span></div><div class="bv">${fInt(x.value)}<small>${fPct(pct(x.value,tot))}</small></div></div>`).join('');
+  const nx=a.slice(3).map((x,i)=>`<div class="bx" title="${esc(tip(x))}"><span class="mut">${i+4}</span><b>${esc(x.label)}</b><span class="mut">${esc(x.team)} · AFR ${fAfr(x.afr)}</span><em>${fInt(x.value)}</em></div>`).join('');
   return `<div class="card bcol" data-a style="--f:1"><div class="ctitle">${title}</div>${top}${nx?`<div class="bxl">${nx}</div>`:''}</div>`}
 function sBestCombo(kind){const vip=kind==='vip',m=C[kind],id=kind+'-best',title=vip?'VIP Best Performance':'Best Performance';
   if(!m)return head(id,SECK(kind),title)+body(vip?needVIP():needCS());
@@ -1195,7 +1198,7 @@ function sBestCombo(kind){const vip=kind==='vip',m=C[kind],id=kind+'-best',title
   const cols=[on(id,'handling')&&bestCol(hand,vip?'Top VIP handlers':'Best handling',false,vip),on(id,'monitoring')&&mon.length&&bestCol(mon,'Best monitoring',true,vip)];
   const h=hl(id,[hand[0]?`Best handling: <b>${esc(hand[0].label)}</b> dengan ${fInt(hand[0].value)} kasus (${fPct(rate(hand[0]))} resolved).`:'',
     mon[0]?`Best monitoring: <b>${esc(mon[0].label)}</b> dengan ${fInt(mon[0].value)} kasus dimonitor.`:'',
-    hand[2]?`Top 3 handling memegang <b>${fPct(pct(hand[0].value+hand[1].value+hand[2].value,hand.reduce((s,x)=>s+x.value,0)))}</b> dari total handling. ${afrNote()}`:'']);
+    hand[2]?`Top 3 handling memegang <b>${fPct(pct(hand[0].value+hand[1].value+hand[2].value,hand.reduce((s,x)=>s+x.value,0)))}</b> dari total handling.`:'']);
   return head(id,SECK(kind),title,'Handling and monitoring leaders')+body((row(...cols)+h)||allOff())}
 /* ---- consolidated pages ---- */
 function topN(items,n){if(items.length<=n)return items;const a=items.slice(0,n-1);a.push({label:'Others',value:items.slice(n-1).reduce((s,x)=>s+x.value,0)});return a}

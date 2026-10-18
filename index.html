@@ -786,7 +786,7 @@ const MAIN_FIELDS=[
 const RC_FIELDS=[
  {k:'origin',l:'Via Origin',a:['via origin','origin','source','channel']},
  {k:'cid',l:'CID / UID',req:1,a:['cid','uid','customer id','circuit id','user id']},
- {k:'uid',l:'User ID (ditampilkan di slide)',a:['user id','userid','user_id','user name','username','user','uid','pppoe','pppoe user','login','login id','account','account id','akun','id user','customer user id']},
+ {k:'uid',l:'User ID (ditampilkan di slide)',a:['user id','userid','user_id','user name','username','uid','pppoe','pppoe user','login','login id','account','account id','akun','id user','customer user id']},
  {k:'name',l:'Customer name',a:['customer','customer name','nama pelanggan','nama']},
  {k:'ticket',l:'Ticket number',a:['ticket number','ticket id','ticket','no tiket','case id']},
  {k:'date',l:'Created date',req:1,a:['created','date','created date','created at','tanggal']},
@@ -803,6 +803,7 @@ const RC_FIELDS=[
  {k:'ctso',l:'CTSO',a:['ctso']}
 ];
 const FIELDS_OF=k=>k==='rc'?RC_FIELDS:MAIN_FIELDS;
+function isMailCol(headers,rows,h){if(!h)return false;if(/mail/.test(norm(h)))return true;const j=headers.indexOf(h);if(j<0||!rows)return false;let n=0,m=0;for(const r of rows.slice(0,300)){const v=String(r[j]??'').trim();if(!v)continue;n++;if(v.includes('@'))m++}return n>0&&m/n>=.3}
 function detect(headers,fields,rows){const map={},used=new Set();for(const f of fields){map[f.k]='';for(const a of f.a){const h=headers.find(h=>!used.has(h)&&norm(h)===a);if(h){map[f.k]=h;used.add(h);break}}}
   const free=h=>!used.has(h),take=(k,h)=>{if(h&&!map[k]){map[k]=h;used.add(h)}};
   if(fields===MAIN_FIELDS){
@@ -816,8 +817,9 @@ function detect(headers,fields,rows){const map={},used=new Set();for(const f of 
     if(!map.vip)take('vip',headers.find(h=>free(h)&&/\bvip\b/.test(norm(h))&&!/group|handler|name/.test(norm(h))));
     if(!map.fr)take('fr',headers.find(h=>free(h)&&/first response/.test(norm(h))&&!/afr|avg|minute/.test(norm(h))));
   }
-  if(fields===RC_FIELDS&&rows&&!map.uid){const score=h=>{const j=headers.indexOf(h);let ok=0,dg=0,n=0;for(const r of rows.slice(0,400)){const v=String(r[j]??'').trim();if(!v)continue;n++;if(/^[A-Za-z0-9._@\-]{4,}$/.test(v)&&/[A-Za-z]/.test(v)&&!/^\d{1,4}[\/-]\d{1,2}[\/-]\d{1,4}/.test(v)){ok++;if(/\d/.test(v))dg++}}return n?ok/n+(dg/n)*.2+(/user|login|account|akun|pppoe/.test(norm(h))?.3:0):0};
-    const c=headers.filter(h=>free(h)&&h!==map.cid).map(h=>[h,score(h)]).filter(x=>x[1]>=.7).sort((a,b)=>b[1]-a[1]);if(c.length)take('uid',c[0][0])}
+  if(fields===RC_FIELDS&&map.uid&&isMailCol(headers,rows,map.uid)){used.delete(map.uid);map.uid=''}
+  if(fields===RC_FIELDS&&rows&&!map.uid){const score=h=>{const j=headers.indexOf(h);let ok=0,dg=0,n=0;for(const r of rows.slice(0,400)){const v=String(r[j]??'').trim();if(!v)continue;n++;if(/^[A-Za-z0-9._\-]{4,}$/.test(v)&&/[A-Za-z]/.test(v)&&!/^\d{1,4}[\/-]\d{1,2}[\/-]\d{1,4}/.test(v)){ok++;if(/\d/.test(v))dg++}}return n?ok/n+(dg/n)*.2+(/user|login|account|akun|pppoe/.test(norm(h))?.3:0):0};
+    const c=headers.filter(h=>free(h)&&h!==map.cid&&!isMailCol(headers,rows,h)).map(h=>[h,score(h)]).filter(x=>x[1]>=.7).sort((a,b)=>b[1]-a[1]);if(c.length)take('uid',c[0][0])}
   if(fields===RC_FIELDS){if(!map.kendala)take('kendala',headers.find(h=>free(h)&&/kendala|root cause|cause/.test(norm(h))));if(!map.action)take('action',headers.find(h=>free(h)&&/action|tindakan|penanganan|resolution|perbaikan/.test(norm(h))))}
   return map}
 function sheetTable(rows){rows=rows.filter(r=>r.some(x=>String(x??'').trim()!==''));if(rows.length<2)return null;let hi=0,hb=-1;rows.slice(0,10).forEach((r,i)=>{const c=r.filter(x=>String(x??'').trim()!=='').length;if(c>hb){hb=c;hi=i}});
@@ -1586,7 +1588,7 @@ addEventListener('beforeprint',buildPrint);addEventListener('afterprint',()=>{$(
 $('#printBtn').onclick=()=>{if(!visible().length){alert('Tidak ada slide yang ditampilkan.');return}buildPrint();print()};
 
 /* ---------- start ---------- */
-(async()=>{for(const k of ['cs','vip','rc']){const d=await idbGet(k);if(d&&d.headers&&d.rows){d.map=d.map||{};let ch=0;if(k!=='rc'){const ren=mergeDateTime(d);for(const x in d.map)if(ren[d.map[x]]){d.map[x]=ren[d.map[x]];ch=1}if(Object.keys(ren).length)ch=1}const f=detect(d.headers,FIELDS_OF(k),d.rows);if(k!=='rc'&&f.inv&&d.map.inv!==f.inv){const j=d.headers.indexOf(d.map.inv);if(j<0||!d.rows.slice(0,5000).some(r=>isOutcomeVal(r[j]))){d.map.inv=f.inv;ch=1}}for(const x in f)if(!d.map[x]&&f[x]&&!Object.values(d.map).includes(f[x])){d.map[x]=f[x];ch=1}if(ch)idbPut(k,d);DS[k]=d}}syncPeriod();refresh(0)})();
+(async()=>{for(const k of ['cs','vip','rc']){const d=await idbGet(k);if(d&&d.headers&&d.rows){d.map=d.map||{};let ch=0;if(k!=='rc'){const ren=mergeDateTime(d);for(const x in d.map)if(ren[d.map[x]]){d.map[x]=ren[d.map[x]];ch=1}if(Object.keys(ren).length)ch=1}const f=detect(d.headers,FIELDS_OF(k),d.rows);if(k!=='rc'&&f.inv&&d.map.inv!==f.inv){const j=d.headers.indexOf(d.map.inv);if(j<0||!d.rows.slice(0,5000).some(r=>isOutcomeVal(r[j]))){d.map.inv=f.inv;ch=1}}if(k==='rc'&&d.map.uid&&isMailCol(d.headers,d.rows,d.map.uid)){d.map.uid='';ch=1}for(const x in f)if(!d.map[x]&&f[x]&&!Object.values(d.map).includes(f[x])){d.map[x]=f[x];ch=1}if(ch)idbPut(k,d);DS[k]=d}}syncPeriod();refresh(0)})();
 </script>
 </body>
 </html>

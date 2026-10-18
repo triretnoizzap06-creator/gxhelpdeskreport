@@ -108,3 +108,5 @@ Di bawah preview semua slide Repeat Complaint ada pilihan **Kolom User ID**. Bil
 
 ## Ganti user di Top 3
 Klik User ID di kartu Top 3 (ada tanda ▾) untuk memilih user lain dari seluruh repeat users, termasuk yang ada di Other Repeat Complaints. Bila user yang dipilih sudah ada di rank lain, posisinya ditukar. User yang tergeser otomatis pindah ke Other Repeat Complaints. Tombol Auto di bawah preview mengembalikan urutan otomatis.
+
+Kolom yang berisi email (header mengandung "mail" atau isinya memuat "@") tidak pernah dipakai sebagai User ID. Bila mapping lama menyimpan kolom email, otomatis diperbaiki saat halaman dibuka.

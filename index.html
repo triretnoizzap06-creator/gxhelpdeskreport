@@ -352,7 +352,7 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .uc{display:flex;flex-direction:column;gap:.5cqw;padding:.7cqw .8cqw;min-height:0;min-width:0;overflow:hidden}
 .uc-h{display:flex;flex-direction:column;gap:.2cqw;min-width:0;flex-shrink:0}
 .uc .ru-top{flex-wrap:wrap;row-gap:.2cqw}.uc .ru-top{flex-wrap:nowrap;gap:.6cqw}.uc .ru-top .ru-id{flex:1;min-width:0}.uc .ru-top .cnt,.uc .ru-top .sev{flex-shrink:0}
-.idw{position:relative;cursor:pointer}.idw .idc{font-size:.9cqw;color:#8E8E93;margin-left:.3cqw;font-weight:400}.idw:hover .idt{background:#FFF3C4;border-radius:.4cqw}.idsel{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:14px}.presenting .idsel,.printing .idsel,.presenting .idc,.printing .idc{display:none}.presenting .idw,.printing .idw{cursor:default}
+.idw{position:relative;cursor:pointer}.idw .idc{font-size:.9cqw;color:#8E8E93;margin-left:.3cqw;font-weight:400;opacity:0}.idw:hover .idc{opacity:1}.idw:hover .idt{background:#FFF3C4;border-radius:.4cqw}.idsel{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:14px}.presenting .idsel,.printing .idsel,.presenting .idc,.printing .idc{display:none}.presenting .idw,.printing .idw{cursor:default}
 .uc .ru-id{font-size:1.6cqw;overflow-wrap:anywhere;word-break:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .uc .ru-nm{-webkit-line-clamp:1}
 .uc .sbt{margin-top:.25cqw}
@@ -648,6 +648,7 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
   .rt-dn .dn svg{height:150px;max-height:none}.rt-dn .lg .it{font-size:12px;grid-template-columns:9px minmax(0,1fr) auto;gap:6px}.rt-dn .lg .sw{width:9px;height:9px}.rt-dn .vb{height:160px}
   .ru-top .rkc{width:26px;height:26px;font-size:12px}.ru-lb{font-size:11px}.uc .ru-id{font-size:20px}.ru-nm{font-size:13px}.ru-cid,.ru-note,.ru-more{font-size:12px}.cnt{font-size:11px}
   .uc .cnt,.uc .sev{font-size:11px;padding:2px 8px}.uc .rkc{width:26px;height:26px;font-size:12px}.lgs .lgi i{width:9px;height:9px;margin-right:5px}.lgs{gap:4px 12px}  .tkc .dt{font-size:14px}.tkc .dt span{font-size:12px}.tkc .pb{font-size:13px}.stsel,.st-s{font-size:12px}.stsel{padding:4px 24px 4px 10px;background-position:right 9px center;background-size:10px}
+  .t3{flex:none}.t3-hd{position:static;width:auto;margin-top:14px}.t3-hd .ks-row{flex-wrap:wrap;justify-content:flex-start}.t3-hd .ks{font-size:12px;padding:6px 12px;gap:6px}.t3-hd .ks b{font-size:20px}.t3-hd .lgs{justify-content:flex-start}.t3-cols{grid-template-columns:1fr;flex:none}.uc{padding:14px;gap:10px}.uc-tk{flex:none;overflow:visible;gap:10px}.tkc{padding:10px 12px 12px;gap:8px;border-radius:14px;border-top-width:3px;flex:none}.tkc .t2{gap:6px}.tkc .wo-a,.tkc .wo-add,.tkc .wo-s{font-size:11px;padding:2px 8px}
   .kv{grid-template-columns:62px minmax(0,1fr);gap:8px}.kv>b{font-size:13px;padding-top:7px}.kv textarea{font-size:14px;min-height:36px;padding:6px 9px;border-radius:9px}.kv .fld-s{font-size:14px;padding-top:6px}.kv textarea::placeholder{font-size:13px}
 @media print{
   @page{size:1280px 720px;margin:0}
@@ -796,7 +797,7 @@ const RC_FIELDS=[
  {k:'status',l:'Status',a:['status']},
  {k:'branch',l:'Branch',a:['branch office','branch','area','region']},
  {k:'wo',l:'WO number',a:['wo number','wo no','work order']},
- {k:'product',l:'Package',a:['product variant','product','paket','package','package name','nama paket','plan','layanan']},
+ {k:'product',l:'Package',a:['product variant','product','paket','package','package name','nama paket','plan','layanan','produk','service','service name','subscription','tier','variant','paket langganan','internet package','package type','product name']},
  {k:'kendala',l:'Kendala',a:['kendala','root cause','cause','keterangan kendala','issue detail']},
  {k:'action',l:'Action',a:['action','tindakan','penanganan','resolution','repair result','hasil perbaikan','penyelesaian']},
  {k:'cso',l:'CSO',a:['cso']},
@@ -818,6 +819,20 @@ function fixRcUid(headers,rows,map){
   if(old&&old!==best){const so=stat(old);if(so&&so.ratio<.75)map.product=old}
   if(map.name===best)map.name='';
   map.uid=best;return true}
+function fixRcPkgExtra(headers,rows,map){
+  if(!map||!map.product||!rows||map.pkgxManual)return false;
+  const j=h=>headers.indexOf(h),vals=h=>rows.slice(0,3000).map(r=>String(r[j(h)]??'').trim()).filter(Boolean);
+  const dc=new Set(vals(map.cid)).size;if(dc<3)return false;
+  const used=new Set(Object.values(map).filter(v=>typeof v==='string'&&v));
+  const ex=headers.filter(h=>!used.has(h)&&!isMailCol(headers,rows,h)&&/product|package|paket|plan|variant|speed|bandwidth|kecepatan|layanan|service|tier|mbps|produk/.test(norm(h))).filter(h=>{const v=vals(h);if(v.length<rows.length*.3)return false;const d=new Set(v).size;return d/dc<.75&&v.filter(x=>/^\d{1,4}[\/-]\d{1,2}[\/-]\d{1,4}/.test(x)).length<v.length*.5}).slice(0,2);
+  if(!ex.length)return false;map.pkgx=ex;return true}
+function fixRcProduct(headers,rows,map){
+  if(!map||!map.cid||!rows||map.product||map.productManual)return;
+  const j=h=>headers.indexOf(h),vals=h=>rows.slice(0,3000).map(r=>String(r[j(h)]??'').trim()).filter(Boolean);
+  const dc=new Set(vals(map.cid)).size;if(dc<3)return;
+  const used=new Set(Object.values(map).filter(v=>typeof v==='string'&&v));
+  const c=headers.filter(h=>!used.has(h)&&!isMailCol(headers,rows,h)).map(h=>{const v=vals(h);if(v.length<rows.length*.5)return null;const d=new Set(v).size,txt=v.filter(x=>/[A-Za-z]/.test(x)&&!/^\d{1,4}[\/-]\d{1,2}[\/-]\d{1,4}/.test(x)).length/v.length;const hint=/paket|package|plan|produk|product|layanan|service|variant|tier|subscri/.test(norm(h));return txt>=.9&&d/dc<.75&&d>=1?[h,(hint?1:0)+(1-d/dc)]:null}).filter(Boolean).sort((a,b)=>b[1]-a[1]);
+  if(c.length&&c[0][1]>=1)map.product=c[0][0]}
 function detect(headers,fields,rows){const map={},used=new Set();for(const f of fields){map[f.k]='';for(const a of f.a){const h=headers.find(h=>!used.has(h)&&norm(h)===a);if(h){map[f.k]=h;used.add(h);break}}}
   const free=h=>!used.has(h),take=(k,h)=>{if(h&&!map[k]){map[k]=h;used.add(h)}};
   if(fields===MAIN_FIELDS){
@@ -835,7 +850,7 @@ function detect(headers,fields,rows){const map={},used=new Set();for(const f of 
   if(fields===RC_FIELDS&&rows&&!map.uid){const score=h=>{const j=headers.indexOf(h);let ok=0,dg=0,n=0;for(const r of rows.slice(0,400)){const v=String(r[j]??'').trim();if(!v)continue;n++;if(/^[A-Za-z0-9._\-]{4,}$/.test(v)&&/[A-Za-z]/.test(v)&&!/^\d{1,4}[\/-]\d{1,2}[\/-]\d{1,4}/.test(v)){ok++;if(/\d/.test(v))dg++}}return n?ok/n+(dg/n)*.2+(/user|login|account|akun|pppoe/.test(norm(h))?.3:0):0};
     const c=headers.filter(h=>free(h)&&h!==map.cid&&!isMailCol(headers,rows,h)).map(h=>[h,score(h)]).filter(x=>x[1]>=.7).sort((a,b)=>b[1]-a[1]);if(c.length)take('uid',c[0][0])}
   if(fields===RC_FIELDS){if(!map.kendala)take('kendala',headers.find(h=>free(h)&&/kendala|root cause|cause/.test(norm(h))));if(!map.action)take('action',headers.find(h=>free(h)&&/action|tindakan|penanganan|resolution|perbaikan/.test(norm(h))))}
-  if(fields===RC_FIELDS)fixRcUid(headers,rows,map);return map}
+  if(fields===RC_FIELDS){fixRcUid(headers,rows,map);fixRcProduct(headers,rows,map);fixRcPkgExtra(headers,rows,map)}return map}
 function sheetTable(rows){rows=rows.filter(r=>r.some(x=>String(x??'').trim()!==''));if(rows.length<2)return null;let hi=0,hb=-1;rows.slice(0,10).forEach((r,i)=>{const c=r.filter(x=>String(x??'').trim()!=='').length;if(c>hb){hb=c;hi=i}});
   const headers=rows[hi].map((h,i)=>String(h??'').trim()||('Column '+(i+1)));return {headers,rows:rows.slice(hi+1).map(r=>headers.map((_,j)=>{const v=r[j];return v instanceof Date?v.toISOString():(v??'')}))}}
 /* gabungkan kolom "X Date" + "X Time" jadi "X At" (export GX CS Connect memisah tanggal & jam) */
@@ -982,6 +997,8 @@ const rcDone=s=>s==='Closed'||s==='Cancelled';
 function rcAnalyze(rep){
   const R=DS.rc;if(!R)return null;
   const I=idx(R,RC_FIELDS),g=(r,k)=>{if(I[k]<0)return '';const v=String(r[I[k]]??'').trim();return v==='-'?'':v};
+  const PXI=[...new Set([I.product,...(R.map.pkgx||[]).map(h=>R.headers.indexOf(h))].filter(i=>i>=0))].sort((a,b)=>a-b);
+  const pkgOf=r=>{const parts=[];for(const i of PXI){const v=String(r[i]??'').trim();if(!v||v==='-')continue;const lv=v.toLowerCase();if(parts.some(q=>q.toLowerCase().includes(lv)))continue;const k=parts.findIndex(q=>lv.includes(q.toLowerCase()));if(k>=0)parts[k]=v;else parts.push(v)}return parts.join(' ')};
   const st=S.rc,want=norm(rep==='hd'?st.hdOrigin:st.vipOrigin);
   const acts=String(st.actValues||'').split(',').map(norm).filter(Boolean),excl=String(st.excludeCats||'').split(',').map(norm).filter(Boolean);
   const hasComplaint=I.type>=0&&R.rows.some(r=>norm(r[I.type])==='complaint');
@@ -1000,12 +1017,12 @@ function rcAnalyze(rep){
     if(dt!=null){min=min==null?dt:Math.min(min,dt);max=max==null?dt:Math.max(max,dt)}
     const kendala=g(r,'kendala'),action=g(r,'action'),res=[kendala,action].filter(Boolean).join(' → ');
     const note=res||[g(r,'status'),g(r,'ctso')?'CTSO: '+g(r,'ctso'):(g(r,'cso')?'CSO: '+g(r,'cso'):'')].filter(Boolean).join(' · ');
-    const t={k:keyOf(tk||cid+'_'+dt),kendala,action,ticket:tk,date:dt??0,problem:g(r,'problem')||'(problem kosong)',category:cat,status:g(r,'status'),wo:g(r,'wo'),note,ctso:!!g(r,'ctso'),uid:g(r,'uid'),name:g(r,'name'),branch:g(r,'branch').replace(/^GlobalXtreme\s*/i,''),product:g(r,'product')};
+    const t={k:keyOf(tk||cid+'_'+dt),kendala,action,ticket:tk,date:dt??0,problem:g(r,'problem')||'(problem kosong)',category:cat,status:g(r,'status'),wo:g(r,'wo'),note,ctso:!!g(r,'ctso'),uid:g(r,'uid'),name:g(r,'name'),branch:g(r,'branch').replace(/^GlobalXtreme\s*/i,''),product:pkgOf(r)};
     {const eS=S.edits['rc.st.'+t.k],eK=S.edits['rc.kd.'+t.k],eA=S.edits['rc.ac.'+t.k];t.status=RC_ST.includes(eS)?eS:rcStatus(t.status);if(eK!==undefined)t.kendala=eK;if(eA!==undefined)t.action=eA}
     elig.push(t);if(!G.has(cid))G.set(cid,[]);G.get(cid).push(t);
   }
   const sev=n=>n>=6?'HIGH':n>=5?'MONITOR':n>=3?'MEDIUM':'LOW';
-  const list=[...G].map(([cid,t])=>{t.sort((a,b)=>a.date-b.date);const uc=groupCount(t,'uid');return {sev:sev(t.length),allRes:t.every(k=>rcDone(k.status)),cid,uid:uc.length?uc[0].label:cid,name:t.find(x=>x.name)?.name||'',branch:t.find(x=>x.branch)?.branch||'',product:t.find(x=>x.product)?.product||'',count:t.length,np:new Set(t.map(x=>x.problem)).size,latest:t[t.length-1].date,tickets:t}});
+  const list=[...G].map(([cid,t])=>{t.sort((a,b)=>a.date-b.date);const uc=groupCount(t,'uid');return {sev:sev(t.length),allRes:t.every(k=>rcDone(k.status)),cid,uid:uc.length?uc[0].label:cid,name:t.find(x=>x.name)?.name||'',branch:t.find(x=>x.branch)?.branch||'',product:(()=>{const pg=groupCount(t,'product');return pg.slice(0,3).map(x=>x.label).join(' / ')+(pg.length>3?' +'+(pg.length-3):'')})(),count:t.length,np:new Set(t.map(x=>x.problem)).size,latest:t[t.length-1].date,tickets:t}});
   const cand=list.filter(x=>x.count>=2).sort((a,b)=>b.count-a.count||b.np-a.np||b.latest-a.latest);
   const sel=(S.edits['top3.'+rep]||[]).map(id=>cand.find(x=>x.cid===id)).filter(Boolean);
   const top=[];for(const x of sel)if(top.length<3&&!top.includes(x))top.push(x);for(const x of cand)if(top.length<3&&!top.includes(x))top.push(x);
@@ -1432,9 +1449,11 @@ function renderDock(){const all=ordered(),v=visible(),s=curSlide(),i=s?all.index
   if(s&&s.blocks){html+=`<span class="lbl">Tampilkan:</span>${s.blocks.map(([b,l])=>`<label class="chipt"><input type="checkbox" data-blk="${s.id}.${b}" ${on(s.id,b)?'checked':''}>${esc(l)}</label>`).join('')}`}
   if(s&&s.top3&&C.rc[s.top3]&&C.rc[s.top3].cand.length&&on(s.id,'top3')){const r=C.rc[s.top3];const opts=sel=>r.cand.slice(0,80).map(x=>`<option value="${esc(x.cid)}" ${x.cid===sel?'selected':''}>${esc(x.uid)} · ${x.count} tiket${x.name?' · '+esc(x.name):''}</option>`).join('');
     html+=`<span class="lbl" style="margin-left:6px">Top 3:</span>${[0,1,2].map(k=>`<select class="sel" data-top="${k}" aria-label="Rank ${k+1}">${opts(r.top[k]?.cid)}</select>`).join('')}<button class="btn sm" id="tAuto">Auto</button><button class="btn sm" id="tFillReset" title="Hapus isian status, kendala & action di slide ini">Reset isian</button>`}
-  if(s&&/^rc-/.test(s.id)&&DS.rc&&DS.rc.headers){const u=DS.rc.map&&DS.rc.map.uid;html+=`<span class="lbl" style="margin-left:6px;${u?'':'color:#D70015;font-weight:700'}">${u?'Kolom User ID:':'User ID belum terdeteksi — pilih kolom:'}</span><select class="sel" id="uidSel" aria-label="Kolom User ID"><option value="">— pakai CID —</option>${DS.rc.headers.map(h=>`<option ${u===h?'selected':''}>${esc(h)}</option>`).join('')}</select>`}
+  if(s&&/^rc-/.test(s.id)&&DS.rc&&DS.rc.headers){const u=DS.rc.map&&DS.rc.map.uid;html+=`<span class="lbl" style="margin-left:6px;${u?'':'color:#D70015;font-weight:700'}">${u?'Kolom User ID:':'User ID belum terdeteksi — pilih kolom:'}</span><select class="sel" id="uidSel" aria-label="Kolom User ID"><option value="">— pakai CID —</option>${DS.rc.headers.map(h=>`<option ${u===h?'selected':''}>${esc(h)}</option>`).join('')}</select><span class="lbl" style="margin-left:6px;${DS.rc.map.product?'':'color:#D70015;font-weight:700'}">${DS.rc.map.product?'Kolom Package:':'Package belum terbaca — pilih kolom:'}</span><select class="sel" id="pkgSel" aria-label="Kolom Package"><option value="">— kosong —</option>${DS.rc.headers.map(h=>`<option ${DS.rc.map.product===h?'selected':''}>${esc(h)}</option>`).join('')}</select><span class="lbl" style="margin-left:6px">+ Gabung kolom:</span><select class="sel" id="pkgxSel" aria-label="Kolom tambahan paket"><option value="">— tidak ada —</option>${DS.rc.headers.map(h=>`<option ${(DS.rc.map.pkgx||[])[0]===h?'selected':''}>${esc(h)}</option>`).join('')}</select>`}
   if(editing&&s)html+=`<button class="btn sm danger" id="tResetText">Reset text on this slide</button>`;
   $('#tools').innerHTML=html;
+  const px=$('#pkgxSel');if(px)px.onchange=async()=>{DS.rc.map.pkgx=px.value?[px.value]:[];DS.rc.map.pkgxManual=true;await idbPut('rc',DS.rc);refresh(0)};
+  const ps=$('#pkgSel');if(ps)ps.onchange=async()=>{DS.rc.map.product=ps.value;DS.rc.map.productManual=true;await idbPut('rc',DS.rc);refresh(0)};
   const us=$('#uidSel');if(us)us.onchange=async()=>{DS.rc.map=DS.rc.map||{};DS.rc.map.uid=us.value;DS.rc.map.uidManual=true;await idbPut('rc',DS.rc);refresh(0)};
   $$('#tools [data-blk]').forEach(c=>c.onchange=()=>{S.blocks[c.dataset.blk]=c.checked;save();renderStage(0);renderDock()});
   $$('#tools [data-top]').forEach(sel=>sel.onchange=()=>{const rep=s.top3,r=C.rc[rep];const cur=r.top.map(x=>x.cid);cur[+sel.dataset.top]=sel.value;S.edits['top3.'+rep]=[...new Set(cur)];save();refresh(0)});
@@ -1602,7 +1621,7 @@ addEventListener('beforeprint',buildPrint);addEventListener('afterprint',()=>{$(
 $('#printBtn').onclick=()=>{if(!visible().length){alert('Tidak ada slide yang ditampilkan.');return}buildPrint();print()};
 
 /* ---------- start ---------- */
-(async()=>{for(const k of ['cs','vip','rc']){const d=await idbGet(k);if(d&&d.headers&&d.rows){d.map=d.map||{};let ch=0;if(k!=='rc'){const ren=mergeDateTime(d);for(const x in d.map)if(ren[d.map[x]]){d.map[x]=ren[d.map[x]];ch=1}if(Object.keys(ren).length)ch=1}const f=detect(d.headers,FIELDS_OF(k),d.rows);if(k!=='rc'&&f.inv&&d.map.inv!==f.inv){const j=d.headers.indexOf(d.map.inv);if(j<0||!d.rows.slice(0,5000).some(r=>isOutcomeVal(r[j]))){d.map.inv=f.inv;ch=1}}if(k==='rc'){if(d.map.uid&&!d.map.uidManual&&isMailCol(d.headers,d.rows,d.map.uid)){d.map.uid='';ch=1}if(fixRcUid(d.headers,d.rows,d.map))ch=1}for(const x in f)if(!d.map[x]&&f[x]&&!(x==='uid'&&d.map.uidManual)&&!Object.values(d.map).includes(f[x])){d.map[x]=f[x];ch=1}if(ch)idbPut(k,d);DS[k]=d}}syncPeriod();refresh(0)})();
+(async()=>{for(const k of ['cs','vip','rc']){const d=await idbGet(k);if(d&&d.headers&&d.rows){d.map=d.map||{};let ch=0;if(k!=='rc'){const ren=mergeDateTime(d);for(const x in d.map)if(ren[d.map[x]]){d.map[x]=ren[d.map[x]];ch=1}if(Object.keys(ren).length)ch=1}const f=detect(d.headers,FIELDS_OF(k),d.rows);if(k!=='rc'&&f.inv&&d.map.inv!==f.inv){const j=d.headers.indexOf(d.map.inv);if(j<0||!d.rows.slice(0,5000).some(r=>isOutcomeVal(r[j]))){d.map.inv=f.inv;ch=1}}if(k==='rc'){if(d.map.uid&&!d.map.uidManual&&isMailCol(d.headers,d.rows,d.map.uid)){d.map.uid='';ch=1}if(fixRcUid(d.headers,d.rows,d.map))ch=1;if(!d.map.product){fixRcProduct(d.headers,d.rows,d.map);if(d.map.product)ch=1}if(!d.map.pkgx&&fixRcPkgExtra(d.headers,d.rows,d.map))ch=1}for(const x in f)if(!d.map[x]&&f[x]&&!(x==='uid'&&d.map.uidManual)&&!Object.values(d.map).includes(f[x])){d.map[x]=f[x];ch=1}if(ch)idbPut(k,d);DS[k]=d}}syncPeriod();refresh(0)})();
 </script>
 </body>
 </html>

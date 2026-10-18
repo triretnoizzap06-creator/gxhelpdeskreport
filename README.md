@@ -115,3 +115,8 @@ Kolom yang berisi email (header mengandung "mail" atau isinya memuat "@") tidak 
 - Tampilan: **User ID** sebagai judul, di bawahnya `CID · nama paket` (mis. `250 128 505 · Lite+`) — di Top 3 maupun Other Repeat Complaints.
 - User ID dicari dari isi kolom: harus mirip ID (mis. `gustisukG47DC`), bukan email, dan tiap CID punya satu User ID. Kolom berisi nilai berulang seperti `Lite`, `Lite+`, `Signature 100` dianggap nama paket (kolom Package).
 - Bila deteksi masih keliru, pilih manual lewat **Kolom User ID** di bawah preview; pilihan manual tidak ditimpa deteksi otomatis. Pemetaan Package bisa diubah di Import data → Column mapping → Package.
+
+## Package di Top 3 / Other
+Baris kecil di bawah User ID: `CID · nama paket` (mis. `260 063 009 · Signature 100`). Paket dibaca dari kolom Package/Paket/Plan/Layanan/Service/Tier, atau kolom berisi teks pendek berulang bila headernya mengandung kata paket/package/plan. Bila belum terbaca, pilih lewat dropdown **Kolom Package** di bawah preview (label merah). Bila satu user punya beberapa paket, yang tampil yang paling sering muncul. Tanda ▾ di samping User ID hanya muncul saat kursor diarahkan.
+
+Nama paket lengkap: bila file punya lebih dari satu kolom paket (mis. `Product` = Lite dan `Product Variant` = 300), keduanya digabung menjadi `Lite 300`. Bila satu user memakai beberapa paket, semuanya tampil dipisah ` / ` (maks. 3). Kolom gabungan bisa diatur lewat dropdown **+ Gabung kolom** di bawah preview.

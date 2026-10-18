@@ -102,3 +102,9 @@ Framework preset **Other**, no build command, output directory `.`. Upload the c
 - Kartu Best handling / Best monitoring (CS dan VIP) bisa digulir: semua agent tampil (peringkat 4 dst), judul kartu tetap menempel di atas.
 - AFR handling = rata-rata New → first take dari tiket yang **ditangani** agent tsb (Handled By); first take AI tidak dihitung.
 - AFR monitoring = rata-rata New → first take dari tiket yang **di-first-take** agent tsb (kolom AFR taken by). Arahkan kursor ke baris untuk melihat jumlah tiket yang dipakai.
+
+## User ID tidak terbaca?
+Di bawah preview semua slide Repeat Complaint ada pilihan **Kolom User ID**. Bila User ID belum terdeteksi, labelnya merah ("User ID belum terdeteksi — pilih kolom"); pilih kolom yang berisi User ID dan seluruh slide (Top 3 dan Other, CS dan VIP) langsung memakainya. Pilihan tersimpan di browser.
+
+## Ganti user di Top 3
+Klik User ID di kartu Top 3 (ada tanda ▾) untuk memilih user lain dari seluruh repeat users, termasuk yang ada di Other Repeat Complaints. Bila user yang dipilih sudah ada di rank lain, posisinya ditukar. User yang tergeser otomatis pindah ke Other Repeat Complaints. Tombol Auto di bawah preview mengembalikan urutan otomatis.

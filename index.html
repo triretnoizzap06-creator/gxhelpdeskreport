@@ -325,7 +325,7 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .rt-dn .vb{height:12cqw;flex:none}
 .rt-rows{display:flex;flex-direction:column;gap:.8cqw;min-height:0}
 .ru-top{display:flex;align-items:center;gap:.5cqw}
-.uc .rkc{width:1.8cqw;height:1.8cqw;border-radius:50%;background:#1D1D1F;color:#F5C518;display:grid;place-items:center;font-weight:700;font-size:.95cqw;flex-shrink:0}
+.okt{color:#1E7A35;font-weight:700}.uc .rkc{width:1.8cqw;height:1.8cqw;border-radius:50%;background:#1D1D1F;color:#F5C518;display:grid;place-items:center;font-weight:700;font-size:.95cqw;flex-shrink:0}
 .ru-lb{font-size:.86cqw;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6E6E73}
 .ru-id{font-size:1.5cqw;font-weight:700;letter-spacing:-.02em;line-height:1.12;word-break:break-all}
 .ru-nm{font-size:.92cqw;font-weight:600;color:#3A3A3C;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -337,9 +337,9 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .tkc{background:#F7F7F9;border-radius:.8cqw;border-top:.25cqw solid var(--sc,#D1D1D6);padding:.5cqw .6cqw .6cqw;display:flex;flex-direction:column;gap:.3cqw;min-width:0;min-height:0;overflow:hidden}
 .tkc .t1{display:flex;align-items:center;justify-content:space-between;gap:.4cqw;min-width:0}
 .tkc .dt{font-size:.92cqw;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.tkc .dt span{color:#6E6E73;font-weight:600;font-size:.86cqw}
-.tkc .t2{display:flex;align-items:center;gap:.4cqw;min-width:0}
-.tkc .pb{flex:1;min-width:0;font-size:.92cqw;font-weight:600;line-height:1.2;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
-.tkc .wo{margin-top:0;flex-shrink:0;max-width:52%}.tkc .wo-a,.tkc .wo-add,.tkc .wo-s{font-size:.86cqw;padding:.12cqw .5cqw}.tkc .wo-e{width:1.3cqw;height:1.3cqw}.tkc .wo-e svg{width:.75cqw;height:.75cqw}
+.tkc .t2{display:flex;align-items:center;gap:.3cqw .4cqw;min-width:0;flex-wrap:wrap}
+.tkc .pb{flex:1 1 auto;min-width:0;font-size:.92cqw;font-weight:600;line-height:1.2;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.tkc .wo{margin-top:0;flex-shrink:0;max-width:100%}.tkc .wo-a,.tkc .wo-add,.tkc .wo-s{font-size:.86cqw;padding:.12cqw .5cqw}.tkc .wo-e{width:1.3cqw;height:1.3cqw}.tkc .wo-e svg{width:.75cqw;height:.75cqw}
 .t3{display:flex;flex-direction:column;gap:.7cqw;flex:1;min-height:0}
 .t3-hd{position:absolute;right:0;top:0;width:36cqw;display:flex;flex-direction:column;gap:.7cqw}
 .t3-hd .ks-row{display:flex;gap:.5cqw;justify-content:flex-end}
@@ -796,7 +796,7 @@ const RC_FIELDS=[
  {k:'status',l:'Status',a:['status']},
  {k:'branch',l:'Branch',a:['branch office','branch','area','region']},
  {k:'wo',l:'WO number',a:['wo number','wo no','work order']},
- {k:'product',l:'Package',a:['product variant','product','paket']},
+ {k:'product',l:'Package',a:['product variant','product','paket','package','package name','nama paket','plan','layanan']},
  {k:'kendala',l:'Kendala',a:['kendala','root cause','cause','keterangan kendala','issue detail']},
  {k:'action',l:'Action',a:['action','tindakan','penanganan','resolution','repair result','hasil perbaikan','penyelesaian']},
  {k:'cso',l:'CSO',a:['cso']},
@@ -804,6 +804,20 @@ const RC_FIELDS=[
 ];
 const FIELDS_OF=k=>k==='rc'?RC_FIELDS:MAIN_FIELDS;
 function isMailCol(headers,rows,h){if(!h)return false;if(/mail/.test(norm(h)))return true;const j=headers.indexOf(h);if(j<0||!rows)return false;let n=0,m=0;for(const r of rows.slice(0,300)){const v=String(r[j]??'').trim();if(!v)continue;n++;if(v.includes('@'))m++}return n>0&&m/n>=.3}
+function fixRcUid(headers,rows,map){
+  if(!map||!map.cid||!rows||map.uidManual)return false;
+  const j=h=>headers.indexOf(h),vals=h=>rows.slice(0,3000).map(r=>String(r[j(h)]??'').trim()).filter(Boolean);
+  const dc=new Set(vals(map.cid)).size;if(dc<3)return false;
+  const stat=h=>{const v=vals(h);if(!v.length)return null;const d=new Set(v).size;return {ratio:d/dc,idl:v.filter(x=>/^[A-Za-z][A-Za-z0-9._\-]{3,}$/.test(x)).length/v.length,dig:v.filter(x=>/\d/.test(x)).length/v.length}};
+  const ok=x=>x&&x.idl>=.8&&x.ratio>=.6&&x.ratio<=1.6;
+  if(map.uid&&ok(stat(map.uid))&&!isMailCol(headers,rows,map.uid))return false;
+  const skip=new Set([map.cid,map.ticket,map.date,map.wo,map.status,map.problem,map.category,map.type,map.origin,map.branch,map.product,map.kendala,map.action,map.cso,map.ctso].filter(Boolean));
+  const c=headers.filter(h=>!skip.has(h)&&!isMailCol(headers,rows,h)).map(h=>[h,stat(h)]).filter(x=>ok(x[1])).sort((a,b)=>(b[1].dig-a[1].dig)||(Math.abs(1-a[1].ratio)-Math.abs(1-b[1].ratio)));
+  if(!c.length)return false;
+  const best=c[0][0],old=map.uid;
+  if(old&&old!==best){const so=stat(old);if(so&&so.ratio<.75)map.product=old}
+  if(map.name===best)map.name='';
+  map.uid=best;return true}
 function detect(headers,fields,rows){const map={},used=new Set();for(const f of fields){map[f.k]='';for(const a of f.a){const h=headers.find(h=>!used.has(h)&&norm(h)===a);if(h){map[f.k]=h;used.add(h);break}}}
   const free=h=>!used.has(h),take=(k,h)=>{if(h&&!map[k]){map[k]=h;used.add(h)}};
   if(fields===MAIN_FIELDS){
@@ -821,7 +835,7 @@ function detect(headers,fields,rows){const map={},used=new Set();for(const f of 
   if(fields===RC_FIELDS&&rows&&!map.uid){const score=h=>{const j=headers.indexOf(h);let ok=0,dg=0,n=0;for(const r of rows.slice(0,400)){const v=String(r[j]??'').trim();if(!v)continue;n++;if(/^[A-Za-z0-9._\-]{4,}$/.test(v)&&/[A-Za-z]/.test(v)&&!/^\d{1,4}[\/-]\d{1,2}[\/-]\d{1,4}/.test(v)){ok++;if(/\d/.test(v))dg++}}return n?ok/n+(dg/n)*.2+(/user|login|account|akun|pppoe/.test(norm(h))?.3:0):0};
     const c=headers.filter(h=>free(h)&&h!==map.cid&&!isMailCol(headers,rows,h)).map(h=>[h,score(h)]).filter(x=>x[1]>=.7).sort((a,b)=>b[1]-a[1]);if(c.length)take('uid',c[0][0])}
   if(fields===RC_FIELDS){if(!map.kendala)take('kendala',headers.find(h=>free(h)&&/kendala|root cause|cause/.test(norm(h))));if(!map.action)take('action',headers.find(h=>free(h)&&/action|tindakan|penanganan|resolution|perbaikan/.test(norm(h))))}
-  return map}
+  if(fields===RC_FIELDS)fixRcUid(headers,rows,map);return map}
 function sheetTable(rows){rows=rows.filter(r=>r.some(x=>String(x??'').trim()!==''));if(rows.length<2)return null;let hi=0,hb=-1;rows.slice(0,10).forEach((r,i)=>{const c=r.filter(x=>String(x??'').trim()!=='').length;if(c>hb){hb=c;hi=i}});
   const headers=rows[hi].map((h,i)=>String(h??'').trim()||('Column '+(i+1)));return {headers,rows:rows.slice(hi+1).map(r=>headers.map((_,j)=>{const v=r[j];return v instanceof Date?v.toISOString():(v??'')}))}}
 /* gabungkan kolom "X Date" + "X Time" jadi "X At" (export GX CS Connect memisah tanggal & jam) */
@@ -1296,14 +1310,14 @@ function sRepeat(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}`,sec=vip?'
   const MAX=3,all=r.top.flatMap(x=>x.tickets);
   const strip=`<div class="t3-hd" data-a><div class="ks-row"><div class="ks"><b>${fInt(r.cand.length)}</b>repeat users</div><div class="ks"><b>${fInt(r.repTickets)}</b>repeat tickets</div><div class="ks"><b>${fInt(r.openN)}</b>belum closed</div></div><div class="ss">${sbar(all)}<div class="lgs">${stLegend(all)}</div></div></div>`;
   const cols=r.top.map((x,i)=>{const t=x.tickets,show=t.length>MAX?t.slice(-MAX):t,more=t.length-show.length;
-    return `<div class="card uc" data-a><div class="uc-h"><div class="ru-top"><span class="rkc">${i+1}</span><div class="ru-id idw" title="${esc(x.uid)}${x.name?' · '+esc(x.name):''} — klik untuk ganti user"><span class="idt">${esc(x.uid)}</span><span class="idc" aria-hidden="true">▾</span><select class="idsel" data-pick="${rep}" data-rank="${i}" aria-label="Ganti user rank ${i+1}">${r.cand.slice(0,300).map(c=>`<option value="${esc(c.cid)}" ${c.cid===x.cid?'selected':''}>${esc(c.uid)} · ${c.count} tiket</option>`).join('')}</select></div><span class="cnt">${x.count} tickets · ${t.filter(k=>k.wo).length} WO</span>${x.allRes?'<span class="sev ok">Resolved</span>':''}</div><div class="ru-cid">${esc(x.cid)}${x.product?' · '+esc(x.product):''}${more?` · +${more} tiket sebelumnya`:''}</div>${ed(`rc.${rep}.cid.${keyOf(x.cid)}`,'','div','ru-note','style="color:#D70015"')}${sbar(t)}</div><div class="uc-tk">${show.map(tkCell).join('')}</div></div>`}).join('');
+    return `<div class="card uc" data-a><div class="uc-h"><div class="ru-top"><span class="rkc">${i+1}</span><div class="ru-id idw" title="${esc(x.uid)}${x.name?' · '+esc(x.name):''} — klik untuk ganti user"><span class="idt">${esc(x.uid)}</span><span class="idc" aria-hidden="true">▾</span><select class="idsel" data-pick="${rep}" data-rank="${i}" aria-label="Ganti user rank ${i+1}">${r.cand.slice(0,300).map(c=>`<option value="${esc(c.cid)}" ${c.cid===x.cid?'selected':''}>${esc(c.uid)} · ${c.count} tiket</option>`).join('')}</select></div><span class="cnt">${x.count} tickets · ${t.filter(k=>k.wo).length} WO</span></div><div class="ru-cid">${esc(x.cid)}${x.product?' · '+esc(x.product):''}${more?` · +${more} tiket sebelumnya`:''}${x.allRes?' · <b class="okt">✓ Resolved</b>':''}</div>${ed(`rc.${rep}.cid.${keyOf(x.cid)}`,'','div','ru-note','style="color:#D70015"')}${sbar(t)}</div><div class="uc-tk">${show.map(tkCell).join('')}</div></div>`}).join('');
   return head(id,sec,title,`Via ${esc(o)} · ${fInt(r.cand.length)} repeat users`,strip)+body(`<div class="t3"><div class="t3-cols">${cols}</div></div>`)}
 function sRepeatList(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}-list`,sec=vip?'vip':'cs';const title=vip?'VIP Other Repeat Complaints':'Other Repeat Complaints';
   if(!r)return head(id,sec,title)+body(needRC());
   const rest=r.cand.filter(x=>!r.top.includes(x));
   if(!rest.length)return head(id,sec,title)+body(empty('Tidak ada repeat complaint lain','Semua repeat user sudah tampil di Top 3.'));
   const rows=rest.map((x,i)=>{const pr=groupCount(x.tickets,'problem').map(p=>`${esc(p.label)}${p.value>1?` ×${p.value}`:''}`).join(', ');const wos=x.tickets.filter(k=>k.wo),dn=x.tickets.filter(k=>rcDone(k.status)).length;
-    return `<tr><td class="mut">${i+4}</td><td class="b">${esc(x.uid)}<div class="mut sm2">${esc(x.name||'')}${x.name?' · ':''}CID ${esc(x.cid)}</div></td><td class="n b">${x.count}</td><td class="pr">${pr}</td><td>${wos.length?wos.slice(0,2).map(k=>woChip(k.wo)).join(' ')+(wos.length>2?` <span class="mut">+${wos.length-2}</span>`:''):'<span class="mut">—</span>'}</td><td class="mut">${ddmm(x.tickets[0].date)} – ${ddmm(x.latest)}</td><td class="stc">${sbar(x.tickets)}<div class="mut sm2">${dn}/${x.count} selesai</div></td></tr>`}).join('');
+    return `<tr><td class="mut">${i+4}</td><td class="b">${esc(x.uid)}<div class="mut sm2">${esc(x.cid)}${x.product?' · '+esc(x.product):''}</div></td><td class="n b">${x.count}</td><td class="pr">${pr}</td><td>${wos.length?wos.slice(0,2).map(k=>woChip(k.wo)).join(' ')+(wos.length>2?` <span class="mut">+${wos.length-2}</span>`:''):'<span class="mut">—</span>'}</td><td class="mut">${ddmm(x.tickets[0].date)} – ${ddmm(x.latest)}</td><td class="stc">${sbar(x.tickets)}<div class="mut sm2">${dn}/${x.count} selesai</div></td></tr>`}).join('');
   const restT=rest.flatMap(x=>x.tickets),openR=restT.filter(k=>!rcDone(k.status)).length;
   const h=hl(id,[`${fInt(rest.length)} user lain komplain ≥2 kali di ${esc(C.short)}.`,`Terbanyak: ${esc(rest[0].uid)} dengan ${rest[0].count} tiket.`,`${fInt(openR)} dari ${fInt(restT.length)} tiket belum closed (Open / WO In Progress).`]);
   const t=ctype(id,'pie');
@@ -1421,7 +1435,7 @@ function renderDock(){const all=ordered(),v=visible(),s=curSlide(),i=s?all.index
   if(s&&/^rc-/.test(s.id)&&DS.rc&&DS.rc.headers){const u=DS.rc.map&&DS.rc.map.uid;html+=`<span class="lbl" style="margin-left:6px;${u?'':'color:#D70015;font-weight:700'}">${u?'Kolom User ID:':'User ID belum terdeteksi — pilih kolom:'}</span><select class="sel" id="uidSel" aria-label="Kolom User ID"><option value="">— pakai CID —</option>${DS.rc.headers.map(h=>`<option ${u===h?'selected':''}>${esc(h)}</option>`).join('')}</select>`}
   if(editing&&s)html+=`<button class="btn sm danger" id="tResetText">Reset text on this slide</button>`;
   $('#tools').innerHTML=html;
-  const us=$('#uidSel');if(us)us.onchange=async()=>{DS.rc.map=DS.rc.map||{};DS.rc.map.uid=us.value;await idbPut('rc',DS.rc);refresh(0)};
+  const us=$('#uidSel');if(us)us.onchange=async()=>{DS.rc.map=DS.rc.map||{};DS.rc.map.uid=us.value;DS.rc.map.uidManual=true;await idbPut('rc',DS.rc);refresh(0)};
   $$('#tools [data-blk]').forEach(c=>c.onchange=()=>{S.blocks[c.dataset.blk]=c.checked;save();renderStage(0);renderDock()});
   $$('#tools [data-top]').forEach(sel=>sel.onchange=()=>{const rep=s.top3,r=C.rc[rep];const cur=r.top.map(x=>x.cid);cur[+sel.dataset.top]=sel.value;S.edits['top3.'+rep]=[...new Set(cur)];save();refresh(0)});
   const tf=$('#tFillReset');if(tf)tf.onclick=()=>{if(!confirm('Hapus semua isian Status, Kendala & Action pada Top 3 ini?'))return;const r=C.rc[s.top3];r.top.forEach(x=>x.tickets.forEach(k=>{['st','kd','ac'].forEach(p=>delete S.edits['rc.'+p+'.'+k.k])}));save();refresh(0)};
@@ -1588,7 +1602,7 @@ addEventListener('beforeprint',buildPrint);addEventListener('afterprint',()=>{$(
 $('#printBtn').onclick=()=>{if(!visible().length){alert('Tidak ada slide yang ditampilkan.');return}buildPrint();print()};
 
 /* ---------- start ---------- */
-(async()=>{for(const k of ['cs','vip','rc']){const d=await idbGet(k);if(d&&d.headers&&d.rows){d.map=d.map||{};let ch=0;if(k!=='rc'){const ren=mergeDateTime(d);for(const x in d.map)if(ren[d.map[x]]){d.map[x]=ren[d.map[x]];ch=1}if(Object.keys(ren).length)ch=1}const f=detect(d.headers,FIELDS_OF(k),d.rows);if(k!=='rc'&&f.inv&&d.map.inv!==f.inv){const j=d.headers.indexOf(d.map.inv);if(j<0||!d.rows.slice(0,5000).some(r=>isOutcomeVal(r[j]))){d.map.inv=f.inv;ch=1}}if(k==='rc'&&d.map.uid&&isMailCol(d.headers,d.rows,d.map.uid)){d.map.uid='';ch=1}for(const x in f)if(!d.map[x]&&f[x]&&!Object.values(d.map).includes(f[x])){d.map[x]=f[x];ch=1}if(ch)idbPut(k,d);DS[k]=d}}syncPeriod();refresh(0)})();
+(async()=>{for(const k of ['cs','vip','rc']){const d=await idbGet(k);if(d&&d.headers&&d.rows){d.map=d.map||{};let ch=0;if(k!=='rc'){const ren=mergeDateTime(d);for(const x in d.map)if(ren[d.map[x]]){d.map[x]=ren[d.map[x]];ch=1}if(Object.keys(ren).length)ch=1}const f=detect(d.headers,FIELDS_OF(k),d.rows);if(k!=='rc'&&f.inv&&d.map.inv!==f.inv){const j=d.headers.indexOf(d.map.inv);if(j<0||!d.rows.slice(0,5000).some(r=>isOutcomeVal(r[j]))){d.map.inv=f.inv;ch=1}}if(k==='rc'){if(d.map.uid&&!d.map.uidManual&&isMailCol(d.headers,d.rows,d.map.uid)){d.map.uid='';ch=1}if(fixRcUid(d.headers,d.rows,d.map))ch=1}for(const x in f)if(!d.map[x]&&f[x]&&!(x==='uid'&&d.map.uidManual)&&!Object.values(d.map).includes(f[x])){d.map[x]=f[x];ch=1}if(ch)idbPut(k,d);DS[k]=d}}syncPeriod();refresh(0)})();
 </script>
 </body>
 </html>

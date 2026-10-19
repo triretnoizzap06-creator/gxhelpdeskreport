@@ -138,3 +138,6 @@ Slide 1 (cover) dan Thank You memakai tema gelap: judul putih + kuning, garis se
 
 ## Perbaikan CSS
 - Blok `@container` tampilan mobile sebelumnya tidak tertutup sehingga aturan print ikut terbungkus; sekarang sudah ditutup.
+
+- AFR dan **Median tampil bersebelahan** di tile First Response (Snapshot & VIP Overview) dan di kartu ringkasan slide AFR by Agent, plus selisih AFR − median.
+- Key highlights slide AFR by Agent menjelaskan per poin: arti AFR (rata-rata, berapa tiket > 30 menit yang mengangkatnya), arti Median (separuh customer dibalas ≤ median), dan arti selisihnya (tercepat / perlu perhatian).

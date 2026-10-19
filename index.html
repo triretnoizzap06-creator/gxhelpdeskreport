@@ -692,6 +692,7 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
   .kc{padding:16px}.kl{font-size:10px}.kn{font-size:30px;margin:4px 0 2px}.kcap{font-size:12px}.kbar{height:4px;margin-top:10px}.kbar u{top:-4px;bottom:-4px;width:2px}
   .metaA{width:auto;gap:28px;margin-top:22px;padding-top:14px;font-size:10px;flex-wrap:wrap}.metaA b{font-size:13px}
   .kv{grid-template-columns:62px minmax(0,1fr);gap:8px}.kv>b{font-size:13px;padding-top:7px}.kv textarea{font-size:14px;min-height:36px;padding:6px 9px;border-radius:9px}.kv .fld-s{font-size:14px;padding-top:6px}.kv textarea::placeholder{font-size:13px}
+}
 @media print{
   @page{size:1280px 720px;margin:0}
   html,body{background:#fff!important}
@@ -699,6 +700,16 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
   #printRoot{display:block!important}
   #printRoot .ph{container:deck/inline-size;position:relative;width:1280px;height:720px;overflow:hidden;break-after:page;page-break-after:always;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 }
+.afr-l{display:flex;flex-direction:column;gap:.15cqw}
+.afr-r{display:grid;grid-template-columns:1.8cqw 17cqw 1fr 4.6cqw;align-items:center;gap:.8cqw;padding:.38cqw 0;border-bottom:1px solid rgba(0,0,0,.05)}
+.afr-r .no{font-size:.86cqw;text-align:right}.afr-n{min-width:0;display:flex;flex-direction:column}.afr-n b{font-size:.98cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.afr-n span{font-size:.8cqw;color:#86868B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.afr-t{position:relative;height:.9cqw;background:#EEF1F5;border-radius:999px}.afr-t i{position:absolute;left:0;top:0;bottom:0;border-radius:999px}.afr-t em{position:absolute;top:-.35cqw;bottom:-.35cqw;width:0;border-left:1.5px dashed #F5C518}
+.afr-v{font-size:1.05cqw;text-align:right;font-variant-numeric:tabular-nums}
+.afr-big{font-size:4.2cqw;font-weight:800;letter-spacing:-.04em;line-height:1}
+.afr-kv{display:grid;grid-template-columns:1fr auto;gap:.55cqw 1cqw;font-size:1cqw}.afr-kv span{color:#86868B}.afr-kv b{text-align:right}
+.legend i{display:inline-block;width:.8cqw;height:.8cqw;border-radius:.2cqw;margin-right:.35cqw;vertical-align:-.1cqw}
+.tbl.hold td{vertical-align:top}.tbl.hold .why{max-width:26cqw;line-height:1.35}.tbl.hold .nw{white-space:nowrap}.tbl.hold .sm2{font-size:.8cqw;margin-top:.15cqw}
+.hst{display:inline-block;font-size:.8cqw;font-weight:600;padding:.15cqw .6cqw;border-radius:999px;white-space:nowrap;background:#EEF1F5;color:#1F3A5F}.hst.h{background:#FFF4CC;color:#7A5B00}.hst.n{background:#FDE7E7;color:#B42318}
 </style>
 </head>
 <body>
@@ -824,7 +835,10 @@ const MAIN_FIELDS=[
  {k:'afrAt',l:'AFR taken at (first take time)',a:['afr taken at','afr_taken_at','first take at','first taken at','afr lock','monitoring at','monitored at','monitor at','monitoring date time']},
  {k:'afrBy',l:'AFR taken by (first take agent)',a:['afr taken by','afr_taken_by','first take by','first taken by']},
  {k:'reporter',l:'Reporter (optional)',a:['reporter','reported by','created by']},
- {k:'fr',l:'First response exists (optional)',a:['first response at','first response','first response exists']}
+ {k:'fr',l:'First response (date + time, dipakai untuk AFR)',a:['first response at','first response','first response exists']},
+ {k:'invNote',l:'Investigation notes (alasan hold)',a:['investigation notes','investigation note','catatan investigasi']},
+ {k:'desc',l:'Description (alasan hold)',a:['description','deskripsi','problem description','ticket description']},
+ {k:'uid',l:'User ID / nickname',a:['partner nickname','user id','userid','username','pppoe','pppoe user']}
 ];
 const RC_FIELDS=[
  {k:'origin',l:'Via Origin',a:['via origin','origin','source','channel']},
@@ -958,11 +972,13 @@ const isOutcomeVal=v=>{const s=norm(v);return /^solved (by|from) (our|us)|^solve
 const statusSolved=s=>/^(solved|sudah selesai|selesai)$/i.test(String(s||'').trim())||/^solved\b/i.test(String(s||'').trim());
 const exclList=()=>String(S.excl??'DotAI, AI').split(',').map(norm).filter(Boolean);
 /* AFR helpers: waktu ber-timezone (Z / +07:00) dibaca absolut; angka menit toleran koma/titik */
+/* AFR = Created -> First Response (kolom First Response berisi jam). Bila tidak ada, fallback ke AFR taken at. */
+function afrIdx(ds,I){if(I.fr>=0&&ds.rows.slice(0,500).some(r=>/\d{1,2}[:.]\d{2}/.test(String(r[I.fr]))||typeof r[I.fr]==='number'&&r[I.fr]%1>0))return I.fr;return I.afrAt}
 function tsOf(v){if(typeof v==='string'){const s=v.trim();if(/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}/.test(s)&&/(?:[zZ]|[+-]\d{2}:?\d{2})$/.test(s)){const t=Date.parse(s.replace(' ','T'));if(!isNaN(t))return t}}return parseDate(v)}
 function numAfr(v){let s=String(v==null?'':v).trim();if(!s||/^(-|null|n.a)$/i.test(s))return null;if(s.includes(',')&&s.includes('.'))s=s.replace(/\./g,'').replace(',','.');else s=s.replace(',','.');const x=parseFloat(s);return isFinite(x)&&x>=0?x:null}
 function prepMain(ds,kind,fromCs){
   if(!ds)return [];
-  const I=idx(ds,MAIN_FIELDS),g=(r,k)=>I[k]<0?'':String(r[I[k]]??'').trim(),EX=exclList(),isEx=n=>!!n&&EX.includes(norm(n));
+  const I=idx(ds,MAIN_FIELDS),g=(r,k)=>I[k]<0?'':String(r[I[k]]??'').trim(),EX=exclList(),isEx=n=>!!n&&EX.includes(norm(n)),AT=afrIdx(ds,I);
   const out=[],seen=new Set();
   for(const r of ds.rows){
     const date=I.date<0?null:parseDate(r[I.date]);
@@ -970,7 +986,8 @@ function prepMain(ds,kind,fromCs){
     if(date==null||!category||!problem)continue;                       /* Category & Problem Type wajib */
     if(I.vip>=0){const v=yes(g(r,'vip'));if(kind==='cs'&&v)continue;if(kind==='vip'&&!v)continue}   /* VIP = No → CS, VIP = Yes → VIP */
     const handlerRaw=g(r,'handler'),monRaw=g(r,'monitored');
-    if(isEx(handlerRaw)||isEx(monRaw)||isEx(g(r,'reporter')))continue;   /* user DotAI dikecualikan */
+    if(isEx(monRaw)||isEx(g(r,'reporter')))continue;   /* user DotAI dikecualikan */
+    const afrOnly=isEx(handlerRaw);   /* Handle By DotAI: tidak masuk report, tapi AFR tidak membaca Handle By */
     const tk=g(r,'ticket');if(tk){if(seen.has(tk))continue;seen.add(tk)}
     const status=g(r,'status');
     let nr='';if(/no\s*-?\s*resp/i.test(status))nr=/bc\s*-?\s*2/i.test(status)?'bc2':/after|conn/i.test(status)?'ac':'';
@@ -983,21 +1000,22 @@ function prepMain(ds,kind,fromCs){
     const team=I.team>=0?(handler&&sub?sub:'Unassigned'):teamOf(handler,'',kind);   /* Handling Team = Sub Division Handle By */
     const monTeam=I.monTeam>=0?(msub||'Unassigned'):(I.team>=0&&monitored&&monitored===handler?team:teamOf(monitored,'',kind));
     let afr=null;const afrBy=agentName(g(r,'afrBy'));
-    if(I.afrAt>=0){if(filled(r[I.afrAt])){const t=tsOf(r[I.afrAt]),c0=tsOf(r[I.date]);if(t!=null&&c0!=null&&t>=c0)afr=(t-c0)/6e4}}   /* AFR lock = New -> first take Monitor By */
+    if(AT>=0){if(filled(r[AT])){const t=tsOf(r[AT]),c0=tsOf(r[I.date]);if(t!=null&&c0!=null&&t>=c0)afr=(t-c0)/6e4}}   /* AFR = Created -> First Response */
     else afr=numAfr(g(r,'afr'));
-    const afrAgent=I.afrBy>=0?afrBy:monitored;   /* AFR hanya first take Monitor By; first_response_at tidak dipakai */
+    const afrAgent=AT!==I.fr&&I.afrBy>=0?afrBy:monitored;   /* AFR monitoring per agent = Monitor By */
     if(afr!=null&&(!afrAgent||isEx(afrAgent)||/^(ai|dotai)$/i.test(norm(afrAgent))))afr=null;   /* first take AI tidak dihitung */
+    let afrOut=false;if(afr!=null&&afr>AFR_MAX){afr=null;afrOut=true}   /* > 3 jam tidak dihitung */
     out.push({date,day:dayStart(date),status,nr,solved,sSolved,recl,adj:solved||recl,res,hasInv,inv,hold:/hold|pending/i.test(status),
-      handler,monitored,team,monTeam,afr,afrAgent:afr!=null?afrAgent:'',
-      subarea:g(r,'subarea').replace(/^GlobalXtreme\s*/i,'')||'Not set',incident:g(r,'incident')||'Not set',category,issue:issueType(category),problem,ptype:probType(problem,category),company:g(r,'company'),group:g(r,'group'),cid:g(r,'cid')});
+      afrOnly,handler,monitored,team,monTeam,afr,afrOut,afrAgent:afr!=null?afrAgent:'',
+      subarea:g(r,'subarea').replace(/^GlobalXtreme\s*/i,'')||'Not set',incident:g(r,'incident')||'Not set',category,issue:issueType(category),problem,ptype:probType(problem,category),company:g(r,'company'),group:g(r,'group'),cid:g(r,'cid'),ticket:tk,uid:g(r,'uid'),desc:g(r,'desc'),note:g(r,'invNote')});
   }
   return out;
 }
-function afrNote(){const m=(DS.cs||DS.vip||{}).map||{};return (m.afr||m.afrAt)?'AFR handling = tiket yang ditangani; AFR monitoring = tiket yang di-first-take (afr_taken_by).':''}
+function afrNote(){const m=(DS.cs||DS.vip||{}).map||{};return (m.fr||m.afr||m.afrAt)?'AFR = Created → First Response, per Monitor By (Handle By tidak dipakai).':''}
 function groupCount(list,key,filter){const m=new Map();for(const r of list){if(filter&&!filter(r))continue;const k=typeof key==='function'?key(r):r[key];if(!k)continue;m.set(k,(m.get(k)||0)+1)}return [...m].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value||String(a.label).localeCompare(String(b.label)))}
 /* group objects: value = cases, adj = resolved (aturan Investigation), nr = status No Response (BC2 + After Connected), hold = cases − resolved */
 function groupStats(list,key){const m=new Map();for(const r of list){const k=r[key];if(!k)continue;if(!m.has(k))m.set(k,{label:k,value:0,solved:0,adj:0,nr:0,hold:0});const a=m.get(k);a.value++;if(r.solved)a.solved++;if(r.res)a.adj++;if(r.nr)a.nr++}for(const a of m.values())a.hold=a.value-a.adj;return [...m.values()].sort((a,b)=>b.value-a.value)}
-function metrics(list,kind){
+function metrics(list,kind,afrList){const AL=afrList||list;
   const vip=kind==='vip',c=f=>list.reduce((n,r)=>n+(f(r)?1:0),0);
   const total=list.length,off=c(r=>r.solved),bc2=c(r=>r.nr==='bc2'),ac=c(r=>r.nr==='ac'),recl=c(r=>r.recl),bc2A=c(r=>r.nr==='bc2'&&!r.recl),acA=c(r=>r.nr==='ac'&&!r.recl);
   const resN=c(r=>r.res);
@@ -1018,15 +1036,15 @@ function metrics(list,kind){
   /* AFR per role:
      - Monitoring: rata-rata New -> first take untuk tiket yang DI-TAKE PERTAMA oleh agent tsb (afr_taken_by)
      - Handling  : rata-rata New -> first take untuk tiket yang DITANGANI agent tsb (Handled By); first take AI tidak dihitung */
-  const afrBy=key=>{const mp=new Map();for(const r of list){if(r.afr==null)continue;const k=key==='handler'?r.handler:r.afrAgent;if(!k)continue;const x=mp.get(k)||{s:0,n:0};x.s+=r.afr;x.n++;mp.set(k,x)}return mp};
+  const afrBy=key=>{const mp=new Map();for(const r of AL){if(r.afr==null)continue;const k=r.afrAgent;   /* AFR per orang = Monitor By, Handle By tidak dibaca */if(!k)continue;const x=mp.get(k)||{s:0,n:0};x.s+=r.afr;x.n++;mp.set(k,x)}return mp};
   const agent=key=>{const afrMap=afrBy(key),m=new Map();for(const r of list){const k=r[key];if(!k)continue;if(!m.has(k))m.set(k,{label:k,value:0,solved:0,adj:0,nr:0,hold:0,team:key==='monitored'?r.monTeam:r.team});const a=m.get(k);a.value++;if(r.solved)a.solved++;if(r.res)a.adj++;if(r.nr)a.nr++}
     if(key==='monitored')for(const [k,x] of afrMap)if(!m.has(k))m.set(k,{label:k,value:0,solved:0,adj:0,nr:0,hold:0,team:teamOf(k,'',kind),firstOnly:1});
     for(const a of m.values()){a.hold=a.value-a.adj;const x=afrMap.get(a.label);a.afr=x?x.s/x.n:null;a.afrN=x?x.n:0}
     return [...m.values()].sort((a,b)=>b.value-a.value||a.label.localeCompare(b.label))};
-  const afrs=list.map(r=>r.afr).filter(v=>v!=null);
+  const afrs=AL.map(r=>r.afr).filter(v=>v!=null);
   return {total,off,bc2,ac,nrTotal:bc2+ac,recl,adj,bc2A,acA,nrAfter:vip?0:bc2A+acA,hold,resN,nonInvRate,nonInvN:nonInv.length,rateOff:pct(off,total),rateAdj:pct(adj,total),min,max,daily,nDays,avg:total/nDays,weeks,teams,
     handled:c(r=>!!r.handler),mon:agent('monitored'),hand:agent('handler'),sub:groupStats(list,'subarea'),issue:groupStats(list,'issue'),incident:groupStats(list,'incident'),prob:groupCount(list,'problem'),comp:groupCount(list,list.some(r=>r.group)?'group':'company'),compKey:list.some(r=>r.group)?'group':'company',
-    hasInv,hasIncident:list.some(r=>r.incident!=='Not set'),afr:afrs.length?afrs.reduce((a,b)=>a+b,0)/afrs.length:null,afrN:afrs.length,list};
+    hasInv,hasIncident:list.some(r=>r.incident!=='Not set'),afr:afrs.length?afrs.reduce((a,b)=>a+b,0)/afrs.length:null,afrN:afrs.length,afrOut:AL.filter(r=>r.afrOut).length,afrList:AL,list};
 }
 const fAfr=v=>v==null?'—':(v>=100?fInt(v):f1(v))+'m';
 
@@ -1087,8 +1105,8 @@ function buildContext(){
   const vipAll=DS.vip?prepMain(DS.vip,'vip'):(DS.cs&&DS.cs.map.vip?prepMain(DS.cs,'vip',true):[]);
   DATA_MAX=null;for(const r of csAll.concat(vipAll))if(DATA_MAX==null||r.date>DATA_MAX)DATA_MAX=r.date;
   if(DATA_MAX==null&&DS.rc){const I=idx(DS.rc,RC_FIELDS);if(I.date>=0)for(const r of DS.rc.rows){const d=parseDate(r[I.date]);if(d!=null&&(DATA_MAX==null||d>DATA_MAX))DATA_MAX=d}}
-  const cs=inPeriod(csAll),vip=inPeriod(vipAll);
-  const ctx={cs:cs.length?metrics(cs,'cs'):null,vip:vip.length?metrics(vip,'vip'):null,rc:{hd:rcAnalyze('hd'),vip:rcAnalyze('vip')}};
+  const csA=inPeriod(csAll),vipA=inPeriod(vipAll),cs=csA.filter(r=>!r.afrOnly),vip=vipA.filter(r=>!r.afrOnly);
+  const ctx={cs:cs.length?metrics(cs,'cs',csA):null,vip:vip.length?metrics(vip,'vip',vipA):null,rc:{hd:rcAnalyze('hd'),vip:rcAnalyze('vip')}};
   const all=cs.concat(vip),gk=all.some(r=>r.group)?'group':'company';const corpRows=all.filter(r=>r[gk]);ctx.corp={rows:corpRows,key:gk,top:groupCount(corpRows,gk)};
   const src=ctx.cs||ctx.vip;let a=src?src.min:null,b=src?src.max:null;
   if(a==null){const r=ctx.rc.hd||ctx.rc.vip;if(r&&r.min!=null){a=dayStart(r.min);b=dayStart(r.max)}}
@@ -1152,10 +1170,11 @@ const sm=(tone,icon,label,value,foot,f='int',vcls='')=>tile(tone,icon,label,valu
 /* Key highlights (Bahasa Indonesia, editable) */
 function hl(id,items,card){if(!on(id,'hl'))return '';const it=items.filter(Boolean).slice(0,3);if(!it.length)return '';
   return `<div class="hl ${card?'hl-card':''}" data-a><div class="hl-h">${SPARK}<span>Key highlights</span></div><ul>${it.map((t,i)=>ed(`${id}.hl${i}`,t,'li')).join('')}</ul></div>`}
+const AFR_MAX=180;   /* first response > 3 jam (batas interval update handling) dianggap tidak wajar: tidak masuk rata-rata */
 const AFR_SLA=5;   /* batas first take (menit) untuk ukuran "% first take dalam X menit" */
-function afrWithin(m){const a=(m.list||[]).map(r=>r.afr).filter(v=>v!=null);return a.length?a.filter(v=>v<=AFR_SLA).length/a.length*100:null}
-function afrMed(m){const a=(m.list||[]).map(r=>r.afr).filter(v=>v!=null).sort((x,y)=>x-y);if(!a.length)return null;const k=a.length>>1;return a.length%2?a[k]:(a[k-1]+a[k])/2}
-function afrTile(m,force){const md=afrMed(m);return m.afr!=null?`<div class="card tile sm t-b" data-a><div class="ico">${ICON.clock}</div><div style="min-width:0"><div class="tlab">Avg first response (AFR)</div><div class="tval">${f1(m.afr)}<span style="font-size:.5em;font-weight:600">m</span></div><div class="tfoot">${fInt(m.afrN)} first takes${md!=null?` · median ${f1(md)}m`:''}${afrWithin(m)!=null?` · ${fPct(afrWithin(m),0)} ≤${AFR_SLA}m`:''}</div></div></div>`:force?`<div class="card tile sm t-b" data-a><div class="ico">${ICON.clock}</div><div style="min-width:0"><div class="tlab">Avg first response (AFR)</div><div class="tval">—</div><div class="tfoot">butuh kolom AFR Taken At / Monitoring Date+Time</div></div></div>`:sm('b','cal','Avg cases / day',m.avg,`across ${m.nDays} day${m.nDays>1?'s':''}`,'d1')}
+function afrWithin(m){const a=(m.afrList||m.list||[]).map(r=>r.afr).filter(v=>v!=null);return a.length?a.filter(v=>v<=AFR_SLA).length/a.length*100:null}
+function afrMed(m){const a=(m.afrList||m.list||[]).map(r=>r.afr).filter(v=>v!=null).sort((x,y)=>x-y);if(!a.length)return null;const k=a.length>>1;return a.length%2?a[k]:(a[k-1]+a[k])/2}
+function afrTile(m,force){const md=afrMed(m);return m.afr!=null?`<div class="card tile sm t-b" data-a><div class="ico">${ICON.clock}</div><div style="min-width:0"><div class="tlab">Avg first response (AFR)</div><div class="tval">${f1(m.afr)}<span style="font-size:.5em;font-weight:600">m</span></div><div class="tfoot">${fInt(m.afrN)} tickets${m.afrOut?` · ${fInt(m.afrOut)} &gt;3j excl.`:''}${md!=null?` · median ${f1(md)}m`:''}${afrWithin(m)!=null?` · ${fPct(afrWithin(m),0)} ≤${AFR_SLA}m`:''}</div></div></div>`:force?`<div class="card tile sm t-b" data-a><div class="ico">${ICON.clock}</div><div style="min-width:0"><div class="tlab">Avg first response (AFR)</div><div class="tval">—</div><div class="tfoot">butuh kolom First Response (tanggal + jam)</div></div></div>`:sm('b','cal','Avg cases / day',m.avg,`across ${m.nDays} day${m.nDays>1?'s':''}`,'d1')}
 function dailyCard(id,m,title){const t=ctype(id,'bar'),items=dayItems(m).map(x=>({...x,label:x.short,short:null}));
   return `<div class="card fill1" data-a style="--f:1.75"><div class="ctitle">${title} · avg ${f1(m.avg)}/day</div>${t==='line'?lineChart(items.map(x=>({...x,color:x.color===DAY_PAL.below?DAY_PAL.line:x.color})),{id}):vbars(items)}<div class="legend"><span><i style="background:${DAY_PAL.peak}"></i>Peak ≥ ${fInt(Math.ceil(m.avg*1.5))}</span><span><i style="background:${DAY_PAL.above}"></i>Above avg</span><span><i style="background:${DAY_PAL.below}"></i>Below avg</span></div></div>`}
 function weekTable(m){return `<table class="tbl"><thead><tr><th>Week</th><th class="n">Cases</th><th class="n">Inv.</th><th class="n">After inv.</th><th class="n">Overall</th></tr></thead><tbody>${m.weeks.map(w=>`<tr><td class="b">${w.name} <span style="color:#8E8E93;font-weight:400">${shortRange(w.s,w.e)}</span></td><td class="n">${fInt(w.cases)}</td><td class="n">${fInt(w.inv)}</td><td class="n">${fPct(w.afterInv)}</td><td class="n b ${w.rate>=90?'c-g':w.rate<80?'c-o':''}">${fPct(w.rate)}</td></tr>`).join('')}</tbody></table>`}
@@ -1170,7 +1189,7 @@ function sCsOverview(){const id='cs-overview',m=C.cs,title='Customer Support Sna
   const r=row(on(id,'daily')&&dailyCard(id,m,'Daily case volume'),on(id,'weeks')&&`<div class="card" data-a style="--f:1;overflow:hidden"><div class="ctitle">Week performance</div>${weekTable(m)}</div>`);
   const h=hl(id,[`Total <b>${fInt(m.total)} kasus</b> dalam ${m.nDays} hari, rata-rata ${f1(m.avg)} kasus/hari.`,
     `Resolution rate <b>${fPct(m.rateAdj,2)}</b>, ${gap>=0?`di atas target 90% (+${f1(gap)} poin)`:`masih ${f1(-gap)} poin di bawah target 90%`}.`,
-    m.afr!=null?`AFR rata-rata <b>${f1(m.afr)} menit</b> (median ${f1(afrMed(m))} menit; ${fPct(afrWithin(m),0)} first take ≤${AFR_SLA} menit) dari ${fInt(m.afrN)} first take.`:`Puncak kasus ${ID_DATE(pk.day)} (${fInt(pk.value)} kasus)${m.weeks.length>1?`; minggu terbaik ${bw.name} (${fPct(bw.rate)})`:''}.`]);
+    m.afr!=null?`AFR rata-rata <b>${f1(m.afr)} menit</b> (median ${f1(afrMed(m))} menit; ${fPct(afrWithin(m),0)} ≤${AFR_SLA} menit) dari ${fInt(m.afrN)} tiket; Created → First Response${m.afrOut?`, ${fInt(m.afrOut)} tiket &gt; 3 jam tidak dihitung`:''}.`:`Puncak kasus ${ID_DATE(pk.day)} (${fInt(pk.value)} kasus)${m.weeks.length>1?`; minggu terbaik ${bw.name} (${fPct(bw.rate)})`:''}.`]);
   return head(id,'cs',title,`${fInt(m.total)} cases · ${m.nDays} days`,tg)+body((k+r+h)||allOff())}
 function sCsResolution(){const id='cs-resolution',m=C.cs,title='Resolution & No Response';
   if(!m)return head(id,'cs',title)+body(needCS());
@@ -1233,6 +1252,39 @@ function sTeamDetail(kind){const vip=kind==='vip',m=C[kind],id=kind+'-team-detai
   return head(id,SECK(kind),title,`Cases, resolution and top agents per team`)+body(tb+h)}
 function rankTable(a,vip,mon,total){const max=Math.max(1,...a.map(x=>x.value));
   return `<div class="card scroll fill1" data-a><table class="tbl rk"><thead><tr><th>No</th><th>Agent</th><th>Team</th><th class="n">${mon?'Monitored':'Handled'}</th><th class="n">Solved</th><th class="n">${vip?'Hold':'No resp'}</th><th class="n">Rate</th><th class="n">AFR</th></tr></thead><tbody>${a.map((x,i)=>`<tr><td class="mut">${i+1}</td><td><div class="agn"><i class="sw2" style="background:${tcol(x.team)}"></i><b>${esc(x.label)}</b></div><div class="mbar"><i style="width:${x.value/max*100}%;background:${i<3?'#F5C518':'#1F3A5F'}"></i></div></td><td class="mut tm">${esc(x.team)}</td><td class="n b">${fInt(x.value)}</td><td class="n">${fInt(x.adj)}</td><td class="n">${fInt(vip?x.hold:x.nr)}</td><td class="n">${x.value?fPct(rate(x)):'—'}</td><td class="n">${fAfr(x.afr)}</td></tr>`).join('')}</tbody></table></div><div class="legend"><span>${a.length} agents · total ${fInt(total)} cases · scroll untuk melihat semua</span></div>`}
+/* ---------- AFR per agent (Created -> First Response, per Handle By) ---------- */
+function sAfrAgents(kind){const vip=kind==='vip',m=C[kind],id=kind+'-afr',title=vip?'VIP First Response by Agent':'Customer Support First Response by Agent';
+  if(!m)return head(id,SECK(kind),title)+body(vip?needVIP():needCS());
+  const by=new Map();for(const r of m.afrList||m.list){if(r.afr==null||!r.afrAgent)continue;if(!by.has(r.afrAgent))by.set(r.afrAgent,{label:r.afrAgent,team:r.monTeam,v:[]});by.get(r.afrAgent).v.push(r.afr)}
+  const med=v=>{const a=v.slice().sort((x,y)=>x-y),k=a.length>>1;return a.length%2?a[k]:(a[k-1]+a[k])/2};
+  const a=[...by.values()].map(x=>({...x,n:x.v.length,afr:x.v.reduce((p,q)=>p+q,0)/x.v.length,med:med(x.v),w5:x.v.filter(z=>z<=AFR_SLA).length/x.v.length*100})).sort((p,q)=>p.afr-q.afr||q.n-p.n);
+  if(!a.length)return head(id,SECK(kind),title)+body(needCol('First Response (tanggal + jam)','First response'));
+  const max=Math.max(...a.map(x=>x.afr)),avg=m.afr;
+  const rows=a.map((x,i)=>`<div class="afr-r"><span class="mut no">${i+1}</span><div class="afr-n"><b title="${esc(x.label)}">${esc(x.label)}</b><span>${esc(x.team)} · ${fInt(x.n)} tiket · median ${fAfr(x.med)}</span></div><div class="afr-t"><i style="width:${Math.max(1,x.afr/max*100)}%;background:${avg!=null&&x.afr<=avg?'#1F3A5F':'#9DB8D9'}"></i>${avg!=null?`<em style="left:${Math.min(100,avg/max*100)}%"></em>`:''}</div><b class="afr-v">${fAfr(x.afr)}</b></div>`).join('');
+  const list=`<div class="card scroll" data-a style="--f:2.2;display:flex;flex-direction:column"><div class="ctitle">Avg first response per agent · fastest first <span class="mut" style="font-weight:500;text-transform:none;letter-spacing:0">— garis = rata-rata tim ${fAfr(avg)}</span></div><div class="afr-l">${rows}</div></div>`;
+  const md=afrMed(m),w=afrWithin(m);
+  const sum=on(id,'summary')&&`<div class="card" data-a style="--f:.8;display:flex;flex-direction:column;justify-content:center;gap:1.2cqw"><div class="ctitle">${vip?'VIP':'Customer Support'} AFR</div><div><div class="afr-big">${fAfr(avg)}</div><div class="mut">rata-rata · Created → First Response</div></div><div class="afr-kv"><span>Median</span><b>${fAfr(md)}</b><span>≤ ${AFR_SLA} menit</span><b>${w==null?'—':fPct(w,0)}</b><span>Tiket dihitung</span><b>${fInt(m.afrN)}</b><span>Agent</span><b>${fInt(a.length)}</b></div><div class="legend"><span><i style="background:#1F3A5F"></i>≤ rata-rata tim</span><span><i style="background:#9DB8D9"></i>di atas rata-rata</span></div></div>`;
+  const elig=a.filter(x=>x.n>=Math.max(5,Math.round(m.afrN*.02))),slow=elig.slice().sort((p,q)=>q.afr-p.afr)[0];
+  const h=hl(id,[elig[0]?`Tercepat (min. ${Math.max(5,Math.round(m.afrN*.02))} tiket): <b>${esc(elig[0].label)}</b> ${fAfr(elig[0].afr)} dari ${fInt(elig[0].n)} tiket.`:'',
+    slow&&slow!==elig[0]?`Terlama: <b>${esc(slow.label)}</b> ${fAfr(slow.afr)} (median ${fAfr(slow.med)}).`:'',
+    `${fInt(a.filter(x=>avg!=null&&x.afr<=avg).length)} dari ${fInt(a.length)} agent di bawah rata-rata tim ${fAfr(avg)}; ${w==null?'':fPct(w,0)} tiket direspon ≤ ${AFR_SLA} menit.`]);
+  return head(id,SECK(kind),title,`AFR = Created → First Response · per Monitor By · ${fInt(m.afrN)} tiket${m.afrOut?` · ${fInt(m.afrOut)} tiket &gt; 3 jam tidak dihitung`:''}`)+body(row(list,sum)+h)}
+
+/* ---------- VIP hold detail ---------- */
+function sVipHold(){const m=C.vip,id='vip-hold',title='VIP Hold Cases — Detail';
+  if(!m)return head(id,'vip',title)+body(needVIP());
+  const hold=m.list.filter(r=>!r.res).sort((a,b)=>b.date-a.date);
+  if(!hold.length)return head(id,'vip',title,'Semua kasus VIP sudah solved')+body(`<div class="card" data-a style="display:flex;align-items:center;justify-content:center"><div class="afr-big" style="color:#1E8E3E">0 hold</div></div>`+hl(id,[`Semua <b>${fInt(m.total)}</b> kasus VIP periode ini sudah solved.`]));
+  const sc=groupCount(hold,'status'),cut=(t,n)=>t.length>n?t.slice(0,n).trim()+'…':t;
+  const rows=hold.map((r,i)=>{const acc=r.group||r.company||'—',who=[r.cid,r.uid].filter(Boolean).join(' · ');const why=r.note||r.desc||'';
+    return `<tr><td class="mut">${i+1}</td><td><b>${esc(acc)}</b>${who?`<div class="mut sm2">${esc(who)}</div>`:''}</td><td class="nw">${esc(r.ticket||'—')}<div class="mut sm2">${ID_DATE(r.day)}</div></td><td><span class="hst ${/hold/i.test(r.status)?'h':/no\s*resp/i.test(r.status)?'n':'p'}">${esc(r.status||'—')}</span>${r.inv?`<div class="mut sm2">H+1: ${esc(r.inv)}</div>`:''}</td><td>${esc(r.problem)}</td><td class="why">${ed('hold.'+keyOf(r.ticket||String(i)),esc(cut(why,170))||'<span class="mut">isi alasan…</span>')}</td><td class="mut nw">${esc(r.handler||'—')}</td></tr>`}).join('');
+  const tb=`<div class="card scroll fill1" data-a><table class="tbl rk hold"><thead><tr><th>No</th><th>Account / Group</th><th>Ticket</th><th>Status</th><th>Problem</th><th>Alasan hold</th><th>Handler</th></tr></thead><tbody>${rows}</tbody></table></div><div class="legend"><span>${sc.map(x=>`${esc(x.label)} ${fInt(x.value)}`).join(' · ')} · alasan diambil dari Investigation Notes / Description, klik Edit text untuk mengubah</span></div>`;
+  const grp=groupCount(hold,r=>r.group||r.company);
+  const h=hl(id,[`<b>${fInt(hold.length)} kasus VIP</b> belum solved (${fPct(pct(hold.length,m.total),1)} dari ${fInt(m.total)} kasus).`,
+    sc[0]?`Status terbanyak: <b>${esc(sc[0].label)}</b> (${fInt(sc[0].value)} kasus).`:'',
+    grp[0]?`Akun: ${grp.slice(0,3).map(x=>`<b>${esc(x.label)}</b>${x.value>1?` (${x.value})`:''}`).join(', ')}.`:'']);
+  return head(id,'vip',title,`${fInt(hold.length)} hold / no response · ${rangeLabel(m.min,m.max)}`)+body(tb+h)}
+
 function sRanked(kind,key){const vip=kind==='vip',mon=key==='monitored',m=C[kind],id=`${kind}-${mon?'mon':'hand'}-rank`,title=`${vip?'VIP ':''}${mon?'Monitoring':'Handling'} Agents — Ranked`;
   if(!m)return head(id,SECK(kind),title)+body(vip?needVIP():needCS());
   const a=mon?m.mon:m.hand;if(!a.length)return head(id,SECK(kind),title)+body(needCol(mon?'Monitored By':'Handled By',vip?'VIP Group':'Customer Support'));
@@ -1264,7 +1316,7 @@ function sBest(kind,key){const vip=kind==='vip',mon=key==='monitored',m=C[kind],
   return head(id,SECK(kind),title,`Ranked by ${mon?'monitoring':'handling'} volume`)+body(`<div class="fill1" style="justify-content:center;display:flex;flex-direction:column"><div class="pod">${a.slice(0,3).map((x,i)=>`<div class="card pd ${i===0?'first':''}" data-a><span class="rk">${i+1}</span><div class="nm">${esc(x.label)}</div><div class="v">${fInt(x.value)}</div><div class="t">${sub(x)}</div></div>`).join('')}</div>${a.length>3?`<div class="nextl">${a.slice(3,8).map((x,i)=>`<div class="card nx" data-a><div class="nm"><span class="mut">${i+4}</span> ${esc(x.label)}</div><div class="v">${fInt(x.value)}</div><div class="t">${esc(x.team)} · ${fPct(rate(x))}</div></div>`).join('')}</div>`:''}</div>`+h)}
 function bestCol(a,title,mon,vip){if(!a.length)return `<div class="card bcol" data-a style="--f:1"><div class="ctitle">${title}</div><div class="legend">Kolom ${mon?'Monitored By':'Handled By'} belum dimapping.</div></div>`;
   const tot=a.reduce((s,x)=>s+x.value,0);
-  const tip=x=>`AFR ${mon?'first take oleh agent ini':'tiket yang ditangani agent ini'}: ${x.afrN||0} tiket`;
+  const tip=x=>`AFR (Created → First Response) sebagai Monitor By: ${x.afrN||0} tiket`;
   const top=a.slice(0,3).map((x,i)=>`<div class="br ${i===0?'first':''}"><span class="brk">${i+1}</span><div class="bn" title="${esc(tip(x))}"><b>${esc(x.label)}</b><span>${esc(x.team)} · Solved ${fInt(x.adj)} · ${vip?`Hold ${fInt(x.hold)}`:`NR ${fInt(x.nr)}`} · AFR ${fAfr(x.afr)}</span></div><div class="bv">${fInt(x.value)}<small>${fPct(pct(x.value,tot))}</small></div></div>`).join('');
   const nx=a.slice(3).map((x,i)=>`<div class="bx" title="${esc(tip(x))}"><span class="mut">${i+4}</span><b>${esc(x.label)}</b><span class="mut">${esc(x.team)} · AFR ${fAfr(x.afr)}</span><em>${fInt(x.value)}</em></div>`).join('');
   return `<div class="card bcol" data-a style="--f:1"><div class="ctitle">${title}</div>${top}${nx?`<div class="bxl">${nx}</div>`:''}</div>`}
@@ -1440,14 +1492,17 @@ const SLIDES=[
  {id:'cs-team-dist',g:'cs',t:'Handling Team Distribution',r:()=>sTeamDist('cs'),need:'cs',blocks:[['share','Share donut'],['detail','Team detail table'],['hl','Key highlights']]},
  {id:'cs-composition',g:'cs',t:'Case Composition & Top Complaints',r:sComposition,need:'cs',blocks:[['issue','Issue type'],['area','Sub area'],['incident','Service incident'],['topcat','Top complaint categories'],['hl','Key highlights']]},
  {id:'cs-best',g:'cs',t:'Best Performance',r:()=>sBestCombo('cs'),need:'cs',blocks:[['handling','Best handling'],['monitoring','Best monitoring'],['hl','Key highlights']]},
+ {id:'cs-afr',g:'cs',t:'Customer Support First Response by Agent',r:()=>sAfrAgents('cs'),need:'cs',blocks:[['summary','AFR summary'],['hl','Key highlights']]},
  {id:'cs-hand-rank',g:'cs',t:'Handling Agents — Ranked',r:()=>sRanked('cs','handler'),need:'cs',off:1,blocks:[['hl','Key highlights']]},
  {id:'cs-mon-rank',g:'cs',t:'Monitoring Agents — Ranked',r:()=>sRanked('cs','monitored'),need:'cs',off:1,blocks:[['hl','Key highlights']]},
  {id:'rc-hd',g:'cs',t:'Top 3 Repeat Complaints',r:()=>sRepeat('hd'),need:'rc',top3:'hd'},
  {id:'rc-hd-list',g:'cs',t:'Other Repeat Complaints',r:()=>sRepeatList('hd'),need:'rc',blocks:[['hl','Key highlights']]},
  {id:'vip-overview',g:'vip',t:'VIP Overview',r:sVipOverview,need:'vip',blocks:[['kpi','KPI tiles'],['daily','Daily volume'],['mix','Issue mix'],['hl','Key highlights']]},
+ {id:'vip-hold',g:'vip',t:'VIP Hold Cases — Detail',r:sVipHold,need:'vip',blocks:[['hl','Key highlights']]},
  {id:'vip-team-dist',g:'vip',t:'VIP Handling Team Distribution',r:()=>sTeamDist('vip'),need:'vip',blocks:[['share','Share donut'],['detail','Team detail table'],['hl','Key highlights']]},
  {id:'vip-issues',g:'vip',t:'VIP Top Issues & Top 5 Corporate Groups',r:sVipIssuesGroups,need:'vip',blocks:[['issues','Top issues'],['groups','Top 5 corporate groups'],['hl','Key highlights']]},
  {id:'vip-best',g:'vip',t:'VIP Best Performance',r:()=>sBestCombo('vip'),need:'vip',blocks:[['handling','Top handlers'],['monitoring','Best monitoring'],['hl','Key highlights']]},
+ {id:'vip-afr',g:'vip',t:'VIP First Response by Agent',r:()=>sAfrAgents('vip'),need:'vip',blocks:[['summary','AFR summary'],['hl','Key highlights']]},
  {id:'vip-hand-rank',g:'vip',t:'VIP Handling Agents — Ranked',r:()=>sRanked('vip','handler'),need:'vip',off:1,blocks:[['hl','Key highlights']]},
  {id:'rc-vip',g:'vip',t:'VIP Top 3 Repeat Complaints',r:()=>sRepeat('vip'),need:'rc',top3:'vip'},
  {id:'rc-vip-list',g:'vip',t:'VIP Other Repeat Complaints',r:()=>sRepeatList('vip'),need:'rc',blocks:[['hl','Key highlights']]},
@@ -1525,25 +1580,26 @@ $('#editBtn').onclick=()=>{editing=!editing;$('#editBtn').classList.toggle('on',
 
 /* ---------- data check (shown under the CS / VIP import) ---------- */
 function afrCheck(ds,I,A){
-  const col=I.afrAt>=0?ds.map.afrAt:(I.afr>=0?ds.map.afr:'');
-  if(!col)return '<div class="warn">Kolom AFR belum ada (AFR taken at / afr_taken_at) — AFR tidak bisa dihitung. Pilih di Column mapping.</div>';
+  const AT=afrIdx(ds,I),useFr=AT>=0&&AT===I.fr,col=AT>=0?ds.headers[AT]:(I.afr>=0?ds.map.afr:'');
+  if(!col)return '<div class="warn">Kolom First Response (tanggal + jam) belum ada — AFR tidak bisa dihitung. Pilih di Column mapping → First response.</div>';
   const v=A.v.slice().sort((a,b)=>a-b),n=v.length,mean=n?v.reduce((s,x)=>s+x,0)/n:null,med=n?(n%2?v[n>>1]:(v[n/2-1]+v[n/2])/2):null;
   const w=[];
-  if(I.afrAt>=0&&!/afr|first take|first taken/.test(norm(col)))w.push('Kolom "'+esc(col)+'" bukan kolom AFR lock — bisa berisi waktu monitor terakhir, bukan first take. Isi kolom AFR taken at / afr_taken_at.');
-  if(I.afrAt<0)w.push('Memakai kolom menit "'+esc(col)+'" (bukan timestamp lock) — pastikan satuannya menit dan first take Monitor By.');
-  if(I.afrBy<0)w.push('Kolom AFR taken by belum ada: agent diambil dari Monitor By saat ini, jadi setelah take over AFR per agent bisa salah.');
-  if(A.neg)w.push(fInt(A.neg)+' baris dibuang karena waktu take lebih awal dari Created (cek zona waktu / format).');
+  if(!useFr)w.push('Kolom First Response berisi jam tidak ditemukan — AFR sementara memakai "'+esc(col)+'".');
+  if(A.neg)w.push(fInt(A.neg)+' baris dibuang karena First Response lebih awal dari Created (cek zona waktu / format).');
   if(A.bad)w.push(fInt(A.bad)+' baris dibuang karena waktu tidak terbaca.');
-  if(A.noBy)w.push(fInt(A.noBy)+' baris dibuang karena agen first take kosong.');
-  return `<div>AFR dipakai: <b>${esc(col)}</b> · first take Monitor By: <b>${fInt(n)}</b> · rata-rata <b>${mean==null?'—':f1(mean)+'m'}</b> · median ${med==null?'—':f1(med)+'m'} · ≤${AFR_SLA}m: ${n?fPct(v.filter(x=>x<=AFR_SLA).length/n*100,0):'—'}${A.ai?` · ${fInt(A.ai)} first take AI/DotAI tidak dihitung`:''}</div>${w.map(x=>'<div class="warn">'+x+'</div>').join('')}`}
-function dataCheck(ds,k){if(!ds||k==='rc')return '';const I=idx(ds,MAIN_FIELDS),g=(r,f)=>I[f]<0?'':String(r[I[f]]??'').trim(),EX=exclList();
+  if(A.noBy)w.push(fInt(A.noBy)+' baris dibuang karena Monitor By kosong.');
+  if(A.out)w.push(fInt(A.out)+' tiket dengan first response > '+(AFR_MAX/60)+' jam tidak dihitung (di luar interval update handling).');
+  return `<div>AFR = Created → <b>${esc(col)}</b> · tiket dengan first response: <b>${fInt(n)}</b> · rata-rata <b>${mean==null?'—':f1(mean)+'m'}</b> · median ${med==null?'—':f1(med)+'m'} · ≤${AFR_SLA}m: ${n?fPct(v.filter(x=>x<=AFR_SLA).length/n*100,0):'—'}${A.ai?` · ${fInt(A.ai)} tiket AI/DotAI tidak dihitung`:''}</div>${w.map(x=>'<div class="warn">'+x+'</div>').join('')}`}
+function dataCheck(ds,k){if(!ds||k==='rc')return '';const I=idx(ds,MAIN_FIELDS),g=(r,f)=>I[f]<0?'':String(r[I[f]]??'').trim(),EX=exclList(),AT=afrIdx(ds,I);
   let n=0,noCat=0,vy=0,vn=0,ex=0,sol=0,fr=0,nr=0,o={};const A={v:[],neg:0,bad:0,noBy:0,ai:0};
   for(const r of ds.rows){n++;if(!g(r,'category')||!g(r,'problem')){noCat++;continue}
-    if(EX.includes(norm(g(r,'handler')))||EX.includes(norm(g(r,'monitored')))||EX.includes(norm(g(r,'reporter')))){ex++;continue}
-    if(I.vip>=0){yes(g(r,'vip'))?vy++:vn++}
-    if(I.afrAt>=0||I.afr>=0){const vp=I.vip>=0?yes(g(r,'vip')):null;if(!(vp!=null&&((k==='cs'&&vp)||(k==='vip'&&!vp)))){let a=null;
-      if(I.afrAt>=0){if(filled(r[I.afrAt])){const t=tsOf(r[I.afrAt]),c0=tsOf(r[I.date]);if(t==null||c0==null)A.bad++;else if(t<c0)A.neg++;else a=(t-c0)/6e4}}else a=numAfr(g(r,'afr'));
-      if(a!=null){const by=I.afrBy>=0?agentName(g(r,'afrBy')):agentName(g(r,'monitored'));if(!by)A.noBy++;else if(EX.includes(norm(by))||/^(ai|dotai)$/i.test(norm(by)))A.ai++;else A.v.push(a)}}}
+    if(EX.includes(norm(g(r,'monitored')))||EX.includes(norm(g(r,'reporter')))){ex++;continue}
+    const exH=EX.includes(norm(g(r,'handler')));
+    if(!exH&&I.vip>=0){yes(g(r,'vip'))?vy++:vn++}
+    if(AT>=0||I.afr>=0){const vp=I.vip>=0?yes(g(r,'vip')):null;if(!(vp!=null&&((k==='cs'&&vp)||(k==='vip'&&!vp)))){let a=null;
+      if(AT>=0){if(filled(r[AT])){const t=tsOf(r[AT]),c0=tsOf(r[I.date]);if(t==null||c0==null)A.bad++;else if(t<c0)A.neg++;else a=(t-c0)/6e4}}else a=numAfr(g(r,'afr'));
+      if(a!=null){const by=AT!==I.fr&&I.afrBy>=0?agentName(g(r,'afrBy')):agentName(g(r,'monitored'));if(!by)A.noBy++;else if(EX.includes(norm(by))||/^(ai|dotai)$/i.test(norm(by)))A.ai++;else if(a>AFR_MAX)A.out=(A.out||0)+1;else A.v.push(a)}}}
+    if(exH){ex++;continue}
     const st=g(r,'status');if(statusSolved(st)){sol++;if(I.fr>=0&&filled(r[I.fr]))fr++}if(/no\s*-?\s*resp/i.test(st)&&/bc\s*-?\s*2|after|conn/i.test(st))nr++;
     const iv=g(r,'inv');if(filled(iv))o[iv]=(o[iv]||0)+1}
   const oc=Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([a,b])=>`${esc(a)} ${fInt(b)}`).join(' · ')||'—';

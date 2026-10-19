@@ -120,3 +120,6 @@ Kolom yang berisi email (header mengandung "mail" atau isinya memuat "@") tidak 
 Baris kecil di bawah User ID: `CID · nama paket` (mis. `260 063 009 · Signature 100`). Paket dibaca dari kolom Package/Paket/Plan/Layanan/Service/Tier, atau kolom berisi teks pendek berulang bila headernya mengandung kata paket/package/plan. Bila belum terbaca, pilih lewat dropdown **Kolom Package** di bawah preview (label merah). Bila satu user punya beberapa paket, yang tampil yang paling sering muncul. Tanda ▾ di samping User ID hanya muncul saat kursor diarahkan.
 
 Nama paket lengkap: bila file punya lebih dari satu kolom paket (mis. `Product` = Lite dan `Product Variant` = 300), keduanya digabung menjadi `Lite 300`. Bila satu user memakai beberapa paket, semuanya tampil dipisah ` / ` (maks. 3). Kolom gabungan bisa diatur lewat dropdown **+ Gabung kolom** di bawah preview.
+
+## Cover & Thank You — Executive Dark
+Slide 1 (cover) dan Thank You memakai tema gelap: judul putih + kuning, garis serat optik tipis, panel 4 angka utama (kasus & resolution rate CS/VIP dengan bar progress dan penanda target ≥90% / ≥95%). Semua angka dibaca dari data; teks tag "After Sales Meeting", judul, subjudul, dan "Disiapkan oleh" bisa diedit lewat Edit text.

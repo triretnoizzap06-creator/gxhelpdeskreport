@@ -148,6 +148,7 @@ Slide 1 (cover) dan Thank You memakai tema gelap: judul putih + kuning, garis se
 - **+ Tambah tiket** di tiap user. Ikon **tempat sampah** di tiap tiket → pilih **Cancel / Double / Hapus** untuk mengeluarkan tiket dari slide (data export tidak berubah). Tiket yang dihapus muncul di bar "n tiket dihapus" di atas slide dan bisa **dipulihkan** satu per satu atau sekaligus, dan **+ Tambah repeat user** di slide Other Repeat Complaints (User ID bisa diganti).
 - Di Other Repeat Complaints, tombol **Edit** membuka semua tiket user tsb untuk diedit.
 - Saat Present / Print semua kolom tampil sebagai teks; tombol edit disembunyikan. Semua isian tersimpan di browser dan ikut Export settings; **Reset isian** menghapus isian Top 3.
-- Baris ganda di export (CID + tanggal + problem sama) dihitung **satu kasus**; WO / Kendala / Action yang terisi di baris ganda digabung.
+- Baris dobel **tidak** digabung otomatis (supaya repeat user tidak hilang); hapus sendiri lewat ikon tempat sampah → **Double**. User tetap ada di Top 3 / Other walaupun tiketnya tinggal 1 setelah dihapus, dengan keterangan "n dihapus".
+- User yang sudah punya isian (status, kendala, action, notes, dll.) diprioritaskan tetap di Top 3.
 - Isian Kendala / Action / Notes tidak hilang lagi saat menyimpan link WO atau pindah slide.
 - **Ctrl+Z** (Cmd+Z di Mac) membatalkan perubahan terakhir: hapus / tambah tiket, isian, status, link WO, pilihan Top 3. **Ctrl+Shift+Z** atau **Ctrl+Y** untuk redo. Saat kursor di dalam kolom isian, Ctrl+Z memakai undo bawaan kolom tsb; klik di luar kolom untuk undo per langkah. Riwayat undo berlaku selama halaman terbuka (hilang saat reload).

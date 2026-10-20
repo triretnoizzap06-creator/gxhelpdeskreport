@@ -720,8 +720,8 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 @container deck (max-width:719px){.frc-c b{font-size:22px}.frc.big .frc-c b{font-size:30px}.frc-l,.frc-s,.frc-f{font-size:11px}}
 .ie{font:inherit;color:inherit;background:transparent;border:1px solid transparent;border-radius:.35cqw;padding:.08cqw .3cqw;min-width:0}
 .ie:hover{border-color:rgba(0,0,0,.12);background:#fff}.ie:focus{outline:2px solid #E0A800;background:#FFFBEA}
-.tkc .dt{display:flex;align-items:center;gap:.2cqw;min-width:0;flex:1}.tkc .dt-i{font-size:.86cqw;font-weight:700;width:8.6cqw}.tkc .tk-i{font-size:.82cqw;color:#6E6E73;width:7cqw;flex:1}
-.tkc .pb-i{flex:1 1 9cqw;font-size:.92cqw;font-weight:600}.tkc .wo-i{flex:0 1 6cqw;font-size:.82cqw;color:#1F3A5F}.tkc .wo-a{font-size:.82cqw;text-decoration:none;padding:0 .2cqw}
+.tkc .dt{display:flex;align-items:center;gap:.2cqw;min-width:0;flex:1}.tkc .dt-i{font-size:.86cqw;font-weight:700;width:8.4cqw;flex:none}.tkc .tk-i{font-size:.78cqw;color:#6E6E73;width:auto;flex:1 1 11cqw;min-width:5cqw;text-overflow:ellipsis}.tkc .t1{flex-wrap:wrap;row-gap:.2cqw}.tkc .t1 .dt{flex:1 1 19cqw}
+.tkc .pb-i{flex:1 1 9cqw;font-size:.92cqw;font-weight:600}.tkc .wo-i{flex:0 1 11.5cqw;width:auto;min-width:4cqw;font-size:.78cqw;color:#1F3A5F}.tkc .wo-a{font-size:.82cqw;text-decoration:none;padding:0 .2cqw}
 .tk-x{border:0;background:transparent;color:#A0A0A6;cursor:pointer;font-size:.86cqw;padding:0 .2cqw;line-height:1}.tk-x:hover{color:#D70015}
 .nt-add,.tk-add{border:1px dashed rgba(0,0,0,.18);background:transparent;border-radius:.45cqw;color:#6E6E73;font:inherit;font-size:.82cqw;padding:.2cqw .6cqw;cursor:pointer;align-self:flex-start}.nt-add:hover,.tk-add:hover{border-color:#E0A800;color:#1D1D1F;background:#FFFBEA}
 .tk-add{flex:none}
@@ -1082,6 +1082,8 @@ function rcStatus(raw){const s=String(raw||'').toLowerCase();if(/cancel|batal/.t
 const rcDone=s=>s==='Closed'||s==='Cancelled';
 /* ---------- repeat complaint (same rules as repeatcomplainthd) ---------- */
 /* override isian manual per tiket: status, tanggal, no. tiket, problem, WO, kendala, action, notes; return true bila dihapus */
+const RC_FIELDS_ED=['st','kd','ac','nt','ntOn','pb','tk','wo','dt'];
+const rcFilled=x=>x.tickets.some(k=>RC_FIELDS_ED.some(f=>{const v=S.edits['rc.'+f+'.'+k.k];return v!==undefined&&v!==''}))||!!S.edits['t.rc.'+(x.rep||'')+'.cid.'+keyOf(x.cid)];
 function rcApply(t){const E=x=>S.edits['rc.'+x+'.'+t.k];if(E('del'))return true;
   const eS=E('st');t.status=RC_ST.includes(eS)?eS:rcStatus(t.status);
   if(E('kd')!==undefined)t.kendala=E('kd');if(E('ac')!==undefined)t.action=E('ac');
@@ -1110,14 +1112,10 @@ function rcAnalyze(rep){
     const cat=g(r,'category');if(cat&&excl.some(x=>norm(cat).includes(x)))continue;
     const tk=g(r,'ticket');if(tk){if(seen.has(tk))continue;seen.add(tk)}
     const cid=g(r,'cid');if(!cid)continue;
-    /* satu kasus = CID + tanggal + problem yang sama (baris ganda di export digabung) */
-    const dk=cid+'|'+(dt!=null?dayStart(dt):'')+'|'+norm(g(r,'problem'));
-    if(dup.has(dk)){const o=dup.get(dk);if(!o.wo&&g(r,'wo'))o.wo=g(r,'wo');if(!o.kendala&&g(r,'kendala'))o.kendala=g(r,'kendala');if(!o.action&&g(r,'action'))o.action=g(r,'action');if(!o.ticket&&tk)o.ticket=tk;continue}
     if(dt!=null){min=min==null?dt:Math.min(min,dt);max=max==null?dt:Math.max(max,dt)}
     const kendala=g(r,'kendala'),action=g(r,'action'),res=[kendala,action].filter(Boolean).join(' → ');
     const note=res||[g(r,'status'),g(r,'ctso')?'CTSO: '+g(r,'ctso'):(g(r,'cso')?'CSO: '+g(r,'cso'):'')].filter(Boolean).join(' · ');
     const t={k:keyOf(tk||cid+'_'+dt),kendala,action,ticket:tk,date:dt??0,problem:g(r,'problem')||'(problem kosong)',category:cat,status:g(r,'status'),wo:g(r,'wo'),note,ctso:!!g(r,'ctso'),uid:g(r,'uid'),name:g(r,'name'),branch:g(r,'branch').replace(/^GlobalXtreme\s*/i,''),product:pkgOf(r)};
-    dup.set(dk,t);
     if(rcApply(t)){deleted.push({k:t.k,ticket:t.ticket,date:t.date,problem:t.problem,cid,why:S.edits['rc.del.'+t.k]});continue}
     elig.push(t);if(!G.has(cid))G.set(cid,[]);G.get(cid).push(t);
   }
@@ -1126,9 +1124,12 @@ function rcAnalyze(rep){
     if(rcApply(t))continue;elig.push(t);if(!G.has(m.cid))G.set(m.cid,[]);G.get(m.cid).push(t)}
   const sev=n=>n>=6?'HIGH':n>=5?'MONITOR':n>=3?'MEDIUM':'LOW';
   const list=[...G].map(([cid,t])=>{t.sort((a,b)=>a.date-b.date);const uc=groupCount(t,'uid');return {sev:sev(t.length),allRes:t.every(k=>rcDone(k.status)),cid,manual:t.every(k=>k.manual),uid:S.edits['rc.uid.'+keyOf(cid)]||(uc.length?uc[0].label:(/^NEW-/.test(cid)?'User baru':cid)),name:t.find(x=>x.name)?.name||'',branch:t.find(x=>x.branch)?.branch||'',product:(()=>{const pg=groupCount(t,'product');return pg.slice(0,3).map(x=>x.label).join(' / ')+(pg.length>3?' +'+(pg.length-3):'')})(),count:t.length,np:new Set(t.map(x=>x.problem)).size,latest:t[t.length-1].date,tickets:t}});
-  const cand=list.filter(x=>x.count>=2).sort((a,b)=>b.count-a.count||b.np-a.np||b.latest-a.latest);
+  const delN=new Map();for(const d of deleted)delN.set(d.cid,(delN.get(d.cid)||0)+1);
+  for(const x of list){x.del=delN.get(x.cid)||0}
+  const cand=list.filter(x=>x.count+x.del>=2).sort((a,b)=>b.count-a.count||b.np-a.np||b.latest-a.latest);
   const sel=(S.edits['top3.'+rep]||[]).map(id=>cand.find(x=>x.cid===id)).filter(Boolean);
-  const top=[];for(const x of sel)if(top.length<3&&!top.includes(x))top.push(x);for(const x of cand)if(top.length<3&&!top.includes(x))top.push(x);
+  /* urutan Top 3: pilihan manual → user yang sudah punya isian (supaya isian tidak tergeser) → otomatis */
+  const top=[];for(const x of sel)if(top.length<3&&!top.includes(x))top.push(x);for(const x of cand)if(top.length<3&&!top.includes(x)&&rcFilled({...x,rep}))top.push(x);for(const x of cand)if(top.length<3&&!top.includes(x))top.push(x);
   return {elig,deleted,list,cand,top,repTickets:cand.reduce((n,x)=>n+x.count,0),openN:cand.reduce((n,x)=>n+x.tickets.filter(k=>!rcDone(k.status)).length,0),prob:groupCount(elig,'problem'),min,max,hasOrigin:I.origin>=0,complaintOnly:st.complaintOnly&&hasComplaint};
 }
 
@@ -1469,7 +1470,7 @@ function sRepeat(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}`,sec=vip?'
   const MAX=3,all=r.top.flatMap(x=>x.tickets);
   const strip=`<div class="t3-hd" data-a><div class="ks-row"><div class="ks"><b>${fInt(r.cand.length)}</b>repeat users</div><div class="ks"><b>${fInt(r.repTickets)}</b>repeat tickets</div><div class="ks"><b>${fInt(r.openN)}</b>belum closed</div></div><div class="ss">${sbar(all)}<div class="lgs">${stLegend(all)}</div></div></div>`;
   const cols=r.top.map((x,i)=>{const t=x.tickets,show=t,more=0;
-    return `<div class="card uc" data-a><div class="uc-h"><div class="ru-top"><span class="rkc">${i+1}</span><div class="ru-id idw" title="${esc(x.uid)}${x.name?' · '+esc(x.name):''} — klik untuk ganti user"><span class="idt">${esc(x.uid)}</span><span class="idc" aria-hidden="true">▾</span><select class="idsel" data-pick="${rep}" data-rank="${i}" aria-label="Ganti user rank ${i+1}">${r.cand.slice(0,300).map(c=>`<option value="${esc(c.cid)}" ${c.cid===x.cid?'selected':''}>${esc(c.uid)} · ${c.count} tiket</option>`).join('')}</select></div><span class="cnt">${x.count} tickets · ${t.filter(k=>k.wo).length} WO</span></div><div class="ru-cid">${esc(x.cid)}${x.product?' · '+esc(x.product):''}${more?` · +${more} tiket sebelumnya`:''}${x.allRes?' · <b class="okt">✓ Resolved</b>':''}</div>${ed(`rc.${rep}.cid.${keyOf(x.cid)}`,'','div','ru-note','style="color:#D70015"')}${sbar(t)}</div><div class="uc-tk">${show.map(k=>tkCell(k,rep)).join('')}<button class="tk-add ed-only" data-rcadd="${esc(x.cid)}" data-rep="${rep}">+ Tambah tiket</button></div></div>`}).join('');
+    return `<div class="card uc" data-a><div class="uc-h"><div class="ru-top"><span class="rkc">${i+1}</span><div class="ru-id idw" title="${esc(x.uid)}${x.name?' · '+esc(x.name):''} — klik untuk ganti user"><span class="idt">${esc(x.uid)}</span><span class="idc" aria-hidden="true">▾</span><select class="idsel" data-pick="${rep}" data-rank="${i}" aria-label="Ganti user rank ${i+1}">${r.cand.slice(0,300).map(c=>`<option value="${esc(c.cid)}" ${c.cid===x.cid?'selected':''}>${esc(c.uid)} · ${c.count} tiket</option>`).join('')}</select></div><span class="cnt">${x.count} ticket${x.count>1?'s':''} · ${t.filter(k=>k.wo).length} WO${x.del?`<span class="ed-only"> · ${x.del} dihapus</span>`:''}</span></div><div class="ru-cid">${esc(x.cid)}${x.product?' · '+esc(x.product):''}${more?` · +${more} tiket sebelumnya`:''}${x.allRes?' · <b class="okt">✓ Resolved</b>':''}</div>${ed(`rc.${rep}.cid.${keyOf(x.cid)}`,'','div','ru-note','style="color:#D70015"')}${sbar(t)}</div><div class="uc-tk">${show.map(k=>tkCell(k,rep)).join('')}<button class="tk-add ed-only" data-rcadd="${esc(x.cid)}" data-rep="${rep}">+ Tambah tiket</button></div></div>`}).join('');
   return head(id,sec,title,`Via ${esc(o)} · ${fInt(r.cand.length)} repeat users`,strip)+body(delBar(r)+`<div class="t3"><div class="t3-cols">${cols}</div></div>`)}
 function sRepeatList(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}-list`,sec=vip?'vip':'cs';const title=vip?'VIP Other Repeat Complaints':'Other Repeat Complaints';
   if(!r)return head(id,sec,title)+body(needRC());

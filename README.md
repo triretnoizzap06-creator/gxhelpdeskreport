@@ -152,3 +152,22 @@ Slide 1 (cover) dan Thank You memakai tema gelap: judul putih + kuning, garis se
 - User yang sudah punya isian (status, kendala, action, notes, dll.) diprioritaskan tetap di Top 3.
 - Isian Kendala / Action / Notes tidak hilang lagi saat menyimpan link WO atau pindah slide.
 - **Ctrl+Z** (Cmd+Z di Mac) membatalkan perubahan terakhir: hapus / tambah tiket, isian, status, link WO, pilihan Top 3. **Ctrl+Shift+Z** atau **Ctrl+Y** untuk redo. Saat kursor di dalam kolom isian, Ctrl+Z memakai undo bawaan kolom tsb; klik di luar kolom untuk undo per langkah. Riwayat undo berlaku selama halaman terbuka (hilang saat reload).
+
+
+## Data online — link selalu up to date (Vercel Blob)
+Data import & isian tersimpan di browser masing-masing. Supaya semua orang yang membuka link melihat data terbaru, pemilik **mempublish** data ke penyimpanan online Vercel (private). Viewer otomatis memuat data publish terakhir saat membuka link dan mengecek update tiap ±90 detik.
+
+### Setup sekali di Vercel
+1. Upload/push isi zip ini ke GitHub seperti biasa (sekarang ada folder `api/` dan `package.json`).
+2. Vercel → project **helpdeskreport** → tab **Storage** → **Create** → **Blob** → beri nama (mis. `gx-cs-report`) → bila ditanya akses pilih **Private** → **Connect** ke project (Production + Preview). Vercel otomatis menambah env `BLOB_READ_WRITE_TOKEN`.
+3. **Settings → Environment Variables** → tambah `PUBLISH_KEY` = password pilihan kamu (hanya pemilik yang tahu).
+4. **Redeploy** project (Deployments → … → Redeploy).
+
+### Cara pakai
+- Klik tombol status **Online** di bar atas → isi password `PUBLISH_KEY` → **Publish sekarang**. Browser ini jadi **mode pemilik**.
+- Mode pemilik: setiap import data, edit isian, ubah periode / urutan slide → otomatis dipublish ±3 detik kemudian (bisa dimatikan). Status di bar: *Menunggu publish… → Tersimpan online · tgl jam*.
+- Viewer (orang lain): cukup buka link, data terbaru termuat otomatis. Status: *Data online · tgl jam*.
+- **Muat data online** mengambil ulang data publish terakhir (menimpa data di browser ini).
+- Kolom pribadi yang tidak dipakai slide (telepon, email, alamat, NIK, contact name) **tidak ikut dipublish**.
+- Catatan: siapa pun yang punya link bisa melihat data yang dipublish. Bila perlu dibatasi, aktifkan Vercel Deployment Protection.
+- Endpoint: `GET /api/report` (data), `GET /api/report?meta=1` (waktu publish), `POST /api/report` (publish, header `x-publish-key`).

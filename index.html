@@ -1150,7 +1150,7 @@ function buildContext(){
   DATA_MAX=null;for(const r of csAll.concat(vipAll))if(DATA_MAX==null||r.date>DATA_MAX)DATA_MAX=r.date;
   if(DATA_MAX==null&&DS.rc){const I=idx(DS.rc,RC_FIELDS);if(I.date>=0)for(const r of DS.rc.rows){const d=parseDate(r[I.date]);if(d!=null&&(DATA_MAX==null||d>DATA_MAX))DATA_MAX=d}}
   const csA=inPeriod(csAll),vipA=inPeriod(vipAll),cs=csA.filter(r=>!r.afrOnly),vip=vipA.filter(r=>!r.afrOnly);
-  const ctx={cs:cs.length?metrics(cs,'cs',csA):null,vip:vip.length?metrics(vip,'vip',vipA):null,rc:{hd:rcAnalyze('hd'),vip:rcAnalyze('vip')}};
+  const ctx={cs:cs.length?metrics(cs,'cs'):null,vip:vip.length?metrics(vip,'vip'):null,   /* AFR = bagian dari Total Cases (tiket Handle By DotAI tidak dihitung) */rc:{hd:rcAnalyze('hd'),vip:rcAnalyze('vip')}};
   const all=cs.concat(vip),gk=all.some(r=>r.group)?'group':'company';const corpRows=all.filter(r=>r[gk]);ctx.corp={rows:corpRows,key:gk,top:groupCount(corpRows,gk)};
   const src=ctx.cs||ctx.vip;let a=src?src.min:null,b=src?src.max:null;
   if(a==null){const r=ctx.rc.hd||ctx.rc.vip;if(r&&r.min!=null){a=dayStart(r.min);b=dayStart(r.max)}}
@@ -1643,12 +1643,11 @@ function dataCheck(ds,k){if(!ds||k==='rc')return '';const I=idx(ds,MAIN_FIELDS),
   let n=0,noCat=0,vy=0,vn=0,ex=0,sol=0,fr=0,nr=0,o={};const A={v:[],neg:0,bad:0,noBy:0,ai:0};
   for(const r of ds.rows){n++;if(!g(r,'category')||!g(r,'problem')){noCat++;continue}
     if(EX.includes(norm(g(r,'monitored')))||EX.includes(norm(g(r,'reporter')))){ex++;continue}
-    const exH=EX.includes(norm(g(r,'handler')));
-    if(!exH&&I.vip>=0){yes(g(r,'vip'))?vy++:vn++}
+    if(EX.includes(norm(g(r,'handler')))){ex++;continue}
+    if(I.vip>=0){yes(g(r,'vip'))?vy++:vn++}
     if(AT>=0||I.afr>=0){const vp=I.vip>=0?yes(g(r,'vip')):null;if(!(vp!=null&&((k==='cs'&&vp)||(k==='vip'&&!vp)))){let a=null;
       if(AT>=0){if(filled(r[AT])){const t=tsOf(r[AT]),c0=tsOf(r[I.date]);if(t==null||c0==null)A.bad++;else if(t<c0)A.neg++;else a=(t-c0)/6e4}}else a=numAfr(g(r,'afr'));
       if(a!=null){const by=AT!==I.fr&&I.afrBy>=0?agentName(g(r,'afrBy')):agentName(g(r,'monitored'));if(!by)A.noBy++;else if(EX.includes(norm(by))||/^(ai|dotai)$/i.test(norm(by)))A.ai++;else if(a>AFR_MAX)A.out=(A.out||0)+1;else A.v.push(a)}}}
-    if(exH){ex++;continue}
     const st=g(r,'status');if(statusSolved(st)){sol++;if(I.fr>=0&&filled(r[I.fr]))fr++}if(/no\s*-?\s*resp/i.test(st)&&/bc\s*-?\s*2|after|conn/i.test(st))nr++;
     const iv=g(r,'inv');if(filled(iv))o[iv]=(o[iv]||0)+1}
   const oc=Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([a,b])=>`${esc(a)} ${fInt(b)}`).join(' · ')||'—';

@@ -129,7 +129,7 @@ Slide 1 (cover) dan Thank You memakai tema gelap: judul putih + kuning, garis se
 - AFR = menit dari **Created (tanggal + jam)** sampai **First Response (tanggal + jam)**. "First Response Date" + "First Response Time" otomatis digabung jadi "First Response At". CS hanya VIP = No, VIP hanya VIP = Yes; tiket tanpa First Response dan user dikecualikan (DotAI) tidak dihitung.
 - First response **> 3 jam** (batas interval update handling) tidak masuk rata-rata; jumlahnya ditampilkan di tile, subtitle, dan Data check. Batas diatur lewat `AFR_MAX` di index.html.
 - Bila file tidak punya kolom First Response berisi jam, AFR fallback ke AFR taken at / Monitoring Date+Time.
-- **Handle By tidak dibaca untuk AFR**: AFR per agent = Monitor By; tiket yang Handle By-nya DotAI tetap masuk AFR (tetap tidak masuk angka report lain). Tiket dengan Monitor By / Reporter DotAI tetap dikecualikan.
+- AFR per agent = **Monitor By** (export tidak punya kolom First Response By). AFR selalu bagian dari **Total Cases**: tiket yang dikecualikan (Handle By / Monitor By / Reporter DotAI) tidak dihitung. Selisih tiket AFR vs Total Cases = tiket tanpa First Response + tiket > 3 jam.
 - Slide baru **Customer Support First Response by Agent** dan **VIP First Response by Agent**: bar AFR semua agent (per Monitor By), urut dari tercepat, garis kuning = rata-rata tim, plus ringkasan rata-rata, median, % ≤ 5 menit.
 
 ## VIP Hold Cases — Detail

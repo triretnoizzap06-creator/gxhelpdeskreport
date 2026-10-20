@@ -159,7 +159,8 @@ Tidak ada tombol Publish. Setiap import data, isian, atau pengaturan langsung te
 
 ### Setup sekali di Vercel
 1. Upload/push isi zip ini ke GitHub seperti biasa (sekarang ada folder `api/` dan `package.json`).
-2. Vercel → project **helpdeskreport** → tab **Storage** → **Create** → **Blob** → beri nama (mis. `gx-cs-report`) → bila ditanya akses pilih **Private** → **Connect** ke project. Vercel otomatis menambah env `BLOB_READ_WRITE_TOKEN`.
+2. Vercel → project **helpdeskreport** → tab **Storage** → **Create** → **Blob** → beri nama (mis. `gx-cs-report`) → **Connect** ke project. Vercel otomatis menambah env `BLOB_READ_WRITE_TOKEN`.
+   - Akses **Private** atau **Public** sama-sama bisa. Di store Public, file disimpan di folder acak (diturunkan dari token rahasia store) sehingga alamatnya tidak bisa ditebak. Bila mau memaksa, isi env `BLOB_ACCESS` = `private` / `public`.
 3. **Redeploy** project.
 
 Selesai — import data di web, data langsung online.
@@ -168,7 +169,14 @@ Selesai — import data di web, data langsung online.
 Tambah env **`PUBLISH_KEY`** (password) lalu redeploy. Setelah itu hanya browser yang sudah memasukkan password (klik status di bar atas → isi sekali) yang perubahannya tersimpan online; yang lain hanya melihat. Tanpa `PUBLISH_KEY`, siapa pun yang import / mengedit lewat link ikut mengubah data online.
 
 ### Catatan
+- **Riwayat import** (waktu, jenis data, nama file, jumlah baris, periode data) ada di Import data dan ikut tersimpan online, jadi semua orang bisa melihat import terakhir.
 - Status di bar atas: *Menyimpan…* → *Data terbaru · tgl jam*. *Hanya di browser ini* = perubahan belum bisa tersimpan online (storage belum aktif atau butuh password). Klik status untuk memuat ulang data online.
 - Browser yang belum punya data tidak pernah menimpa data online; perubahan terbaru (waktu) yang dipakai bila dua orang mengedit.
 - Kolom pribadi yang tidak dipakai slide (telepon, email, alamat, NIK, contact name) tidak ikut disimpan online. Siapa pun yang punya link bisa melihat data; bila perlu dibatasi aktifkan Vercel Deployment Protection.
 - Endpoint: `GET /api/report`, `GET /api/report?meta=1`, `POST /api/report`.
+
+
+## Riwayat report
+- Tombol **Riwayat** di bar atas. Setiap **selesai Present**, kondisi report (data, periode, isian Repeat Complaint, edit teks, urutan slide) otomatis disimpan sebagai riwayat, mis. *Helpdesk Report · October 13 – 18, 2026*. Riwayat otomatis dengan judul sama dalam 3 jam diganti (tidak menumpuk). Bisa juga **Simpan sekarang** dengan nama sendiri.
+- **Buka** → report tampil persis seperti saat disimpan (banner kuning di atas). Data terbaru tidak berubah; klik **Kembali ke data terbaru**. **Jadikan data utama** memulihkan riwayat itu sebagai data utama (data sebelumnya otomatis disimpan dulu ke riwayat).
+- Riwayat tersimpan online (bisa dilihat semua yang membuka link) bila penyimpanan online aktif; kalau belum, disimpan di browser ini. Maks. 80 riwayat online (riwayat otomatis terlama dihapus lebih dulu).

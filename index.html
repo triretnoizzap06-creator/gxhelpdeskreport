@@ -742,6 +742,10 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 @keyframes sypulse{50%{opacity:.3}}
 .sync-st{font-size:13px;line-height:1.5;margin-top:4px}.sync-st .warn{margin-top:6px;color:#B42318}
 @media (max-width:760px){.btn.sync span{display:none}}
+.ihist{margin-top:18px}.ihist h3{font-size:14px;margin:0 0 8px}.ihist .tbl{font-size:12.5px}.ihist .tbl td,.ihist .tbl th{padding:6px 8px;text-align:left}.ihist .tbl .n{text-align:right}.ihist tr.b td{font-weight:600}
+.hist-banner{position:sticky;top:57px;z-index:29;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#FFF4CC;border-bottom:1px solid #F0D774;padding:8px 18px;font-size:13px;color:#1D1D1F}.hist-banner em{color:#7A5B00}.hb-act{display:flex;gap:8px}
+.hist-new{display:flex;gap:8px;margin-top:6px}.hist-new .sel{flex:1;border-radius:12px;padding:10px 14px}
+.hist-list{max-height:52vh;overflow:auto;margin-top:8px;border-top:1px solid var(--line)}.hrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 2px;border-bottom:1px solid var(--line)}.hmain{display:flex;flex-direction:column;gap:2px;min-width:0}.hmain b{font-size:14px}.hmain .mut{font-size:12px}.hact{display:flex;gap:6px;flex:none}
 </style>
 </head>
 <body>
@@ -750,12 +754,14 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
   <select class="sel" id="period" aria-label="Report period"><option value="all">All imported dates</option><option value="7">Last 7 days of data</option><option value="month">Latest month in data</option><option value="custom">Custom range</option></select>
   <input type="date" class="sel hidden" id="pFrom" aria-label="From date"><input type="date" class="sel hidden" id="pTo" aria-label="To date">
   <button class="btn sync" id="syncBtn" title="Data online"><i></i><span>Online</span></button>
+  <button class="btn" id="histBtn" title="Riwayat report yang tersimpan">Riwayat</button>
   <button class="btn" id="importBtn">Import data</button>
   <button class="btn" id="manageBtn">Customize Present</button>
   <button class="btn hide-m" id="editBtn">Edit text</button>
   <button class="btn hide-m" id="printBtn">Print / PDF</button>
   <button class="btn pri" id="presentBtn">▶ Present</button>
 </header>
+<div class="hist-banner hidden" id="histBanner"><span>Melihat riwayat: <b id="hbTitle"></b> · disimpan <span id="hbAt"></span> · <em>perubahan di sini tidak disimpan</em></span><span class="hb-act"><button class="btn sm" id="hbRestore">Jadikan data utama</button><button class="btn sm pri" id="hbBack">Kembali ke data terbaru</button></span></div>
 <div class="main">
   <nav class="side" id="side" aria-label="Slides"></nav>
   <section class="work">
@@ -772,6 +778,7 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
   <div class="dialog">
     <div class="dhead"><div><div class="eyebrow">Data</div><h2 id="impTitle">Import data</h2><div class="sub">Tiap bagian punya import sendiri. File diproses di browser ini saja dan tidak di-upload ke server.</div></div><button class="btn" data-close="importModal">Close</button></div>
     <div class="dsgrid" id="dsgrid"></div>
+    <div class="ihist" id="ihist"></div>
     <div class="dfoot"><button class="btn danger" id="wipeAll">Delete all data & edits</button><button class="btn pri" data-close="importModal">Done</button></div>
   </div>
 </div>
@@ -783,6 +790,14 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
     <div class="note" style="margin-top:12px">Switch = slide ikut di Present & Print/PDF. Chip = bagian di dalam slide. Panah ↑↓ = urutan slide.</div>
     <div id="mList"></div>
     <div class="note">Disimpan di browser ini. Pakai Export/Import Settings untuk dipakai di device lain.</div>
+  </div>
+</div>
+<div class="modal hidden" id="histModal" role="dialog" aria-modal="true" aria-labelledby="histTitle">
+  <div class="dialog" style="width:min(720px,100%)">
+    <div class="dhead"><div><div class="eyebrow">Riwayat report</div><h2 id="histTitle">Riwayat</h2><div class="sub">Setiap selesai Present, kondisi report (data, periode, isian Repeat Complaint, edit teks) otomatis tersimpan di sini. Bisa juga disimpan manual.</div></div><button class="btn" data-close="histModal">Close</button></div>
+    <div class="hist-new"><input type="text" id="histName" class="sel" placeholder="Nama riwayat"><button class="btn pri" id="histSave">Simpan sekarang</button></div>
+    <div class="sub" id="histMsg" style="margin:6px 0 2px"></div>
+    <div id="histList" class="hist-list"></div>
   </div>
 </div>
 <div class="modal hidden" id="syncModal" role="dialog" aria-modal="true" aria-labelledby="syncTitle">
@@ -848,16 +863,16 @@ const shortRange=(a,b)=>{const A=new Date(a),B=new Date(b);return A.getMonth()==
 /* ---------- settings ---------- */
 const LS='gxcs-report-v5';
 const DEF_RC={woLink:'',hdOrigin:'Sales Representative',vipOrigin:'VIP WhatsApp Group',actValues:'Activation',complaintOnly:true,skipCanceled:true,excludeCats:'Billing, Account, Package, Termination, Administration'};
-const DEF_S=()=>({excl:'DotAI, AI',vis:{},edits:{},chart:{},blocks:{},order:[],anim:'subtle',rc:{...DEF_RC},period:{mode:'all',from:'',to:''},cur:'cover'});
+const DEF_S=()=>({excl:'DotAI, AI',vis:{},edits:{},chart:{},blocks:{},order:[],anim:'subtle',rc:{...DEF_RC},period:{mode:'all',from:'',to:''},imports:[],cur:'cover'});
 let S=DEF_S();
-try{const o=JSON.parse(localStorage.getItem(LS)||'null');if(o&&typeof o==='object')S={...S,...o,rc:{...DEF_RC,...(o.rc||{})},period:{...S.period,...(o.period||{})},chart:o.chart||{},vis:o.vis||{},edits:o.edits||{},blocks:o.blocks||{},order:Array.isArray(o.order)?o.order:[],anim:o.anim||'subtle'}}catch(e){}
-let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}},200);if(typeof syncDirty==='function'&&SIG!==null){const g=sigS();if(g!==SIG){SIG=g;syncDirty()}}}
+try{const o=JSON.parse(localStorage.getItem(LS)||'null');if(o&&typeof o==='object')S={...S,...o,rc:{...DEF_RC,...(o.rc||{})},period:{...S.period,...(o.period||{})},chart:o.chart||{},vis:o.vis||{},edits:o.edits||{},blocks:o.blocks||{},order:Array.isArray(o.order)?o.order:[],anim:o.anim||'subtle',imports:Array.isArray(o.imports)?o.imports:[]}}catch(e){}
+var VIEWING=false;let saveT;function save(){if(VIEWING)return;clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}},200);if(typeof syncDirty==='function'&&SIG!==null){const g=sigS();if(g!==SIG){SIG=g;syncDirty()}}}
 const sigS=()=>JSON.stringify({...S,cur:undefined});let SIG=null;
 
 /* ---------- imported data (IndexedDB) ---------- */
 const DS={cs:null,vip:null,rc:null};
 function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open('gxcs-report-data',1);r.onupgradeneeded=()=>r.result.createObjectStore('ds');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}})}
-async function idbPut(k,v){if(typeof syncDirty==='function'&&SIG!==null)syncDirty();try{const db=await idb();await new Promise((res,rej)=>{const t=db.transaction('ds','readwrite');const st=t.objectStore('ds');v==null?st.delete(k):st.put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}catch(e){}}
+async function idbPut(k,v){if(VIEWING&&['cs','vip','rc'].includes(k))return;if(typeof syncDirty==='function'&&SIG!==null&&['cs','vip','rc'].includes(k))syncDirty();try{const db=await idb();await new Promise((res,rej)=>{const t=db.transaction('ds','readwrite');const st=t.objectStore('ds');v==null?st.delete(k):st.put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}catch(e){}}
 async function idbGet(k){try{const db=await idb();return await new Promise((res,rej)=>{const r=db.transaction('ds').objectStore('ds').get(k);r.onsuccess=()=>res(r.result||null);r.onerror=()=>rej(r.error)})}catch(e){return null}}
 
 /* ---------- columns ---------- */
@@ -1683,6 +1698,7 @@ const DSINFO={cs:{t:'Customer Support data',tag:'HELPDESK CSO',d:'Export monitor
   vip:{t:'VIP Group data',tag:'VIP',d:'Export monitoring VIP Group. Boleh dikosongkan kalau file Customer Support punya kolom VIP flag — baris VIP diambil dari sana.'},
   rc:{t:'Repeat Complaint data',tag:'REPEAT',d:'Export Trouble Ticket Summary (CSV/XLSX), satu file untuk CS & VIP. Aturannya sama dengan web Repeat Complaint: filter Via Origin, ranking per CID (2+ tiket).'}};
 function renderImport(){
+  {const H=S.imports||[],L={cs:'Customer Support',vip:'VIP',rc:'Repeat Complaint'};$('#ihist').innerHTML=`<h3>Riwayat import</h3>${H.length?`<table class="tbl"><thead><tr><th>Waktu import</th><th>Data</th><th>File</th><th class="n">Baris</th><th>Periode data</th></tr></thead><tbody>${H.map((x,i)=>`<tr${i===0?' class="b"':''}><td>${hhmm(x.at)}</td><td>${L[x.k]||x.k}</td><td>${esc(x.name)}</td><td class="n">${fInt(x.rows)}</td><td class="mut">${x.from?ddmm(x.from)+' – '+ddmm(x.to):'—'}</td></tr>`).join('')}</tbody></table>`:'<div class="sub">Belum ada import.</div>'}<div class="sub" style="margin-top:6px">${typeof SY!=='undefined'&&SY.avail?'Data &amp; riwayat ini tersimpan online — semua yang membuka link melihat import terakhir.':'Penyimpanan online belum aktif (lihat README) — data &amp; riwayat ini hanya ada di browser ini.'}</div>`}
   $('#dsgrid').innerHTML=['cs','vip','rc'].map(k=>{const ds=DS[k],F=FIELDS_OF(k),info=DSINFO[k];const miss=ds?F.filter(f=>f.req&&!ds.map[f.k]).map(f=>f.l):[];
     return `<div class="dscard"><div><span class="tag">${info.tag}</span></div><h3>${info.t}</h3><div class="sub">${info.d}</div>
      <div class="drop"><input type="file" accept=".csv,.xlsx,.xls" data-file="${k}" aria-label="${info.t}"></div>
@@ -1700,7 +1716,9 @@ function renderImport(){
        <span class="chk"><input type="checkbox" data-rule="skipCanceled" ${S.rc.skipCanceled?'checked':''}> Abaikan tiket Canceled</span>
        <div><button class="btn sm" data-rule-reset>Reset rules</button></div></div></details>`:''}</div>`}).join('');
   $$('[data-file]').forEach(inp=>inp.onchange=async()=>{const f=inp.files[0];if(!f)return;const k=inp.dataset.file,st=$('#st-'+k);st.className='fstatus';st.textContent='Membaca file…';
-    try{const t=await readTable(f);t.map=detect(t.headers,FIELDS_OF(k),t.rows);DS[k]=t;await idbPut(k,t);renderImport();refresh(0)}catch(err){st.className='fstatus err';st.textContent='Gagal membaca file: '+err.message}});
+    try{const t=await readTable(f);t.map=detect(t.headers,FIELDS_OF(k),t.rows);DS[k]=t;await idbPut(k,t);
+      const ds=t.rows.map(r=>{const j=t.headers.indexOf(t.map.date);return j<0?null:parseDate(r[j])}).filter(x=>x!=null);
+      S.imports=[{k,name:f.name,rows:t.rows.length,at:Date.now(),from:ds.length?Math.min(...ds):null,to:ds.length?Math.max(...ds):null},...(S.imports||[])].slice(0,30);save();renderImport();refresh(0)}catch(err){st.className='fstatus err';st.textContent='Gagal membaca file: '+err.message}});
   $$('[data-map]').forEach(sel=>sel.onchange=async()=>{const k=sel.dataset.map;DS[k].map[sel.dataset.key]=sel.value;await idbPut(k,DS[k]);renderImport();refresh(0)});
   $$('[data-clear]').forEach(b=>b.onclick=async()=>{const k=b.dataset.clear;DS[k]=null;await idbPut(k,null);renderImport();refresh(0)});
   const ex=$('[data-excl]');if(ex)ex.onchange=()=>{S.excl=ex.value;save();refresh(0)};
@@ -1744,7 +1762,7 @@ let presenting=false,presStyle='';
 function presSize(){const W=innerWidth,H=innerHeight;const host=$('#pstage');if(W<760||H>W){host.style.width=W+'px';host.style.height=H+'px';host.style.borderRadius='0'}else{const k=Math.min(W/16,H/9);host.style.width=16*k+'px';host.style.height=9*k+'px';host.style.borderRadius='0'}}
 function presRender(dir=0){const s=curSlide(),host=$('#pstage');if(!s)return;presSize();const el=makeSlide(s,{mode:'presenting'});swap(host,el,dir);const v=visible();$('#pCount').textContent=`${v.indexOf(s)+1} / ${v.length}`}
 function presStart(){const v=visible();if(!v.length){alert('Belum ada slide yang dipilih untuk Present. Aktifkan di Customize Present.');return}if(!v.some(x=>x.id===S.cur))S.cur=v[0].id;presenting=true;document.body.style.overflow='hidden';$('#pres').classList.remove('hidden');try{const p=$('#pres').requestFullscreen?.();if(p&&p.catch)p.catch(()=>{})}catch(e){}$('#pstage').innerHTML='';presRender(0)}
-function presStop(){presenting=false;document.body.style.overflow='';$('#pres').classList.add('hidden');$('#pstage').innerHTML='';try{if(document.fullscreenElement){const p=document.exitFullscreen();if(p&&p.catch)p.catch(()=>{})}}catch(e){}renderSide();renderStage(0);renderDock()}
+function presStop(){if(presenting&&anyData()&&!VIEWING)histSave(curTitle(),true).catch(()=>{});presenting=false;document.body.style.overflow='';$('#pres').classList.add('hidden');$('#pstage').innerHTML='';try{if(document.fullscreenElement){const p=document.exitFullscreen();if(p&&p.catch)p.catch(()=>{})}}catch(e){}renderSide();renderStage(0);renderDock()}
 function presStep(d){step(d)}
 $('#presentBtn').onclick=presStart;
 $('#pPrev').onclick=e=>{e.stopPropagation();presStep(-1)};$('#pNext').onclick=e=>{e.stopPropagation();presStep(1)};$('#pExit').onclick=e=>{e.stopPropagation();presStop()};
@@ -1849,7 +1867,7 @@ function syApply(p,at){SY.loading=true;try{const cur=S.cur;S={...DEF_S(),...p.S,
     for(const k of ['cs','vip','rc']){DS[k]=p.DS&&p.DS[k]||null;idbPut(k,DS[k])}
     try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}SIG=sigS();lss(SY.kBase,String(at||p.at||Date.now()));lss(SY.kDirty,null);
     UNDO.length=0;REDO.length=0;syncPeriod();renderImport&&renderImport();refresh(0)}finally{SY.loading=false}syPill('ok','')}
-async function syPull(force){try{const r=await fetch(SY.api,{cache:'no-store'});
+async function syPull(force){if(VIEWING)return false;try{const r=await fetch(SY.api,{cache:'no-store'});
     if(r.status===501){SY.avail=false;syPill();return false}
     if(r.status===404){SY.avail=true;syPill();return false}
     if(!r.ok||!/octet-stream/.test(r.headers.get('content-type')||'')){SY.avail=false;syPill();return false}
@@ -1858,7 +1876,7 @@ async function syPull(force){try{const r=await fetch(SY.api,{cache:'no-store'});
     if(!force&&at&&at===syBase()&&(DS.cs||DS.vip||DS.rc)){syPill();return false}
     const p=JSON.parse(await gunzip(new Uint8Array(await r.arrayBuffer())));if(!p||!p.S)return false;syApply(p,at);return true
   }catch(e){if(SY.avail==null)SY.avail=false;syPill();return false}}
-async function syMeta(){if(document.hidden||SY.avail===false||SY.busy)return;try{const r=await fetch(SY.api+'?meta=1',{cache:'no-store'});const j=await r.json().catch(()=>({}));if(typeof j.open==='boolean'){SY.open=j.open;SY.avail=true}if(!r.ok)return;if(j.at&&j.at>syBase()&&!(syOwner()&&syIsDirty()&&+(lsg(SY.kDirtyAt)||0)>j.at))syPull()}catch(e){}}
+async function syMeta(){if(VIEWING||document.hidden||SY.avail===false||SY.busy)return;try{const r=await fetch(SY.api+'?meta=1',{cache:'no-store'});const j=await r.json().catch(()=>({}));if(typeof j.open==='boolean'){SY.open=j.open;SY.avail=true}if(!r.ok)return;if(j.at&&j.at>syBase()&&!(syOwner()&&syIsDirty()&&+(lsg(SY.kDirtyAt)||0)>j.at))syPull()}catch(e){}}
 function syInfo(){const el=$('#syncInfo');if(!el)return;const o=syOwner(),b=syBase();
   el.innerHTML=SY.avail===false?'<div class="warn">Penyimpanan online belum aktif di Vercel. Ikuti langkah di README (buat Blob store + PUBLISH_KEY), lalu redeploy. Sampai itu, data hanya ada di browser ini.</div>'
    :`<div>${b?`Data online terakhir: <b>${hhmm(b)}</b>`:'Belum ada data online.'}${o?` · Mode pemilik aktif${syIsDirty()?' · <b>ada perubahan belum tersimpan online</b>':''}`:' · Kamu sedang melihat data online.'}</div>${SY.state==='err'&&SY.msg?`<div class="warn">${esc(SY.msg)}</div>`:''}`;
@@ -1876,7 +1894,42 @@ function syncInit(){
   if(location.protocol.startsWith('http')){fetch(SY.api+'?meta=1',{cache:'no-store'}).then(r=>r.json()).then(j=>{if(typeof j.open==='boolean'){SY.open=j.open;SY.avail=true}}).catch(()=>{}).finally(()=>syPull().then(()=>{SY.ready=true;syPill();if(syOwner()&&syIsDirty()&&syAuto())syPublish()}));setInterval(syMeta,20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)syMeta()})}
   else{SY.avail=false;SY.ready=true;syPill()}
 }
-(async()=>{for(const k of ['cs','vip','rc']){const d=await idbGet(k);if(d&&d.headers&&d.rows){d.map=d.map||{};let ch=0;if(k!=='rc'){const ren=mergeDateTime(d);for(const x in d.map)if(ren[d.map[x]]){d.map[x]=ren[d.map[x]];ch=1}if(Object.keys(ren).length)ch=1}const f=detect(d.headers,FIELDS_OF(k),d.rows);if(k!=='rc'&&f.inv&&d.map.inv!==f.inv){const j=d.headers.indexOf(d.map.inv);if(j<0||!d.rows.slice(0,5000).some(r=>isOutcomeVal(r[j]))){d.map.inv=f.inv;ch=1}}if(k==='rc'){if(d.map.uid&&!d.map.uidManual&&isMailCol(d.headers,d.rows,d.map.uid)){d.map.uid='';ch=1}if(fixRcUid(d.headers,d.rows,d.map))ch=1;if(!d.map.product){fixRcProduct(d.headers,d.rows,d.map);if(d.map.product)ch=1}if(!d.map.pkgx&&fixRcPkgExtra(d.headers,d.rows,d.map))ch=1}for(const x in f)if(!d.map[x]&&f[x]&&!(x==='uid'&&d.map.uidManual)&&!Object.values(d.map).includes(f[x])){d.map[x]=f[x];ch=1}if(ch)idbPut(k,d);DS[k]=d}}syncPeriod();refresh(0);SIG=sigS();syncInit()})();
+/* ---------- Riwayat report (online bila aktif, kalau tidak di browser ini) ---------- */
+const HL='gxcs-hist-local';
+const anyData=()=>!!(DS.cs||DS.vip||DS.rc);
+const curTitle=()=>'Helpdesk Report · '+(C&&C.long||'');
+function snapPayload(){return {v:1,at:Date.now(),S:{...S,cur:undefined},DS:{cs:syStrip(DS.cs),vip:syStrip(DS.vip),rc:syStrip(DS.rc)}}}
+const hlGet=()=>{try{return JSON.parse(lsg(HL)||'[]')}catch(e){return []}},hlSet=a=>lss(HL,JSON.stringify(a.slice(0,30)));
+async function histSave(title,auto){if(!anyData()||VIEWING)return {ok:false,msg:'Belum ada data.'};title=(title||curTitle()).trim()||curTitle();
+  const p=snapPayload();
+  if(SY.avail&&syOwner()){try{const body=await gzip(JSON.stringify(p));const r=await fetch(SY.api+'?snap=1&auto='+(auto?1:0)+'&title='+encodeURIComponent(title),{method:'POST',headers:{'x-publish-key':syKey(),'content-type':'application/octet-stream'},body});const j=await r.json().catch(()=>({}));if(r.ok&&j.ok)return {ok:true,online:true,msg:'Tersimpan online: '+title};}catch(e){}}
+  /* cadangan: simpan di browser ini */
+  const id='L'+Date.now();let L=hlGet();
+  if(auto)L=L.filter(x=>{const same=x.auto&&x.title===title&&Date.now()-x.at<3*3600e3;if(same)idbPut('hist:'+x.id,null);return !same});
+  await idbPut('hist:'+id,p);L.unshift({id,at:p.at,title,auto:!!auto,local:1});L.slice(30).forEach(x=>idbPut('hist:'+x.id,null));hlSet(L);
+  return {ok:true,online:false,msg:'Tersimpan di browser ini: '+title}}
+async function histItems(){let on=[];if(SY.avail){try{const r=await fetch(SY.api+'?history=1',{cache:'no-store'});if(r.ok){const j=await r.json();on=(j.items||[]).map(x=>({...x,local:0}))}}catch(e){}}return [...on,...hlGet()].sort((a,b)=>b.at-a.at)}
+async function histLoad(it){if(it.local)return await idbGet('hist:'+it.id);const r=await fetch(SY.api+'?snap='+encodeURIComponent(it.id),{cache:'no-store'});if(!r.ok)return null;return JSON.parse(await gunzip(new Uint8Array(await r.arrayBuffer())))}
+let HBK=null;
+function histApplyMem(p){S={...DEF_S(),...p.S,rc:{...DEF_RC,...(p.S.rc||{})},period:{...DEF_S().period,...(p.S.period||{})},cur:S.cur};for(const k of ['cs','vip','rc'])DS[k]=p.DS&&p.DS[k]||null;UNDO.length=0;REDO.length=0;syncPeriod();refresh(0)}
+async function histOpen(it){const p=await histLoad(it);if(!p||!p.S){$('#histMsg').textContent='Riwayat tidak bisa dibuka.';return}
+  if(!VIEWING)HBK={S:JSON.parse(JSON.stringify(S)),DS:{...DS}};VIEWING=true;histApplyMem(p);HBK.item=it;HBK.p=p;
+  $('#hbTitle').textContent=it.title;$('#hbAt').textContent=hhmm(it.at);$('#histBanner').classList.remove('hidden');document.body.classList.add('viewing-hist');closeModal('histModal')}
+function histBack(){if(!VIEWING)return;VIEWING=false;S=HBK.S;for(const k of ['cs','vip','rc'])DS[k]=HBK.DS[k];HBK=null;$('#histBanner').classList.add('hidden');document.body.classList.remove('viewing-hist');UNDO.length=0;REDO.length=0;syncPeriod();refresh(0);SIG=sigS()}
+async function histRestore(){if(!VIEWING||!HBK)return;if(!confirm('Jadikan riwayat "'+HBK.item.title+'" sebagai data utama? Data sekarang ikut disimpan dulu ke Riwayat.'))return;
+  const p=HBK.p,bk=HBK;VIEWING=false;S=bk.S;for(const k of ['cs','vip','rc'])DS[k]=bk.DS[k];
+  await histSave('Sebelum dipulihkan · '+hhmm(Date.now()),false).catch(()=>{});
+  HBK=null;$('#histBanner').classList.add('hidden');document.body.classList.remove('viewing-hist');
+  histApplyMem(p);for(const k of ['cs','vip','rc'])await idbPut(k,DS[k]);save()}
+async function renderHist(){const el=$('#histList');el.innerHTML='<div class="sub">Memuat…</div>';const items=await histItems();const own=syOwner()||!SY.avail;
+  el.innerHTML=items.length?items.map((x,i)=>`<div class="hrow"><div class="hmain"><b>${esc(x.title)}</b><span class="mut">${hhmm(x.at)} · ${x.auto?'Otomatis (selesai Present)':'Manual'}${x.local?' · <em>hanya di browser ini</em>':''}${x.size?` · ${(x.size/1e6).toFixed(1)} MB`:''}</span></div><span class="hact"><button class="btn sm pri" data-hopen="${i}">Buka</button>${own?`<button class="btn sm" data-hdel="${i}" title="Hapus riwayat">Hapus</button>`:''}</span></div>`).join(''):'<div class="sub">Belum ada riwayat. Riwayat otomatis tersimpan setiap selesai Present.</div>';
+  el.querySelectorAll('[data-hopen]').forEach(b=>b.onclick=()=>histOpen(items[+b.dataset.hopen]));
+  el.querySelectorAll('[data-hdel]').forEach(b=>b.onclick=async()=>{const it=items[+b.dataset.hdel];if(!confirm('Hapus riwayat "'+it.title+'"?'))return;
+    if(it.local){hlSet(hlGet().filter(x=>x.id!==it.id));await idbPut('hist:'+it.id,null)}else await fetch(SY.api+'?del='+encodeURIComponent(it.id),{method:'POST',headers:{'x-publish-key':syKey()}});renderHist()})}
+function histInit(){$('#histBtn').onclick=()=>{$('#histName').value=curTitle();$('#histMsg').textContent=VIEWING?'Sedang melihat riwayat — kembali ke data terbaru untuk menyimpan.':'';openModal('histModal');renderHist()};
+  $('#histSave').onclick=async()=>{$('#histMsg').textContent='Menyimpan…';const r=await histSave($('#histName').value,false);$('#histMsg').textContent=r.msg;renderHist()};
+  $('#hbBack').onclick=histBack;$('#hbRestore').onclick=histRestore}
+(async()=>{for(const k of ['cs','vip','rc']){const d=await idbGet(k);if(d&&d.headers&&d.rows){d.map=d.map||{};let ch=0;if(k!=='rc'){const ren=mergeDateTime(d);for(const x in d.map)if(ren[d.map[x]]){d.map[x]=ren[d.map[x]];ch=1}if(Object.keys(ren).length)ch=1}const f=detect(d.headers,FIELDS_OF(k),d.rows);if(k!=='rc'&&f.inv&&d.map.inv!==f.inv){const j=d.headers.indexOf(d.map.inv);if(j<0||!d.rows.slice(0,5000).some(r=>isOutcomeVal(r[j]))){d.map.inv=f.inv;ch=1}}if(k==='rc'){if(d.map.uid&&!d.map.uidManual&&isMailCol(d.headers,d.rows,d.map.uid)){d.map.uid='';ch=1}if(fixRcUid(d.headers,d.rows,d.map))ch=1;if(!d.map.product){fixRcProduct(d.headers,d.rows,d.map);if(d.map.product)ch=1}if(!d.map.pkgx&&fixRcPkgExtra(d.headers,d.rows,d.map))ch=1}for(const x in f)if(!d.map[x]&&f[x]&&!(x==='uid'&&d.map.uidManual)&&!Object.values(d.map).includes(f[x])){d.map[x]=f[x];ch=1}if(ch)idbPut(k,d);DS[k]=d}}syncPeriod();refresh(0);SIG=sigS();syncInit();histInit()})();
 </script>
 </body>
 </html>

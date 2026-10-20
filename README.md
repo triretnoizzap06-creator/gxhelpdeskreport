@@ -155,19 +155,20 @@ Slide 1 (cover) dan Thank You memakai tema gelap: judul putih + kuning, garis se
 
 
 ## Data online — link selalu up to date (Vercel Blob)
-Data import & isian tersimpan di browser masing-masing. Supaya semua orang yang membuka link melihat data terbaru, pemilik **mempublish** data ke penyimpanan online Vercel (private). Viewer otomatis memuat data publish terakhir saat membuka link dan mengecek update tiap ±90 detik.
+Tidak ada tombol Publish. Setiap import data, isian, atau pengaturan langsung tersimpan online (±1 detik), dan semua yang membuka link otomatis mendapat data terbaru (cek update tiap ±20 detik dan saat tab dibuka lagi).
 
 ### Setup sekali di Vercel
 1. Upload/push isi zip ini ke GitHub seperti biasa (sekarang ada folder `api/` dan `package.json`).
-2. Vercel → project **helpdeskreport** → tab **Storage** → **Create** → **Blob** → beri nama (mis. `gx-cs-report`) → bila ditanya akses pilih **Private** → **Connect** ke project (Production + Preview). Vercel otomatis menambah env `BLOB_READ_WRITE_TOKEN`.
-3. **Settings → Environment Variables** → tambah `PUBLISH_KEY` = password pilihan kamu (hanya pemilik yang tahu).
-4. **Redeploy** project (Deployments → … → Redeploy).
+2. Vercel → project **helpdeskreport** → tab **Storage** → **Create** → **Blob** → beri nama (mis. `gx-cs-report`) → bila ditanya akses pilih **Private** → **Connect** ke project. Vercel otomatis menambah env `BLOB_READ_WRITE_TOKEN`.
+3. **Redeploy** project.
 
-### Cara pakai
-- Klik tombol status **Online** di bar atas → isi password `PUBLISH_KEY` → **Publish sekarang**. Browser ini jadi **mode pemilik**.
-- Mode pemilik: setiap import data, edit isian, ubah periode / urutan slide → otomatis dipublish ±3 detik kemudian (bisa dimatikan). Status di bar: *Menunggu publish… → Tersimpan online · tgl jam*.
-- Viewer (orang lain): cukup buka link, data terbaru termuat otomatis. Status: *Data online · tgl jam*.
-- **Muat data online** mengambil ulang data publish terakhir (menimpa data di browser ini).
-- Kolom pribadi yang tidak dipakai slide (telepon, email, alamat, NIK, contact name) **tidak ikut dipublish**.
-- Catatan: siapa pun yang punya link bisa melihat data yang dipublish. Bila perlu dibatasi, aktifkan Vercel Deployment Protection.
-- Endpoint: `GET /api/report` (data), `GET /api/report?meta=1` (waktu publish), `POST /api/report` (publish, header `x-publish-key`).
+Selesai — import data di web, data langsung online.
+
+### Opsional: batasi siapa yang bisa mengubah data
+Tambah env **`PUBLISH_KEY`** (password) lalu redeploy. Setelah itu hanya browser yang sudah memasukkan password (klik status di bar atas → isi sekali) yang perubahannya tersimpan online; yang lain hanya melihat. Tanpa `PUBLISH_KEY`, siapa pun yang import / mengedit lewat link ikut mengubah data online.
+
+### Catatan
+- Status di bar atas: *Menyimpan…* → *Data terbaru · tgl jam*. *Hanya di browser ini* = perubahan belum bisa tersimpan online (storage belum aktif atau butuh password). Klik status untuk memuat ulang data online.
+- Browser yang belum punya data tidak pernah menimpa data online; perubahan terbaru (waktu) yang dipakai bila dua orang mengedit.
+- Kolom pribadi yang tidak dipakai slide (telepon, email, alamat, NIK, contact name) tidak ikut disimpan online. Siapa pun yang punya link bisa melihat data; bila perlu dibatasi aktifkan Vercel Deployment Protection.
+- Endpoint: `GET /api/report`, `GET /api/report?meta=1`, `POST /api/report`.

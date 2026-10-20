@@ -1,7 +1,8 @@
 // Penyimpanan online laporan (Vercel Blob, private).
 // GET  /api/report        → data laporan terakhir yang dipublish (gzip JSON)
 // GET  /api/report?meta=1 → { at } waktu publish terakhir (ringan, untuk cek update)
-// POST /api/report        → publish data baru (header x-publish-key = env PUBLISH_KEY)
+// POST /api/report        → publish data baru. Bila env PUBLISH_KEY diisi, wajib header x-publish-key;
+//                            bila PUBLISH_KEY kosong, siapa pun yang import di web langsung mempublish (mode terbuka).
 // POST /api/report?check=1→ cek password saja, tidak menyimpan apa pun
 import { put, get, head } from '@vercel/blob';
 import { timingSafeEqual } from 'node:crypto';
@@ -14,9 +15,11 @@ const json = (obj, status = 200) =>
 
 const configured = () => !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 
+const open = () => !process.env.PUBLISH_KEY;
 function keyOk(given) {
   const want = process.env.PUBLISH_KEY || '';
-  if (!want || !given) return false;
+  if (!want) return true; // mode terbuka
+  if (!given) return false;
   const a = Buffer.from(String(given)), b = Buffer.from(want);
   return a.length === b.length && timingSafeEqual(a, b);
 }
@@ -27,8 +30,8 @@ export async function GET(request) {
   try {
     if (meta) {
       const h = await head(PATH).catch(() => null);
-      if (!h) return json({ error: 'empty' }, 404);
-      return json({ at: new Date(h.uploadedAt).getTime(), size: h.size });
+      if (!h) return json({ error: 'empty', open: open() }, 404);
+      return json({ at: new Date(h.uploadedAt).getTime(), size: h.size, open: open() });
     }
     const r = await get(PATH, { access: 'private', useCache: false });
     if (!r || r.statusCode !== 200 || !r.stream) return json({ error: 'empty' }, 404);
@@ -39,9 +42,8 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-  if (!process.env.PUBLISH_KEY) return json({ error: 'publish-key-not-set' }, 501);
   if (!keyOk(request.headers.get('x-publish-key'))) return json({ error: 'unauthorized' }, 401);
-  if (new URL(request.url).searchParams.has('check')) return json({ ok: true, storage: configured() });
+  if (new URL(request.url).searchParams.has('check')) return json({ ok: true, storage: configured(), open: open() });
   if (!configured()) return json({ error: 'storage-not-configured' }, 501);
   const buf = Buffer.from(await request.arrayBuffer());
   if (buf.length < 20 || buf[0] !== 0x1f || buf[1] !== 0x8b) return json({ error: 'bad-payload' }, 400);

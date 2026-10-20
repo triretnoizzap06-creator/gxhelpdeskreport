@@ -141,3 +141,13 @@ Slide 1 (cover) dan Thank You memakai tema gelap: judul putih + kuning, garis se
 
 - AFR dan **Median tampil bersebelahan** di tile First Response (Snapshot & VIP Overview) dan di kartu ringkasan slide AFR by Agent, plus selisih AFR − median.
 - Key highlights slide AFR by Agent menjelaskan per poin: arti AFR (rata-rata, berapa tiket > 30 menit yang mengangkatnya), arti Median (separuh customer dibalas ≤ median), dan arti selisihnya (tercepat / perlu perhatian).
+
+
+## Repeat Complaint — semua bisa diedit
+- Tiap tiket (Top 3 dan Other) bisa diedit langsung: **tanggal, no. tiket, problem, WO, status, Kendala, Action**. Tombol **+ Notes** menambah kolom Notes di bawah Action.
+- **+ Tambah tiket** di tiap user. Ikon **tempat sampah** di tiap tiket → pilih **Cancel / Double / Hapus** untuk mengeluarkan tiket dari slide (data export tidak berubah). Tiket yang dihapus muncul di bar "n tiket dihapus" di atas slide dan bisa **dipulihkan** satu per satu atau sekaligus, dan **+ Tambah repeat user** di slide Other Repeat Complaints (User ID bisa diganti).
+- Di Other Repeat Complaints, tombol **Edit** membuka semua tiket user tsb untuk diedit.
+- Saat Present / Print semua kolom tampil sebagai teks; tombol edit disembunyikan. Semua isian tersimpan di browser dan ikut Export settings; **Reset isian** menghapus isian Top 3.
+- Baris ganda di export (CID + tanggal + problem sama) dihitung **satu kasus**; WO / Kendala / Action yang terisi di baris ganda digabung.
+- Isian Kendala / Action / Notes tidak hilang lagi saat menyimpan link WO atau pindah slide.
+- **Ctrl+Z** (Cmd+Z di Mac) membatalkan perubahan terakhir: hapus / tambah tiket, isian, status, link WO, pilihan Top 3. **Ctrl+Shift+Z** atau **Ctrl+Y** untuk redo. Saat kursor di dalam kolom isian, Ctrl+Z memakai undo bawaan kolom tsb; klik di luar kolom untuk undo per langkah. Riwayat undo berlaku selama halaman terbuka (hilang saat reload).

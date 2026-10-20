@@ -718,6 +718,25 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .frc-f{font-size:.82cqw;color:#86868B;border-top:1px solid rgba(0,0,0,.06);padding-top:.5cqw}
 .frc.big .frc-c b{font-size:3.6cqw}.frc.big .frc-l,.frc.big .frc-s{font-size:.9cqw}.frc.big .frc-c+.frc-c{padding-left:1.4cqw}.frc.big+.frc-f{font-size:.95cqw}
 @container deck (max-width:719px){.frc-c b{font-size:22px}.frc.big .frc-c b{font-size:30px}.frc-l,.frc-s,.frc-f{font-size:11px}}
+.ie{font:inherit;color:inherit;background:transparent;border:1px solid transparent;border-radius:.35cqw;padding:.08cqw .3cqw;min-width:0}
+.ie:hover{border-color:rgba(0,0,0,.12);background:#fff}.ie:focus{outline:2px solid #E0A800;background:#FFFBEA}
+.tkc .dt{display:flex;align-items:center;gap:.2cqw;min-width:0;flex:1}.tkc .dt-i{font-size:.86cqw;font-weight:700;width:8.6cqw}.tkc .tk-i{font-size:.82cqw;color:#6E6E73;width:7cqw;flex:1}
+.tkc .pb-i{flex:1 1 9cqw;font-size:.92cqw;font-weight:600}.tkc .wo-i{flex:0 1 6cqw;font-size:.82cqw;color:#1F3A5F}.tkc .wo-a{font-size:.82cqw;text-decoration:none;padding:0 .2cqw}
+.tk-x{border:0;background:transparent;color:#A0A0A6;cursor:pointer;font-size:.86cqw;padding:0 .2cqw;line-height:1}.tk-x:hover{color:#D70015}
+.nt-add,.tk-add{border:1px dashed rgba(0,0,0,.18);background:transparent;border-radius:.45cqw;color:#6E6E73;font:inherit;font-size:.82cqw;padding:.2cqw .6cqw;cursor:pointer;align-self:flex-start}.nt-add:hover,.tk-add:hover{border-color:#E0A800;color:#1D1D1F;background:#FFFBEA}
+.tk-add{flex:none}
+.pr-only{display:none}.presenting .pr-only,.printing .pr-only{display:revert}.presenting .ed-only,.printing .ed-only{display:none!important}
+.tkc .pb.pr-only{display:none}.presenting .tkc .pb.pr-only,.printing .tkc .pb.pr-only{display:-webkit-box}
+.rx td{background:#FAFAFB;padding:.8cqw!important}.rx-u{display:flex;align-items:center;gap:1cqw;margin-bottom:.6cqw;font-size:.9cqw}.rx-u label{display:flex;align-items:center;gap:.5cqw;font-weight:600}.rx-u .ie{border-color:rgba(0,0,0,.12);background:#fff;font-weight:600;width:16cqw}
+.rx-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(24cqw,1fr));gap:.6cqw;align-items:start}.rx-t{white-space:nowrap}
+@container deck (max-width:719px){.tkc .dt-i,.tkc .tk-i,.tkc .pb-i,.tkc .wo-i,.nt-add,.tk-add,.tk-x{font-size:12px}.tkc .dt-i{width:130px}.tkc .tk-i{width:110px}.rx-g{grid-template-columns:1fr}.rx-u{font-size:12px}.rx-u .ie{width:160px}}
+.tk-xw{position:relative;display:inline-flex;flex-shrink:0}.tk-x{display:inline-flex;align-items:center;justify-content:center;width:1.5cqw;height:1.5cqw;border-radius:.35cqw}.tk-x svg{width:.95cqw;height:.95cqw}.tk-x:hover,.tk-xw:focus-within .tk-x{background:#FDE7E7;color:#D70015}
+.tk-m{display:none;position:absolute;right:0;top:100%;z-index:5;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:.5cqw;box-shadow:0 .4cqw 1.2cqw rgba(0,0,0,.12);padding:.25cqw;flex-direction:column;min-width:7cqw}
+.tk-xw:hover .tk-m,.tk-xw:focus-within .tk-m{display:flex}.tk-m button{border:0;background:transparent;font:inherit;font-size:.86cqw;text-align:left;padding:.3cqw .55cqw;border-radius:.35cqw;cursor:pointer;color:#1D1D1F}.tk-m button:hover{background:#FDE7E7;color:#B42318}
+.delbar{display:flex;align-items:center;flex-wrap:wrap;gap:.4cqw .5cqw;font-size:.86cqw;color:#6E6E73;margin-bottom:.6cqw;flex:none}.delbar>svg{width:1cqw;height:1cqw}.delbar b{color:#1D1D1F;margin-right:.3cqw}
+.delbar button{border:1px solid rgba(0,0,0,.1);background:#fff;border-radius:999px;font:inherit;font-size:.82cqw;padding:.12cqw .6cqw;cursor:pointer;color:#1D1D1F}.delbar button em{font-style:normal;color:#B42318;font-weight:600}.delbar button:hover{border-color:#E0A800;background:#FFFBEA}.delbar .all{font-weight:600}
+@container deck (max-width:719px){.tk-x{width:26px;height:26px}.tk-x svg{width:15px;height:15px}.tk-m button,.delbar,.delbar button{font-size:12px}}
+#uToast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#1D1D1F;color:#fff;font-size:13px;font-weight:600;padding:9px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:9999}#uToast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
@@ -1062,6 +1081,15 @@ const RC_STC={'Open':{c:'#FF9F0A',bg:'#FFF0D6',fg:'#A85A00'},'WO In Progress':{c
 function rcStatus(raw){const s=String(raw||'').toLowerCase();if(/cancel|batal/.test(s))return 'Cancelled';if(/^(solved|closed|resolved|done|selesai|complete)/.test(s))return 'Closed';if(/\bwo\b|work ?order|progress|proses|process|on ?going|visit|dispatch|assign/.test(s))return 'WO In Progress';return 'Open'}
 const rcDone=s=>s==='Closed'||s==='Cancelled';
 /* ---------- repeat complaint (same rules as repeatcomplainthd) ---------- */
+/* override isian manual per tiket: status, tanggal, no. tiket, problem, WO, kendala, action, notes; return true bila dihapus */
+function rcApply(t){const E=x=>S.edits['rc.'+x+'.'+t.k];if(E('del'))return true;
+  const eS=E('st');t.status=RC_ST.includes(eS)?eS:rcStatus(t.status);
+  if(E('kd')!==undefined)t.kendala=E('kd');if(E('ac')!==undefined)t.action=E('ac');
+  if(E('pb')!==undefined)t.problem=E('pb');if(!t.problem)t.problem=t.manual?'':'(problem kosong)';
+  if(E('tk')!==undefined)t.ticket=E('tk');if(E('wo')!==undefined)t.wo=E('wo');
+  if(E('dt')){const d=new Date(E('dt')+'T00:00:00').getTime();if(!isNaN(d))t.date=d}
+  t.notes=E('nt')||'';t.ntOn=!!(t.notes||E('ntOn'));return false}
+const isoD=t=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 function rcAnalyze(rep){
   const R=DS.rc;if(!R)return null;
   const I=idx(R,RC_FIELDS),g=(r,k)=>{if(I[k]<0)return '';const v=String(r[I[k]]??'').trim();return v==='-'?'':v};
@@ -1071,7 +1099,7 @@ function rcAnalyze(rep){
   const acts=String(st.actValues||'').split(',').map(norm).filter(Boolean),excl=String(st.excludeCats||'').split(',').map(norm).filter(Boolean);
   const hasComplaint=I.type>=0&&R.rows.some(r=>norm(r[I.type])==='complaint');
   const P=periodBounds();
-  const G=new Map(),seen=new Set(),elig=[];let min=null,max=null;
+  const G=new Map(),seen=new Set(),dup=new Map(),elig=[],deleted=[];let min=null,max=null;
   for(const r of R.rows){
     if(I.origin>=0&&norm(g(r,'origin'))!==want)continue;
     const dt=I.date<0?null:parseDate(r[I.date]);
@@ -1082,19 +1110,26 @@ function rcAnalyze(rep){
     const cat=g(r,'category');if(cat&&excl.some(x=>norm(cat).includes(x)))continue;
     const tk=g(r,'ticket');if(tk){if(seen.has(tk))continue;seen.add(tk)}
     const cid=g(r,'cid');if(!cid)continue;
+    /* satu kasus = CID + tanggal + problem yang sama (baris ganda di export digabung) */
+    const dk=cid+'|'+(dt!=null?dayStart(dt):'')+'|'+norm(g(r,'problem'));
+    if(dup.has(dk)){const o=dup.get(dk);if(!o.wo&&g(r,'wo'))o.wo=g(r,'wo');if(!o.kendala&&g(r,'kendala'))o.kendala=g(r,'kendala');if(!o.action&&g(r,'action'))o.action=g(r,'action');if(!o.ticket&&tk)o.ticket=tk;continue}
     if(dt!=null){min=min==null?dt:Math.min(min,dt);max=max==null?dt:Math.max(max,dt)}
     const kendala=g(r,'kendala'),action=g(r,'action'),res=[kendala,action].filter(Boolean).join(' → ');
     const note=res||[g(r,'status'),g(r,'ctso')?'CTSO: '+g(r,'ctso'):(g(r,'cso')?'CSO: '+g(r,'cso'):'')].filter(Boolean).join(' · ');
     const t={k:keyOf(tk||cid+'_'+dt),kendala,action,ticket:tk,date:dt??0,problem:g(r,'problem')||'(problem kosong)',category:cat,status:g(r,'status'),wo:g(r,'wo'),note,ctso:!!g(r,'ctso'),uid:g(r,'uid'),name:g(r,'name'),branch:g(r,'branch').replace(/^GlobalXtreme\s*/i,''),product:pkgOf(r)};
-    {const eS=S.edits['rc.st.'+t.k],eK=S.edits['rc.kd.'+t.k],eA=S.edits['rc.ac.'+t.k];t.status=RC_ST.includes(eS)?eS:rcStatus(t.status);if(eK!==undefined)t.kendala=eK;if(eA!==undefined)t.action=eA}
+    dup.set(dk,t);
+    if(rcApply(t)){deleted.push({k:t.k,ticket:t.ticket,date:t.date,problem:t.problem,cid,why:S.edits['rc.del.'+t.k]});continue}
     elig.push(t);if(!G.has(cid))G.set(cid,[]);G.get(cid).push(t);
   }
+  /* tiket tambahan manual */
+  for(const m of (S.edits['rc.manual.'+rep]||[])){const t={k:'m_'+m.id,manual:1,kendala:'',action:'',ticket:'',date:m.date||Date.now(),problem:'',category:'',status:'Open',wo:'',note:'',ctso:false,uid:m.uid||'',name:'',branch:'',product:''};
+    if(rcApply(t))continue;elig.push(t);if(!G.has(m.cid))G.set(m.cid,[]);G.get(m.cid).push(t)}
   const sev=n=>n>=6?'HIGH':n>=5?'MONITOR':n>=3?'MEDIUM':'LOW';
-  const list=[...G].map(([cid,t])=>{t.sort((a,b)=>a.date-b.date);const uc=groupCount(t,'uid');return {sev:sev(t.length),allRes:t.every(k=>rcDone(k.status)),cid,uid:uc.length?uc[0].label:cid,name:t.find(x=>x.name)?.name||'',branch:t.find(x=>x.branch)?.branch||'',product:(()=>{const pg=groupCount(t,'product');return pg.slice(0,3).map(x=>x.label).join(' / ')+(pg.length>3?' +'+(pg.length-3):'')})(),count:t.length,np:new Set(t.map(x=>x.problem)).size,latest:t[t.length-1].date,tickets:t}});
+  const list=[...G].map(([cid,t])=>{t.sort((a,b)=>a.date-b.date);const uc=groupCount(t,'uid');return {sev:sev(t.length),allRes:t.every(k=>rcDone(k.status)),cid,manual:t.every(k=>k.manual),uid:S.edits['rc.uid.'+keyOf(cid)]||(uc.length?uc[0].label:(/^NEW-/.test(cid)?'User baru':cid)),name:t.find(x=>x.name)?.name||'',branch:t.find(x=>x.branch)?.branch||'',product:(()=>{const pg=groupCount(t,'product');return pg.slice(0,3).map(x=>x.label).join(' / ')+(pg.length>3?' +'+(pg.length-3):'')})(),count:t.length,np:new Set(t.map(x=>x.problem)).size,latest:t[t.length-1].date,tickets:t}});
   const cand=list.filter(x=>x.count>=2).sort((a,b)=>b.count-a.count||b.np-a.np||b.latest-a.latest);
   const sel=(S.edits['top3.'+rep]||[]).map(id=>cand.find(x=>x.cid===id)).filter(Boolean);
   const top=[];for(const x of sel)if(top.length<3&&!top.includes(x))top.push(x);for(const x of cand)if(top.length<3&&!top.includes(x))top.push(x);
-  return {elig,list,cand,top,repTickets:cand.reduce((n,x)=>n+x.count,0),openN:cand.reduce((n,x)=>n+x.tickets.filter(k=>!rcDone(k.status)).length,0),prob:groupCount(elig,'problem'),min,max,hasOrigin:I.origin>=0,complaintOnly:st.complaintOnly&&hasComplaint};
+  return {elig,deleted,list,cand,top,repTickets:cand.reduce((n,x)=>n+x.count,0),openN:cand.reduce((n,x)=>n+x.tickets.filter(k=>!rcDone(k.status)).length,0),prob:groupCount(elig,'problem'),min,max,hasOrigin:I.origin>=0,complaintOnly:st.complaintOnly&&hasComplaint};
 }
 
 /* ---------- period filter ---------- */
@@ -1410,6 +1445,7 @@ function sNoResp(){const id='cs-nr',m=C.cs,title='No Response Analysis & Resolut
   return head(id,'cs',title,`Helpdesk CSO Team · ${fInt(T)} Total Cases`)+body(((before||'')+(after||'')+bottom+h)||allOff())}
 /* ---- Repeat complaint: ticket + work order ---- */
 function woUrl(wo){if(!wo)return '';const own=S.edits['wo.'+keyOf(wo)];if(own)return own;const tpl=String(S.rc.woLink||'').trim();return tpl?tpl.replace(/\{wo\}/g,encodeURIComponent(wo)):''}
+const TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg>';
 const LINK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg>';
 function woChip(wo){const u=woUrl(wo),L=esc(/^wo\b|^wo[-_ ]/i.test(wo)?wo:'WO '+wo);
   return u?`<span class="wo"><a class="wo-a" href="${esc(u)}" target="_blank" rel="noopener noreferrer" title="Buka Work Order">${L} ↗</a><button class="wo-e" data-wo="${esc(wo)}" title="Ubah link WO" aria-label="Edit WO link">${LINK}</button></span>`
@@ -1422,31 +1458,32 @@ const stCnt=tk=>RC_ST.map(s=>({label:s,value:tk.filter(k=>k.status===s).length,c
 function sbar(tk,max){const c=stCnt(tk).filter(x=>x.value),w=max?tk.length/max*100:100;return `<div class="sbt"><div class="sbar" style="width:${w}%" title="${esc(c.map(x=>x.label+' '+x.value).join(' · '))}">${c.map(x=>`<i style="flex:${x.value};background:${x.color}"></i>`).join('')}</div></div>`}
 function stSel(k){const m=RC_STC[k.status];return `<span class="stw" style="--sbg:${m.bg};--sfg:${m.fg}"><select class="stsel" data-rcst="${esc(k.k)}" aria-label="Status tiket">${RC_ST.map(s=>`<option ${s===k.status?'selected':''}>${s}</option>`).join('')}</select><span class="st-s">${esc(k.status)}</span></span>`}
 const fxField=(lab,kind,k,val,ph)=>`<div class="kv"><b>${lab} :</b><div class="kvf"><textarea rows="1" aria-label="${lab}" data-rcf="${kind}" data-k="${esc(k.k)}" placeholder="${ph}" spellcheck="false">${esc(val)}</textarea><div class="fld-s ${val?'':'mut'}">${val?esc(val):'—'}</div></div></div>`;
-function tkCell(k){const m=RC_STC[k.status];return `<div class="tkc" style="--sc:${m.c}"><div class="t1"><div class="dt">${ddmm(k.date)}${k.ticket?` <span>#${esc(k.ticket)}</span>`:''}</div>${stSel(k)}</div><div class="t2"><div class="pb" title="${esc(k.problem)}">${esc(k.problem)}</div>${k.wo?woChip(k.wo):''}</div>${fxField('Kendala','kd',k,k.kendala,'Isi kendala…')}${fxField('Action','ac',k,k.action,'Isi action…')}</div>`}
+function tkCell(k,rep){const m=RC_STC[k.status],K=esc(k.k);return `<div class="tkc" style="--sc:${m.c}"><div class="t1"><div class="dt"><input type="date" class="ie ed-only dt-i" data-rcf="dt" data-k="${K}" value="${k.date?isoD(k.date):''}" aria-label="Tanggal"><input class="ie ed-only tk-i" data-rcf="tk" data-k="${K}" value="${esc(k.ticket||'')}" placeholder="No. tiket" aria-label="No. tiket"><span class="pr-only">${ddmm(k.date)}${k.ticket?` <span>#${esc(k.ticket)}</span>`:''}</span></div>${stSel(k)}<span class="tk-xw ed-only"><button class="tk-x" title="Hapus tiket (cancel / double)" aria-label="Hapus tiket">${TRASH}</button><span class="tk-m"><button data-rcdel="${K}" data-why="Cancel" data-rep="${rep||''}">Cancel</button><button data-rcdel="${K}" data-why="Double" data-rep="${rep||''}">Double</button><button data-rcdel="${K}" data-why="Lainnya" data-rep="${rep||''}">Hapus</button></span></span></div><div class="t2"><input class="ie ed-only pb-i" data-rcf="pb" data-k="${K}" value="${esc(k.problem)}" placeholder="Problem" aria-label="Problem"><div class="pb pr-only" title="${esc(k.problem)}">${esc(k.problem)||'—'}</div><input class="ie ed-only wo-i" data-rcf="wo" data-k="${K}" value="${esc(k.wo||'')}" placeholder="WO" aria-label="Work Order">${k.wo?`<span class="ed-only">${woUrl(k.wo)?`<a class="wo-a" href="${esc(woUrl(k.wo))}" target="_blank" rel="noopener noreferrer" title="Buka Work Order">↗</a>`:''}<button class="wo-e" data-wo="${esc(k.wo)}" title="Atur link WO" aria-label="Atur link WO">${LINK}</button></span><span class="pr-only">${woChip(k.wo)}</span>`:''}</div>${fxField('Kendala','kd',k,k.kendala,'Isi kendala…')}${fxField('Action','ac',k,k.action,'Isi action…')}${k.ntOn?fxField('Notes','nt',k,k.notes,'Isi notes…'):`<button class="nt-add ed-only" data-rcnt="${K}">+ Notes</button>`}</div>`}
 const SEVC={HIGH:'#FF375F',MONITOR:'#FF9F0A',MEDIUM:'#F5C518',LOW:'#9DB8D9'};
 function stLegend(tk){return stCnt(tk).filter(x=>x.value).map(x=>`<span class="lgi"><i style="background:${x.color}"></i>${x.value} ${x.label}</span>`).join('')}
+function delBar(r){const d=r.deleted||[];if(!d.length)return '';return `<div class="delbar ed-only">${TRASH}<b>${d.length} tiket dihapus</b>${d.slice(0,6).map(x=>`<button data-rcundel="${esc(x.k)}" title="Pulihkan tiket ini">${x.ticket?'#'+esc(x.ticket):ddmm(x.date)} · ${esc(x.problem)} <em>${esc(x.why===1||x.why==='1'?'Hapus':x.why)}</em> ↺</button>`).join('')}${d.length>6?`<span class="mut">+${d.length-6}</span>`:''}<button class="all" data-rcundel="${d.map(x=>esc(x.k)).join(',')}">Pulihkan semua</button></div>`}
 function sRepeat(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}`,sec=vip?'vip':'cs';const title=vip?'VIP Top 3 Repeat Complaints':'Top 3 Repeat Complaints';
   if(!r)return head(id,sec,title)+body(needRC());
   const o=vip?S.rc.vipOrigin:S.rc.hdOrigin;
   if(!r.top.length)return head(id,sec,title)+body(empty('Tidak ada repeat complaint','Tidak ada user dengan 2+ tiket di periode ini.'));
   const MAX=3,all=r.top.flatMap(x=>x.tickets);
   const strip=`<div class="t3-hd" data-a><div class="ks-row"><div class="ks"><b>${fInt(r.cand.length)}</b>repeat users</div><div class="ks"><b>${fInt(r.repTickets)}</b>repeat tickets</div><div class="ks"><b>${fInt(r.openN)}</b>belum closed</div></div><div class="ss">${sbar(all)}<div class="lgs">${stLegend(all)}</div></div></div>`;
-  const cols=r.top.map((x,i)=>{const t=x.tickets,show=t.length>MAX?t.slice(-MAX):t,more=t.length-show.length;
-    return `<div class="card uc" data-a><div class="uc-h"><div class="ru-top"><span class="rkc">${i+1}</span><div class="ru-id idw" title="${esc(x.uid)}${x.name?' · '+esc(x.name):''} — klik untuk ganti user"><span class="idt">${esc(x.uid)}</span><span class="idc" aria-hidden="true">▾</span><select class="idsel" data-pick="${rep}" data-rank="${i}" aria-label="Ganti user rank ${i+1}">${r.cand.slice(0,300).map(c=>`<option value="${esc(c.cid)}" ${c.cid===x.cid?'selected':''}>${esc(c.uid)} · ${c.count} tiket</option>`).join('')}</select></div><span class="cnt">${x.count} tickets · ${t.filter(k=>k.wo).length} WO</span></div><div class="ru-cid">${esc(x.cid)}${x.product?' · '+esc(x.product):''}${more?` · +${more} tiket sebelumnya`:''}${x.allRes?' · <b class="okt">✓ Resolved</b>':''}</div>${ed(`rc.${rep}.cid.${keyOf(x.cid)}`,'','div','ru-note','style="color:#D70015"')}${sbar(t)}</div><div class="uc-tk">${show.map(tkCell).join('')}</div></div>`}).join('');
-  return head(id,sec,title,`Via ${esc(o)} · ${fInt(r.cand.length)} repeat users`,strip)+body(`<div class="t3"><div class="t3-cols">${cols}</div></div>`)}
+  const cols=r.top.map((x,i)=>{const t=x.tickets,show=t,more=0;
+    return `<div class="card uc" data-a><div class="uc-h"><div class="ru-top"><span class="rkc">${i+1}</span><div class="ru-id idw" title="${esc(x.uid)}${x.name?' · '+esc(x.name):''} — klik untuk ganti user"><span class="idt">${esc(x.uid)}</span><span class="idc" aria-hidden="true">▾</span><select class="idsel" data-pick="${rep}" data-rank="${i}" aria-label="Ganti user rank ${i+1}">${r.cand.slice(0,300).map(c=>`<option value="${esc(c.cid)}" ${c.cid===x.cid?'selected':''}>${esc(c.uid)} · ${c.count} tiket</option>`).join('')}</select></div><span class="cnt">${x.count} tickets · ${t.filter(k=>k.wo).length} WO</span></div><div class="ru-cid">${esc(x.cid)}${x.product?' · '+esc(x.product):''}${more?` · +${more} tiket sebelumnya`:''}${x.allRes?' · <b class="okt">✓ Resolved</b>':''}</div>${ed(`rc.${rep}.cid.${keyOf(x.cid)}`,'','div','ru-note','style="color:#D70015"')}${sbar(t)}</div><div class="uc-tk">${show.map(k=>tkCell(k,rep)).join('')}<button class="tk-add ed-only" data-rcadd="${esc(x.cid)}" data-rep="${rep}">+ Tambah tiket</button></div></div>`}).join('');
+  return head(id,sec,title,`Via ${esc(o)} · ${fInt(r.cand.length)} repeat users`,strip)+body(delBar(r)+`<div class="t3"><div class="t3-cols">${cols}</div></div>`)}
 function sRepeatList(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}-list`,sec=vip?'vip':'cs';const title=vip?'VIP Other Repeat Complaints':'Other Repeat Complaints';
   if(!r)return head(id,sec,title)+body(needRC());
   const rest=r.cand.filter(x=>!r.top.includes(x));
-  if(!rest.length)return head(id,sec,title)+body(empty('Tidak ada repeat complaint lain','Semua repeat user sudah tampil di Top 3.'));
+  if(!rest.length)return head(id,sec,title)+body(empty('Tidak ada repeat complaint lain','Semua repeat user sudah tampil di Top 3.')+`<div style="text-align:center"><button class="tk-add ed-only" data-rcnewu="${rep}">+ Tambah repeat user</button></div>`);
   const rows=rest.map((x,i)=>{const pr=groupCount(x.tickets,'problem').map(p=>`${esc(p.label)}${p.value>1?` ×${p.value}`:''}`).join(', ');const wos=x.tickets.filter(k=>k.wo),dn=x.tickets.filter(k=>rcDone(k.status)).length;
-    return `<tr><td class="mut">${i+4}</td><td class="b">${esc(x.uid)}<div class="mut sm2">${esc(x.cid)}${x.product?' · '+esc(x.product):''}</div></td><td class="n b">${x.count}</td><td class="pr">${pr}</td><td>${wos.length?wos.slice(0,2).map(k=>woChip(k.wo)).join(' ')+(wos.length>2?` <span class="mut">+${wos.length-2}</span>`:''):'<span class="mut">—</span>'}</td><td class="mut">${ddmm(x.tickets[0].date)} – ${ddmm(x.latest)}</td><td class="stc">${sbar(x.tickets)}<div class="mut sm2">${dn}/${x.count} selesai</div></td></tr>`}).join('');
+    return `<tr><td class="mut">${i+4}</td><td class="b">${esc(x.uid)}<div class="mut sm2">${esc(x.cid)}${x.product?' · '+esc(x.product):''}</div></td><td class="n b">${x.count}</td><td class="pr">${pr}</td><td>${wos.length?wos.slice(0,2).map(k=>woChip(k.wo)).join(' ')+(wos.length>2?` <span class="mut">+${wos.length-2}</span>`:''):'<span class="mut">—</span>'}</td><td class="mut">${ddmm(x.tickets[0].date)} – ${ddmm(x.latest)}</td><td class="stc">${sbar(x.tickets)}<div class="mut sm2">${dn}/${x.count} selesai</div></td><td class="ed-only"><button class="btn sm rx-t" data-rcopen="${esc(x.cid)}">${S.edits['rc.open.'+keyOf(x.cid)]?'Tutup':'Edit'}</button></td></tr>${S.edits['rc.open.'+keyOf(x.cid)]?`<tr class="rx ed-only"><td colspan="8"><div class="rx-u"><label>User ID <input class="ie rx-uid" data-rcuid="${esc(x.cid)}" value="${esc(x.uid)}"></label><span class="mut">CID ${esc(x.cid)}</span></div><div class="rx-g">${x.tickets.map(k=>tkCell(k,rep)).join('')}<button class="tk-add" data-rcadd="${esc(x.cid)}" data-rep="${rep}">+ Tambah tiket</button></div></td></tr>`:''}`}).join('');
   const restT=rest.flatMap(x=>x.tickets),openR=restT.filter(k=>!rcDone(k.status)).length;
   const h=hl(id,[`${fInt(rest.length)} user lain komplain ≥2 kali di ${esc(C.short)}.`,`Terbanyak: ${esc(rest[0].uid)} dengan ${rest[0].count} tiket.`,`${fInt(openR)} dari ${fInt(restT.length)} tiket belum closed (Open / WO In Progress).`]);
   const t=ctype(id,'pie');
   const lvl=t==='bar'?vbars(stCnt(restT)):pieBlock(stCnt(restT),restT.length,String(openR),'',{});
   const mx2=Math.max(1,...rest.map(x=>x.count)),topU=`<div class="rt-bars">${rest.slice(0,3).map(x=>`<div class="rb"><div class="rbl"><span title="${esc(x.uid)}">${esc(x.uid)}</span><em>${x.count} tickets</em></div><div class="sbt"><div class="sbar" style="width:${x.count/mx2*100}%"><i style="flex:1;background:#1F3A5F"></i></div></div></div>`).join('')}</div>`;
   const side=`<div class="rt-side"><div class="card rt-dn" data-a style="flex:none"><div class="ctitle">Status · ${restT.length} tickets</div>${lvl}</div><div class="card" data-a style="flex:1;min-height:0"><div class="ctitle">Top users · tickets</div>${topU}</div></div>`;
-  return head(id,sec,title,`Repeat users beyond the Top 3 · ${esc(C.long)}`,seg(id,['pie','bar']))+body(`<div class="rt rt-list">${side}<div class="card scroll fill1" data-a><table class="tbl rk rl"><thead><tr><th>No</th><th>User ID / Customer</th><th class="n">Tickets</th><th>Problems</th><th>Work Order</th><th>Period</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div></div>`+h)}
+  return head(id,sec,title,`Repeat users beyond the Top 3 · ${esc(C.long)}`,seg(id,['pie','bar']))+body(delBar(r)+`<div class="rt rt-list">${side}<div class="card scroll fill1" data-a><table class="tbl rk rl"><thead><tr><th>No</th><th>User ID / Customer</th><th class="n">Tickets</th><th>Problems</th><th>Work Order</th><th>Period</th><th>Status</th><th class="ed-only"></th></tr></thead><tbody>${rows}</tbody></table><button class="tk-add ed-only" style="margin:.6cqw 0" data-rcnewu="${rep}">+ Tambah repeat user</button></div></div>`+h)}
 function sVipOverview(){const id='vip-overview',m=C.vip,title='VIP Overview';const tg=on(id,'daily')?seg(id,['bar','line']):'';
   if(!m)return head(id,'vip',title,'',tg)+body(needVIP());
   const it=m.issue.slice(0,3).map(x=>({...x,color:x.label==='Internet'?'#F5C518':x.label==='Administration'?'#1F3A5F':'#3E6E9E'}));const pk=peakDay(m);
@@ -1569,7 +1606,7 @@ function renderDock(){const all=ordered(),v=visible(),s=curSlide(),i=s?all.index
   const us=$('#uidSel');if(us)us.onchange=async()=>{DS.rc.map=DS.rc.map||{};DS.rc.map.uid=us.value;DS.rc.map.uidManual=true;await idbPut('rc',DS.rc);refresh(0)};
   $$('#tools [data-blk]').forEach(c=>c.onchange=()=>{S.blocks[c.dataset.blk]=c.checked;save();renderStage(0);renderDock()});
   $$('#tools [data-top]').forEach(sel=>sel.onchange=()=>{const rep=s.top3,r=C.rc[rep];const cur=r.top.map(x=>x.cid);cur[+sel.dataset.top]=sel.value;S.edits['top3.'+rep]=[...new Set(cur)];save();refresh(0)});
-  const tf=$('#tFillReset');if(tf)tf.onclick=()=>{if(!confirm('Hapus semua isian Status, Kendala & Action pada Top 3 ini?'))return;const r=C.rc[s.top3];r.top.forEach(x=>x.tickets.forEach(k=>{['st','kd','ac'].forEach(p=>delete S.edits['rc.'+p+'.'+k.k])}));save();refresh(0)};
+  const tf=$('#tFillReset');if(tf)tf.onclick=()=>{if(!confirm('Hapus semua isian (status, tanggal, tiket, problem, WO, kendala, action, notes) pada Top 3 ini?'))return;const r=C.rc[s.top3];r.top.forEach(x=>x.tickets.forEach(k=>{['st','kd','ac','nt','ntOn','pb','tk','wo','dt','del'].forEach(p=>delete S.edits['rc.'+p+'.'+k.k])}));save();refresh(0)};
   const ta=$('#tAuto');if(ta)ta.onclick=()=>{delete S.edits['top3.'+s.top3];save();refresh(0)};
   const tr=$('#tResetText');if(tr)tr.onclick=()=>{$$('[data-edit]',$('#stage')).forEach(e=>delete S.edits['t.'+e.dataset.edit]);save();refresh(0)}}
 function renderStage(dir=0){const st=$('#stage'),s=curSlide();if(!s){st.innerHTML='';return}swap(st,makeSlide(s),dir);applyEditing()}
@@ -1696,6 +1733,19 @@ swipe($('#pstage'),d=>presStep(d));
 $('#pres').addEventListener('touchstart',()=>$('#pres').classList.add('touch'),{passive:true});
 addEventListener('resize',()=>{if(presenting){presSize()}});
 document.addEventListener('fullscreenchange',()=>{if(presenting)setTimeout(presSize,50)});
+/* ---------- Undo / Redo (Ctrl+Z, Ctrl+Shift+Z / Ctrl+Y) untuk semua isian & perubahan slide ---------- */
+const UNDO=[],REDO=[];let pendSnap=null;
+function snap(){const j=JSON.stringify(S.edits);if(UNDO[UNDO.length-1]!==j){UNDO.push(j);if(UNDO.length>80)UNDO.shift()}REDO.length=0}
+function uToast(msg){let t=$('#uToast');if(!t){t=document.createElement('div');t.id='uToast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1600)}
+function undoRedo(redo){const A=redo?REDO:UNDO,B=redo?UNDO:REDO;if(!A.length){uToast(redo?'Tidak ada yang bisa di-redo':'Tidak ada yang bisa di-undo');return}B.push(JSON.stringify(S.edits));S.edits=JSON.parse(A.pop());save();refresh(0);uToast(redo?'Redo':'Undo — perubahan dibatalkan')}
+document.addEventListener('focusin',e=>{if(e.target.closest('#stage [data-rcf],#stage [data-rcuid],#stage [data-edit]'))pendSnap=JSON.stringify(S.edits)},true);
+document.addEventListener('input',e=>{if(pendSnap!=null&&e.target.closest('#stage [data-rcf],#stage [data-rcuid],#stage [data-edit]')){const j=pendSnap;pendSnap=null;if(UNDO[UNDO.length-1]!==j){UNDO.push(j);if(UNDO.length>80)UNDO.shift()}REDO.length=0}},true);
+document.addEventListener('click',e=>{if(e.target.closest('[data-rcdel],[data-rcundel],[data-rcnt],[data-rcadd],[data-rcnewu],#woSave,#woDel,#tFillReset,#tAuto'))snap()},true);
+document.addEventListener('change',e=>{if(e.target.closest('select[data-pick],select[data-rcst],select[data-top]'))snap()},true);
+document.addEventListener('keydown',e=>{if(!(e.ctrlKey||e.metaKey)||e.altKey)return;const k=e.key.toLowerCase();if(k!=='z'&&k!=='y')return;
+  const tag=(e.target.tagName||'').toLowerCase();if(e.target.isContentEditable||tag==='input'||tag==='textarea')return;   /* di dalam kolom: undo bawaan browser */
+  if($$('.modal').some(m=>!m.classList.contains('hidden')))return;
+  e.preventDefault();undoRedo(k==='y'||e.shiftKey)});
 document.addEventListener('keydown',e=>{
   const tag=(e.target.tagName||'').toLowerCase();if(e.target.isContentEditable||tag==='input'||tag==='select'||tag==='textarea')return;
   const open=$$('.modal').find(m=>!m.classList.contains('hidden'));
@@ -1710,7 +1760,7 @@ document.addEventListener('keydown',e=>{
 
 /* ---------- repeat complaint: status / kendala / action diisi langsung di slide ---------- */
 $('#stage').addEventListener('change',e=>{const pk=e.target.closest('select[data-pick]');if(pk){const rp=pk.dataset.pick,r=C.rc[rp],i=+pk.dataset.rank,cur=r.top.map(x=>x.cid),j=cur.indexOf(pk.value);if(j>=0&&j!==i)cur[j]=cur[i];cur[i]=pk.value;S.edits['top3.'+rp]=cur;save();refresh(0);return}const s=e.target.closest('select[data-rcst]');if(!s)return;S.edits['rc.st.'+s.dataset.rcst]=s.value;save();refresh(0)});
-$('#stage').addEventListener('input',e=>{const t=e.target.closest('textarea[data-rcf]');if(!t)return;S.edits['rc.'+t.dataset.rcf+'.'+t.dataset.k]=t.value;const st=t.parentNode.querySelector('.fld-s');if(st){st.textContent=t.value.trim()||'—';st.classList.toggle('mut',!t.value.trim())}save()});
+$('#stage').addEventListener('input',e=>{const t=e.target.closest('textarea[data-rcf],input[data-rcf]');if(!t)return;S.edits['rc.'+t.dataset.rcf+'.'+t.dataset.k]=t.value;rcLive(t.dataset.rcf,t.dataset.k,t.value);const st=t.parentNode.querySelector('.fld-s');if(st){st.textContent=t.value.trim()||'—';st.classList.toggle('mut',!t.value.trim())}save()});
 
 /* auto-fit tinggi kolom Kendala/Action sesuai isi */
 const fitTA=t=>{t.style.height='auto';t.style.height=(t.scrollHeight+2)+'px'};
@@ -1720,12 +1770,24 @@ if(!(window.CSS&&CSS.supports&&CSS.supports('field-sizing','content'))){
 }
 /* ---------- work order links ---------- */
 let woCur='';
+/* isian yang sedang diketik langsung masuk ke data slide, supaya tidak hilang saat render ulang (simpan link WO, pindah slide) */
+function rcLive(kind,k,v){const P={kd:'kendala',ac:'action',nt:'notes'}[kind];if(!P||!C||!C.rc)return;for(const rp of ['hd','vip']){const r=C.rc[rp];if(!r)continue;for(const t of r.elig)if(t.k===k)t[P]=v}}
 function openWo(wo){woCur=wo;$('#woNo').textContent=wo;$('#woUrl').value=S.edits['wo.'+keyOf(wo)]||'';const t=woUrl(wo);$('#woHint').textContent=S.edits['wo.'+keyOf(wo)]?'':(t?'Saat ini memakai template: '+t:'Belum ada link. Tip: isi WO link template di Import data → Repeat Complaint → Filter rules agar semua WO otomatis punya link.');openModal('woModal');setTimeout(()=>$('#woUrl').focus(),50)}
 function okUrl(u){try{const x=new URL(u);return /^https?:$/.test(x.protocol)}catch(e){return false}}
-$('#woSave').onclick=()=>{const u=$('#woUrl').value.trim();if(u&&!okUrl(u)){$('#woHint').textContent='Link harus diawali http:// atau https://';return}if(u)S.edits['wo.'+keyOf(woCur)]=u;else delete S.edits['wo.'+keyOf(woCur)];save();closeModal('woModal');renderStage(0)};
-$('#woDel').onclick=()=>{delete S.edits['wo.'+keyOf(woCur)];save();closeModal('woModal');renderStage(0)};
+$('#woSave').onclick=()=>{const u=$('#woUrl').value.trim();if(u&&!okUrl(u)){$('#woHint').textContent='Link harus diawali http:// atau https://';return}if(u)S.edits['wo.'+keyOf(woCur)]=u;else delete S.edits['wo.'+keyOf(woCur)];save();closeModal('woModal');refresh(0)};
+$('#woDel').onclick=()=>{delete S.edits['wo.'+keyOf(woCur)];save();closeModal('woModal');refresh(0)};
 $('#woOpen').onclick=()=>{const u=$('#woUrl').value.trim()||woUrl(woCur);if(okUrl(u))window.open(u,'_blank','noopener')};
 $('#woUrl').addEventListener('keydown',e=>{if(e.key==='Enter')$('#woSave').click()});
+$('#stage').addEventListener('change',e=>{const t=e.target.closest('input[data-rcf]');if(t){S.edits['rc.'+t.dataset.rcf+'.'+t.dataset.k]=t.value.trim();save();refresh(0);return}
+  const u=e.target.closest('input[data-rcuid]');if(u){S.edits['rc.uid.'+keyOf(u.dataset.rcuid)]=u.value.trim();save();refresh(0)}});
+$('#stage').addEventListener('click',e=>{const q=(a)=>e.target.closest(a);let b;
+  if(b=q('[data-rcdel]')){e.preventDefault();const k=b.dataset.rcdel;if(k.startsWith('m_')){const rp=b.dataset.rep;S.edits['rc.manual.'+rp]=(S.edits['rc.manual.'+rp]||[]).filter(m=>'m_'+m.id!==k)}else S.edits['rc.del.'+k]=b.dataset.why||'Hapus';save();refresh(0);return}
+  if(b=q('[data-rcundel]')){e.preventDefault();const ks=b.dataset.rcundel.split(',');ks.forEach(k=>delete S.edits['rc.del.'+k]);save();refresh(0);return}
+  if(b=q('[data-rcnt]')){e.preventDefault();S.edits['rc.ntOn.'+b.dataset.rcnt]=1;save();refresh(0);requestAnimationFrame(()=>{const t=document.querySelector(`textarea[data-rcf="nt"][data-k="${CSS.escape(b.dataset.rcnt)}"]`);if(t)t.focus()});return}
+  if(b=q('[data-rcadd]')){e.preventDefault();const rp=b.dataset.rep,L=S.edits['rc.manual.'+rp]=S.edits['rc.manual.'+rp]||[];const P=periodBounds();L.push({id:Date.now().toString(36),cid:b.dataset.rcadd,date:P.to!=null?dayStart(Math.min(P.to,Date.now())):dayStart(Date.now())});save();refresh(0);return}
+  if(b=q('[data-rcnewu]')){e.preventDefault();const rp=b.dataset.rcnewu,L=S.edits['rc.manual.'+rp]=S.edits['rc.manual.'+rp]||[];const id=Date.now().toString(36),cid='NEW-'+id,P=periodBounds(),d=P.to!=null?dayStart(Math.min(P.to,Date.now())):dayStart(Date.now());L.push({id:id+'a',cid,date:d},{id:id+'b',cid,date:d});S.edits['rc.open.'+keyOf(cid)]=1;save();refresh(0);return}
+  if(b=q('[data-rcopen]')){e.preventDefault();const k='rc.open.'+keyOf(b.dataset.rcopen);if(S.edits[k])delete S.edits[k];else S.edits[k]=1;save();refresh(0);return}
+});
 $('#stage').addEventListener('click',e=>{const b=e.target.closest('[data-wo]');if(!b)return;e.preventDefault();e.stopPropagation();openWo(b.dataset.wo)});
 
 /* ---------- print ---------- */

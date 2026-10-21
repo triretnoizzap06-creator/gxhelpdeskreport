@@ -1,10 +1,10 @@
 # GX Helpdesk Report — Supabase patch
 
 ## Files in this patch
-- `report.js`: replaces Vercel Blob storage with Supabase Postgres REST API.
-- `health.js`: checks whether Supabase is reachable without exposing the secret key.
 - `api/report.js` and `api/health.js`: Vercel API routes.
-- `supabase/schema.sql`: creates the database table.
+- `lib/store.js`: server-only Supabase storage layer.
+- `supabase/schema.sql`: creates the database tables and RPC functions.
+- `scripts/check.mjs`: checks repository structure and JavaScript syntax.
 
 ## Apply to GitHub
 Upload/replace these files in the `triretnoizzap06-creator/gxhelpdeskreport` repository, keeping the same paths. Make sure `api/` and `supabase/` are folders at the repository root.

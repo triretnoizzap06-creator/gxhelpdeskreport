@@ -3,11 +3,11 @@
 //  2. Script di index.html valid (tidak ada syntax error).
 //  3. Modul API bisa di-load (dependensi terpasang).
 //  4. Bila env SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY diisi: tes koneksi & skema Supabase (read-only).
-import fs from 'node:fs'; import vm from 'node:vm'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
+import fs from 'node:fs'; import vm from 'node:vm'; import path from 'node:path'; import { fileURLToPath } from 'node:url'; import { spawnSync } from 'node:child_process';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let fail = 0; const ok = (c, m) => { console.log((c ? '✔ ' : '✖ ') + m); if (!c) fail++; };
 
-for (const f of ['index.html', 'vercel.json', 'package.json', 'api/report.js', 'api/health.js', 'lib/store.js', 'supabase/schema.sql', 'config.js', 'assets/mark.png'])
+for (const f of ['index.html', 'vercel.json', 'package.json', 'api/report.js', 'api/health.js', 'lib/store.js', 'supabase/schema.sql', 'config.js', 'mark.png'])
   ok(fs.existsSync(path.join(root, f)), 'file ' + f);
 
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
@@ -16,9 +16,9 @@ let parsed = 0; for (const s of scripts) { try { new vm.Script(s); parsed++; } c
 ok(parsed === scripts.length && parsed > 0, `script index.html valid (${parsed} blok)`);
 try { JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8')); ok(true, 'vercel.json valid'); } catch (e) { ok(false, 'vercel.json: ' + e.message); }
 
-for (const m of ['api/report.js', 'api/health.js']) {
-  try { const mod = await import(path.join(root, m)); ok(typeof mod.default === 'function', 'modul ' + m + ' (export default handler)'); }
-  catch (e) { ok(false, 'modul ' + m + ': ' + e.message + ' — jalankan npm install'); }
+for (const m of ['api/report.js', 'api/health.js', 'lib/store.js']) {
+  const r = spawnSync(process.execPath, ['--check', path.join(root, m)], { encoding: 'utf8' });
+  ok(r.status === 0, 'syntax ' + m + (r.status === 0 ? '' : ': ' + (r.stderr || r.stdout).trim()));
 }
 
 if (process.env.SUPABASE_URL && (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY)) {

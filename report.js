@@ -103,7 +103,7 @@ async function listHistory() {
   return out.sort((a, b) => b.at - a.at);
 }
 
-export async function GET(request) {
+async function GET(request) {
   if (!configured()) return json({ error: 'storage-not-configured' }, 501);
   const q = new URL(request.url).searchParams;
   try {
@@ -135,7 +135,7 @@ export async function GET(request) {
   }
 }
 
-export async function POST(request) {
+async function POST(request) {
   if (!keyOk(request.headers.get('x-publish-key'))) return json({ error: 'unauthorized' }, 401);
   const q = new URL(request.url).searchParams;
   if (q.has('check')) return json({ ok: true, storage: configured(), open: open() });
@@ -168,5 +168,34 @@ export async function POST(request) {
     return json({ ok: true, at: h ? new Date(h.uploadedAt).getTime() : Date.now(), size: buf.length, access: ACCESS });
   } catch (e) {
     return json({ error: 'write-failed', detail: String((e && e.message) || e) }, 500);
+  }
+}
+
+/* ---------- adapter: format klasik Vercel Node.js (req, res) ---------- */
+export const config = { api: { bodyParser: false } };
+async function readBody(req) {
+  if (req.body !== undefined && req.body !== null && !(typeof req.body === 'object' && !Buffer.isBuffer(req.body) && Object.keys(req.body).length === 0)) {
+    return Buffer.isBuffer(req.body) ? req.body : Buffer.from(typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
+  }
+  const chunks = [];
+  for await (const c of req) chunks.push(Buffer.isBuffer(c) ? c : Buffer.from(c));
+  return Buffer.concat(chunks);
+}
+export default async function handler(req, res) {
+  try {
+    const url = 'https://' + (req.headers.host || 'localhost') + req.url;
+    const headers = new Headers();
+    for (const [k, v] of Object.entries(req.headers)) if (v != null) headers.set(k, Array.isArray(v) ? v.join(',') : String(v));
+    let out;
+    if (req.method === 'GET' || req.method === 'HEAD') out = await GET(new Request(url, { method: 'GET', headers }));
+    else if (req.method === 'POST') out = await POST(new Request(url, { method: 'POST', headers, body: await readBody(req) }));
+    else out = json({ error: 'method-not-allowed' }, 405);
+    res.statusCode = out.status;
+    out.headers.forEach((v, k) => res.setHeader(k, v));
+    res.end(Buffer.from(await out.arrayBuffer()));
+  } catch (e) {
+    res.statusCode = 500;
+    res.setHeader('content-type', 'application/json');
+    res.end(JSON.stringify({ error: 'handler-failed', detail: String((e && e.message) || e) }));
   }
 }

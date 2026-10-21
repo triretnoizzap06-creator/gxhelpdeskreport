@@ -180,3 +180,13 @@ Tambah env **`PUBLISH_KEY`** (password) lalu redeploy. Setelah itu hanya browser
 - Tombol **Riwayat** di bar atas. Setiap **selesai Present**, kondisi report (data, periode, isian Repeat Complaint, edit teks, urutan slide) otomatis disimpan sebagai riwayat, mis. *Helpdesk Report · October 13 – 18, 2026*. Riwayat otomatis dengan judul sama dalam 3 jam diganti (tidak menumpuk). Bisa juga **Simpan sekarang** dengan nama sendiri.
 - **Buka** → report tampil persis seperti saat disimpan (banner kuning di atas). Data terbaru tidak berubah; klik **Kembali ke data terbaru**. **Jadikan data utama** memulihkan riwayat itu sebagai data utama (data sebelumnya otomatis disimpan dulu ke riwayat).
 - Riwayat tersimpan online (bisa dilihat semua yang membuka link) bila penyimpanan online aktif; kalau belum, disimpan di browser ini. Maks. 80 riwayat online (riwayat otomatis terlama dihapus lebih dulu).
+
+
+## Cek status data online
+Paling mudah: buka **`https://helpdeskreport.vercel.app/api/health`** — menampilkan `storage: "ok"` bila semua siap, atau petunjuk apa yang belum (tanpa menampilkan token).
+
+Atau buka `https://helpdeskreport.vercel.app/api/report?meta=1` di browser:
+- `{"error":"empty","open":true}` atau `{"at":…}` → server & Blob **sudah jalan**.
+- Halaman **404 NOT_FOUND** dari Vercel → folder `api/` / `package.json` belum ter-deploy. Upload lagi lalu Redeploy.
+- `{"error":"storage-not-configured"}` → Blob store belum terhubung ke project, atau belum Redeploy setelah connect.
+Klik status di bar atas web untuk melihat penjelasan yang sama. Jendela password hanya muncul bila env `PUBLISH_KEY` dipasang.

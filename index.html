@@ -1842,14 +1842,14 @@ const hhmm=t=>{const d=new Date(t);return String(d.getDate()).padStart(2,'0')+'/
 function syncDirty(){try{if(SY.loading||SY.avail===false&&!syOwner())return;lss(SY.kDirty,'1');lss(SY.kDirtyAt,String(Date.now()));if(!SY.ready){syPill();return}if(syOwner()&&syAuto()){clearTimeout(SY.t);SY.t=setTimeout(()=>syPublish(),1200);syPill('wait')}else syPill()}catch(e){}}
 function syPill(st,msg){if(st)SY.state=st;if(msg!=null)SY.msg=msg;const b=$('#syncBtn');if(!b)return;const o=syOwner(),d=syIsDirty();
   let cls='',txt='Online';
-  if(SY.avail===false){cls='off';txt=o?'Online belum aktif':'Lokal'}
+  if(SY.avail===false){cls='off';txt='Online belum aktif'}
   else if(SY.state==='busy'){cls='busy';txt='Menyimpan…'}
   else if(SY.state==='err'){cls='err';txt='Gagal menyimpan online'}
   else if(o&&d){cls='busy';txt='Menyimpan…'}
   else if(syBase()){cls='ok';txt='Data terbaru · '+hhmm(syBase())}
-  else if(d&&(DS.cs||DS.vip||DS.rc)){cls='warn';txt='Hanya di browser ini'}
+  else if(d&&(DS.cs||DS.vip||DS.rc)){cls='warn';txt=SY.reason==='need-key'?'Hanya di browser ini · isi password':'Hanya di browser ini'}
   else if(SY.avail===true){cls='';txt='Belum ada data online'}
-  b.className='btn sync '+cls;b.querySelector('span').textContent=txt;b.title=SY.msg||txt;b.classList.toggle('hidden',SY.avail===false&&!o&&!DS.cs&&!DS.vip&&!DS.rc)}
+  b.className='btn sync '+cls;b.querySelector('span').textContent=txt;b.title=SY.msg||txt;b.classList.toggle('hidden',!location.protocol.startsWith('http'))}
 const PII=/phone|telp|telepon|\bhp\b|e-?mail|whatsapp|\bwa\b|\bnik\b|ktp|address|alamat|contact name/i;
 function syStrip(d){if(!d)return d;const used=new Set(Object.values(d.map||{}).flat().filter(Boolean));const keep=d.headers.map((h,i)=>[h,i]).filter(([h])=>!PII.test(h)||used.has(h));return {...d,headers:keep.map(x=>x[0]),rows:d.rows.map(r=>keep.map(([,i])=>r[i]))}}
 async function gzip(str){const cs=new Blob([str]).stream().pipeThrough(new CompressionStream('gzip'));return new Uint8Array(await new Response(cs).arrayBuffer())}
@@ -1861,16 +1861,17 @@ async function syPublish(force){if(!syOwner())return;if(!(DS.cs||DS.vip||DS.rc))
     const j=await r.json().catch(()=>({}));
     if(r.ok&&j.ok){lss(SY.kBase,String(j.at));if(+(lsg(SY.kDirtyAt)||0)<=startAt)lss(SY.kDirty,null);SY.avail=true;syPill('ok','')}
     else{const m=r.status===401?'Butuh password (PUBLISH_KEY) untuk menyimpan online — klik status ini.':j.error==='too-large'?'Data terlalu besar untuk disimpan online ('+(j.size/1e6).toFixed(1)+' MB). Persempit periode / data import.':(j.error==='storage-not-configured'||j.error==='publish-key-not-set')?'Penyimpanan online belum diaktifkan di Vercel (lihat README).':'Gagal menyimpan online ('+(j.error||r.status)+(j.detail?': '+j.detail:'')+').';
-      if(r.status===401){lss(SY.kKey,null);SY.open=false}if(r.status===501)SY.avail=false;syPill('err',m)}
+      if(r.status===401){lss(SY.kKey,null);SY.open=false;SY.reason='need-key'}if(r.status===501){SY.avail=false;SY.reason='no-storage'}syPill('err',m)}
   }catch(e){syPill('err','Gagal menyimpan online: '+e.message)}finally{SY.busy=false;syInfo()}}
 function syApply(p,at){SY.loading=true;try{const cur=S.cur;S={...DEF_S(),...p.S,rc:{...DEF_RC,...(p.S.rc||{})},period:{...DEF_S().period,...(p.S.period||{})},cur};
     for(const k of ['cs','vip','rc']){DS[k]=p.DS&&p.DS[k]||null;idbPut(k,DS[k])}
     try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}SIG=sigS();lss(SY.kBase,String(at||p.at||Date.now()));lss(SY.kDirty,null);
     UNDO.length=0;REDO.length=0;syncPeriod();renderImport&&renderImport();refresh(0)}finally{SY.loading=false}syPill('ok','')}
 async function syPull(force){if(VIEWING)return false;try{const r=await fetch(SY.api,{cache:'no-store'});
-    if(r.status===501){SY.avail=false;syPill();return false}
-    if(r.status===404){SY.avail=true;syPill();return false}
-    if(!r.ok||!/octet-stream/.test(r.headers.get('content-type')||'')){SY.avail=false;syPill();return false}
+    const ct=r.headers.get('content-type')||'';
+    if(!/octet-stream/.test(ct)||!r.ok){const j=/json/.test(ct)?await r.json().catch(()=>({})):{};
+      if(r.status===404&&j.error==='empty'){SY.avail=true;if(typeof j.open==='boolean'){SY.open=j.open;SY.reason=!j.open&&!syKey()?'need-key':''}syPill();return false}
+      SY.avail=false;SY.reason=j.error==='storage-not-configured'?'no-storage':/json/.test(ct)?'server':'no-api';syPill();return false}
     SY.avail=true;const at=+(r.headers.get('x-published-at')||0);
     if(!force&&syOwner()&&syIsDirty()&&+(lsg(SY.kDirtyAt)||0)>at){syPill();if(syAuto())syPublish();return false}   /* perubahan di browser ini lebih baru dari data online */
     if(!force&&at&&at===syBase()&&(DS.cs||DS.vip||DS.rc)){syPill();return false}
@@ -1878,20 +1879,23 @@ async function syPull(force){if(VIEWING)return false;try{const r=await fetch(SY.
   }catch(e){if(SY.avail==null)SY.avail=false;syPill();return false}}
 async function syMeta(){if(VIEWING||document.hidden||SY.avail===false||SY.busy)return;try{const r=await fetch(SY.api+'?meta=1',{cache:'no-store'});const j=await r.json().catch(()=>({}));if(typeof j.open==='boolean'){SY.open=j.open;SY.avail=true}if(!r.ok)return;if(j.at&&j.at>syBase()&&!(syOwner()&&syIsDirty()&&+(lsg(SY.kDirtyAt)||0)>j.at))syPull()}catch(e){}}
 function syInfo(){const el=$('#syncInfo');if(!el)return;const o=syOwner(),b=syBase();
-  el.innerHTML=SY.avail===false?'<div class="warn">Penyimpanan online belum aktif di Vercel. Ikuti langkah di README (buat Blob store + PUBLISH_KEY), lalu redeploy. Sampai itu, data hanya ada di browser ini.</div>'
-   :`<div>${b?`Data online terakhir: <b>${hhmm(b)}</b>`:'Belum ada data online.'}${o?` · Mode pemilik aktif${syIsDirty()?' · <b>ada perubahan belum tersimpan online</b>':''}`:' · Kamu sedang melihat data online.'}</div>${SY.state==='err'&&SY.msg?`<div class="warn">${esc(SY.msg)}</div>`:''}`;
+  const why={'no-api':'Server <b>/api/report</b> tidak ditemukan di web ini. Pastikan folder <b>api/</b> dan file <b>package.json</b> dari zip ikut ter-upload ke GitHub, lalu Redeploy di Vercel.','no-storage':'Server sudah jalan, tapi <b>Blob store belum terhubung</b>. Vercel → Storage → Blob → Connect ke project, lalu <b>Redeploy</b> (env BLOB_READ_WRITE_TOKEN baru terbaca setelah redeploy).','server':'Server online error. Coba Redeploy di Vercel; bila masih, kirim screenshot ini.'}[SY.reason]||'Penyimpanan online belum aktif.';
+  $('#syncTitle').textContent=SY.reason==='need-key'?'Masukkan password':'Status data online';$('#syncOwner').classList.toggle('hidden',SY.reason!=='need-key');$('#syncNow').classList.toggle('hidden',SY.reason!=='need-key');
+  $('#syncTitle').nextElementSibling.textContent=SY.reason==='need-key'?'Server memakai PUBLISH_KEY, jadi hanya browser yang sudah memasukkan password yang bisa menyimpan data online. Isi sekali saja.':'Data yang di-import tersimpan online otomatis supaya semua yang membuka link melihat data terbaru.';
+  el.innerHTML=SY.avail===false?`<div class="warn">${why} Sampai itu, data hanya tersimpan di browser ini.</div>`
+   :`<div>${b?`Data online terakhir: <b>${hhmm(b)}</b>`:'Belum ada data online.'}${o?` · Mode pemilik aktif${syIsDirty()?' · <b>ada perubahan belum tersimpan online</b>':''}`:(SY.reason==='need-key'?' · Browser ini belum bisa menyimpan online.':' · Perubahan di browser ini tersimpan online otomatis.')}</div>${SY.state==='err'&&SY.msg?`<div class="warn">${esc(SY.msg)}</div>`:''}`;
   $('#syncKey').value=syKey();$('#syncAuto').checked=syAuto();$('#syncForget').classList.toggle('hidden',!o);$('#syncHint').textContent=''}
 function syncInit(){
-  $('#syncBtn').onclick=async()=>{if(!syOwner()&&SY.avail!==false&&(SY.state==='err'||!SY.open)&&(syIsDirty()||SY.state==='err')){syInfo();openModal('syncModal');return}syPill('busy');await syPull(true);syPill()};
+  $('#syncBtn').onclick=async()=>{if(SY.avail===false||SY.reason==='need-key'){syInfo();openModal('syncModal');return}syPill('busy');await syPull(true);syPill()};
   $('#syncAuto').onchange=e=>{lss(SY.kAuto,e.target.checked?'1':'0');syPill()};
   $('#syncForget').onclick=()=>{lss(SY.kKey,null);syInfo();syPill()};
   $('#syncPull').onclick=async()=>{$('#syncHint').textContent='Memuat…';const ok=await syPull(true);$('#syncHint').textContent=ok?'Data online dimuat.':'Tidak ada data online.';syInfo()};
   $('#syncNow').onclick=async()=>{const k=$('#syncKey').value.trim();const h=$('#syncHint');if(!k){h.textContent='Isi password dulu.';return}
     h.textContent='Mengecek password…';try{const r=await fetch(SY.api+'?check=1',{method:'POST',headers:{'x-publish-key':k}});const j=await r.json().catch(()=>({}));
       if(r.status===401){h.textContent='Password salah.';return}if(!r.ok){h.textContent=j.error==='publish-key-not-set'?'PUBLISH_KEY belum diisi di Vercel.':'Online belum aktif ('+(j.error||r.status)+').';return}
-      lss(SY.kKey,k);lss(SY.kAuto,$('#syncAuto').checked?'1':'0');h.textContent='Menyimpan…';await syPublish(true);h.textContent=SY.state==='ok'?'Tersimpan online. Semua yang membuka link melihat data ini.':SY.msg}catch(e){h.textContent='Tidak bisa terhubung ke server: '+e.message}};
+      lss(SY.kKey,k);SY.reason='';lss(SY.kAuto,$('#syncAuto').checked?'1':'0');h.textContent='Menyimpan…';await syPublish(true);h.textContent=SY.state==='ok'?'Tersimpan online. Semua yang membuka link melihat data ini.':SY.msg}catch(e){h.textContent='Tidak bisa terhubung ke server: '+e.message}};
   syPill();
-  if(location.protocol.startsWith('http')){fetch(SY.api+'?meta=1',{cache:'no-store'}).then(r=>r.json()).then(j=>{if(typeof j.open==='boolean'){SY.open=j.open;SY.avail=true}}).catch(()=>{}).finally(()=>syPull().then(()=>{SY.ready=true;syPill();if(syOwner()&&syIsDirty()&&syAuto())syPublish()}));setInterval(syMeta,20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)syMeta()})}
+  if(location.protocol.startsWith('http')){fetch(SY.api+'?meta=1',{cache:'no-store'}).then(r=>r.json()).then(j=>{if(typeof j.open==='boolean'){SY.open=j.open;SY.avail=true;SY.reason=!j.open&&!syKey()?'need-key':''}}).catch(()=>{}).finally(()=>syPull().then(()=>{SY.ready=true;syPill();if(syOwner()&&syIsDirty()&&syAuto())syPublish()}));setInterval(syMeta,20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)syMeta()})}
   else{SY.avail=false;SY.ready=true;syPill()}
 }
 /* ---------- Riwayat report (online bila aktif, kalau tidak di browser ini) ---------- */

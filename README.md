@@ -10,7 +10,7 @@ Column detection also reads cell values: a column containing "Solved by Our Side
 
 Titles and charts are in English; every content slide has a **Key highlights** strip in Bahasa Indonesia, generated from the data and editable.
 
-Everything runs in the browser. Imported files are not uploaded anywhere.
+Imported data is saved to **Supabase** through the project's own Vercel API (`/api/report`), so every browser, laptop or phone that opens the link loads the latest successful import. Calculations still run in the browser.
 
 ## Data imports (Import data)
 
@@ -22,7 +22,7 @@ Everything runs in the browser. Imported files are not uploaded anywhere.
 
 Columns are detected automatically and can be changed under **Column mapping**. Required for CS/VIP: Created date, Category, Problem, Status. Optional: Investigation outcome (H+1), Service Incident, Monitored By, Handled By, Sub Area, Company / VIP Group, AFR minutes, VIP flag.
 
-Imported rows are kept in the browser (IndexedDB), so a reload keeps the report. **Delete all data & edits** clears it.
+The shared source of truth is Supabase: on every page load the site fetches the latest report from `/api/report`. The browser (IndexedDB/localStorage) only keeps a cache so the page opens quickly and works offline; it never overrides a newer report from Supabase. **Delete all data & edits** clears only this browser's cache.
 
 ## Calculation rules (GX CS Connect · Analytics Formulas)
 
@@ -53,16 +53,67 @@ Imported rows are kept in the browser (IndexedDB), so a reload keeps the report.
 - **Present**: full screen; ← → / Space / PageUp/PageDown, click, or swipe on mobile. Esc exits.
 - **Print / PDF**: one 16:9 page per visible slide.
 
-## Deploy to Vercel
+## Deploy — GitHub + Vercel + Supabase
 
-Framework preset **Other**, no build command, output directory `.`. Upload the contents of this folder (index.html, vercel.json, README.md, assets/).
+### Struktur project
+```
+index.html            web (semua slide, perhitungan, Present, Print)
+api/report.js         API data online (GET data terbaru / POST import & isian / riwayat)
+api/health.js         halaman cek koneksi Supabase
+lib/store.js          lapisan data Supabase (dipakai api/*)
+supabase/schema.sql   skema database (jalankan sekali di Supabase)
+scripts/check.mjs     cek build: npm run check
+package.json          dependensi server (@supabase/supabase-js)
+vercel.json           konfigurasi Vercel
+.env.example          daftar environment variable
+assets/               logo
+```
+
+### Setup sekali
+1. **Supabase** → buat project (atau pakai yang ada) → **SQL Editor** → New query → paste isi **`supabase/schema.sql`** → **Run**. Aman dijalankan ulang.
+2. **Supabase → Project Settings → API** (atau tombol *Connect* → API Keys): salin **Project URL** dan kunci **service_role** (atau *secret key* `sb_secret_…`). Jangan pakai anon / publishable key.
+3. **GitHub**: upload seluruh isi zip ini ke repo (termasuk folder `api/`, `lib/`, `supabase/`, `scripts/`, dan `package.json`). Folder `node_modules/` tidak perlu.
+4. **Vercel → project → Settings → Environment Variables** (Production + Preview):
+   | Nama | Isi | Wajib |
+   |---|---|---|
+   | `SUPABASE_URL` | Project URL, mis. `https://abcd.supabase.co` | ya |
+   | `SUPABASE_SERVICE_ROLE_KEY` | kunci service_role / secret | ya |
+   | `PUBLISH_KEY` | password bila hanya orang tertentu yang boleh mengubah data | tidak |
+   Bila Supabase dihubungkan lewat integrasi Vercel Marketplace, `SUPABASE_URL` dan `SUPABASE_SERVICE_ROLE_KEY` biasanya sudah otomatis terisi.
+5. **Redeploy** (Deployments → ⋯ → Redeploy). Framework preset **Other**, tanpa build command.
+6. Buka **`https://<domain>/api/health`** → harus `"database": "ok"`. Lalu buka web, **import data** — status di bar atas jadi *Data terbaru · tgl jam* dan semua yang membuka link melihat data itu.
+
+Variabel lama `BLOB_READ_WRITE_TOKEN` / Blob store tidak dipakai lagi dan boleh dihapus.
+
+### Cara kerja data online
+- **Satu data terbaru untuk semua orang.** Setiap import menyimpan satu set utuh (Customer Support + VIP + Repeat Complaint) ke tabel `report_imports`, lalu `report_state` (1 baris) diarahkan ke set itu dalam satu transaksi. Tidak ada data campuran dari dua import.
+- **Tanpa duplikat.** Set data diberi sidik SHA-256; import file yang sama tidak membuat baris baru.
+- **Isian & pengaturan** (Kendala/Action, status, periode, urutan slide, edit teks) tersimpan ±1 detik setelah diubah. Isian hanya diterima bila import-nya masih yang terbaru — tab lama yang belum ter-update tidak bisa menimpa import yang lebih baru; tab itu otomatis memuat data terbaru.
+- Browser yang belum punya data tidak pernah menimpa data online. Web mengecek update tiap ±20 detik dan saat tab dibuka lagi.
+- Import lama yang tidak dipakai lagi (bukan data terbaru dan bukan riwayat) dibersihkan otomatis; 5 terakhir disisakan sebagai cadangan.
+- Kolom pribadi yang tidak dipakai slide (telepon, email, alamat, NIK, contact name) tidak ikut disimpan online.
+- Tabel Supabase memakai RLS tanpa policy dan akses anon dicabut: hanya server Vercel (service role) yang bisa membaca/menulis. Siapa pun yang punya link web bisa melihat report-nya; bila perlu dibatasi aktifkan Vercel Deployment Protection.
+- Batas ukuran satu kali simpan ±4.2 MB terkompres (±30–40 ribu baris). Data 19 hari + 5.000 baris Repeat Complaint ≈ 0.6 MB.
+
+### Status di bar atas
+| Status | Arti |
+|---|---|
+| *Data terbaru · tgl jam* | tersimpan & sinkron |
+| *Menyimpan…* | sedang menyimpan |
+| *Online belum aktif* | klik untuk penyebab: API belum ter-deploy, env Supabase kosong, skema belum dijalankan, atau kunci salah |
+| *Hanya di browser ini · isi password* | `PUBLISH_KEY` aktif — klik dan isi password sekali |
+
+### Cek build lokal (opsional)
+```
+npm install
+npm run check                       # cek file, script, modul API
+SUPABASE_URL=… SUPABASE_SERVICE_ROLE_KEY=… npm run check   # + cek tabel Supabase
+```
 
 ## Notes
 
 - SheetJS 0.18.5 is loaded from jsDelivr, so importing needs an internet connection.
-- Data and edits live in each viewer's browser and are not shared between users. Each viewer imports the files themselves.
 - Validate figures against GX CS Connect before using them as an official report.
-
 
 ## Slide order
 - Drag a slide in the sidebar list (⋮⋮ grip) to move it, or use ↑↓ in **Customize Present**. The order is saved in the browser and included in Export settings.
@@ -154,39 +205,7 @@ Slide 1 (cover) dan Thank You memakai tema gelap: judul putih + kuning, garis se
 - **Ctrl+Z** (Cmd+Z di Mac) membatalkan perubahan terakhir: hapus / tambah tiket, isian, status, link WO, pilihan Top 3. **Ctrl+Shift+Z** atau **Ctrl+Y** untuk redo. Saat kursor di dalam kolom isian, Ctrl+Z memakai undo bawaan kolom tsb; klik di luar kolom untuk undo per langkah. Riwayat undo berlaku selama halaman terbuka (hilang saat reload).
 
 
-## Data online — link selalu up to date (Vercel Blob)
-Tidak ada tombol Publish. Setiap import data, isian, atau pengaturan langsung tersimpan online (±1 detik), dan semua yang membuka link otomatis mendapat data terbaru (cek update tiap ±20 detik dan saat tab dibuka lagi).
-
-### Setup sekali di Vercel
-1. Upload/push isi zip ini ke GitHub seperti biasa (sekarang ada folder `api/` dan `package.json`).
-2. Vercel → project **helpdeskreport** → tab **Storage** → **Create** → **Blob** → beri nama (mis. `gx-cs-report`) → **Connect** ke project. Vercel otomatis menambah env `BLOB_READ_WRITE_TOKEN`.
-   - Akses **Private** atau **Public** sama-sama bisa. Di store Public, file disimpan di folder acak (diturunkan dari token rahasia store) sehingga alamatnya tidak bisa ditebak. Bila mau memaksa, isi env `BLOB_ACCESS` = `private` / `public`.
-3. **Redeploy** project.
-
-Selesai — import data di web, data langsung online.
-
-### Opsional: batasi siapa yang bisa mengubah data
-Tambah env **`PUBLISH_KEY`** (password) lalu redeploy. Setelah itu hanya browser yang sudah memasukkan password (klik status di bar atas → isi sekali) yang perubahannya tersimpan online; yang lain hanya melihat. Tanpa `PUBLISH_KEY`, siapa pun yang import / mengedit lewat link ikut mengubah data online.
-
-### Catatan
-- **Riwayat import** (waktu, jenis data, nama file, jumlah baris, periode data) ada di Import data dan ikut tersimpan online, jadi semua orang bisa melihat import terakhir.
-- Status di bar atas: *Menyimpan…* → *Data terbaru · tgl jam*. *Hanya di browser ini* = perubahan belum bisa tersimpan online (storage belum aktif atau butuh password). Klik status untuk memuat ulang data online.
-- Browser yang belum punya data tidak pernah menimpa data online; perubahan terbaru (waktu) yang dipakai bila dua orang mengedit.
-- Kolom pribadi yang tidak dipakai slide (telepon, email, alamat, NIK, contact name) tidak ikut disimpan online. Siapa pun yang punya link bisa melihat data; bila perlu dibatasi aktifkan Vercel Deployment Protection.
-- Endpoint: `GET /api/report`, `GET /api/report?meta=1`, `POST /api/report`.
-
-
 ## Riwayat report
 - Tombol **Riwayat** di bar atas. Setiap **selesai Present**, kondisi report (data, periode, isian Repeat Complaint, edit teks, urutan slide) otomatis disimpan sebagai riwayat, mis. *Helpdesk Report · October 13 – 18, 2026*. Riwayat otomatis dengan judul sama dalam 3 jam diganti (tidak menumpuk). Bisa juga **Simpan sekarang** dengan nama sendiri.
 - **Buka** → report tampil persis seperti saat disimpan (banner kuning di atas). Data terbaru tidak berubah; klik **Kembali ke data terbaru**. **Jadikan data utama** memulihkan riwayat itu sebagai data utama (data sebelumnya otomatis disimpan dulu ke riwayat).
-- Riwayat tersimpan online (bisa dilihat semua yang membuka link) bila penyimpanan online aktif; kalau belum, disimpan di browser ini. Maks. 80 riwayat online (riwayat otomatis terlama dihapus lebih dulu).
-
-
-## Cek status data online
-Paling mudah: buka **`https://helpdeskreport.vercel.app/api/health`** — menampilkan `storage: "ok"` bila semua siap, atau petunjuk apa yang belum (tanpa menampilkan token).
-
-Atau buka `https://helpdeskreport.vercel.app/api/report?meta=1` di browser:
-- `{"error":"empty","open":true}` atau `{"at":…}` → server & Blob **sudah jalan**.
-- Halaman **404 NOT_FOUND** dari Vercel → folder `api/` / `package.json` belum ter-deploy. Upload lagi lalu Redeploy.
-- `{"error":"storage-not-configured"}` → Blob store belum terhubung ke project, atau belum Redeploy setelah connect.
-Klik status di bar atas web untuk melihat penjelasan yang sama. Jendela password hanya muncul bila env `PUBLISH_KEY` dipasang.
+- Riwayat tersimpan di Supabase (`report_snapshots`, bisa dibuka semua yang membuka link) dan memakai ulang set data yang sama bila datanya tidak berubah. Bila penyimpanan online belum aktif, riwayat disimpan di browser ini. Maks. 80 riwayat (riwayat otomatis terlama dihapus lebih dulu).

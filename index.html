@@ -872,7 +872,7 @@ const sigS=()=>JSON.stringify({...S,cur:undefined});let SIG=null;
 /* ---------- imported data (IndexedDB) ---------- */
 const DS={cs:null,vip:null,rc:null};
 function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open('gxcs-report-data',1);r.onupgradeneeded=()=>r.result.createObjectStore('ds');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}})}
-async function idbPut(k,v){if(VIEWING&&['cs','vip','rc'].includes(k))return;if(typeof syncDirty==='function'&&SIG!==null&&['cs','vip','rc'].includes(k))syncDirty();try{const db=await idb();await new Promise((res,rej)=>{const t=db.transaction('ds','readwrite');const st=t.objectStore('ds');v==null?st.delete(k):st.put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}catch(e){}}
+async function idbPut(k,v){if(VIEWING&&['cs','vip','rc'].includes(k))return;if(typeof syncDirty==='function'&&SIG!==null&&['cs','vip','rc'].includes(k))syncDirty(true);try{const db=await idb();await new Promise((res,rej)=>{const t=db.transaction('ds','readwrite');const st=t.objectStore('ds');v==null?st.delete(k):st.put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}catch(e){}}
 async function idbGet(k){try{const db=await idb();return await new Promise((res,rej)=>{const r=db.transaction('ds').objectStore('ds').get(k);r.onsuccess=()=>res(r.result||null);r.onerror=()=>rej(r.error)})}catch(e){return null}}
 
 /* ---------- columns ---------- */
@@ -1834,65 +1834,87 @@ addEventListener('beforeprint',buildPrint);addEventListener('afterprint',()=>{$(
 $('#printBtn').onclick=()=>{if(!visible().length){alert('Tidak ada slide yang ditampilkan.');return}buildPrint();print()};
 
 /* ---------- start ---------- */
-/* ---------- Data online (Vercel Blob lewat /api/report) ---------- */
-const SY={api:'/api/report',kKey:'gxcs-pub-key',kBase:'gxcs-pub-at',kDirty:'gxcs-dirty',kDirtyAt:'gxcs-dirty-at',kAuto:'gxcs-pub-auto',loading:false,busy:false,t:null,state:'',msg:'',avail:null,open:false};
+/* ---------- Data online (Supabase lewat /api/report) ---------- */
+/* Konsep: satu "data terbaru" untuk semua orang = 1 set import (CS+VIP+Repeat Complaint) + isian/pengaturan.
+   Import baru → POST type=import (server menyimpan set utuh, tanpa duplikat, lalu menjadikannya data terbaru secara atomik).
+   Edit isian/pengaturan → POST type=state (hanya diterima bila data terbaru masih import yang sama; kalau tidak, 409 → muat data terbaru). */
+const SY={api:'/api/report',kKey:'gxcs-pub-key',kBase:'gxcs-pub-at',kDirty:'gxcs-dirty',kDirtyAt:'gxcs-dirty-at',kAuto:'gxcs-pub-auto',kImp:'gxcs-import-id',kDs:'gxcs-ds-dirty',loading:false,busy:false,t:null,state:'',msg:'',avail:null,open:false,reason:'',detail:''};
 const lsg=k=>{try{return localStorage.getItem(k)}catch(e){return null}},lss=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
-const syKey=()=>lsg(SY.kKey)||'',syOwner=()=>SY.open||!!syKey(),syBase=()=>+(lsg(SY.kBase)||0),syIsDirty=()=>lsg(SY.kDirty)==='1',syAuto=()=>lsg(SY.kAuto)!=='0';
+const syKey=()=>lsg(SY.kKey)||'',syOwner=()=>SY.open||!!syKey(),syBase=()=>+(lsg(SY.kBase)||0),syIsDirty=()=>lsg(SY.kDirty)==='1',syAuto=()=>lsg(SY.kAuto)!=='0',syImp=()=>lsg(SY.kImp)||'',syDsDirty=()=>lsg(SY.kDs)==='1';
 const hhmm=t=>{const d=new Date(t);return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
-function syncDirty(){try{if(SY.loading||SY.avail===false&&!syOwner())return;lss(SY.kDirty,'1');lss(SY.kDirtyAt,String(Date.now()));if(!SY.ready){syPill();return}if(syOwner()&&syAuto()){clearTimeout(SY.t);SY.t=setTimeout(()=>syPublish(),1200);syPill('wait')}else syPill()}catch(e){}}
+function syncDirty(ds){try{if(SY.loading)return;if(ds)lss(SY.kDs,'1');if(SY.avail===false&&!syOwner())return;lss(SY.kDirty,'1');lss(SY.kDirtyAt,String(Date.now()));if(!SY.ready){syPill();return}if(syOwner()&&syAuto()){clearTimeout(SY.t);SY.t=setTimeout(()=>syPublish(),ds?400:1200);syPill('wait')}else syPill()}catch(e){}}
 function syPill(st,msg){if(st)SY.state=st;if(msg!=null)SY.msg=msg;const b=$('#syncBtn');if(!b)return;const o=syOwner(),d=syIsDirty();
   let cls='',txt='Online';
   if(SY.avail===false){cls='off';txt='Online belum aktif'}
   else if(SY.state==='busy'){cls='busy';txt='Menyimpan…'}
   else if(SY.state==='err'){cls='err';txt='Gagal menyimpan online'}
   else if(o&&d){cls='busy';txt='Menyimpan…'}
+  else if(!o&&d&&(DS.cs||DS.vip||DS.rc)){cls='warn';txt=SY.reason==='need-key'?'Perubahan hanya di browser ini · isi password':'Hanya di browser ini'}
   else if(syBase()){cls='ok';txt='Data terbaru · '+hhmm(syBase())}
-  else if(d&&(DS.cs||DS.vip||DS.rc)){cls='warn';txt=SY.reason==='need-key'?'Hanya di browser ini · isi password':'Hanya di browser ini'}
   else if(SY.avail===true){cls='';txt='Belum ada data online'}
   b.className='btn sync '+cls;b.querySelector('span').textContent=txt;b.title=SY.msg||txt;b.classList.toggle('hidden',!location.protocol.startsWith('http'))}
 const PII=/phone|telp|telepon|\bhp\b|e-?mail|whatsapp|\bwa\b|\bnik\b|ktp|address|alamat|contact name/i;
 function syStrip(d){if(!d)return d;const used=new Set(Object.values(d.map||{}).flat().filter(Boolean));const keep=d.headers.map((h,i)=>[h,i]).filter(([h])=>!PII.test(h)||used.has(h));return {...d,headers:keep.map(x=>x[0]),rows:d.rows.map(r=>keep.map(([,i])=>r[i]))}}
+const syDS=()=>({cs:syStrip(DS.cs),vip:syStrip(DS.vip),rc:syStrip(DS.rc)});
 async function gzip(str){const cs=new Blob([str]).stream().pipeThrough(new CompressionStream('gzip'));return new Uint8Array(await new Response(cs).arrayBuffer())}
 async function gunzip(buf){const ds=new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'));return await new Response(ds).text()}
-async function syPublish(force){if(!syOwner())return;if(!(DS.cs||DS.vip||DS.rc)){lss(SY.kDirty,null);syPill();return}   /* jangan pernah menimpa data online dengan data kosong */if(SY.busy){clearTimeout(SY.t);SY.t=setTimeout(()=>syPublish(force),1500);return}
+const SY_REASON={'storage-not-configured':'no-storage','schema-missing':'schema','supabase-auth':'auth'};
+function syErrMsg(r,j){if(r.status===401)return 'Butuh password (PUBLISH_KEY) untuk menyimpan online — klik status ini.';
+  if(j.error==='too-large')return j.detail||'Data terlalu besar untuk disimpan online. Persempit periode / data import.';
+  if(SY_REASON[j.error])return 'Penyimpanan online belum siap: '+(j.detail||j.error)+' — klik status ini.';
+  return 'Gagal menyimpan online ('+(j.error||r.status)+(j.detail?': '+j.detail:'')+').'}
+async function syPublish(force){if(!syOwner()||VIEWING)return;
+  if(!(DS.cs||DS.vip||DS.rc)){lss(SY.kDirty,null);lss(SY.kDs,null);syPill();return}   /* jangan pernah menimpa data online dengan data kosong */
+  if(SY.busy){clearTimeout(SY.t);SY.t=setTimeout(()=>syPublish(force),1500);return}
   SY.busy=true;syPill('busy','');const startAt=Date.now();
-  try{const body=await gzip(JSON.stringify({v:1,at:Date.now(),S:{...S,cur:undefined},DS:{cs:syStrip(DS.cs),vip:syStrip(DS.vip),rc:syStrip(DS.rc)}}));
-    const r=await fetch(SY.api,{method:'POST',headers:{'x-publish-key':syKey(),'content-type':'application/octet-stream'},body});
+  const isImport=syDsDirty()||!syImp();
+  try{const body=await gzip(JSON.stringify(isImport?{v:2,S:{...S,cur:undefined},DS:syDS()}:{v:2,S:{...S,cur:undefined},import_id:+syImp()}));
+    const r=await fetch(SY.api+'?type='+(isImport?'import':'state'),{method:'POST',headers:{'x-publish-key':syKey(),'content-type':'application/octet-stream'},body});
     const j=await r.json().catch(()=>({}));
-    if(r.ok&&j.ok){lss(SY.kBase,String(j.at));if(+(lsg(SY.kDirtyAt)||0)<=startAt)lss(SY.kDirty,null);SY.avail=true;syPill('ok','')}
-    else{const m=r.status===401?'Butuh password (PUBLISH_KEY) untuk menyimpan online — klik status ini.':j.error==='too-large'?'Data terlalu besar untuk disimpan online ('+(j.size/1e6).toFixed(1)+' MB). Persempit periode / data import.':(j.error==='storage-not-configured'||j.error==='publish-key-not-set')?'Penyimpanan online belum diaktifkan di Vercel (lihat README).':'Gagal menyimpan online ('+(j.error||r.status)+(j.detail?': '+j.detail:'')+').';
-      if(r.status===401){lss(SY.kKey,null);SY.open=false;SY.reason='need-key'}if(r.status===501){SY.avail=false;SY.reason='no-storage'}syPill('err',m)}
+    if(r.ok&&j.ok){lss(SY.kBase,String(j.at));lss(SY.kImp,String(j.import_id));if(+(lsg(SY.kDirtyAt)||0)<=startAt){lss(SY.kDirty,null);if(isImport)lss(SY.kDs,null)}SY.avail=true;SY.reason='';syPill('ok','')}
+    else if(r.status===409){lss(SY.kDirty,null);SY.busy=false;await syPull(true);syPill('ok','Data terbaru dari orang lain sudah dimuat; isian terakhir di browser ini tidak disimpan karena import-nya sudah berganti.');return}
+    else{const m=syErrMsg(r,j);
+      if(r.status===401){lss(SY.kKey,null);SY.open=false;SY.reason='need-key'}
+      if(SY_REASON[j.error]){SY.avail=false;SY.reason=SY_REASON[j.error];SY.detail=j.detail||''}
+      if(j.error==='empty-datasets'){lss(SY.kDirty,null);lss(SY.kDs,null)}
+      syPill('err',m)}
   }catch(e){syPill('err','Gagal menyimpan online: '+e.message)}finally{SY.busy=false;syInfo()}}
-function syApply(p,at){SY.loading=true;try{const cur=S.cur;S={...DEF_S(),...p.S,rc:{...DEF_RC,...(p.S.rc||{})},period:{...DEF_S().period,...(p.S.period||{})},cur};
+function syApply(p,at,imp){SY.loading=true;try{const cur=S.cur;S={...DEF_S(),...p.S,rc:{...DEF_RC,...(p.S.rc||{})},period:{...DEF_S().period,...(p.S.period||{})},cur};
     for(const k of ['cs','vip','rc']){DS[k]=p.DS&&p.DS[k]||null;idbPut(k,DS[k])}
-    try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}SIG=sigS();lss(SY.kBase,String(at||p.at||Date.now()));lss(SY.kDirty,null);
+    try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}SIG=sigS();lss(SY.kBase,String(at||p.at||Date.now()));lss(SY.kImp,String(imp||p.import_id||''));lss(SY.kDirty,null);lss(SY.kDs,null);
     UNDO.length=0;REDO.length=0;syncPeriod();renderImport&&renderImport();refresh(0)}finally{SY.loading=false}syPill('ok','')}
 async function syPull(force){if(VIEWING)return false;try{const r=await fetch(SY.api,{cache:'no-store'});
     const ct=r.headers.get('content-type')||'';
     if(!/octet-stream/.test(ct)||!r.ok){const j=/json/.test(ct)?await r.json().catch(()=>({})):{};
-      if(r.status===404&&j.error==='empty'){SY.avail=true;if(typeof j.open==='boolean'){SY.open=j.open;SY.reason=!j.open&&!syKey()?'need-key':''}syPill();return false}
-      SY.avail=false;SY.reason=j.error==='storage-not-configured'?'no-storage':/json/.test(ct)?'server':'no-api';syPill();return false}
-    SY.avail=true;const at=+(r.headers.get('x-published-at')||0);
-    if(!force&&syOwner()&&syIsDirty()&&+(lsg(SY.kDirtyAt)||0)>at){syPill();if(syAuto())syPublish();return false}   /* perubahan di browser ini lebih baru dari data online */
-    if(!force&&at&&at===syBase()&&(DS.cs||DS.vip||DS.rc)){syPill();return false}
-    const p=JSON.parse(await gunzip(new Uint8Array(await r.arrayBuffer())));if(!p||!p.S)return false;syApply(p,at);return true
+      if(r.status===404&&j.error==='empty'){SY.avail=true;if(typeof j.open==='boolean'){SY.open=j.open;SY.reason=!j.open&&!syKey()?'need-key':''}lss(SY.kImp,null);syPill();return false}
+      SY.avail=false;SY.reason=SY_REASON[j.error]||(/json/.test(ct)?'server':'no-api');SY.detail=j.detail||'';syPill();return false}
+    SY.avail=true;const at=+(r.headers.get('x-published-at')||0),imp=r.headers.get('x-import-id')||'';
+    if(!force&&syOwner()&&syIsDirty()&&+(lsg(SY.kDirtyAt)||0)>at&&(syDsDirty()||imp===syImp())){syPill();if(syAuto())syPublish();return false}   /* perubahan di browser ini lebih baru dan masih untuk import yang sama */
+    if(!force&&at&&at===syBase()&&imp===syImp()&&(DS.cs||DS.vip||DS.rc)){syPill();return false}
+    const p=JSON.parse(await gunzip(new Uint8Array(await r.arrayBuffer())));if(!p||!p.S)return false;syApply(p,at,imp);return true
   }catch(e){if(SY.avail==null)SY.avail=false;syPill();return false}}
-async function syMeta(){if(VIEWING||document.hidden||SY.avail===false||SY.busy)return;try{const r=await fetch(SY.api+'?meta=1',{cache:'no-store'});const j=await r.json().catch(()=>({}));if(typeof j.open==='boolean'){SY.open=j.open;SY.avail=true}if(!r.ok)return;if(j.at&&j.at>syBase()&&!(syOwner()&&syIsDirty()&&+(lsg(SY.kDirtyAt)||0)>j.at))syPull()}catch(e){}}
+async function syMeta(){if(VIEWING||document.hidden||SY.avail===false||SY.busy)return;try{const r=await fetch(SY.api+'?meta=1',{cache:'no-store'});const j=await r.json().catch(()=>({}));if(typeof j.open==='boolean'){SY.open=j.open;SY.avail=true}if(!r.ok||j.empty)return;
+    const newer=j.at>syBase()||String(j.import_id)!==syImp();const mine=syOwner()&&syIsDirty()&&+(lsg(SY.kDirtyAt)||0)>j.at&&(syDsDirty()||String(j.import_id)===syImp());
+    if(newer&&!mine)syPull()}catch(e){}}
 function syInfo(){const el=$('#syncInfo');if(!el)return;const o=syOwner(),b=syBase();
-  const why={'no-api':'Server <b>/api/report</b> tidak ditemukan di web ini. Pastikan folder <b>api/</b> dan file <b>package.json</b> dari zip ikut ter-upload ke GitHub, lalu Redeploy di Vercel.','no-storage':'Server sudah jalan, tapi <b>Blob store belum terhubung</b>. Vercel → Storage → Blob → Connect ke project, lalu <b>Redeploy</b> (env BLOB_READ_WRITE_TOKEN baru terbaca setelah redeploy).','server':'Server online error. Coba Redeploy di Vercel; bila masih, kirim screenshot ini.'}[SY.reason]||'Penyimpanan online belum aktif.';
+  const why={'no-api':'Server <b>/api/report</b> tidak ditemukan. Pastikan folder <b>api/</b>, <b>lib/</b> dan file <b>package.json</b> ikut ter-upload ke GitHub, lalu Redeploy di Vercel.',
+    'no-storage':'Server jalan, tapi <b>Supabase belum terhubung</b>: isi env <b>SUPABASE_URL</b> dan <b>SUPABASE_SERVICE_ROLE_KEY</b> di Vercel → Settings → Environment Variables, lalu <b>Redeploy</b>.',
+    'schema':'Supabase terhubung, tapi <b>tabel belum dibuat</b>. Buka Supabase → SQL Editor, jalankan isi file <b>supabase/schema.sql</b>.',
+    'auth':'Kunci Supabase salah. <b>SUPABASE_SERVICE_ROLE_KEY</b> harus kunci <b>service_role</b> / secret (bukan anon / publishable).',
+    'server':'Server online error. Buka <b>/api/health</b> untuk detail; bila masih, kirim screenshot-nya.'}[SY.reason]||'Penyimpanan online belum aktif.';
   $('#syncTitle').textContent=SY.reason==='need-key'?'Masukkan password':'Status data online';$('#syncOwner').classList.toggle('hidden',SY.reason!=='need-key');$('#syncNow').classList.toggle('hidden',SY.reason!=='need-key');
-  $('#syncTitle').nextElementSibling.textContent=SY.reason==='need-key'?'Server memakai PUBLISH_KEY, jadi hanya browser yang sudah memasukkan password yang bisa menyimpan data online. Isi sekali saja.':'Data yang di-import tersimpan online otomatis supaya semua yang membuka link melihat data terbaru.';
-  el.innerHTML=SY.avail===false?`<div class="warn">${why} Sampai itu, data hanya tersimpan di browser ini.</div>`
-   :`<div>${b?`Data online terakhir: <b>${hhmm(b)}</b>`:'Belum ada data online.'}${o?` · Mode pemilik aktif${syIsDirty()?' · <b>ada perubahan belum tersimpan online</b>':''}`:(SY.reason==='need-key'?' · Browser ini belum bisa menyimpan online.':' · Perubahan di browser ini tersimpan online otomatis.')}</div>${SY.state==='err'&&SY.msg?`<div class="warn">${esc(SY.msg)}</div>`:''}`;
-  $('#syncKey').value=syKey();$('#syncAuto').checked=syAuto();$('#syncForget').classList.toggle('hidden',!o);$('#syncHint').textContent=''}
+  $('#syncTitle').nextElementSibling.textContent=SY.reason==='need-key'?'Server memakai PUBLISH_KEY, jadi hanya browser yang sudah memasukkan password yang bisa menyimpan data online. Isi sekali saja.':'Data yang di-import tersimpan di Supabase otomatis, jadi semua yang membuka link — dari browser, laptop atau HP mana pun — melihat import terakhir.';
+  el.innerHTML=SY.avail===false?`<div class="warn">${why} Sampai itu, data hanya tersimpan di browser ini.</div>${SY.detail?`<div class="sub" style="margin-top:6px">${esc(SY.detail)}</div>`:''}<div class="sub" style="margin-top:6px">Cek detail: <a href="/api/health" target="_blank" rel="noopener">/api/health</a></div>`
+   :`<div>${b?`Data online terakhir: <b>${hhmm(b)}</b>${syImp()?` · import #${esc(syImp())}`:''}`:'Belum ada data online.'}${o?(syIsDirty()?' · <b>ada perubahan belum tersimpan online</b>':' · Perubahan di browser ini tersimpan online otomatis.'):(SY.reason==='need-key'?' · Browser ini belum bisa menyimpan online.':'')}</div>${SY.state==='err'&&SY.msg?`<div class="warn">${esc(SY.msg)}</div>`:''}`;
+  $('#syncKey').value=syKey();$('#syncAuto').checked=syAuto();$('#syncForget').classList.toggle('hidden',!syKey());$('#syncHint').textContent=''}
 function syncInit(){
-  $('#syncBtn').onclick=async()=>{if(SY.avail===false||SY.reason==='need-key'){syInfo();openModal('syncModal');return}syPill('busy');await syPull(true);syPill()};
+  $('#syncBtn').onclick=async()=>{if(SY.avail===false||SY.reason==='need-key'||SY.state==='err'){syInfo();openModal('syncModal');return}syPill('busy');await syPull(true);syPill()};
   $('#syncAuto').onchange=e=>{lss(SY.kAuto,e.target.checked?'1':'0');syPill()};
   $('#syncForget').onclick=()=>{lss(SY.kKey,null);syInfo();syPill()};
   $('#syncPull').onclick=async()=>{$('#syncHint').textContent='Memuat…';const ok=await syPull(true);$('#syncHint').textContent=ok?'Data online dimuat.':'Tidak ada data online.';syInfo()};
   $('#syncNow').onclick=async()=>{const k=$('#syncKey').value.trim();const h=$('#syncHint');if(!k){h.textContent='Isi password dulu.';return}
     h.textContent='Mengecek password…';try{const r=await fetch(SY.api+'?check=1',{method:'POST',headers:{'x-publish-key':k}});const j=await r.json().catch(()=>({}));
-      if(r.status===401){h.textContent='Password salah.';return}if(!r.ok){h.textContent=j.error==='publish-key-not-set'?'PUBLISH_KEY belum diisi di Vercel.':'Online belum aktif ('+(j.error||r.status)+').';return}
+      if(r.status===401){h.textContent='Password salah.';return}if(!r.ok){h.textContent='Online belum aktif ('+(j.error||r.status)+').';return}
       lss(SY.kKey,k);SY.reason='';lss(SY.kAuto,$('#syncAuto').checked?'1':'0');h.textContent='Menyimpan…';await syPublish(true);h.textContent=SY.state==='ok'?'Tersimpan online. Semua yang membuka link melihat data ini.':SY.msg}catch(e){h.textContent='Tidak bisa terhubung ke server: '+e.message}};
   syPill();
   if(location.protocol.startsWith('http')){fetch(SY.api+'?meta=1',{cache:'no-store'}).then(r=>r.json()).then(j=>{if(typeof j.open==='boolean'){SY.open=j.open;SY.avail=true;SY.reason=!j.open&&!syKey()?'need-key':''}}).catch(()=>{}).finally(()=>syPull().then(()=>{SY.ready=true;syPill();if(syOwner()&&syIsDirty()&&syAuto())syPublish()}));setInterval(syMeta,20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)syMeta()})}
@@ -1902,7 +1924,7 @@ function syncInit(){
 const HL='gxcs-hist-local';
 const anyData=()=>!!(DS.cs||DS.vip||DS.rc);
 const curTitle=()=>'Helpdesk Report · '+(C&&C.long||'');
-function snapPayload(){return {v:1,at:Date.now(),S:{...S,cur:undefined},DS:{cs:syStrip(DS.cs),vip:syStrip(DS.vip),rc:syStrip(DS.rc)}}}
+function snapPayload(){return {v:2,at:Date.now(),S:{...S,cur:undefined},DS:syDS()}}
 const hlGet=()=>{try{return JSON.parse(lsg(HL)||'[]')}catch(e){return []}},hlSet=a=>lss(HL,JSON.stringify(a.slice(0,30)));
 async function histSave(title,auto){if(!anyData()||VIEWING)return {ok:false,msg:'Belum ada data.'};title=(title||curTitle()).trim()||curTitle();
   const p=snapPayload();
@@ -1924,7 +1946,7 @@ async function histRestore(){if(!VIEWING||!HBK)return;if(!confirm('Jadikan riway
   const p=HBK.p,bk=HBK;VIEWING=false;S=bk.S;for(const k of ['cs','vip','rc'])DS[k]=bk.DS[k];
   await histSave('Sebelum dipulihkan · '+hhmm(Date.now()),false).catch(()=>{});
   HBK=null;$('#histBanner').classList.add('hidden');document.body.classList.remove('viewing-hist');
-  histApplyMem(p);for(const k of ['cs','vip','rc'])await idbPut(k,DS[k]);save()}
+  histApplyMem(p);lss(SY.kDs,'1');for(const k of ['cs','vip','rc'])await idbPut(k,DS[k]);save()}
 async function renderHist(){const el=$('#histList');el.innerHTML='<div class="sub">Memuat…</div>';const items=await histItems();const own=syOwner()||!SY.avail;
   el.innerHTML=items.length?items.map((x,i)=>`<div class="hrow"><div class="hmain"><b>${esc(x.title)}</b><span class="mut">${hhmm(x.at)} · ${x.auto?'Otomatis (selesai Present)':'Manual'}${x.local?' · <em>hanya di browser ini</em>':''}${x.size?` · ${(x.size/1e6).toFixed(1)} MB`:''}</span></div><span class="hact"><button class="btn sm pri" data-hopen="${i}">Buka</button>${own?`<button class="btn sm" data-hdel="${i}" title="Hapus riwayat">Hapus</button>`:''}</span></div>`).join(''):'<div class="sub">Belum ada riwayat. Riwayat otomatis tersimpan setiap selesai Present.</div>';
   el.querySelectorAll('[data-hopen]').forEach(b=>b.onclick=()=>histOpen(items[+b.dataset.hopen]));

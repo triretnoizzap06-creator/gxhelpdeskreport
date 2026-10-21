@@ -3,7 +3,7 @@
 //  2. Script di index.html valid (tidak ada syntax error).
 //  3. Modul API bisa di-load (dependensi terpasang).
 //  4. Bila env SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY diisi: tes koneksi & skema Supabase (read-only).
-import fs from 'node:fs'; import vm from 'node:vm'; import path from 'node:path'; import { fileURLToPath } from 'node:url'; import { spawnSync } from 'node:child_process';
+import fs from 'node:fs'; import vm from 'node:vm'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let fail = 0; const ok = (c, m) => { console.log((c ? '✔ ' : '✖ ') + m); if (!c) fail++; };
 
@@ -16,9 +16,9 @@ let parsed = 0; for (const s of scripts) { try { new vm.Script(s); parsed++; } c
 ok(parsed === scripts.length && parsed > 0, `script index.html valid (${parsed} blok)`);
 try { JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8')); ok(true, 'vercel.json valid'); } catch (e) { ok(false, 'vercel.json: ' + e.message); }
 
-for (const m of ['api/report.js', 'api/health.js', 'lib/store.js']) {
-  const r = spawnSync(process.execPath, ['--check', path.join(root, m)], { encoding: 'utf8' });
-  ok(r.status === 0, 'syntax ' + m + (r.status === 0 ? '' : ': ' + (r.stderr || r.stdout).trim()));
+for (const m of ['api/report.js', 'api/health.js']) {
+  try { const mod = await import(path.join(root, m)); ok(typeof mod.default === 'function', 'modul ' + m + ' (export default handler)'); }
+  catch (e) { ok(false, 'modul ' + m + ': ' + e.message + ' — jalankan npm install'); }
 }
 
 if (process.env.SUPABASE_URL && (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY)) {

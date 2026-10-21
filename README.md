@@ -226,3 +226,7 @@ Slide 1 (cover) dan Thank You memakai tema gelap: judul putih + kuning, garis se
 - Tombol **Riwayat** di bar atas. Setiap **selesai Present**, kondisi report (data, periode, isian Repeat Complaint, edit teks, urutan slide) otomatis disimpan sebagai riwayat, mis. *Helpdesk Report · October 13 – 18, 2026*. Riwayat otomatis dengan judul sama dalam 3 jam diganti (tidak menumpuk). Bisa juga **Simpan sekarang** dengan nama sendiri.
 - **Buka** → report tampil persis seperti saat disimpan (banner kuning di atas). Data terbaru tidak berubah; klik **Kembali ke data terbaru**. **Jadikan data utama** memulihkan riwayat itu sebagai data utama (data sebelumnya otomatis disimpan dulu ke riwayat).
 - Riwayat tersimpan di Supabase (`report_snapshots`, bisa dibuka semua yang membuka link) dan memakai ulang set data yang sama bila datanya tidak berubah. Bila penyimpanan online belum aktif, riwayat disimpan di browser ini. Maks. 80 riwayat (riwayat otomatis terlama dihapus lebih dulu).
+
+
+## Setup / pengecekan deploy
+Lihat `README-SUPABASE.md` untuk langkah mengaktifkan database bersama. Setelah dependency terpasang, jalankan `npm run check` untuk pengecekan lokal.

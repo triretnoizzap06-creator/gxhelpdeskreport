@@ -7,7 +7,7 @@ import fs from 'node:fs'; import vm from 'node:vm'; import path from 'node:path'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let fail = 0; const ok = (c, m) => { console.log((c ? '✔ ' : '✖ ') + m); if (!c) fail++; };
 
-for (const f of ['index.html', 'vercel.json', 'package.json', 'api/report.js', 'api/health.js', 'lib/store.js', 'supabase/schema.sql', 'assets/mark.png'])
+for (const f of ['index.html', 'vercel.json', 'package.json', 'api/report.js', 'api/health.js', 'lib/store.js', 'supabase/schema.sql', 'config.js', 'assets/mark.png'])
   ok(fs.existsSync(path.join(root, f)), 'file ' + f);
 
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');

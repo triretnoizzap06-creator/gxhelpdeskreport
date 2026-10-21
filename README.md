@@ -58,6 +58,7 @@ The shared source of truth is Supabase: on every page load the site fetches the 
 ### Struktur project
 ```
 index.html            web (semua slide, perhitungan, Present, Print)
+config.js             koneksi Supabase dari browser (Project URL + anon/publishable key)
 api/report.js         API data online (GET data terbaru / POST import & isian / riwayat)
 api/health.js         halaman cek koneksi Supabase
 lib/store.js          lapisan data Supabase (dipakai api/*)
@@ -69,21 +70,37 @@ vercel.json           konfigurasi Vercel
 assets/               logo
 ```
 
-### Setup sekali
-1. **Supabase** → buat project (atau pakai yang ada) → **SQL Editor** → New query → paste isi **`supabase/schema.sql`** → **Run**. Aman dijalankan ulang.
-2. **Supabase → Project Settings → API** (atau tombol *Connect* → API Keys): salin **Project URL** dan kunci **service_role** (atau *secret key* `sb_secret_…`). Jangan pakai anon / publishable key.
-3. **GitHub**: upload seluruh isi zip ini ke repo (termasuk folder `api/`, `lib/`, `supabase/`, `scripts/`, dan `package.json`). Folder `node_modules/` tidak perlu.
-4. **Vercel → project → Settings → Environment Variables** (Production + Preview):
-   | Nama | Isi | Wajib |
-   |---|---|---|
-   | `SUPABASE_URL` | Project URL, mis. `https://abcd.supabase.co` | ya |
-   | `SUPABASE_SERVICE_ROLE_KEY` | kunci service_role / secret | ya |
-   | `PUBLISH_KEY` | password bila hanya orang tertentu yang boleh mengubah data | tidak |
-   Bila Supabase dihubungkan lewat integrasi Vercel Marketplace, `SUPABASE_URL` dan `SUPABASE_SERVICE_ROLE_KEY` biasanya sudah otomatis terisi.
-5. **Redeploy** (Deployments → ⋯ → Redeploy). Framework preset **Other**, tanpa build command.
-6. Buka **`https://<domain>/api/health`** → harus `"database": "ok"`. Lalu buka web, **import data** — status di bar atas jadi *Data terbaru · tgl jam* dan semua yang membuka link melihat data itu.
+### Setup sekali (cara utama — tanpa server, cukup `config.js`)
+1. **Supabase → SQL Editor → New query** → paste seluruh isi **`supabase/schema.sql`** → **Run**. Aman dijalankan ulang.
+2. **Supabase → Project Settings → API** (atau tombol *Connect* → API Keys): salin **Project URL** dan kunci **anon public** (`eyJ…`) / **publishable** (`sb_publishable_…`).
+3. Di GitHub, buka **`config.js`** → ✏️ Edit → isi:
+   ```js
+   window.GX_SUPABASE = {
+     url: 'https://xxxxxxxx.supabase.co',
+     anonKey: 'eyJ...atau sb_publishable_...'
+   };
+   ```
+   → **Commit changes**. Vercel otomatis deploy ulang.
+4. Buka web → status di bar atas jadi *Belum ada data online* → **Import data** sekali → status *Data terbaru · tgl jam*. Semua yang membuka link (browser/laptop/HP mana pun) langsung melihat report yang sama.
 
-Variabel lama `BLOB_READ_WRITE_TOKEN` / Blob store tidak dipakai lagi dan boleh dihapus.
+Kunci anon / publishable **aman** ditaruh di web: dengan `schema.sql`, browser hanya bisa memanggil fungsi `gxp_*` (baca report terbaru, simpan import/isian, riwayat). Tabel tidak bisa dibaca/diubah langsung. **Jangan** pernah isi kunci `service_role` / `sb_secret_…` di `config.js` — web akan menolaknya.
+
+Tidak perlu environment variable di Vercel untuk cara ini. Vercel cukup preset **Other** tanpa build command.
+
+**Password (opsional)** — supaya hanya orang tertentu yang bisa import/edit (yang lain tetap bisa melihat), jalankan di Supabase SQL Editor:
+```sql
+update public.report_config set publish_key_sha256 = encode(sha256(convert_to('PASSWORD-KAMU','UTF8')),'hex') where id = 1;
+```
+Lalu di web klik status di bar atas → isi password sekali per browser. Kembali ke mode terbuka: `update public.report_config set publish_key_sha256 = null where id = 1;`
+
+### Alternatif: lewat server `/api/report` di Vercel
+Kosongkan `config.js` (url & anonKey = `''`), lalu di **Vercel → Settings → Environment Variables** isi:
+| Nama | Isi | Wajib |
+|---|---|---|
+| `SUPABASE_URL` | Project URL | ya |
+| `SUPABASE_SERVICE_ROLE_KEY` | kunci service_role / secret | ya |
+| `PUBLISH_KEY` | password untuk import/edit | tidak |
+Pastikan folder `api/` dan `lib/` + `package.json` ikut di repo, Redeploy, lalu cek `https://<domain>/api/health` → `"database": "ok"`.
 
 ### Cara kerja data online
 - **Satu data terbaru untuk semua orang.** Setiap import menyimpan satu set utuh (Customer Support + VIP + Repeat Complaint) ke tabel `report_imports`, lalu `report_state` (1 baris) diarahkan ke set itu dalam satu transaksi. Tidak ada data campuran dari dua import.

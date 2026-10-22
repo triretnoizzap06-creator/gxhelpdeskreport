@@ -1,5 +1,5 @@
 // /api/health — quick setup check. Open it in a browser. Never prints keys.
-import { configured, db, dbError, env, isOpen } from '../lib/store.js';
+import { configured, db, dbError, env, isOpen } from './_store.js';
 
 export default async function handler(req, res) {
   const e = env();

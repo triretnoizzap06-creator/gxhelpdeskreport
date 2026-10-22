@@ -61,7 +61,7 @@ index.html            web (semua slide, perhitungan, Present, Print)
 config.js             koneksi Supabase dari browser (Project URL + anon/publishable key)
 api/report.js         API data online (GET data terbaru / POST import & isian / riwayat)
 api/health.js         halaman cek koneksi Supabase
-lib/store.js          lapisan data Supabase (dipakai api/*)
+api/_store.js         lapisan data Supabase (dipakai api/*; awalan _ = bukan endpoint)
 supabase/schema.sql   skema database (jalankan sekali di Supabase)
 scripts/check.mjs     cek build: npm run check
 package.json          dependensi server (@supabase/supabase-js)
@@ -100,7 +100,7 @@ Kosongkan `config.js` (url & anonKey = `''`), lalu di **Vercel → Settings → 
 | `SUPABASE_URL` | Project URL | ya |
 | `SUPABASE_SERVICE_ROLE_KEY` | kunci service_role / secret | ya |
 | `PUBLISH_KEY` | password untuk import/edit | tidak |
-Pastikan folder `api/` dan `lib/` + `package.json` ikut di repo, Redeploy, lalu cek `https://<domain>/api/health` → `"database": "ok"`.
+Pastikan folder `api/` (berisi report.js, health.js, _store.js) + `package.json` ikut di root repo, Redeploy, lalu cek `https://<domain>/api/health` → `"database": "ok"`.
 
 ### Cara kerja data online
 - **Satu data terbaru untuk semua orang.** Setiap import menyimpan satu set utuh (Customer Support + VIP + Repeat Complaint) ke tabel `report_imports`, lalu `report_state` (1 baris) diarahkan ke set itu dalam satu transaksi. Tidak ada data campuran dari dua import.
@@ -226,7 +226,3 @@ Slide 1 (cover) dan Thank You memakai tema gelap: judul putih + kuning, garis se
 - Tombol **Riwayat** di bar atas. Setiap **selesai Present**, kondisi report (data, periode, isian Repeat Complaint, edit teks, urutan slide) otomatis disimpan sebagai riwayat, mis. *Helpdesk Report · October 13 – 18, 2026*. Riwayat otomatis dengan judul sama dalam 3 jam diganti (tidak menumpuk). Bisa juga **Simpan sekarang** dengan nama sendiri.
 - **Buka** → report tampil persis seperti saat disimpan (banner kuning di atas). Data terbaru tidak berubah; klik **Kembali ke data terbaru**. **Jadikan data utama** memulihkan riwayat itu sebagai data utama (data sebelumnya otomatis disimpan dulu ke riwayat).
 - Riwayat tersimpan di Supabase (`report_snapshots`, bisa dibuka semua yang membuka link) dan memakai ulang set data yang sama bila datanya tidak berubah. Bila penyimpanan online belum aktif, riwayat disimpan di browser ini. Maks. 80 riwayat (riwayat otomatis terlama dihapus lebih dulu).
-
-
-## Setup / pengecekan deploy
-Lihat `README-SUPABASE.md` untuk langkah mengaktifkan database bersama. Setelah dependency terpasang, jalankan `npm run check` untuk pengecekan lokal.

@@ -7,7 +7,7 @@ import fs from 'node:fs'; import vm from 'node:vm'; import path from 'node:path'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let fail = 0; const ok = (c, m) => { console.log((c ? '✔ ' : '✖ ') + m); if (!c) fail++; };
 
-for (const f of ['index.html', 'vercel.json', 'package.json', 'api/report.js', 'api/health.js', 'lib/store.js', 'supabase/schema.sql', 'config.js', 'mark.png'])
+for (const f of ['index.html', 'vercel.json', 'package.json', 'api/report.js', 'api/health.js', 'api/_store.js', 'supabase/schema.sql', 'config.js', 'assets/mark.png'])
   ok(fs.existsSync(path.join(root, f)), 'file ' + f);
 
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
@@ -22,7 +22,7 @@ for (const m of ['api/report.js', 'api/health.js']) {
 }
 
 if (process.env.SUPABASE_URL && (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY)) {
-  const { db, dbError } = await import(path.join(root, 'lib/store.js'));
+  const { db, dbError } = await import(path.join(root, 'api/_store.js'));
   try {
     for (const t of ['report_state', 'report_imports', 'report_snapshots']) {
       const r = await db().from(t).select('id', { count: 'exact' }).limit(1);

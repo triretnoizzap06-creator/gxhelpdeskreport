@@ -1,4 +1,4 @@
-// /api/report — shared report data (Supabase via lib/store.js). Keys stay on the server.
+// /api/report — shared report data (Supabase via api/_store.js). Keys stay on the server.
 //
 // GET  /api/report               → latest report (gzip JSON) · headers x-published-at, x-import-id, x-revision
 //                                  404 { error:'empty', open } when nothing has been imported yet
@@ -11,7 +11,7 @@
 // POST /api/report?del=<id>      → delete a history snapshot
 // POST /api/report?check=1       → password check only
 // PUBLISH_KEY set → every POST needs header x-publish-key. Not set → open mode (anyone using the site can save).
-import { AppError, configured, isOpen, keyOk, getMeta, getLatest, publishImport, saveState, saveSnapshot, listSnapshots, getSnapshot, deleteSnapshot, parseGzJson } from '../lib/store.js';
+import { AppError, configured, isOpen, keyOk, getMeta, getLatest, publishImport, saveState, saveSnapshot, listSnapshots, getSnapshot, deleteSnapshot, parseGzJson } from './_store.js';
 
 const send = (res, status, body, headers = {}) => {
   res.statusCode = status;

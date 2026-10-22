@@ -81,7 +81,9 @@ h2 .count{font-size:12px;font-weight:700;background:var(--grey);color:var(--mute
 .emp .bd{padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px;flex:1}
 .emp h3{margin:0;font-size:16px;line-height:1.3}
 .emp .nick{font-weight:600;color:var(--muted)}
-.emp .eid{font-size:12.5px;color:var(--muted);font-weight:600}
+.emp .eid{display:inline-block;margin-top:4px;background:var(--ytint);color:var(--yink);border-radius:999px;padding:2px 9px;font-size:11.5px!important;font-weight:700}
+.emp .eid.miss{background:var(--grey)}
+.emp .eid-x{font-size:12.5px;color:var(--muted);font-weight:600}
 .emp .eid.miss{color:var(--amber)}
 .emp dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0;font-size:13px}
 .emp dt{color:var(--muted)}
@@ -142,9 +144,9 @@ h2 .count{font-size:12px;font-weight:700;background:var(--grey);color:var(--mute
   <section id="dirSec">
     <h2>Employee Directory <span class="count" id="count">0</span></h2>
     <div class="tools">
-      <input class="search" id="q" type="search" placeholder="Search name, nickname or Employee ID…" aria-label="Search name or Employee ID">
+      <input class="search" id="q" type="search" placeholder="Search name, nickname or subdivision…" aria-label="Search name, nickname or subdivision">
       <select class="sel" id="flt" aria-label="Filter">
-        <option value="all">All employees</option><option value="soon">Expiring soon</option><option value="exp">Expired</option><option value="missing">Data incomplete</option>
+        <option value="all">All employees</option><option value="sub:Helpdesk">Helpdesk</option><option value="sub:Account Manager">Account Manager</option><option value="soon">Expiring soon</option><option value="exp">Expired</option><option value="missing">Data incomplete</option>
       </select>
     </div>
     <div class="grid" id="grid"></div>
@@ -167,7 +169,7 @@ h2 .count{font-size:12px;font-weight:700;background:var(--grey);color:var(--mute
     <div class="fgrid">
       <div class="f full"><label for="fName">Full name</label><input class="inp" id="fName" required maxlength="120"></div>
       <div class="f"><label for="fNick">Nickname</label><input class="inp" id="fNick" maxlength="40" placeholder="mis. Bagas"></div>
-      <div class="f"><label for="fEid">Employee ID</label><input class="inp" id="fEid" maxlength="40" placeholder="mis. 260100006"></div>
+      <div class="f"><label for="fSub">Subdivision</label><input class="inp" id="fSub" maxlength="60" list="subList" placeholder="Helpdesk / Account Manager"><datalist id="subList"><option value="Helpdesk"><option value="Account Manager"></datalist></div>
       <div class="f"><label for="fBday">Birthday</label><input class="inp" type="date" id="fBday"></div>
       <div class="f"><label for="fStart">Start Contract</label><input class="inp" type="date" id="fStart"></div>
       <div class="f"><label for="fEnd">End Contract</label><input class="inp" type="date" id="fEnd"></div>
@@ -275,12 +277,12 @@ function render() {
   $('#dirSec').classList.toggle('hidden', locked);
   let notes = '';
   if (locked) { setStatus('warn', 'Locked'); notes = `<div class="lock"><h2>🔒 Protected</h2><p>Data karyawan (ulang tahun & kontrak) dilindungi password. Masuk sebagai admin untuk melihat.</p><button class="btn y" onclick="openLogin()">Admin login</button></div>`; }
-  else if (ST.online === true) { setStatus('ok', 'Online · synced'); if (ST.open) notes = `<div class="note warn"><b>Perhatian:</b> PUBLISH_KEY belum diisi di Vercel, jadi siapa pun yang punya link bisa melihat & mengubah data karyawan. Isi PUBLISH_KEY supaya directory ini terkunci password.</div>`; }
+  else if (ST.online === true) { setStatus('ok', 'Online · synced'); }
   else if (ST.err === 'schema-missing') { setStatus('err', 'Table missing'); notes = `<div class="note warn">Tabel <b>hd_employees</b> belum ada. Jalankan <b>directory-schema.sql</b> di Supabase → SQL Editor → Run, lalu muat ulang.</div>`; }
   else if (ST.err === 'storage-not-configured') { setStatus('err', 'Supabase not set'); notes = `<div class="note warn">Env <b>SUPABASE_URL</b> / <b>SUPABASE_SERVICE_ROLE_KEY</b> belum diisi di Vercel.</div>`; }
   else { setStatus('err', ST.online === false ? 'Offline' : 'Server error'); notes = `<div class="note warn">Server <b>/api/employees</b> tidak bisa dihubungi${ST.detail ? ': ' + esc(ST.detail) : ''}. Data belum bisa ditampilkan.</div>`; }
-  const missing = ST.items.filter(e => !e.employee_id || !e.birthday || !e.start_contract || !e.end_contract);
-  if (ST.online === true && !locked && missing.length) notes += `<div class="note"><b>${missing.length} karyawan</b> datanya belum lengkap (Employee ID / Birthday / Contract). ${canEdit() ? 'Klik <b>Edit</b> di kartunya untuk melengkapi.' : ''}</div>`;
+  const missing = ST.items.filter(e => !e.subdivision || !e.birthday || !e.start_contract || !e.end_contract);
+  if (ST.online === true && !locked && missing.length) notes += `<div class="note"><b>${missing.length} karyawan</b> datanya belum lengkap (Subdivision / Birthday / Contract). ${canEdit() ? 'Klik <b>Edit</b> di kartunya untuk melengkapi.' : ''}</div>`;
   $('#notes').innerHTML = notes;
   if (locked || ST.online !== true) { $('#grid').innerHTML = ''; return; }
   renderNotif(t); renderGrid(t);
@@ -300,7 +302,7 @@ function renderNotif(t) {
   const within = up.filter(x => x.days <= UPCOMING_DAYS), list = within.length ? within : up.slice(0, 3);
   const noB = act.filter(e => !e.birthday).length;
   $('#pUpcoming').innerHTML = `<h3><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Upcoming birthdays</h3>` +
-    (list.length ? list.map(x => `<div class="row">${avatar(x.e)}<div class="t"><b>${esc(x.e.full_name)}</b><span>${fmtDM(x.n)} · turns ${x.n.y - x.b.y}</span></div><div class="r"><b>${x.days === 1 ? 'Tomorrow' : `in ${x.days} days`}</b></div></div>`).join('')
+    (list.length ? list.map(x => `<div class="row">${avatar(x.e)}<div class="t"><b>${esc(x.e.full_name)}</b><span>${esc(x.e.subdivision ? x.e.subdivision + ' · ' : '')}${fmtDM(x.n)} · turns ${x.n.y - x.b.y}</span></div><div class="r"><b>${x.days === 1 ? 'Tomorrow' : `in ${x.days} days`}</b></div></div>`).join('')
       : `<div class="empty">No upcoming birthdays.</div>`) +
     (!within.length && list.length ? `<div class="empty">No birthdays in the next ${UPCOMING_DAYS} days — showing the nearest.</div>` : '') +
     (noB ? `<div class="empty">${noB} employee${noB > 1 ? 's' : ''} without birthday data.</div>` : '');
@@ -309,7 +311,7 @@ function renderNotif(t) {
     .sort((a, b) => dnum(a.s.end) - dnum(b.s.end));
   const next = act.map(e => ({ e, s: contractStatus(e, t) })).filter(x => x.s.key === 'ok').sort((a, b) => dnum(a.s.rem) - dnum(b.s.rem))[0];
   $('#pContract').innerHTML = `<h3><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M12 13v3M12 19h.01"/></svg>Contract reminders</h3>` +
-    (cs.length ? cs.map(x => `<div class="row">${avatar(x.e)}<div class="t"><b>${esc(x.e.full_name)}</b><span>ID ${esc(x.e.employee_id || '—')} · ends ${fmt(x.s.end)}</span></div><div class="r"><span class="chip ${x.s.key}">${x.s.label}</span><b style="margin-top:4px">${remainText(t, x.s.end)}</b></div></div>`).join('')
+    (cs.length ? cs.map(x => `<div class="row">${avatar(x.e)}<div class="t"><b>${esc(x.e.full_name)}</b><span>${esc(x.e.subdivision || '—')} · ends ${fmt(x.s.end)}</span></div><div class="r"><span class="chip ${x.s.key}">${x.s.label}</span><b style="margin-top:4px">${remainText(t, x.s.end)}</b></div></div>`).join('')
       : `<div class="empty">No contracts expiring within a month.</div>`) +
     (next ? `<div class="empty">Next reminder: ${esc(next.e.full_name)} on ${fmt(next.s.rem)} (contract ends ${fmt(next.s.end)}).</div>` : '');
 }
@@ -317,11 +319,12 @@ function renderNotif(t) {
 function renderGrid(t) {
   const q = $('#q').value.trim().toLowerCase(), f = $('#flt').value;
   const list = ST.items.filter(e => {
-    if (q && !(e.full_name.toLowerCase().includes(q) || String(e.nickname || '').toLowerCase().includes(q) || String(e.employee_id || '').toLowerCase().includes(q))) return false;
+    if (q && !(e.full_name.toLowerCase().includes(q) || String(e.nickname || '').toLowerCase().includes(q) || String(e.subdivision || '').toLowerCase().includes(q))) return false;
     const s = contractStatus(e, t).key;
     if (f === 'soon') return s === 'soon';
     if (f === 'exp') return s === 'exp';
-    if (f === 'missing') return !e.employee_id || !e.birthday || !e.start_contract || !e.end_contract;
+    if (f === 'missing') return !e.subdivision || !e.birthday || !e.start_contract || !e.end_contract;
+    if (f.startsWith('sub:')) return (e.subdivision || '') === f.slice(4);
     return true;
   });
   $('#count').textContent = list.length === ST.items.length ? ST.items.length : `${list.length} / ${ST.items.length}`;
@@ -330,7 +333,7 @@ function renderGrid(t) {
     const s = contractStatus(e, t), b = parseD(e.birthday);
     return `<article class="emp ${e.active ? '' : 'inactive'}">
       <div class="ph">${e.photo ? `<img src="${esc(e.photo)}" alt="${esc(e.full_name)}" loading="lazy">` : `<span class="ini">${esc(initials(e.full_name))}</span>`}<span class="chip ${s.key}">${s.label}</span></div>
-      <div class="bd"><div><h3>${esc(e.full_name)}${e.nickname ? ` <span class="nick">(${esc(e.nickname)})</span>` : ''}</h3><div class="eid ${e.employee_id ? '' : 'miss'}">${e.employee_id ? 'Employee ID ' + esc(e.employee_id) : 'Employee ID not set'}</div></div>
+      <div class="bd"><div><h3>${esc(e.full_name)}${e.nickname ? ` <span class="nick">(${esc(e.nickname)})</span>` : ''}</h3><div class="eid ${e.subdivision ? '' : 'miss'}">${e.subdivision ? esc(e.subdivision) : 'Subdivision not set'}</div></div>
         <dl><dt>Birthday</dt>${dd(b, b && fmt(b))}<dt>Start Contract</dt>${dd(e.start_contract, fmt(parseD(e.start_contract)))}<dt>End Contract</dt>${dd(e.end_contract, fmt(parseD(e.end_contract)))}</dl>
         <div class="foot"><span>${s.end ? remainText(t, s.end) : ''}${e.active ? '' : ' · inactive'}</span>${canEdit() ? `<button class="btn sm" data-edit="${e.id}">Edit</button>` : ''}</div></div></article>`;
   }).join('') : `<div class="empty">No employee matches your search.</div>`;
@@ -339,9 +342,9 @@ function renderGrid(t) {
 /* =================== editor =================== */
 let EDIT = null;
 function openEditor(e) {
-  EDIT = e ? { ...e } : { id: null, full_name: '', nickname: '', employee_id: '', birthday: '', start_contract: '', end_contract: '', photo: '', active: true, contract_history: [] };
+  EDIT = e ? { ...e } : { id: null, full_name: '', nickname: '', subdivision: '', birthday: '', start_contract: '', end_contract: '', photo: '', active: true, contract_history: [] };
   $('#edT').textContent = e ? 'Edit employee' : 'Add employee';
-  $('#fName').value = EDIT.full_name; $('#fNick').value = EDIT.nickname || ''; $('#fEid').value = EDIT.employee_id || '';
+  $('#fName').value = EDIT.full_name; $('#fNick').value = EDIT.nickname || ''; $('#fSub').value = EDIT.subdivision || '';
   $('#fBday').value = EDIT.birthday || ''; $('#fStart').value = EDIT.start_contract || ''; $('#fEnd').value = EDIT.end_contract || '';
   $('#fActive').checked = EDIT.active !== false;
   const opts = ['', ...PHOTO_FILES]; if (EDIT.photo && !opts.includes(EDIT.photo)) opts.push(EDIT.photo);
@@ -367,7 +370,7 @@ $('#fUpload').onchange = async ev => {
 $('#edCancel').onclick = () => $('#editor').classList.add('hidden');
 $('#edForm').onsubmit = async ev => {
   ev.preventDefault();
-  const body = { id: EDIT.id, full_name: $('#fName').value, nickname: $('#fNick').value, employee_id: $('#fEid').value, birthday: $('#fBday').value || null,
+  const body = { id: EDIT.id, full_name: $('#fName').value, nickname: $('#fNick').value, subdivision: $('#fSub').value, birthday: $('#fBday').value || null,
     start_contract: $('#fStart').value || null, end_contract: $('#fEnd').value || null, photo: $('#fPhoto').value || null, active: $('#fActive').checked };
   if (EDIT.id == null) delete body.id;
   $('#edSave').disabled = true;

@@ -6,7 +6,7 @@
 // Data berisi tanggal lahir & kontrak, jadi bila PUBLISH_KEY diisi di Vercel, MEMBACA pun butuh password (header x-publish-key).
 import { AppError, configured, isOpen, keyOk, db, dbError } from './_store.js';
 
-const COLS = 'id,full_name,nickname,employee_id,birthday,start_contract,end_contract,photo,active,contract_history,sort_order,updated_at';
+const COLS = 'id,full_name,nickname,subdivision,employee_id,birthday,start_contract,end_contract,photo,active,contract_history,sort_order,updated_at';
 const json = (res, obj, status = 200) => {
   res.statusCode = status;
   res.setHeader('content-type', 'application/json');
@@ -31,8 +31,10 @@ function clean(b) {
   const row = { full_name: name.slice(0, 120) };
   const nick = b.nickname == null ? '' : String(b.nickname).trim();
   row.nickname = nick ? nick.slice(0, 40) : null;
+  const sub = b.subdivision == null ? '' : String(b.subdivision).trim();
+  row.subdivision = sub ? sub.slice(0, 60) : null;
   const eid = b.employee_id == null ? null : String(b.employee_id).trim();
-  row.employee_id = eid ? eid.slice(0, 40) : null;
+  if (b.employee_id !== undefined) row.employee_id = eid ? eid.slice(0, 40) : null;
   for (const k of ['birthday', 'start_contract', 'end_contract']) {
     const v = b[k] === '' || b[k] == null ? null : b[k];
     if (!isDate(v)) throw new AppError('bad-payload', 400, `Tanggal ${k} tidak valid (format YYYY-MM-DD).`);

@@ -354,19 +354,20 @@ drop trigger if exists gx_emp_touch on public.hd_employees;
 create trigger gx_emp_touch before insert or update on public.hd_employees for each row execute function public.gx_emp_touch();
 
 alter table public.hd_employees add column if not exists nickname text;
+alter table public.hd_employees add column if not exists subdivision text;
 
 -- 7 karyawan Helpdesk + foto existing. Dijalankan ulang = hanya mengisi kolom yang masih kosong (edit dari web tidak tertimpa).
-insert into public.hd_employees (full_name, nickname, employee_id, birthday, start_contract, end_contract, photo, sort_order) values
-  ('Aulia Sevi Diana',                     null,    null,        '2002-10-14', '2026-10-05', '2027-04-04', 'photo-aulia-sevi-diana.jpg', 1),
-  ('Ni Kadek Desi Mirayani',               null,    null,        '2000-12-02', '2025-08-04', '2026-11-04', 'photo-ni-kadek-desi-mirayani.jpg', 2),
-  ('Devin Bagaskara',                      'Bagas', '260100006', '2005-01-03', '2026-10-04', '2027-10-04', 'photo-devin-bagaskara.jpg', 3),
-  ('A.A Ngurah Kiyana Adhisa Oka Pertama', 'Oka',   null,        '2002-09-10', '2026-07-13', '2026-10-13', 'photo-aa-ngurah-kiyana-adhisa-oka-pertama.jpg', 4),
-  ('Gede Dimas Pery Narendra',             null,    null,        '2003-10-30', '2026-09-29', '2026-12-28', 'photo-gede-dimas-pery-narendra.jpg', 5),
-  ('Kadek Arisita Dhyana Putri',           'Sita',  null,        '2002-02-22', '2026-01-12', '2026-10-12', 'photo-kadek-arisita-dhyana-putri.jpg', 6),
-  ('Nilma Syahrani',                       'Rani',  null,        '2000-10-31', '2026-07-20', '2026-10-20', 'photo-nilma-syahrani.jpg', 7)
+insert into public.hd_employees (full_name, nickname, subdivision, birthday, start_contract, end_contract, photo, sort_order) values
+  ('Aulia Sevi Diana',                     null,    'Account Manager', '2002-10-14', '2026-10-05', '2027-04-04', 'photo-aulia-sevi-diana.jpg', 1),
+  ('Ni Kadek Desi Mirayani',               null,    'Account Manager', '2000-12-02', '2025-08-04', '2026-11-04', 'photo-ni-kadek-desi-mirayani.jpg', 2),
+  ('Devin Bagaskara',                      'Bagas', 'Account Manager', '2005-01-03', '2026-10-04', '2027-10-04', 'photo-devin-bagaskara.jpg', 3),
+  ('Kadek Arisita Dhyana Putri',           'Sita',  'Account Manager', '2002-02-22', '2026-01-12', '2026-10-12', 'photo-kadek-arisita-dhyana-putri.jpg', 4),
+  ('A.A Ngurah Kiyana Adhisa Oka Pertama', 'Oka',   'Helpdesk',        '2002-09-10', '2026-07-13', '2026-10-13', 'photo-aa-ngurah-kiyana-adhisa-oka-pertama.jpg', 5),
+  ('Nilma Syahrani',                       'Rani',  'Helpdesk',        '2000-10-31', '2026-07-20', '2026-10-20', 'photo-nilma-syahrani.jpg', 6),
+  ('Gede Dimas Pery Narendra',             null,    'Helpdesk',        '2003-10-30', '2026-09-29', '2026-12-28', 'photo-gede-dimas-pery-narendra.jpg', 7)
 on conflict (full_name) do update set
   nickname       = coalesce(public.hd_employees.nickname, excluded.nickname),
-  employee_id    = coalesce(public.hd_employees.employee_id, excluded.employee_id),
+  subdivision    = coalesce(public.hd_employees.subdivision, excluded.subdivision),
   birthday       = coalesce(public.hd_employees.birthday, excluded.birthday),
   start_contract = coalesce(public.hd_employees.start_contract, excluded.start_contract),
   end_contract   = coalesce(public.hd_employees.end_contract, excluded.end_contract),

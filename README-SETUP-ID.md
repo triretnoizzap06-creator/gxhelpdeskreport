@@ -1,15 +1,19 @@
-# Setup GX Helpdesk Report (versi tanpa folder)
+# Setup GX CS Dashboard (versi tanpa folder)
 
-Semua file ada di satu tempat (tanpa folder), jadi upload ke GitHub tidak bisa salah.
+Halaman:
+- `/` → Dashboard (menu report, pilihan bahasa ID/EN)
+- `/helpdesk-report` → Helpdesk Report (tag Aftersales)
+- `/helpdesk-performance` → Helpdesk Performance Report (tag Best Employee), periode 2026 Q2, Q3, Q4, 2027…
 
+## Update dari versi sebelumnya
 1. GitHub → Add file → Upload files → seret SEMUA file dari ZIP → Commit changes.
-   File lama yang sudah ada otomatis tertimpa. File lama lain (store.js, check.mjs, README-SUPABASE.md, folder api) boleh dibiarkan.
-2. Supabase → SQL Editor → paste isi `schema.sql` → Run (sudah dilakukan? tidak perlu lagi).
-3. Vercel → Settings → Environment Variables:
-   - SUPABASE_URL = Project URL Supabase
-   - SUPABASE_SERVICE_ROLE_KEY = service_role / secret key
-4. Tunggu deploy otomatis selesai (atau Deployments → ⋯ → Redeploy).
-5. Buka https://gxhelpdeskreport.vercel.app/api/health → harus "database": "ok". Lalu import data sekali.
+2. Supabase → SQL Editor → paste isi `perf-schema.sql` → Run (tabel baru untuk Helpdesk Performance Report).
+3. Tunggu deploy Vercel selesai, lalu cek https://gxhelpdeskreport.vercel.app/api/health → "performanceTable": "ok …".
 
-Endpoint /api/report dan /api/health dibuat lewat vercel.json (bukan folder api/).
+## Setup baru dari nol
+1. Upload semua file ke GitHub.
+2. Supabase → SQL Editor → jalankan `schema.sql` (sudah termasuk tabel performance).
+3. Vercel → Settings → Environment Variables: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (opsional PUBLISH_KEY) → Redeploy.
+
+Menambah menu dashboard: edit daftar `MENUS` di index.html (1 baris per menu).
 Kunci service_role hanya di Vercel — jangan taruh di GitHub atau config.js.

@@ -9,7 +9,11 @@
       "use": "@vercel/node"
     },
     {
-      "src": "index.html",
+      "src": "perf.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "*.html",
       "use": "@vercel/static"
     },
     {
@@ -37,6 +41,18 @@
     {
       "src": "/api/health/?",
       "dest": "/health.js"
+    },
+    {
+      "src": "/api/perf/?",
+      "dest": "/perf.js"
+    },
+    {
+      "src": "/helpdesk-report/?",
+      "dest": "/helpdesk-report.html"
+    },
+    {
+      "src": "/helpdesk-performance/?",
+      "dest": "/helpdesk-performance.html"
     },
     {
       "src": "/",

@@ -20,6 +20,11 @@ export default async function handler(req, res) {
       if (f.error) throw dbError(f.error);
       const st = await sb.from('report_state').select('import_id,revision,updated_at').eq('id', 1).maybeSingle();
       if (st.error) throw dbError(st.error);
+      const pf = await sb.from('perf_reports').select('period', { count: 'exact' }).limit(1);
+      if (pf.error) {
+        out.performanceTable = 'missing';
+        out.performanceHint = 'Tabel Helpdesk Performance belum ada: jalankan perf-schema.sql di Supabase → SQL Editor.';
+      } else out.performanceTable = 'ok · ' + (pf.count ?? 0) + ' periode';
       out.database = 'ok';
       out.latestReport = st.data && st.data.import_id ? { importId: st.data.import_id, revision: st.data.revision, savedAt: st.data.updated_at } : null;
       out.hint = out.latestReport ? 'Semua siap. Semua yang membuka web melihat report terbaru ini.' : 'Semua siap. Import data sekali di web; report langsung terlihat oleh semua orang.';

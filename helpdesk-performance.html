@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Helpdesk Performance Report · GX CS</title>
+<link rel="icon" href="mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F2F4;--panel:rgba(255,255,255,.86);--solid:#fff;--ink:#111114;--muted:#6E6E73;--line:rgba(0,0,0,.1);--hover:rgba(0,0,0,.05);
+  --y:#FFD000;--y2:#F5B800;--ytint:#FFF7D1;--blue:#2563EB;--green:#16A34A;
+  --ui:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--disp:Archivo,Inter,"Arial Black",sans-serif;color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B0B0D;--panel:rgba(24,24,27,.86);--solid:#18181B;--ink:#F5F5F7;--muted:#9A9AA0;--line:rgba(255,255,255,.12);--hover:rgba(255,255,255,.07);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B0B0D;--panel:rgba(24,24,27,.86);--solid:#18181B;--ink:#F5F5F7;--muted:#9A9AA0;--line:rgba(255,255,255,.12);--hover:rgba(255,255,255,.07);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+.hidden{display:none!important}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 18px;background:var(--panel);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.brand img{width:28px;height:28px}
+.brand small{display:block;color:var(--muted);font-size:11px;font-weight:600}
+.brand b{display:block;font-size:15px;font-weight:700;white-space:nowrap}
+.btn{border:1px solid var(--line);background:var(--solid);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;color:var(--ink);white-space:nowrap}
+.btn:hover{background:var(--hover)}
+.btn.pri{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.y{background:var(--y);color:#111;border-color:var(--y)}
+.btn:disabled{opacity:.5;cursor:default}
+.sel{border:1px solid var(--line);background:var(--solid);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--muted);padding:6px 10px;border-radius:999px;background:var(--hover)}
+.pill i{width:8px;height:8px;border-radius:50%;background:#A1A1AA}
+.pill.ok i{background:#22C55E}.pill.warn i{background:#F59E0B}.pill.err i{background:#EF4444}
+
+/* ---------- deck (scroll view) ---------- */
+.deck{max-width:1240px;margin:0 auto;padding:22px 18px 80px;display:flex;flex-direction:column;gap:22px}
+.note{font-size:13px;color:var(--muted);background:var(--solid);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.note b{color:var(--ink)}
+.empty{background:var(--solid);border:1px dashed var(--line);border-radius:18px;padding:60px 20px;text-align:center}
+.empty h2{margin:0 0 6px;font-family:var(--disp);font-size:24px}
+.empty p{margin:0 0 18px;color:var(--muted)}
+
+/* ---------- slide base (16:9, scales with width) ---------- */
+.slide{position:relative;width:100%;aspect-ratio:16/9;container-type:inline-size;overflow:hidden;border-radius:14px;background:#fff;color:#111;box-shadow:0 1px 2px rgba(0,0,0,.05),0 14px 40px rgba(0,0,0,.1);font-family:var(--ui)}
+.s-in{position:absolute;inset:0;padding:3.4cqw 4.4cqw 3cqw;display:flex;flex-direction:column}
+.slide.dark{background:#0A0A0A;color:#fff}
+.slide .edge{position:absolute;left:0;top:0;bottom:0;width:.35cqw;background:var(--y)}
+.slide .edge.b{background:var(--blue)}.slide .edge.g{background:var(--green)}
+.slide .topline{position:absolute;left:0;right:0;top:0;height:.35cqw;background:var(--y)}
+.logo{height:1.9cqw;display:block}
+.foot{position:absolute;left:4.4cqw;bottom:2cqw;font-size:.72cqw;font-weight:700;letter-spacing:.12em;color:#A1A1AA;text-transform:uppercase}
+.snum{position:absolute;right:4.4cqw;bottom:2cqw;font-size:.72cqw;font-weight:700;letter-spacing:.12em;color:#A1A1AA}
+.kick{display:flex;align-items:center;gap:.6cqw;font-size:.82cqw;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.tagb{display:inline-block;font-size:.72cqw;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:.3cqw .7cqw;border-radius:.4cqw;background:#111;color:#fff}
+.tagb.y{background:var(--y);color:#111}.tagb.b{background:var(--blue);color:#fff}.tagb.g{background:var(--green);color:#fff}
+.h2{font-family:var(--disp);font-weight:800;font-size:3cqw;letter-spacing:-.02em;line-height:1.02;margin:.6cqw 0 0}
+.sub{font-size:1cqw;color:#71717A;margin-top:.4cqw}
+.cap{font-size:.78cqw;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#71717A}
+.divchip{display:inline-block;font-size:.62cqw;font-weight:800;letter-spacing:.06em;padding:.12cqw .45cqw;border-radius:.3cqw;border:1px solid #D4D4D8;color:#71717A;margin-left:.5cqw;vertical-align:middle}
+.dark .divchip{border-color:#3F3F46;color:#A1A1AA}
+.num{font-variant-numeric:tabular-nums}
+
+/* slide 1 cover */
+.cover .glow{position:absolute;right:-8cqw;top:-14cqw;width:52cqw;height:52cqw;border-radius:50%;background:radial-gradient(circle,rgba(255,208,0,.22),rgba(255,208,0,0) 65%)}
+.cover .dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:1.6cqw 1.6cqw}
+.cover .wm{position:absolute;right:-1cqw;bottom:-6cqw;font-family:var(--disp);font-weight:900;font-size:24cqw;color:rgba(255,255,255,.035);line-height:1}
+.cover .hd{display:flex;justify-content:space-between;align-items:center}
+.cover .hd span{font-size:.72cqw;font-weight:700;letter-spacing:.14em;color:#71717A}
+.cover .main{flex:1;display:grid;grid-template-columns:1.35fr 1fr;align-items:center;gap:3cqw}
+.cover .kick{color:var(--y)}
+.cover h1{font-family:var(--disp);font-weight:900;font-size:6.3cqw;letter-spacing:-.03em;line-height:.95;margin:1.6cqw 0 .6cqw}
+.cover .box{display:inline-block;background:var(--y);color:#111;font-family:var(--disp);font-weight:900;font-size:2.9cqw;letter-spacing:-.01em;padding:.5cqw 1.2cqw}
+.cover .rule{width:3.6cqw;height:2px;background:#3F3F46;margin:2.4cqw 0 1.6cqw}
+.cover .lede{font-size:1.05cqw;font-style:italic;color:#A1A1AA;line-height:1.55}
+.cover .chips{display:flex;gap:.6cqw;margin-top:2cqw}
+.cover .chips span{font-size:.72cqw;font-weight:800;letter-spacing:.06em;padding:.45cqw .9cqw;border-radius:999px;background:#27272A;color:#E4E4E7}
+.cover .chips span:first-child{background:var(--y);color:#111}
+.cover .right{display:flex;flex-direction:column;align-items:center;text-align:center}
+.trophy{width:7.6cqw;height:7.6cqw;border-radius:50%;border:2px solid rgba(255,208,0,.55);display:grid;place-items:center;box-shadow:0 0 0 .9cqw rgba(255,208,0,.08)}
+.trophy svg{width:3cqw;height:3cqw;stroke:var(--y);fill:none;stroke-width:1.8}
+.cover .bh{font-size:.72cqw;font-weight:800;letter-spacing:.16em;color:#71717A;margin-top:2cqw}
+.cover .bq{font-family:var(--disp);font-weight:900;font-size:2cqw;color:var(--y);margin-top:.3cqw}
+.wtiles{display:grid;grid-template-columns:repeat(3,1fr);gap:.7cqw;margin-top:2.2cqw;width:100%;max-width:24cqw}
+.wtiles div{border:1px solid #27272A;background:#141416;border-radius:.6cqw;padding:.9cqw .5cqw}
+.wtiles small{display:block;font-size:.58cqw;font-weight:800;letter-spacing:.1em;color:#71717A}
+.wtiles b{display:block;font-family:var(--disp);font-size:1.4cqw;color:var(--y);margin-top:.3cqw}
+
+/* slide 2 pillars */
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);margin-top:1.6cqw;flex:1}
+.pillars>div{padding:0 2cqw;border-left:1px solid #E4E4E7}
+.pillars>div:first-child{padding-left:0;border-left:0}
+.pillars .ph{display:flex;justify-content:space-between;align-items:flex-start}
+.pillars .pw{font-family:var(--disp);font-weight:900;font-size:2.4cqw}
+.pillars h3{font-family:var(--disp);font-weight:800;font-size:1.5cqw;margin:.6cqw 0 .2cqw}
+.pillars ul{margin:1.4cqw 0 0;padding:0;list-style:none}
+.pillars li{font-size:.92cqw;color:#3F3F46;padding:.42cqw 0 .42cqw 1cqw;position:relative}
+.pillars li:before{content:"";position:absolute;left:0;top:1cqw;width:.35cqw;height:.35cqw;border-radius:50%;background:#A1A1AA}
+.formula{font-size:.95cqw;color:#52525B;margin-top:1cqw}
+.blob{position:absolute;right:-8cqw;bottom:-14cqw;width:34cqw;height:34cqw;border-radius:50%;background:var(--ytint)}
+
+/* slide 3 tickets */
+.two{display:grid;grid-template-columns:1.25fr 1fr;gap:3cqw;margin-top:1.4cqw;flex:1;min-height:0}
+.chart{display:flex;flex-direction:column;min-height:0}
+.plot{position:relative;flex:1;display:flex;margin-top:1cqw;min-height:0}
+.yax{display:flex;flex-direction:column-reverse;justify-content:space-between;font-size:.66cqw;color:#A1A1AA;padding-right:.8cqw;text-align:right;width:2.6cqw}
+.area{position:relative;flex:1;border-bottom:1px solid #D4D4D8;display:flex}
+.area .gl{position:absolute;left:0;right:0;border-top:1px dashed #EDEDED}
+.grp{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:.35cqw;position:relative;z-index:1}
+.bar1{width:2.1cqw;background:var(--c);border-radius:.15cqw .15cqw 0 0;position:relative}
+.bar1 span{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-size:.62cqw;font-weight:700;padding-bottom:.2cqw;white-space:nowrap}
+.xax{display:flex;margin-left:2.6cqw;font-size:.78cqw;color:#71717A}
+.xax span{flex:1;text-align:center;padding-top:.5cqw}
+.lg{display:flex;flex-wrap:wrap;gap:.4cqw 1.2cqw;margin-top:.9cqw;font-size:.7cqw;color:#52525B}
+.lg i{display:inline-block;width:.65cqw;height:.65cqw;border-radius:.12cqw;background:var(--c);margin-right:.35cqw;vertical-align:-.05cqw;border:1px solid rgba(0,0,0,.08)}
+.rank .row{display:grid;grid-template-columns:2cqw 1fr auto;column-gap:.9cqw;align-items:center;margin-bottom:1.15cqw}
+.rk{width:1.7cqw;height:1.7cqw;border-radius:50%;border:1.5px solid #111;display:grid;place-items:center;font-size:.8cqw;font-weight:800}
+.rk.first{background:var(--y);border-color:var(--y)}
+.rank .nm{font-size:.95cqw;font-weight:700}
+.rank .vl{font-family:var(--disp);font-size:1.15cqw;font-weight:800}
+.rank .trk{grid-column:2/4;height:.32cqw;background:#F4F4F5;border-radius:999px;margin-top:.4cqw;overflow:hidden}
+.rank .trk b{display:block;height:100%;background:var(--c,#A1A1AA);border-radius:999px}
+.callout{font-size:.75cqw;background:var(--ytint);color:#854D0E;border-radius:.4cqw;padding:.6cqw .9cqw;border:1px solid #FDE68A}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4cqw;margin-top:1.2cqw;margin-bottom:1.8cqw}
+.stat{background:#FFFBEB;border:1px solid #FDE68A;border-radius:.6cqw;padding:1cqw 1.2cqw}
+.stat b{display:block;font-family:var(--disp);font-size:1.55cqw;font-weight:800;margin:.35cqw 0 .15cqw}
+.stat small{font-size:.68cqw;color:#71717A}
+
+/* slide 4 breakdown */
+.infos{display:grid;grid-template-columns:repeat(3,1fr);gap:1cqw;margin-top:1cqw}
+.infos div{background:#F4F4F5;border:1px solid #E4E4E7;border-radius:.5cqw;padding:.7cqw .9cqw}
+.infos b{display:block;font-size:.62cqw;letter-spacing:.08em;text-transform:uppercase}
+.infos span{display:block;font-size:.66cqw;color:#71717A;margin-top:.25cqw;line-height:1.4}
+.bd{display:grid;grid-template-columns:1fr 1fr;gap:2.6cqw;margin-top:1.2cqw;flex:1;min-height:0}
+.bd>div{min-height:0;overflow:hidden}
+.bd h4{font-family:var(--disp);font-size:1.15cqw;margin:0 0 .6cqw;padding-bottom:.4cqw;border-bottom:1.5px solid #111}
+.ag{margin-bottom:.9cqw}
+.ag .hd{display:flex;align-items:center;gap:.7cqw}
+.ag .hd .rk{width:1.35cqw;height:1.35cqw;font-size:.66cqw}
+.ag .hd b{font-size:.92cqw}
+.ag .hd small{display:block;font-size:.55cqw;letter-spacing:.1em;color:#A1A1AA;font-weight:700}
+.ag .hd .fsc{margin-left:auto;text-align:right;font-family:var(--disp);font-size:1.45cqw;font-weight:800}
+.ag .hd .fsc small{font-family:var(--ui);font-size:.5cqw}
+.mt{display:grid;grid-template-columns:1fr auto;font-size:.7cqw;margin-top:.35cqw}
+.mt b{font-weight:700}.mt i{font-style:normal;color:#A1A1AA;font-size:.6cqw}
+.mt .v{font-weight:800}
+.mt .trk{grid-column:1/3;height:.28cqw;background:#F4F4F5;border-radius:999px;margin-top:.2cqw;overflow:hidden}
+.mt .trk b{display:block;height:100%;background:var(--c,#A1A1AA)}
+.mt .tot{grid-column:1/3;font-size:.55cqw;color:#A1A1AA}
+.core{display:flex;justify-content:space-between;font-size:.66cqw;font-weight:800;letter-spacing:.08em;color:#71717A;border-top:1px solid #E4E4E7;margin-top:.45cqw;padding-top:.35cqw}
+.core b{color:#111}
+.bonus{display:flex;justify-content:space-between;align-items:center;background:#FFFBEB;border-left:.2cqw solid var(--y);padding:.4cqw .7cqw;margin-top:.35cqw;font-size:.6cqw;font-weight:800;letter-spacing:.06em;color:#A16207}
+.bonus small{display:block;font-weight:500;letter-spacing:0;color:#A1A1AA}
+.bonus b{font-size:.85cqw;color:#A16207}
+.fnote{font-size:.62cqw;color:#A1A1AA;margin-top:auto}
+
+/* slide 5 chat */
+.badges{display:flex;flex-wrap:wrap;gap:.5cqw;margin-top:1.2cqw}
+.badges span{font-size:.7cqw;font-weight:600;color:var(--blue);background:#EFF6FF;border:1px solid #DBEAFE;border-radius:.35cqw;padding:.35cqw .7cqw}
+.ccards{display:grid;gap:1.1cqw;margin-top:1.8cqw}
+.cc{position:relative;border-radius:.7cqw;padding:1.1cqw 1.2cqw;background:#F4F4F5;border:1px solid #E4E4E7}
+.cc.top{background:#0A0A0A;color:#fff;border-color:#0A0A0A}
+.cc .tie{position:absolute;top:-.6cqw;left:50%;transform:translateX(-50%);background:var(--y);color:#111;font-size:.55cqw;font-weight:900;letter-spacing:.06em;padding:.2cqw .5cqw;border-radius:.2cqw;white-space:nowrap}
+.cc .hd{display:flex;justify-content:space-between;align-items:center;font-size:.6cqw;font-weight:800;color:#A1A1AA}
+.cc .rk{width:1.25cqw;height:1.25cqw;font-size:.6cqw;border-color:#D4D4D8;background:#E4E4E7;color:#71717A}
+.cc.top .rk{background:var(--y);border-color:var(--y);color:#111}
+.cc .sc{font-family:var(--disp);font-size:2.1cqw;font-weight:800;margin-top:.6cqw}
+.cc.top .sc{color:var(--y)}
+.cc .nm{font-size:.75cqw;font-weight:600;margin-bottom:.7cqw}
+.mrow{display:grid;grid-template-columns:2cqw 1fr 1.4cqw;align-items:center;gap:.5cqw;font-size:.6cqw;color:#A1A1AA;margin-top:.3cqw}
+.mrow .trk{height:.28cqw;border-radius:999px;background:#E4E4E7;overflow:hidden}
+.cc.top .mrow .trk{background:#27272A}
+.mrow .trk b{display:block;height:100%;background:var(--blue)}
+.cc.top .mrow .trk b{background:var(--y)}
+.mrow em{font-style:normal;text-align:right;font-weight:700;color:inherit}
+.cc.top .mrow{color:#A1A1AA}.cc.top .mrow em{color:#fff}
+.crit{display:grid;grid-template-columns:repeat(5,1fr);gap:.6cqw;margin-top:.8cqw}
+.crit div{display:flex;align-items:center;gap:.55cqw;border:1px solid #E4E4E7;background:#FAFAFA;border-radius:.4cqw;padding:.6cqw .7cqw;font-size:.66cqw;font-weight:600}
+.crit i{flex:none;width:1.05cqw;height:1.05cqw;border-radius:50%;background:var(--blue);color:#fff;font-style:normal;font-size:.55cqw;font-weight:800;display:grid;place-items:center}
+
+/* slide 6 attendance */
+.acards{display:grid;gap:1.1cqw;margin-top:1.6cqw}
+.ac{border-radius:.7cqw;background:#F4F4F5;border:1px solid #E4E4E7;padding:1.3cqw 1cqw;text-align:center;position:relative}
+.ac.top{background:#0A0A0A;color:#fff;border-color:#0A0A0A}
+.ac .perf{position:absolute;top:-.6cqw;right:1cqw;background:var(--y);color:#111;font-size:.55cqw;font-weight:900;letter-spacing:.06em;padding:.2cqw .5cqw;border-radius:.2cqw}
+.ring{position:relative;width:5.4cqw;height:5.4cqw;margin:0 auto}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .tr{fill:none;stroke:#E4E4E7;stroke-width:3}
+.ac.top .ring .tr{stroke:#27272A}
+.ring .pr{fill:none;stroke:var(--green);stroke-width:3;stroke-linecap:round}
+.ring div{position:absolute;inset:0;display:grid;place-items:center;align-content:center;font-family:var(--disp);font-weight:800;font-size:1.1cqw;color:var(--green)}
+.ac.top .ring div{color:var(--y)}
+.ring small{display:block;font-size:.5cqw;color:#A1A1AA;font-family:var(--ui)}
+.ac .sc{font-family:var(--disp);font-size:1.6cqw;font-weight:800;margin-top:.9cqw}
+.ac .nm{font-size:.68cqw;font-weight:600}
+.ac .dv{font-size:.55cqw;color:#A1A1AA;margin-top:.2cqw}
+.boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4cqw;margin-top:auto;margin-bottom:1.8cqw}
+.box3{background:#F4F4F5;border:1px solid #E4E4E7;border-radius:.6cqw;padding:1.1cqw 1.2cqw}
+.box3 .cap{font-size:.62cqw;margin-bottom:.8cqw}
+.fr{display:flex;gap:.7cqw;align-items:center;margin-bottom:.7cqw}
+.fr i{flex:none;width:2cqw;height:1.7cqw;border-radius:.3cqw;display:grid;place-items:center;font-style:normal;font-size:.62cqw;font-weight:800;color:#fff}
+.fr b{display:block;font-size:.75cqw}.fr small{display:block;font-size:.58cqw;color:#71717A}
+.box3 .fin{font-size:.6cqw;color:#52525B;border-top:1px solid #E4E4E7;padding-top:.6cqw}
+.box3 .an{font-size:.6cqw;color:#52525B;border-top:1px solid #E4E4E7;padding-top:.5cqw}
+.ar{display:grid;grid-template-columns:1.3cqw 1fr auto;gap:.6cqw;align-items:center;margin-bottom:.55cqw;font-size:.68cqw}
+.ar .rk{width:1.15cqw;height:1.15cqw;font-size:.55cqw;border-color:#D4D4D8}
+.ar .rk.first{background:var(--green);border-color:var(--green);color:#fff}
+.ar b{font-weight:800}
+.ar .trk{grid-column:2/4;height:.25cqw;background:#E4E4E7;border-radius:999px;overflow:hidden}
+.ar .trk b{display:block;height:100%;background:var(--green)}
+
+/* slide 7 winner */
+.win .glow{position:absolute;right:6cqw;top:8cqw;width:34cqw;height:34cqw;border-radius:50%;background:radial-gradient(circle,rgba(255,208,0,.25),rgba(255,208,0,0) 62%)}
+.win .hd{display:flex;justify-content:space-between;align-items:center}
+.win .hd span{font-size:.72cqw;font-weight:700;letter-spacing:.14em;color:#71717A;border:1px solid #27272A;border-radius:.3cqw;padding:.3cqw .6cqw}
+.win .main{flex:1;display:grid;grid-template-columns:1.2fr 1fr;align-items:center;gap:2cqw}
+.win .kick{color:var(--y)}
+.win h1{font-family:var(--disp);font-weight:900;font-size:5.2cqw;letter-spacing:-.03em;line-height:.98;margin:1.4cqw 0 1.2cqw;text-transform:uppercase}
+.win h1 span{display:block;color:var(--y)}
+.win .dv{font-size:.72cqw;font-weight:700;letter-spacing:.14em;color:#71717A;padding-bottom:.5cqw;border-bottom:2px solid #3F3F46;display:inline-block}
+.win .fl{font-size:.68cqw;font-weight:800;letter-spacing:.14em;color:#71717A;margin-top:2cqw}
+.win .big{font-family:var(--disp);font-weight:900;font-size:6cqw;color:var(--y);line-height:1;margin-top:.4cqw}
+.win .gr{font-size:.85cqw;color:#A1A1AA;margin-top:.6cqw}
+.win .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:.9cqw;margin-top:1.8cqw;max-width:34cqw}
+.win .tiles div{border:1px solid #27272A;background:#121214;border-radius:.6cqw;padding:.9cqw 1cqw}
+.win .tiles b{display:block;font-family:var(--disp);font-size:1.3cqw}
+.win .tiles small{display:block;font-size:.55cqw;font-weight:800;letter-spacing:.1em;color:#A1A1AA;margin-top:.3cqw}
+.win .tiles em{display:block;font-style:normal;font-size:.5cqw;color:#71717A}
+.photo{position:relative;width:24cqw;height:24cqw;margin:0 auto}
+.photo .r1{position:absolute;inset:-1.2cqw;border-radius:50%;border:1px solid rgba(255,208,0,.35)}
+.photo .r2{position:absolute;inset:0;border-radius:50%;border:.35cqw solid var(--y);overflow:hidden;background:#141416;display:grid;place-items:center}
+.photo img{width:100%;height:100%;object-fit:cover}
+.photo .ini{font-family:var(--disp);font-weight:900;font-size:7cqw;color:var(--y)}
+.photo .rib{position:absolute;left:50%;bottom:-1cqw;transform:translateX(-50%);background:var(--y);color:#111;font-size:.72cqw;font-weight:900;letter-spacing:.06em;padding:.45cqw 1.1cqw;border-radius:999px;white-space:nowrap}
+.confetti i{position:absolute;width:.5cqw;height:.28cqw;background:var(--y);opacity:.8;border-radius:.05cqw}
+
+/* slide 8 scoreboard */
+.sb .glow{position:absolute;left:30cqw;top:-10cqw;width:40cqw;height:30cqw;border-radius:50%;background:radial-gradient(circle,rgba(255,208,0,.16),rgba(255,208,0,0) 65%)}
+.sb .hd{display:flex;justify-content:space-between;align-items:flex-start}
+.sb .kick{color:#A1A1AA}
+.sb h2{font-family:var(--disp);font-weight:900;font-size:3.2cqw;line-height:1;letter-spacing:-.02em;margin:.9cqw 0 0}
+.sb h2 span{display:block;color:var(--y)}
+.rows{display:flex;flex-direction:column;gap:1cqw;margin-top:2.2cqw}
+.srow{display:grid;grid-template-columns:2.6cqw 1fr repeat(3,5.4cqw) 1px 7cqw;align-items:center;gap:1cqw;background:#141416;border:1px solid #27272A;border-radius:.7cqw;padding:1cqw 1.4cqw}
+.srow.first{background:linear-gradient(90deg,rgba(255,208,0,.16),rgba(255,208,0,.06));border-color:rgba(255,208,0,.45);padding:1.4cqw}
+.srow .rk{border-color:#3F3F46;color:#A1A1AA;background:#27272A}
+.srow.first .rk{background:var(--y);color:#111;border-color:var(--y)}
+.srow .nm b{display:block;font-size:1.05cqw}
+.srow .nm small{font-size:.55cqw;font-weight:700;letter-spacing:.1em;color:#71717A}
+.srow .k{text-align:center}
+.srow .k small{display:block;font-size:.5cqw;font-weight:800;letter-spacing:.1em;color:#71717A}
+.srow .k b{font-size:.92cqw;font-weight:800}
+.srow .sp{width:1px;height:2.4cqw;background:#3F3F46}
+.srow .f{text-align:right}
+.srow .f small{display:block;font-size:.5cqw;font-weight:800;letter-spacing:.1em;color:#71717A}
+.srow .f b{font-family:var(--disp);font-size:1.6cqw;font-weight:900}
+.srow.first .f b{color:var(--y);font-size:1.9cqw}
+.cP{color:#FFD000}.cC{color:#60A5FA}.cA{color:#34D399}
+
+/* ---------- present mode ---------- */
+.present{position:fixed;inset:0;z-index:100;background:#000;display:flex;align-items:center;justify-content:center}
+.present .holder{width:min(100vw,calc(100vh*16/9));}
+.present .slide{border-radius:0;box-shadow:none}
+.present .nav{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;opacity:.2;transition:opacity .2s}
+.present .nav:hover{opacity:1}
+.present .nav button{width:34px;height:34px;border-radius:8px;border:1px solid #3F3F46;background:#18181B;color:#fff;cursor:pointer}
+.present .dotsn{display:flex;gap:5px}
+.present .dotsn i{width:6px;height:6px;border-radius:999px;background:#52525B}
+.present .dotsn i.on{width:22px;background:var(--y)}
+.present .x{position:fixed;top:12px;right:12px;opacity:.25}
+.present .x:hover{opacity:1}
+
+/* ---------- editor ---------- */
+.modal{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.45);display:flex;justify-content:flex-end}
+.drawer{width:min(980px,100%);height:100%;background:var(--bg);display:flex;flex-direction:column;box-shadow:-20px 0 60px rgba(0,0,0,.25)}
+.dh{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--solid)}
+.dh h3{margin:0 auto 0 0;font-size:16px}
+.db{flex:1;overflow:auto;padding:16px 18px 40px}
+.help{font-size:12.5px;color:var(--muted);margin:0 0 14px;line-height:1.5}
+.acard{background:var(--solid);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.acard .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.acard .top input[type=text]{flex:1;min-width:180px}
+.acard .live{margin-left:auto;font-size:12px;color:var(--muted)}
+.acard .live b{color:var(--ink);font-size:14px}
+.fs{border:0;margin:10px 0 0;padding:10px 0 0;border-top:1px dashed var(--line)}
+.fs legend{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:0 0 6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.f label{display:block;font-size:11.5px;font-weight:600;color:var(--muted);margin-bottom:3px}
+.inp{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:7px 9px;font-size:13px}
+.inp:focus{outline:2px solid var(--y2);outline-offset:-1px}
+.ph{width:44px;height:44px;border-radius:50%;background:var(--hover);overflow:hidden;display:grid;place-items:center;font-size:11px;color:var(--muted);flex:none}
+.ph img{width:100%;height:100%;object-fit:cover}
+.mini{font-size:12px;padding:5px 10px}
+.danger{color:#DC2626}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:120;background:#111;color:#fff;font-size:13px;font-weight:600;padding:10px 16px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+@media (max-width:700px){.bar{padding:8px 12px}.brand small{display:none}.deck{padding:14px 10px 60px;gap:14px}.hide-m{display:none}}
+@media print{.bar,.note,.toast{display:none!important}.deck{padding:0;gap:0;max-width:none}.slide{border-radius:0;box-shadow:none;break-after:page}body{background:#fff}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="btn" href="/">← Dashboard</a>
+  <div class="brand"><img src="mark.png" alt=""><div><small>GlobalXtreme · Best Employee</small><b>Helpdesk Performance Report</b></div></div>
+  <select class="sel" id="period" aria-label="Periode"></select>
+  <span class="pill" id="status"><i></i><span>Memuat…</span></span>
+  <button class="btn" id="editBtn">Edit data</button>
+  <button class="btn hide-m" id="printBtn">Print / PDF</button>
+  <button class="btn pri" id="presentBtn">▶ Present</button>
+</header>
+
+<main class="deck" id="deck"></main>
+
+<div class="modal hidden" id="editor" role="dialog" aria-modal="true" aria-labelledby="edTitle">
+  <div class="drawer">
+    <div class="dh">
+      <h3 id="edTitle">Edit data</h3>
+      <button class="btn" id="edCancel">Batal</button>
+      <button class="btn y" id="edSave">Simpan online</button>
+    </div>
+    <div class="db" id="edBody"></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* =================== konstanta =================== */
+const START_YEAR = 2026, START_Q = 2;                      // periode pertama: 2026 Q2
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MSHORT = MONTHS.map(m => m.slice(0, 3));
+const API = '/api/perf', KEY_PUB = 'gxcs-pub-key', CACHE = 'gx-perf-cache-';
+const COLORS = ['#FFD000', '#111111', '#8A8A8A', '#D4D4D8', '#F59E0B', '#2563EB', '#16A34A', '#DC2626'];
+const CRITERIA = ['Opening & Greeting Protocol', 'Customer Identification', 'Issue Understanding', 'Empathy & Tone', 'Accuracy of Solution',
+  'Communication Clarity', 'Response Speed', 'Grammar & Language', 'Product / SOP Knowledge', 'Closing & Follow-Up'];
+
+/* Data Q2 2026 (dari slide Figma Q2 Report Helpdesk) — dipakai sampai data online disimpan */
+const SEED = {
+  '2026-Q2': { attNote: 'April note — Desi: Sick 1d + PL 1d · Kadek: Sick 2d + PL 4d', agents: [
+    { name: 'Devin Bagaskara', div: 'HD', tickets: [208, 258, 385], csMon: 2261, csHandled: 732, chat: [95, 95, 95], att: { manual: 100 } },
+    { name: 'Ni Kadek Desi Mirayani', div: 'AM', tickets: [343, 560, 534], vipTotal: 1364, vipSolved: 1350, vipRate: 98.76, chat: [95, 95, 95], att: { sick: 1, personal: 1, manual: 98.88 } },
+    { name: 'Aulia Sevi Diana', div: 'AM', tickets: [352, 432, 332], vipTotal: 1224, vipSolved: 1204, vipRate: 98.23, chat: [90, 95, 95], att: { manual: 97.91 } },
+    { name: 'Kadek Arisita D.P.', div: 'HD', tickets: [226, 259, 254], csMon: 1994, csHandled: 690, chat: [90, 95, 95], att: { sick: 2, personal: 4, manual: 96.38 } },
+  ] },
+};
+
+/* =================== util =================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const n = v => { const x = Number(v); return isFinite(x) ? x : 0; };
+const has = v => v !== null && v !== undefined && v !== '' && isFinite(Number(v));
+const r2 = v => Math.round(v * 100) / 100;
+const f2 = v => r2(v).toFixed(2);
+const fInt = v => Math.round(v).toLocaleString('en-US');
+const sum = a => a.reduce((s, x) => s + n(x), 0);
+const ls = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+const clone = o => JSON.parse(JSON.stringify(o));
+const qMonths = p => { const q = +p.slice(-1); return [0, 1, 2].map(i => (q - 1) * 3 + i); };
+const pLabel = p => `${p.slice(0, 4)} · ${p.slice(5)}`;
+const DIV = { HD: 'Helpdesk', AM: 'Account Manager' };
+function toast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3200); }
+function initials(name) { return String(name || '?').split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase(); }
+function grade(v) { return v >= 90 ? 'A — Excellent' : v >= 80 ? 'B — Good' : v >= 70 ? 'C — Fair' : 'D — Needs improvement'; }
+
+/* =================== periode =================== */
+function periods(extra = []) {
+  const now = new Date(), lastY = Math.max(now.getFullYear() + 1, START_YEAR + 1, ...extra.map(p => +p.slice(0, 4)));
+  const out = [];
+  for (let y = START_YEAR; y <= lastY; y++) for (let q = 1; q <= 4; q++) if (y > START_YEAR || q >= START_Q) out.push(`${y}-Q${q}`);
+  return out;
+}
+
+/* =================== skor =================== */
+function normAgent(a) {
+  return { name: a.name || '', div: a.div === 'AM' ? 'AM' : 'HD', photo: a.photo || '',
+    tickets: [0, 1, 2].map(i => (a.tickets && has(a.tickets[i])) ? n(a.tickets[i]) : 0),
+    csMon: n(a.csMon), csHandled: n(a.csHandled), vipTotal: n(a.vipTotal), vipSolved: n(a.vipSolved), vipRate: has(a.vipRate) ? n(a.vipRate) : null,
+    chat: [0, 1, 2].map(i => (a.chat && has(a.chat[i])) ? n(a.chat[i]) : null),
+    att: Object.assign({ workDays: null, sick: 0, personal: 0, alpha: 0, lateMin: 0, workMin: null, manual: null }, a.att || {}) };
+}
+function attScore(t) {
+  if (has(t.manual)) return { score: n(t.manual), rate: null, punct: null, manual: true };
+  const wd = n(t.workDays);
+  if (!wd) return { score: 0, rate: null, punct: null, missing: true };
+  const absent = n(t.sick) + n(t.personal) + n(t.alpha);
+  const rate = Math.max(0, Math.min(100, ((wd - absent) + n(t.sick) * 0.75 + n(t.personal) * 0.5) / wd * 100));
+  const punct = n(t.workMin) > 0 ? Math.max(0, (1 - n(t.lateMin) / n(t.workMin)) * 100) : 100;
+  return { score: rate * 0.7 + punct * 0.3, rate, punct };
+}
+function compute(data) {
+  const A = (data.agents || []).map(normAgent).filter(a => a.name.trim());
+  const by = d => A.filter(a => a.div === d);
+  const max = (arr, f) => Math.max(0, ...arr.map(f));
+  const hd = by('HD'), am = by('AM');
+  const mx = { mon: max(hd, a => a.csMon), hand: max(hd, a => a.csHandled), tHD: max(hd, a => sum(a.tickets)), tAM: max(am, a => sum(a.tickets)) };
+  A.forEach(a => {
+    a.ticketTotal = sum(a.tickets);
+    a.vip = a.vipRate != null ? a.vipRate : (a.vipTotal ? a.vipSolved / a.vipTotal * 100 : 0);
+  });
+  mx.vip = max(am, a => a.vip);
+  const part = (v, m, w) => m > 0 ? r2(v / m * w) : 0;
+  A.forEach(a => {
+    if (a.div === 'HD') {
+      a.parts = [
+        { k: 'CS Monitoring', w: 38, v: part(a.csMon, mx.mon, 38), tot: `${fInt(a.csMon)} total`, val: a.csMon, max: mx.mon },
+        { k: 'CS Handled Volume', w: 19, v: part(a.csHandled, mx.hand, 19), tot: `${fInt(a.csHandled)} total`, val: a.csHandled, max: mx.hand },
+        { k: 'Tickets Created', w: 38, v: part(a.ticketTotal, mx.tHD, 38), tot: `${fInt(a.ticketTotal)} total`, val: a.ticketTotal, max: mx.tHD }];
+      a.bonus = part(a.csMon, mx.mon, 5);
+      a.bonusLabel = 'Assist bonus — CS Monitoring';
+      a.bonusNote = `${fInt(a.csMon)} vs peer max ${fInt(mx.mon)}${a.csMon === mx.mon ? ' (100%)' : ''}`;
+    } else {
+      a.parts = [
+        { k: 'VIP Resolution Rate', w: 57, v: r2(a.vip / 100 * 57), tot: `avg ${f2(a.vip)}%${a.vipTotal ? ` · ${fInt(a.vipSolved)} of ${fInt(a.vipTotal)} VIP handled` : ''}`, val: a.vip, max: 100 },
+        { k: 'Tickets Created', w: 38, v: part(a.ticketTotal, mx.tAM, 38), tot: `${fInt(a.ticketTotal)} total`, val: a.ticketTotal, max: mx.tAM }];
+      a.bonus = part(a.vip, mx.vip, 5);
+      a.bonusLabel = 'Assist bonus — VIP resolution rate';
+      a.bonusNote = `rate ${f2(a.vip)}% vs peer max ${f2(mx.vip)}%${a.vip === mx.vip ? ' (100%)' : ''}`;
+    }
+    a.core = r2(sum(a.parts.map(p => p.v)));
+    a.prod = r2(Math.min(100, a.core + a.bonus));
+    const cs = a.chat.filter(v => v != null);
+    a.chatAvg = cs.length ? r2(sum(cs) / cs.length) : 0;
+    a.attX = attScore(a.att);
+    a.attS = r2(a.attX.score);
+    a.final = r2(a.prod * 0.5 + a.chatAvg * 0.3 + a.attS * 0.2);
+  });
+  const rankBy = f => A.slice().sort((x, y) => f(y) - f(x));
+  return { A, hd: rankBy(a => a.prod).filter(a => a.div === 'HD'), am: rankBy(a => a.prod).filter(a => a.div === 'AM'),
+    byTickets: rankBy(a => a.ticketTotal), byChat: rankBy(a => a.chatAvg), byAtt: rankBy(a => a.attS), byFinal: rankBy(a => a.final) };
+}
+
+/* =================== slides =================== */
+const LOGO_D = '<img class="logo" src="wordmark.png" alt="GlobalXtreme">';
+const LOGO_W = '<img class="logo" src="wordmark-white.png" alt="GlobalXtreme">';
+function rk(i, cls = '') { return `<span class="rk ${cls}">${i + 1}</span>`; }
+
+function slides(p, data) {
+  const C = compute(data), m = qMonths(p), y = p.slice(0, 4), Q = p.slice(5), tag = `${Q} ${y}`;
+  const foot = `<div class="foot">GlobalXtreme CSO · ${tag}</div>`;
+  const N = C.A.length, out = [];
+  const colorOf = new Map(C.byTickets.map((a, i) => [a, COLORS[i % COLORS.length]]));
+
+  // 1 cover
+  out.push(`<section class="slide dark cover"><div class="dots"></div><div class="glow"></div><div class="wm">${Q}</div><div class="topline"></div><div class="s-in">
+    <div class="hd">${LOGO_W}<span>CSO DIVISION &nbsp;|&nbsp; ${tag}</span></div>
+    <div class="main"><div>
+      <div class="kick">★ Employee Recognition Program</div>
+      <h1>HELPDESK</h1><span class="box">PERFORMANCE AWARDS</span>
+      <div class="rule"></div>
+      <div class="lede">Recognizing consistency, excellence,<br>and dedication across ${tag}.</div>
+      <div class="chips"><span>${m.map(i => MONTHS[i].toUpperCase()).join(' · ')} ${y}</span><span>HELPDESK DIVISION</span></div>
+    </div><div class="right">
+      <div class="trophy"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></div>
+      <div class="bh">BEST HELPDESK</div><div class="bq">${tag}</div>
+      <div class="wtiles"><div><small>CHAT QUALITY</small><b>30%</b></div><div><small>PRODUCTIVITY</small><b>50%</b></div><div><small>ATTENDANCE</small><b>20%</b></div></div>
+    </div></div></div>${foot}</section>`);
+
+  // 2 pillars
+  const chatMin = N ? Math.min(...C.A.map(a => a.chatAvg)) : 0;
+  const grades = [...new Set(C.A.map(a => grade(a.final)))];
+  out.push(`<section class="slide"><div class="blob"></div><div class="s-in" style="z-index:1">
+    <div style="display:flex;justify-content:space-between;align-items:center">${LOGO_D}<span class="cap" style="font-size:.66cqw">KPI Framework · ${tag}</span></div>
+    <div class="h2" style="font-size:3.6cqw;margin-top:2cqw">THREE PILLARS.<br>ONE SCORE.</div>
+    <div class="formula">Final Score = (Chat × 0.30) + (Attendance × 0.20) + (Productivity × 0.50)</div>
+    <div class="pillars">
+      <div><div class="ph"><span class="cap" style="font-size:.6cqw">Pillar 01</span><span class="pw">50%</span></div><h3>PRODUCTIVITY</h3><div class="sub" style="font-size:.75cqw">Highest impact KPI — division-scoped</div>
+        <ul><li>AM: VIP Rate 57% + Tickets 38%</li><li>HD: CS Monitoring 38% + CS Handled 19% + Tickets 38%</li><li>Each metric normalized within own division</li><li>Core Score max 95 + Bonus max +5 = 100</li><li>Assist Bonus: top KPI metric vs peer max</li></ul></div>
+      <div><div class="ph"><span class="cap" style="font-size:.6cqw">Pillar 02</span><span class="pw">30%</span></div><h3>CHAT QUALITY</h3><div class="sub" style="font-size:.75cqw">Consistency of service</div>
+        <ul><li>2 cases observed per month</li><li>Scored via Google Form</li><li>10 criteria, max 100 pts</li><li>Average across ${m.map(i => MONTHS[i]).join(', ').replace(/, ([^,]*)$/, ' and $1')}</li>${N ? `<li>All ${N} agents scored ${Math.floor(chatMin / 5) * 5}+</li>` : ''}</ul></div>
+      <div><div class="ph"><span class="cap" style="font-size:.6cqw">Pillar 03</span><span class="pw">20%</span></div><h3>ATTENDANCE</h3><div class="sub" style="font-size:.75cqw">Reliability &amp; punctuality</div>
+        <ul><li>Attendance Rate × 0.70</li><li>Punctuality × 0.30</li><li>Late mins vs total work mins</li><li>Sick 75% credit · Personal Leave 50% credit · Alpha 0% credit</li><li>Perfect score = 100.00</li></ul></div>
+    </div></div><div class="foot" style="z-index:1">${N ? (grades.length === 1 ? `All ${N} employees graded ${grades[0].toUpperCase()}` : `${N} employees assessed`) : ''}</div></section>`);
+
+  // 3 tickets
+  const mVals = m.map((_, i) => C.byTickets.map(a => a.tickets[i]));
+  const maxBar = Math.max(1, ...mVals.flat());
+  const step = niceStep(maxBar), top = Math.ceil(maxBar / step) * step;
+  const ticks = []; for (let v = 0; v <= top; v += step) ticks.push(v);
+  const tTot = sum(C.A.map(a => a.ticketTotal)), best = C.byTickets[0];
+  const tMax = best ? best.ticketTotal : 1;
+  out.push(`<section class="slide"><div class="edge"></div><div class="s-in">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><span class="tagb">Pillar 01</span> <span class="tagb y">50% Weight</span>
+      <div class="h2">Ticket Performance</div><div class="sub">Tickets Created, ${MONTHS[m[0]]} – ${MONTHS[m[2]]} ${y}</div></div><div style="margin-top:2.4cqw">${LOGO_D}</div></div>
+    <div class="two">
+      <div class="chart"><div class="cap" style="font-size:.66cqw">Monthly tickets created (${MONTHS[m[0]]} – ${MONTHS[m[2]]})</div>
+        <div class="plot"><div class="yax">${ticks.map(t => `<span>${fInt(t)}</span>`).join('')}</div>
+          <div class="area">${ticks.slice(1).map(t => `<div class="gl" style="bottom:${t / top * 100}%"></div>`).join('')}
+          ${mVals.map(vals => `<div class="grp">${vals.map((v, j) => `<div class="bar1" style="--c:${COLORS[j % COLORS.length]};height:${v / top * 100}%"><span>${fInt(v)}</span></div>`).join('')}</div>`).join('')}</div></div>
+        <div class="xax">${m.map(i => `<span>${MONTHS[i]}</span>`).join('')}</div>
+        <div class="lg">${C.byTickets.map((a, j) => `<span><i style="--c:${COLORS[j % COLORS.length]}"></i>${esc(a.name)}</span>`).join('')}</div>
+      </div>
+      <div class="rank"><div class="cap" style="font-size:.66cqw;margin-bottom:1.2cqw">Ticket performance ranking</div>
+        ${C.byTickets.map((a, i) => `<div class="row">${rk(i, i ? '' : 'first')}<div class="nm">${esc(a.name)}<span class="divchip">${a.div}</span></div><div class="vl num">${fInt(a.ticketTotal)}</div><div class="trk"><b style="width:${a.ticketTotal / tMax * 100}%;--c:${i ? '#A1A1AA' : 'var(--y)'}"></b></div></div>`).join('')}
+        <div class="callout">⚡ Total: ${fInt(tTot)} tickets created across ${tag}</div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="cap" style="font-size:.6cqw">Total tickets created</span><b class="num">${fInt(tTot)}</b><small>Combined tickets handled during ${tag}</small></div>
+      <div class="stat"><span class="cap" style="font-size:.6cqw">Top performer</span><b class="num">${best ? fInt(best.ticketTotal) : 0} Tickets</b><small>${best ? esc(best.name) + ' — highest individual achievement' : '—'}</small></div>
+      <div class="stat"><span class="cap" style="font-size:.6cqw">Average per agent</span><b class="num">${N ? fInt(tTot / N) : 0} Tickets</b><small>Average tickets handled per team member</small></div>
+    </div></div>${foot}</section>`);
+
+  // 4 breakdown
+  const agBlock = (a, i) => `<div class="ag"><div class="hd">${rk(i, i ? '' : 'first')}<div><b>${esc(a.name)}</b><small>${DIV[a.div].toUpperCase()}</small></div><div class="fsc num">${f2(a.prod)}<small>FINAL SCORE</small></div></div>
+    ${a.parts.map(p => `<div class="mt"><b>${p.k} <i>${p.w}%</i></b><span class="v num">+${f2(p.v)}</span><div class="trk"><b style="width:${p.max ? Math.min(100, p.val / p.max * 100) : 0}%;--c:${i ? '#A1A1AA' : 'var(--y)'}"></b></div><span class="tot">${esc(p.tot)}</span></div>`).join('')}
+    <div class="core"><span>CORE SCORE</span><b class="num">${f2(a.core)}</b></div>
+    <div class="bonus"><div>${a.bonusLabel.toUpperCase()}<small>${esc(a.bonusNote)}</small></div><b class="num">+${f2(a.bonus)}</b></div></div>`;
+  out.push(`<section class="slide"><div class="s-in">
+    <div class="cap" style="font-size:.62cqw">Productivity · Detailed breakdown</div><div class="h2" style="font-size:2.3cqw">Breakdown Productivity</div><div class="sub" style="font-size:.8cqw">Core Score &amp; Assist Bonus, by Division Scope</div>
+    <div class="infos"><div><b>Monitoring tickets</b><span>CS Monitoring and Tickets are weighted separately — high monitoring volume never inflates the tickets score.</span></div>
+      <div><b>Own peer group only</b><span>Helpdesk compared to Helpdesk, AM compared to AM — never against each other's scale.</span></div>
+      <div><b>Rate for AM, volume for HD</b><span>AM score uses VIP resolution rate (%), not case count — a smaller VIP queue isn't a penalty.</span></div></div>
+    <div class="bd"><div><h4>Helpdesk <span class="divchip">HD</span></h4>${C.hd.map(agBlock).join('') || '<div class="sub">—</div>'}</div>
+      <div><h4>Account Manager <span class="divchip">AM</span></h4>${C.am.map(agBlock).join('') || '<div class="sub">—</div>'}</div></div>
+    <div class="fnote">Assist bonus = (agent value ÷ peer max) × 5 pts — rewards the strongest performer in each division's own core KPI. Productivity is capped at 100.</div>
+  </div></section>`);
+
+  // 5 chat
+  const topChat = C.byChat.length ? C.byChat[0].chatAvg : 0;
+  out.push(`<section class="slide"><div class="edge b"></div><div class="s-in">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><span class="cap" style="font-size:.66cqw">Pillar 02</span> <span class="tagb b">30% Weight</span><div class="h2">Chat Observation Quality</div></div><div style="margin-top:2.4cqw">${LOGO_D}</div></div>
+    <div class="badges"><span>2 cases observed per month</span><span>Google Form assessment</span><span>10 evaluation criteria</span><span>Max 100 points per case</span><span>Average: ${m.map(i => MONTHS[i]).join(' + ')}</span></div>
+    <div class="ccards" style="grid-template-columns:repeat(${Math.max(1, Math.min(N, 6))},1fr)">${C.byChat.map((a, i) => {
+      const isTop = a.chatAvg === topChat, tied = isTop && C.byChat.filter(x => x.chatAvg === topChat).length > 1;
+      const place = C.byChat.findIndex(x => x.chatAvg === a.chatAvg);
+      return `<div class="cc ${isTop ? 'top' : ''}">${tied ? '<span class="tie">TIED 1ST</span>' : ''}<div class="hd">${rk(place)}<span>${a.div}</span></div>
+      <div class="sc num">${f2(a.chatAvg)}</div><div class="nm">${esc(a.name)}</div>
+      ${m.map((mi, k) => `<div class="mrow"><span>${MSHORT[mi]}</span><div class="trk"><b style="width:${n(a.chat[k])}%"></b></div><em>${a.chat[k] == null ? '–' : fInt(a.chat[k])}</em></div>`).join('')}</div>`; }).join('')}</div>
+    <div class="cap" style="font-size:.66cqw;margin-top:2.2cqw">10 assessment criteria (Google Form)</div>
+    <div class="crit">${CRITERIA.map((c, i) => `<div><i>${i + 1}</i>${c}</div>`).join('')}</div>
+  </div>${foot}</section>`);
+
+  // 6 attendance
+  const attMax = C.byAtt.length ? C.byAtt[0].attS : 0;
+  out.push(`<section class="slide"><div class="edge g"></div><div class="s-in">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><span class="cap" style="font-size:.66cqw">Pillar 03</span> <span class="tagb g">20% Weight</span><div class="h2">Attendance &amp; Punctuality</div></div><div style="margin-top:2.4cqw">${LOGO_D}</div></div>
+    <div class="acards" style="grid-template-columns:repeat(${Math.max(1, Math.min(N, 6))},1fr)">${C.byAtt.map((a, i) => `<div class="ac ${i === 0 ? 'top' : ''}">${a.attS >= 100 ? '<span class="perf">PERFECT ★</span>' : ''}
+      <div class="ring"><svg viewBox="0 0 36 36"><circle class="tr" cx="18" cy="18" r="15.9155"/><circle class="pr" cx="18" cy="18" r="15.9155" stroke-dasharray="${Math.min(100, a.attS)} 100"/></svg><div>${Math.round(a.attS)}<small>/ 100</small></div></div>
+      <div class="sc num">${f2(a.attS)}</div><div class="nm">${esc(a.name)}</div><div class="dv">${a.div}</div></div>`).join('')}</div>
+    <div class="boxes">
+      <div class="box3"><div class="cap">Calculation formula</div>
+        <div class="fr"><i style="background:var(--green)">70%</i><div><b>Attendance Rate</b><small>Days present (with leave credit) ÷ total working days × 100</small></div></div>
+        <div class="fr"><i style="background:var(--blue)">30%</i><div><b>Punctuality Score</b><small>1 − (late minutes ÷ total work minutes)</small></div></div>
+        <div class="fin">Final Attendance = (Rate × 0.70) + (Punctuality × 0.30)</div></div>
+      <div class="box3"><div class="cap">Leave credit</div>
+        <div class="fr"><i style="background:#F59E0B">75%</i><div><b>Sick Leave</b></div></div>
+        <div class="fr"><i style="background:#6366F1">50%</i><div><b>Personal Leave</b></div></div>
+        <div class="fr"><i style="background:#EF4444">0%</i><div><b>Alpha (No-show)</b></div></div>
+        ${data.attNote ? `<div class="an"><b>${esc(data.attNote)}</b></div>` : ''}</div>
+      <div class="box3"><div class="cap">${Q} attendance ranking</div>
+        ${C.byAtt.map((a, i) => `<div class="ar">${rk(i, i ? '' : 'first')}<span>${esc(a.name)}</span><b class="num">${f2(a.attS)}</b><div class="trk"><b style="width:${attMax ? a.attS / attMax * 100 : 0}%;opacity:${i ? .45 : 1}"></b></div></div>`).join('')}</div>
+    </div></div>${foot}</section>`);
+
+  // 7 winner
+  const W = C.byFinal[0];
+  if (W) {
+    const parts = W.name.trim().split(/\s+/), first = parts.length > 1 ? parts.slice(0, -1).join(' ') : parts[0], last = parts.length > 1 ? parts[parts.length - 1] : '';
+    const conf = [[6, 18, 20], [9, 36, -30], [22, 52, 15], [30, 70, 60], [44, 16, -10], [47, 80, 35], [60, 30, 70], [70, 60, -45], [83, 22, 25], [88, 74, -20], [94, 44, 50], [17, 84, 10]]
+      .map(([x, yy, r], i) => `<i style="left:${x}%;top:${yy}%;transform:rotate(${r}deg);opacity:${.35 + (i % 3) * .2};${i % 4 === 0 ? 'background:#fff' : ''}"></i>`).join('');
+    out.push(`<section class="slide dark win"><div class="glow"></div><div class="confetti">${conf}</div><div class="topline"></div><div class="s-in">
+      <div class="hd">${LOGO_W}<span>${String(7).padStart(2, '0')} / 08</span></div>
+      <div class="main"><div>
+        <div class="kick">🏅 Best Employee · ${tag}</div>
+        <h1>${esc(first)}${last ? `<span>${esc(last)}</span>` : ''}</h1>
+        <div class="dv">${DIV[W.div].toUpperCase()} DIVISION</div>
+        <div class="fl">FINAL SCORE</div><div class="big num">${f2(W.final)}</div><div class="gr">out of 100 · ${grade(W.final)}</div>
+        <div class="tiles"><div><b class="cP num">${f2(W.prod)}</b><small>PRODUCTIVITY</small><em>50% weight</em></div><div><b class="cC num">${f2(W.chatAvg)}</b><small>CHAT QUALITY</small><em>30% weight</em></div><div><b class="cA num">${f2(W.attS)}</b><small>ATTENDANCE</small><em>20% weight</em></div></div>
+      </div><div><div class="photo"><div class="r1"></div><div class="r2">${W.photo ? `<img src="${esc(W.photo)}" alt="">` : `<span class="ini">${esc(initials(W.name))}</span>`}</div><div class="rib">★ BEST EMPLOYEE ${tag}</div></div></div></div>
+    </div>${foot}</section>`);
+  }
+
+  // 8 scoreboard
+  out.push(`<section class="slide dark sb"><div class="glow"></div><div class="s-in">
+    <div class="hd"><div><div class="kick">🏆 Final Rankings · ${tag}</div><h2>The Final<span>Score Board</span></h2></div>${LOGO_W}</div>
+    <div class="rows">${C.byFinal.map((a, i) => `<div class="srow ${i ? '' : 'first'}">${rk(i)}<div class="nm"><b>${esc(a.name)}</b><small>${DIV[a.div].toUpperCase()}</small></div>
+      <div class="k"><small>PRD</small><b class="cP num">${f2(a.prod)}</b></div><div class="k"><small>CHT</small><b class="cC num">${f2(a.chatAvg)}</b></div><div class="k"><small>ATD</small><b class="cA num">${f2(a.attS)}</b></div>
+      <div class="sp"></div><div class="f"><small>FINAL</small><b class="num">${f2(a.final)}</b></div></div>`).join('')}</div>
+  </div>${foot}</section>`);
+  return out;
+}
+function niceStep(max) { const raw = max / 4, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / p; return (f <= 1 ? 1 : f <= 1.5 ? 1.5 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p; }
+
+/* =================== state & sync =================== */
+const ST = { period: null, data: null, revision: null, source: 'none', online: null, open: true, list: [], editing: false, slides: [] };
+
+async function api(path, opt = {}) {
+  const key = ls.get(KEY_PUB) || '';
+  const r = await fetch(API + path, { cache: 'no-store', ...opt, headers: { ...(opt.body ? { 'content-type': 'application/json' } : {}), ...(key ? { 'x-publish-key': key } : {}), ...(opt.headers || {}) } });
+  let j = null; try { j = await r.json(); } catch (e) {}
+  return { status: r.status, j: j || {}, json: !!j };
+}
+function setStatus(cls, text) { const s = $('#status'); s.className = 'pill ' + cls; s.querySelector('span').textContent = text; }
+
+async function loadList() {
+  try { const r = await api('?list=1'); if (r.status === 200) { ST.list = r.j.items || []; ST.open = r.j.open !== false; ST.online = true; } else ST.online = r.json ? 'err' : false; }
+  catch (e) { ST.online = false; }
+}
+function fillPeriods() {
+  const saved = new Set(ST.list.map(x => x.period));
+  const all = periods(ST.list.map(x => x.period));
+  $('#period').innerHTML = all.map(p => `<option value="${p}">${pLabel(p)}${ST.online === true && !saved.has(p) && !SEED[p] ? ' (kosong)' : ''}</option>`).join('');
+  $('#period').value = ST.period;
+}
+function defaultPeriod() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (/^\d{4}-Q[1-4]$/.test(h)) return h;
+  if (ST.list.length) return ST.list[ST.list.length - 1].period;
+  return `${START_YEAR}-Q${START_Q}`;
+}
+async function loadPeriod(p, quiet) {
+  ST.period = p; history.replaceState(null, '', '#' + p);
+  let got = false;
+  if (ST.online !== false) {
+    try {
+      const r = await api('?period=' + encodeURIComponent(p));
+      if (r.status === 200) { ST.data = r.j.data; ST.revision = r.j.revision; ST.source = 'online'; ST.updated = r.j.updated_at; got = true; ls.set(CACHE + p, JSON.stringify({ data: ST.data, revision: ST.revision, updated: ST.updated })); }
+      else if (r.status === 404) { ST.data = SEED[p] ? clone(SEED[p]) : null; ST.revision = null; ST.source = SEED[p] ? 'seed' : 'none'; got = true; }
+      else ST.online = r.json ? 'err' : false, ST.err = r.j;
+    } catch (e) { ST.online = false; }
+  }
+  if (!got) {
+    const c = ls.get(CACHE + p);
+    if (c) { const o = JSON.parse(c); ST.data = o.data; ST.revision = o.revision; ST.source = 'cache'; }
+    else { ST.data = SEED[p] ? clone(SEED[p]) : null; ST.revision = null; ST.source = SEED[p] ? 'seed' : 'none'; }
+  }
+  render(); syncStatus();
+}
+function syncStatus() {
+  if (ST.online === true) setStatus('ok', ST.source === 'online' ? 'Data online' : ST.source === 'seed' ? 'Belum disimpan online' : 'Online · kosong');
+  else if (ST.online === 'err') setStatus('err', (ST.err && ST.err.error === 'schema-missing') ? 'Tabel belum dibuat' : (ST.err && ST.err.error === 'storage-not-configured') ? 'Supabase belum diisi' : 'Server error');
+  else setStatus('warn', ST.source === 'cache' ? 'Offline · cache' : 'Offline');
+}
+
+/* =================== render =================== */
+function render() {
+  const deck = $('#deck'), p = ST.period;
+  let note = '';
+  if (ST.source === 'seed') note = `<div class="note">Data <b>${pLabel(p)}</b> ini diambil dari slide Q2 Report Helpdesk (Figma). Buka <b>Edit data</b> → <b>Simpan online</b> supaya tersimpan untuk semua orang.</div>`;
+  else if (ST.online === 'err' && ST.err && ST.err.error === 'schema-missing') note = `<div class="note">Tabel <b>perf_reports</b> belum ada di Supabase. Jalankan file <b>perf-schema.sql</b> di Supabase → SQL Editor → Run, lalu muat ulang halaman ini.</div>`;
+  else if (ST.online === 'err' && ST.err && ST.err.error === 'storage-not-configured') note = `<div class="note">Env <b>SUPABASE_URL</b> / <b>SUPABASE_SERVICE_ROLE_KEY</b> belum diisi di Vercel, jadi data belum bisa disimpan online.</div>`;
+  else if (ST.online === false) note = `<div class="note">Server <b>/api/perf</b> tidak terjangkau${ST.source === 'cache' ? ' — menampilkan data terakhir yang tersimpan di browser ini' : ''}.</div>`;
+  if (!ST.data || !(ST.data.agents || []).some(a => (a.name || '').trim())) {
+    ST.slides = [];
+    deck.innerHTML = note + `<div class="empty"><h2>Belum ada data ${pLabel(p)}</h2><p>Isi data agent untuk periode ini — skor, ranking, dan Best Employee dihitung otomatis.</p><button class="btn y" id="emptyEdit">Isi data ${pLabel(p)}</button></div>`;
+    $('#emptyEdit').onclick = openEditor;
+  } else {
+    ST.slides = slides(p, ST.data);
+    deck.innerHTML = note + ST.slides.join('');
+  }
+  $('#presentBtn').disabled = !ST.slides.length;
+  $('#printBtn').disabled = !ST.slides.length;
+}
+
+/* =================== present =================== */
+let PV = null;
+function present(start = 0) {
+  if (!ST.slides.length) return;
+  let i = start;
+  PV = document.createElement('div'); PV.className = 'present';
+  PV.innerHTML = `<div class="holder"></div><div class="nav"><button aria-label="Sebelumnya">‹</button><div class="dotsn"></div><button aria-label="Berikutnya">›</button></div><button class="btn x">✕ Esc</button>`;
+  document.body.appendChild(PV);
+  const show = () => { PV.querySelector('.holder').innerHTML = ST.slides[i]; PV.querySelector('.dotsn').innerHTML = ST.slides.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join(''); };
+  const go = d => { i = Math.max(0, Math.min(ST.slides.length - 1, i + d)); show(); };
+  const close = () => { document.removeEventListener('keydown', key); PV.remove(); PV = null; if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); };
+  const key = e => { if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); go(1); } else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); go(-1); } else if (e.key === 'Escape') close(); else if (e.key === 'Home') { i = 0; show(); } else if (e.key === 'End') { i = ST.slides.length - 1; show(); } };
+  const [prev, next] = PV.querySelectorAll('.nav button');
+  prev.onclick = () => go(-1); next.onclick = () => go(1); PV.querySelector('.x').onclick = close;
+  PV.querySelector('.holder').onclick = e => go(e.clientX < innerWidth / 3 ? -1 : 1);
+  document.addEventListener('keydown', key);
+  if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
+  show();
+}
+
+/* =================== editor =================== */
+let ED = null;
+function blankAgent(prev) { return { name: prev ? prev.name : '', div: prev ? prev.div : 'HD', photo: prev ? prev.photo || '' : '', tickets: ['', '', ''], chat: ['', '', ''], att: {} }; }
+function openEditor() {
+  const p = ST.period;
+  if (ST.data && (ST.data.agents || []).length) ED = clone(ST.data);
+  else {
+    // ambil nama agent dari periode sebelumnya (bila ada di cache/seed) supaya tidak mengetik ulang
+    const all = periods(), idx = all.indexOf(p);
+    let base = null;
+    for (let k = idx - 1; k >= 0 && !base; k--) { const c = ls.get(CACHE + all[k]); if (c) base = JSON.parse(c).data; else if (SEED[all[k]]) base = SEED[all[k]]; }
+    ED = { attNote: '', agents: base ? base.agents.map(a => blankAgent(a)) : [blankAgent(), blankAgent()] };
+  }
+  ST.editing = true; drawEditor(); $('#editor').classList.remove('hidden');
+}
+function closeEditor() { ST.editing = false; $('#editor').classList.add('hidden'); ED = null; }
+function fld(label, path, val, type = 'number', extra = '') { return `<div class="f"><label>${label}</label><input class="inp" type="${type}" data-p="${path}" value="${esc(val ?? '')}" ${type === 'number' ? 'step="any" min="0"' : ''} ${extra}></div>`; }
+function drawEditor() {
+  const p = ST.period, m = qMonths(p);
+  const C = compute(ED), live = new Map(C.A.map(a => [a.name, a]));
+  $('#edTitle').textContent = `Edit data · ${pLabel(p)}`;
+  $('#edBody').innerHTML = `<p class="help">Isi angka per agent. Productivity, Chat, Attendance, ranking dan Best Employee dihitung otomatis dengan rumus di slide. Kolom yang tidak relevan untuk divisinya boleh dikosongkan.
+    Attendance: isi hari kerja, cuti & menit telat — atau langsung isi <b>Skor attendance (manual)</b> bila sudah dihitung di Excel.</p>
+    ${!ST.open ? `<div class="acard"><div class="f"><label>Password publish (PUBLISH_KEY)</label><input class="inp" type="password" id="pubKey" value="${esc(ls.get(KEY_PUB) || '')}" autocomplete="current-password"></div></div>` : ''}
+    ${ED.agents.map((a, i) => { const L = live.get((a.name || '').trim()); const isAM = a.div === 'AM';
+      return `<div class="acard" data-i="${i}">
+      <div class="top"><div class="ph">${a.photo ? `<img src="${esc(a.photo)}" alt="">` : 'Foto'}</div>
+        <input class="inp" type="text" data-p="name" placeholder="Nama agent" value="${esc(a.name)}">
+        <select class="inp" data-p="div" style="width:auto"><option value="HD" ${!isAM ? 'selected' : ''}>Helpdesk (HD)</option><option value="AM" ${isAM ? 'selected' : ''}>Account Manager (AM)</option></select>
+        <label class="btn mini">Foto<input type="file" accept="image/*" data-photo hidden></label>${a.photo ? '<button class="btn mini" data-rmphoto>Hapus foto</button>' : ''}
+        <button class="btn mini danger" data-del>Hapus agent</button>
+        <span class="live">${L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · CHT ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''}</span></div>
+      <fieldset class="fs"><legend>Productivity</legend><div class="grid">
+        ${m.map((mi, k) => fld(`Tickets ${MSHORT[mi]}`, `tickets.${k}`, a.tickets && a.tickets[k])).join('')}
+        ${isAM ? fld('VIP handled (total)', 'vipTotal', a.vipTotal) + fld('VIP solved (total)', 'vipSolved', a.vipSolved) + fld('VIP rate % (rata² bulanan)', 'vipRate', a.vipRate, 'number', 'placeholder="otomatis: solved ÷ handled"')
+               : fld('CS Monitoring (total)', 'csMon', a.csMon) + fld('CS Handled (total)', 'csHandled', a.csHandled)}
+      </div></fieldset>
+      <fieldset class="fs"><legend>Chat observation (0–100)</legend><div class="grid">${m.map((mi, k) => fld(`Chat ${MSHORT[mi]}`, `chat.${k}`, a.chat && a.chat[k])).join('')}</div></fieldset>
+      <fieldset class="fs"><legend>Attendance (total 1 kuartal)</legend><div class="grid">
+        ${fld('Hari kerja', 'att.workDays', a.att && a.att.workDays)}${fld('Sick (hari)', 'att.sick', a.att && a.att.sick)}${fld('Personal leave (hari)', 'att.personal', a.att && a.att.personal)}${fld('Alpha (hari)', 'att.alpha', a.att && a.att.alpha)}
+        ${fld('Menit telat', 'att.lateMin', a.att && a.att.lateMin)}${fld('Total menit kerja', 'att.workMin', a.att && a.att.workMin)}${fld('Skor attendance (manual)', 'att.manual', a.att && a.att.manual, 'number', 'placeholder="opsional"')}
+      </div></fieldset></div>`; }).join('')}
+    <button class="btn" id="addAgent">+ Tambah agent</button>
+    <div class="acard" style="margin-top:14px"><div class="f"><label>Catatan attendance (tampil di slide Attendance)</label><input class="inp" type="text" data-p="attNote" data-root value="${esc(ED.attNote || '')}" placeholder="mis. April note — Desi: Sick 1d + PL 1d"></div></div>`;
+}
+function setPath(o, path, v) { const k = path.split('.'); let t = o; for (let i = 0; i < k.length - 1; i++) { t[k[i]] = t[k[i]] || (/^\d+$/.test(k[i + 1]) ? [] : {}); t = t[k[i]]; } t[k[k.length - 1]] = v; }
+function resizePhoto(file) {
+  return new Promise((res, rej) => { const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => { const s = 360, c = document.createElement('canvas'); c.width = c.height = s; const g = c.getContext('2d'), m = Math.min(img.width, img.height);
+      g.drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, s, s); URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', .82)); };
+    img.onerror = rej; img.src = url; });
+}
+$('#edBody').addEventListener('input', e => {
+  const el = e.target; if (!el.dataset.p) return;
+  const card = el.closest('[data-i]'); const v = el.type === 'number' ? (el.value === '' ? '' : Number(el.value)) : el.value;
+  if (el.hasAttribute('data-root')) { ED.attNote = v; return; }
+  if (!card) return;
+  setPath(ED.agents[+card.dataset.i], el.dataset.p, v);
+  if (el.dataset.p === 'div') { drawEditor(); return; }
+  const C = compute(ED), L = C.A.find(a => a.name === (ED.agents[+card.dataset.i].name || '').trim());
+  card.querySelector('.live').innerHTML = L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · CHT ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : '';
+});
+$('#edBody').addEventListener('change', async e => {
+  const el = e.target;
+  if (el.dataset.p === 'div') { setPath(ED.agents[+el.closest('[data-i]').dataset.i], 'div', el.value); drawEditor(); }
+  if (el.hasAttribute('data-photo') && el.files[0]) {
+    try { ED.agents[+el.closest('[data-i]').dataset.i].photo = await resizePhoto(el.files[0]); drawEditor(); } catch (err) { toast('Foto tidak bisa dibaca'); }
+  }
+});
+$('#edBody').addEventListener('click', e => {
+  const card = e.target.closest('[data-i]');
+  if (e.target.id === 'addAgent') { ED.agents.push(blankAgent()); drawEditor(); return; }
+  if (!card) return;
+  const i = +card.dataset.i;
+  if (e.target.hasAttribute('data-del')) { ED.agents.splice(i, 1); drawEditor(); }
+  if (e.target.hasAttribute('data-rmphoto')) { ED.agents[i].photo = ''; drawEditor(); }
+});
+$('#edCancel').onclick = closeEditor;
+$('#editor').addEventListener('click', e => { if (e.target.id === 'editor') closeEditor(); });
+$('#edSave').onclick = async () => {
+  const k = $('#pubKey'); if (k) ls.set(KEY_PUB, k.value);
+  const clean = { attNote: ED.attNote || '', agents: ED.agents.filter(a => (a.name || '').trim()) };
+  const btn = $('#edSave'); btn.disabled = true; btn.textContent = 'Menyimpan…';
+  try {
+    const r = await api('?period=' + encodeURIComponent(ST.period), { method: 'POST', body: JSON.stringify({ data: clean, revision: ST.revision }) });
+    if (r.status === 200 && r.j.ok) {
+      ST.data = clean; ST.revision = r.j.revision; ST.source = 'online'; ST.online = true;
+      ls.set(CACHE + ST.period, JSON.stringify({ data: clean, revision: ST.revision }));
+      closeEditor(); await loadList(); fillPeriods(); render(); syncStatus(); toast('Tersimpan online ✓ — semua orang melihat data ini');
+    } else if (r.status === 409) { toast('Ada perubahan lebih baru dari perangkat lain — data dimuat ulang, cek lalu simpan lagi.'); const keep = ED; await loadPeriod(ST.period); ED = keep; ED && drawEditor(); }
+    else if (r.status === 401) toast('Password publish salah / belum diisi.');
+    else toast('Gagal menyimpan: ' + (r.j.detail || r.j.error || ('HTTP ' + r.status)));
+  } catch (err) { toast('Server tidak terjangkau — data belum tersimpan.'); }
+  btn.disabled = false; btn.textContent = 'Simpan online';
+};
+
+/* =================== init =================== */
+$('#period').onchange = e => loadPeriod(e.target.value);
+$('#editBtn').onclick = openEditor;
+$('#presentBtn').onclick = () => present(0);
+$('#printBtn').onclick = () => window.print();
+(async () => {
+  await loadList();
+  ST.period = defaultPeriod(); fillPeriods();
+  await loadPeriod(ST.period);
+  // cek perubahan dari perangkat lain tiap 30 detik
+  setInterval(async () => {
+    if (ST.editing || PV || document.hidden || ST.online !== true) return;
+    try { const r = await api('?list=1'); if (r.status !== 200) return; const it = (r.j.items || []).find(x => x.period === ST.period);
+      if (it && it.revision !== ST.revision) { await loadPeriod(ST.period); toast('Data diperbarui dari perangkat lain'); } } catch (e) {}
+  }, 30000);
+})();
+</script>
+</body>
+</html>

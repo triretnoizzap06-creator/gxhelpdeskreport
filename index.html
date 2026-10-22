@@ -1935,7 +1935,7 @@ async function syPull(force){if(VIEWING)return false;try{const r=await syFetch(S
     const ct=r.headers.get('content-type')||'';
     if(!/octet-stream/.test(ct)||!r.ok){const j=/json/.test(ct)?await r.json().catch(()=>({})):{};
       if(r.status===404&&j.error==='empty'){SY.avail=true;if(typeof j.open==='boolean'){SY.open=j.open;SY.reason=!j.open&&!syKey()?'need-key':''}lss(SY.kImp,null);syPill();return false}
-      SY.avail=false;SY.reason=SY_REASON[j.error]||(/json/.test(ct)?'server':'no-api');SY.detail=j.detail||'';if(SY.reason==='no-api'&&!GXC.direct)fetch('health.js',{method:'HEAD',cache:'no-store'}).then(x=>{SY.flat=x.ok;syInfo()}).catch(()=>{});syPill();return false}
+      SY.avail=false;SY.reason=SY_REASON[j.error]||(/json/.test(ct)?'server':'no-api');SY.detail=j.detail||'';syPill();return false}
     SY.avail=true;const at=+(r.headers.get('x-published-at')||0),imp=r.headers.get('x-import-id')||'';
     if(!force&&syOwner()&&syIsDirty()&&+(lsg(SY.kDirtyAt)||0)>at&&(syDsDirty()||imp===syImp())){syPill();if(syAuto())syPublish();return false}   /* perubahan di browser ini lebih baru dan masih untuk import yang sama */
     if(!force&&at&&at===syBase()&&imp===syImp()&&(DS.cs||DS.vip||DS.rc)){syPill();return false}
@@ -1945,7 +1945,7 @@ async function syMeta(){if(VIEWING||document.hidden||SY.avail===false||SY.busy)r
     const newer=j.at>syBase()||String(j.import_id)!==syImp();const mine=syOwner()&&syIsDirty()&&+(lsg(SY.kDirtyAt)||0)>j.at&&(syDsDirty()||String(j.import_id)===syImp());
     if(newer&&!mine)syPull()}catch(e){}}
 function syInfo(){const el=$('#syncInfo');if(!el)return;const o=syOwner(),b=syBase();
-  const why={'no-api':(SY.flat?'<b>Folder api/ hilang di GitHub.</b> File report.js / health.js ter-upload di root (tanpa folder), jadi Vercel tidak membuat endpoint /api. Upload ulang isi ZIP dengan <b>menyeret folder api/</b> (bukan file satu per satu) sampai di GitHub terlihat <b>api/report.js</b>, lalu Redeploy.':'Server <b>/api/report</b> tidak ditemukan (404). Pastikan di GitHub ada folder <b>api/</b> berisi <b>report.js</b>, <b>health.js</b>, <b>_store.js</b> dan file <b>package.json</b> di root, lalu Redeploy di Vercel.'),
+  const why={'no-api':'Server <b>/api/report</b> tidak ditemukan (404). Pastikan semua file dari ZIP terbaru ada di GitHub — terutama <b>vercel.json</b>, <b>report.js</b>, <b>health.js</b>, <b>_store.js</b>, <b>package.json</b> — lalu tunggu deploy Vercel selesai.',
     'no-storage':'Server jalan, tapi <b>Supabase belum terhubung</b>: isi env <b>SUPABASE_URL</b> dan <b>SUPABASE_SERVICE_ROLE_KEY</b> di Vercel → Settings → Environment Variables, lalu <b>Redeploy</b>.',
     'schema':'Supabase terhubung, tapi <b>tabel belum dibuat</b>. Buka Supabase → SQL Editor, jalankan isi file <b>supabase/schema.sql</b>.',
     'auth':GXC.url||GXC.bad?'Kunci di <b>config.js</b> salah: pakai <b>Project URL</b> + kunci <b>anon / publishable</b> (bukan secret / service_role).':'Kunci Supabase salah. <b>SUPABASE_SERVICE_ROLE_KEY</b> harus kunci <b>service_role</b> / secret (bukan anon / publishable).',

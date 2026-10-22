@@ -102,7 +102,7 @@ button,input,select{font:inherit;color:inherit}
 .formula{font-size:.95cqw;color:#52525B;margin-top:1cqw}
 .blob{position:absolute;right:-8cqw;bottom:-14cqw;width:34cqw;height:34cqw;border-radius:50%;background:var(--ytint)}
 
-/* slide 3 tickets */
+/* charts */
 .two{display:grid;grid-template-columns:1.25fr 1fr;gap:3cqw;margin-top:1.4cqw;flex:1;min-height:0}
 .chart{display:flex;flex-direction:column;min-height:0}
 .plot{position:relative;flex:1;display:flex;margin-top:1cqw;min-height:0}
@@ -248,6 +248,7 @@ button,input,select{font:inherit;color:inherit}
 .srow.first{background:linear-gradient(90deg,rgba(255,208,0,.16),rgba(255,208,0,.06));border-color:rgba(255,208,0,.45);padding:1.4cqw}
 .srow .rk{border-color:#3F3F46;color:#A1A1AA;background:#27272A}
 .srow.first .rk{background:var(--y);color:#111;border-color:var(--y)}
+.srow .nm{display:grid;grid-template-columns:auto 1fr;column-gap:.9cqw;align-items:center}.srow .nm .av{grid-row:1/3;width:2.6cqw;height:2.6cqw;border-radius:50%;overflow:hidden;background:#27272A;display:grid;place-items:center;font-size:.7cqw;font-weight:800;color:#A1A1AA}.srow .nm .av img{width:100%;height:100%;object-fit:cover;transform:scale(1.8);transform-origin:50% 22%}.srow.first .nm .av{box-shadow:0 0 0 .15cqw var(--y)}
 .srow .nm b{display:block;font-size:1.05cqw}
 .srow .nm small{font-size:.55cqw;font-weight:700;letter-spacing:.1em;color:#71717A}
 .srow .k{text-align:center}
@@ -260,6 +261,16 @@ button,input,select{font:inherit;color:inherit}
 .srow.first .f b{color:var(--y);font-size:1.9cqw}
 .cP{color:#FFD000}.cC{color:#60A5FA}.cA{color:#34D399}
 
+
+/* layout untuk tim besar (Q3: 8 agent) */
+.sb.many .rows{gap:.55cqw;margin-top:1.4cqw}.sb.many .srow{padding:.55cqw 1.2cqw}.sb.many .srow.first{padding:.8cqw 1.2cqw}.sb.many .srow .nm .av{width:2.1cqw;height:2.1cqw}.sb.many .srow .f b{font-size:1.3cqw}.sb.many .srow.first .f b{font-size:1.5cqw}.sb.many h2{font-size:2.6cqw}
+.bd.dense{grid-template-columns:1fr;gap:.6cqw;overflow:hidden}
+.bd.dense>div{display:grid;grid-template-columns:repeat(3,1fr);column-gap:1.6cqw;align-content:start}
+.bd.dense h4{grid-column:1/-1;font-size:.95cqw;margin-bottom:.4cqw}
+.bd.dense .ag{margin-bottom:.5cqw}.bd.dense .mt{margin-top:.15cqw;font-size:.62cqw}.bd.dense .mt .tot{display:none}.bd.dense .ag .hd .fsc{font-size:1.15cqw}.bd.dense .bonus{padding:.25cqw .5cqw;margin-top:.2cqw}.bd.dense .bonus small{display:none}.bd.dense .core{margin-top:.25cqw;padding-top:.2cqw}
+.bd.dense .ag .hd b{font-size:.78cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:14cqw;display:block}
+.slide.many .ccards{margin-top:1.1cqw;gap:.8cqw}.slide.many .cc{padding:.7cqw .9cqw}.slide.many .cc .sc{font-size:1.5cqw;margin-top:.3cqw}.slide.many .cc .nm{margin-bottom:.35cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.slide.many .crit{gap:.4cqw;margin-top:.5cqw}.slide.many .crit div{padding:.4cqw .6cqw}
+.slide.many .acards{margin-top:1cqw;gap:.8cqw}.slide.many .ac{padding:.7cqw}.slide.many .ring{width:3.6cqw;height:3.6cqw}.slide.many .ac .sc{font-size:1.2cqw;margin-top:.4cqw}.slide.many .ac .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.slide.many .boxes{margin-bottom:1.6cqw}.slide.many .box3{padding:.8cqw 1cqw}.slide.many .ar{margin-bottom:.25cqw;font-size:.6cqw}.slide.many .fr{margin-bottom:.4cqw}
 /* ---------- present mode ---------- */
 .present{position:fixed;inset:0;z-index:100;background:#000;display:flex;align-items:center;justify-content:center}
 .present .holder{width:min(100vw,calc(100vh*16/9));}
@@ -296,6 +307,43 @@ button,input,select{font:inherit;color:inherit}
 .mini{font-size:12px;padding:5px 10px}
 .danger{color:#DC2626}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:120;background:#111;color:#fff;font-size:13px;font-weight:600;padding:10px 16px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+
+/* ---------- animations (berjalan saat slide terlihat / dipresentasikan) ---------- */
+.slide .s-in>*{opacity:0;transform:translateY(1.2cqw);transition:opacity .7s ease,transform .8s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0)*90ms)}
+.slide.play .s-in>*{opacity:1;transform:none}
+.slide .trk b{width:0;transition:width 1.2s cubic-bezier(.2,.8,.2,1);transition-delay:calc(300ms + var(--k,0)*110ms)}
+.slide.play .trk b{width:var(--w)}
+.ring .pr{stroke-dasharray:0 100;transition:stroke-dasharray 1.6s cubic-bezier(.2,.8,.2,1);transition-delay:calc(350ms + var(--k,0)*140ms)}
+.slide.play .ring .pr{stroke-dasharray:var(--da) 100}
+.slide [data-k]{opacity:0;transform:translateY(1.4cqw) scale(.98);transition:opacity .6s ease,transform .8s cubic-bezier(.2,.8,.2,1);transition-delay:calc(250ms + var(--k,0)*120ms)}
+.slide.play [data-k]{opacity:1;transform:none}
+.sb .srow[data-k]{transform:translateX(-3cqw)}
+.sb.play .srow[data-k]{transform:none}
+.cover .wm{transform:translateX(6cqw);opacity:0;transition:transform 1.6s cubic-bezier(.2,.8,.2,1) .2s,opacity 1.6s ease .2s}
+.cover.play .wm{transform:none;opacity:1}
+.cover .box{clip-path:inset(0 100% 0 0);transition:clip-path .9s cubic-bezier(.7,0,.2,1) .5s}
+.cover.play .box{clip-path:inset(0 0 0 0)}
+.slide.play .trophy{animation:pulse 2.6s ease-in-out 1s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 .9cqw rgba(255,208,0,.08)}50%{box-shadow:0 0 0 1.6cqw rgba(255,208,0,.14),0 0 4cqw rgba(255,208,0,.25)}}
+.slide.play .glow{animation:glow 5s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+.win .photo{transform:scale(.7);opacity:0;transition:transform 1s cubic-bezier(.2,1.4,.4,1) .5s,opacity .6s ease .5s}
+.win.play .photo{transform:none;opacity:1}
+.win .photo .r1{border-style:dashed}
+.win.play .photo .r1{animation:spin 24s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.win .rib{transform:translateX(-50%) translateY(1cqw);opacity:0;transition:all .6s ease 1.3s}
+.win.play .rib{transform:translateX(-50%);opacity:1}
+.confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:2}
+.confetti i{position:absolute;top:-4%;width:.55cqw;height:.3cqw;border-radius:.05cqw;opacity:0;animation:fall var(--d) linear var(--dl) infinite;animation-play-state:paused}
+.win.play .confetti i{animation-play-state:running}
+@keyframes fall{0%{transform:translate3d(0,0,0) rotate(0);opacity:0}8%{opacity:1}100%{transform:translate3d(var(--x),62cqw,0) rotate(var(--r));opacity:.9}}
+.srow.first:after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(100deg,transparent 30%,rgba(255,208,0,.18) 50%,transparent 70%);background-size:250% 100%;background-position:120% 0;pointer-events:none}
+.srow{position:relative}
+.sb.play .srow.first:after{animation:shine 3.5s ease-in-out 1.4s infinite}
+@keyframes shine{0%{background-position:120% 0}60%,100%{background-position:-60% 0}}
+@media (prefers-reduced-motion:reduce){.slide *,.slide{transition:none!important;animation:none!important}.slide .s-in>*,.slide [data-k],.cover .wm,.win .photo,.win .rib{opacity:1!important;transform:none!important}.cover .box{clip-path:none!important}.trk b{width:var(--w)!important}.ring .pr{stroke-dasharray:var(--da) 100!important}.confetti{display:none}}
+@media print{.slide *{transition:none!important;animation:none!important}.slide .s-in>*,.slide [data-k],.cover .wm,.win .photo,.win .rib{opacity:1!important}.win .rib{transform:translateX(-50%)!important}.cover .box{clip-path:none!important}.trk b{width:var(--w)!important}.ring .pr{stroke-dasharray:var(--da) 100!important}.confetti{display:none}}
 @media (max-width:700px){.bar{padding:8px 12px}.brand small{display:none}.deck{padding:14px 10px 60px;gap:14px}.hide-m{display:none}}
 @media print{.bar,.note,.toast{display:none!important}.deck{padding:0;gap:0;max-width:none}.slide{border-radius:0;box-shadow:none;break-after:page}body{background:#fff}}
 </style>
@@ -338,11 +386,31 @@ const CRITERIA = ['Opening & Greeting Protocol', 'Customer Identification', 'Iss
 /* Data Q2 2026 (dari slide Figma Q2 Report Helpdesk) — dipakai sampai data online disimpan */
 const SEED = {
   '2026-Q2': { attNote: 'April note — Desi: Sick 1d + PL 1d · Kadek: Sick 2d + PL 4d', agents: [
-    { name: 'Devin Bagaskara', div: 'HD', tickets: [208, 258, 385], csMon: 2261, csHandled: 732, chat: [95, 95, 95], att: { manual: 100 } },
-    { name: 'Ni Kadek Desi Mirayani', div: 'AM', tickets: [343, 560, 534], vipTotal: 1364, vipSolved: 1350, vipRate: 98.76, chat: [95, 95, 95], att: { sick: 1, personal: 1, manual: 98.88 } },
-    { name: 'Aulia Sevi Diana', div: 'AM', tickets: [352, 432, 332], vipTotal: 1224, vipSolved: 1204, vipRate: 98.23, chat: [90, 95, 95], att: { manual: 97.91 } },
-    { name: 'Kadek Arisita D.P.', div: 'HD', tickets: [226, 259, 254], csMon: 1994, csHandled: 690, chat: [90, 95, 95], att: { sick: 2, personal: 4, manual: 96.38 } },
+    { name: 'Devin Bagaskara', div: 'HD', csMon: 2261, csHandled: 732, chat: [95, 95, 95], att: { manual: 100 } },
+    { name: 'Ni Kadek Desi Mirayani', div: 'AM', vipTotal: 1364, vipSolved: 1350, vipRate: 98.76, chat: [95, 95, 95], att: { sick: 1, personal: 1, manual: 98.88 } },
+    { name: 'Aulia Sevi Diana', div: 'AM', vipTotal: 1224, vipSolved: 1204, vipRate: 98.23, chat: [90, 95, 95], att: { manual: 97.91 } },
+    { name: 'Kadek Arisita D.P.', div: 'HD', csMon: 1994, csHandled: 690, chat: [90, 95, 95], att: { sick: 2, personal: 4, manual: 96.38 } },
   ] },
+};
+
+/* Foto agent (file photo-*.jpg). Nama lain/singkatan diarahkan lewat ALIAS. */
+const PHOTOS = {
+  'devin bagaskara': 'photo-devin-bagaskara.jpg', 'bayu sukma ramadhan': 'photo-bayu-sukma-ramadhan.jpg',
+  'ni kadek desi mirayani': 'photo-ni-kadek-desi-mirayani.jpg', 'gede dimas pery narendra': 'photo-gede-dimas-pery-narendra.jpg',
+  'a.a ngurah kiyana adhisa oka pertama': 'photo-aa-ngurah-kiyana-adhisa-oka-pertama.jpg', 'nilma syahrani': 'photo-nilma-syahrani.jpg',
+  'aulia sevi diana': 'photo-aulia-sevi-diana.jpg', 'kadek arisita dhyana putri': 'photo-kadek-arisita-dhyana-putri.jpg',
+};
+const ALIAS = { 'kadek arisita d.p.': 'kadek arisita dhyana putri', 'bagas': 'devin bagaskara', 'kiyana': 'a.a ngurah kiyana adhisa oka pertama' };
+const pkey = name => { const k = String(name || '').trim().toLowerCase().replace(/\s+/g, ' '); return ALIAS[k] || k; };
+const photoOf = a => (a && a.photo) || PHOTOS[pkey(a && a.name)] || '';
+
+/* Susunan tim per periode (dipakai saat periode masih kosong — tinggal isi angkanya) */
+const ROSTER = {
+  '2026-Q3': [['Devin Bagaskara', 'AM'], ['Bayu Sukma Ramadhan', 'HD'], ['Ni Kadek Desi Mirayani', 'AM'], ['Gede Dimas Pery Narendra', 'HD'],
+    ['A.A Ngurah Kiyana Adhisa Oka Pertama', 'HD'], ['Nilma Syahrani', 'HD'], ['Aulia Sevi Diana', 'AM'], ['Kadek Arisita Dhyana Putri', 'HD']],
+  // Q4: Kadek Arisita → AM · Bayu pindah ke CSO Lobby (1 Okt) · Gede Dimas resign (1 Nov)
+  '2026-Q4': [['Devin Bagaskara', 'AM'], ['Ni Kadek Desi Mirayani', 'AM'], ['Aulia Sevi Diana', 'AM'], ['Kadek Arisita Dhyana Putri', 'AM'],
+    ['A.A Ngurah Kiyana Adhisa Oka Pertama', 'HD'], ['Nilma Syahrani', 'HD']],
 };
 
 /* =================== util =================== */
@@ -374,7 +442,6 @@ function periods(extra = []) {
 /* =================== skor =================== */
 function normAgent(a) {
   return { name: a.name || '', div: a.div === 'AM' ? 'AM' : 'HD', photo: a.photo || '',
-    tickets: [0, 1, 2].map(i => (a.tickets && has(a.tickets[i])) ? n(a.tickets[i]) : 0),
     csMon: n(a.csMon), csHandled: n(a.csHandled), vipTotal: n(a.vipTotal), vipSolved: n(a.vipSolved), vipRate: has(a.vipRate) ? n(a.vipRate) : null,
     chat: [0, 1, 2].map(i => (a.chat && has(a.chat[i])) ? n(a.chat[i]) : null),
     att: Object.assign({ workDays: null, sick: 0, personal: 0, alpha: 0, lateMin: 0, workMin: null, manual: null }, a.att || {}) };
@@ -393,9 +460,8 @@ function compute(data) {
   const by = d => A.filter(a => a.div === d);
   const max = (arr, f) => Math.max(0, ...arr.map(f));
   const hd = by('HD'), am = by('AM');
-  const mx = { mon: max(hd, a => a.csMon), hand: max(hd, a => a.csHandled), tHD: max(hd, a => sum(a.tickets)), tAM: max(am, a => sum(a.tickets)) };
+  const mx = { mon: max(hd, a => a.csMon), hand: max(hd, a => a.csHandled), vipH: max(am, a => a.vipTotal) };
   A.forEach(a => {
-    a.ticketTotal = sum(a.tickets);
     a.vip = a.vipRate != null ? a.vipRate : (a.vipTotal ? a.vipSolved / a.vipTotal * 100 : 0);
   });
   mx.vip = max(am, a => a.vip);
@@ -404,15 +470,14 @@ function compute(data) {
     if (a.div === 'HD') {
       a.parts = [
         { k: 'CS Monitoring', w: 38, v: part(a.csMon, mx.mon, 38), tot: `${fInt(a.csMon)} total`, val: a.csMon, max: mx.mon },
-        { k: 'CS Handled Volume', w: 19, v: part(a.csHandled, mx.hand, 19), tot: `${fInt(a.csHandled)} total`, val: a.csHandled, max: mx.hand },
-        { k: 'Tickets Created', w: 38, v: part(a.ticketTotal, mx.tHD, 38), tot: `${fInt(a.ticketTotal)} total`, val: a.ticketTotal, max: mx.tHD }];
+        { k: 'CS Handled Volume', w: 57, v: part(a.csHandled, mx.hand, 57), tot: `${fInt(a.csHandled)} total`, val: a.csHandled, max: mx.hand }];
       a.bonus = part(a.csMon, mx.mon, 5);
       a.bonusLabel = 'Assist bonus — CS Monitoring';
       a.bonusNote = `${fInt(a.csMon)} vs peer max ${fInt(mx.mon)}${a.csMon === mx.mon ? ' (100%)' : ''}`;
     } else {
       a.parts = [
         { k: 'VIP Resolution Rate', w: 57, v: r2(a.vip / 100 * 57), tot: `avg ${f2(a.vip)}%${a.vipTotal ? ` · ${fInt(a.vipSolved)} of ${fInt(a.vipTotal)} VIP handled` : ''}`, val: a.vip, max: 100 },
-        { k: 'Tickets Created', w: 38, v: part(a.ticketTotal, mx.tAM, 38), tot: `${fInt(a.ticketTotal)} total`, val: a.ticketTotal, max: mx.tAM }];
+        { k: 'VIP Handled Volume', w: 38, v: part(a.vipTotal, mx.vipH, 38), tot: `${fInt(a.vipTotal)} total`, val: a.vipTotal, max: mx.vipH }];
       a.bonus = part(a.vip, mx.vip, 5);
       a.bonusLabel = 'Assist bonus — VIP resolution rate';
       a.bonusNote = `rate ${f2(a.vip)}% vs peer max ${f2(mx.vip)}%${a.vip === mx.vip ? ' (100%)' : ''}`;
@@ -427,7 +492,7 @@ function compute(data) {
   });
   const rankBy = f => A.slice().sort((x, y) => f(y) - f(x));
   return { A, hd: rankBy(a => a.prod).filter(a => a.div === 'HD'), am: rankBy(a => a.prod).filter(a => a.div === 'AM'),
-    byTickets: rankBy(a => a.ticketTotal), byChat: rankBy(a => a.chatAvg), byAtt: rankBy(a => a.attS), byFinal: rankBy(a => a.final) };
+    byProd: rankBy(a => a.prod), byChat: rankBy(a => a.chatAvg), byAtt: rankBy(a => a.attS), byFinal: rankBy(a => a.final) };
 }
 
 /* =================== slides =================== */
@@ -438,8 +503,7 @@ function rk(i, cls = '') { return `<span class="rk ${cls}">${i + 1}</span>`; }
 function slides(p, data) {
   const C = compute(data), m = qMonths(p), y = p.slice(0, 4), Q = p.slice(5), tag = `${Q} ${y}`;
   const foot = `<div class="foot">GlobalXtreme CSO · ${tag}</div>`;
-  const N = C.A.length, out = [];
-  const colorOf = new Map(C.byTickets.map((a, i) => [a, COLORS[i % COLORS.length]]));
+  const N = C.A.length, out = [], cols = N <= 4 ? N : Math.ceil(N / 2), dense = Math.max(C.hd.length, C.am.length) > 2;
 
   // 1 cover
   out.push(`<section class="slide dark cover"><div class="dots"></div><div class="glow"></div><div class="wm">${Q}</div><div class="topline"></div><div class="s-in">
@@ -465,78 +529,49 @@ function slides(p, data) {
     <div class="formula">Final Score = (Chat × 0.30) + (Attendance × 0.20) + (Productivity × 0.50)</div>
     <div class="pillars">
       <div><div class="ph"><span class="cap" style="font-size:.6cqw">Pillar 01</span><span class="pw">50%</span></div><h3>PRODUCTIVITY</h3><div class="sub" style="font-size:.75cqw">Highest impact KPI — division-scoped</div>
-        <ul><li>AM: VIP Rate 57% + Tickets 38%</li><li>HD: CS Monitoring 38% + CS Handled 19% + Tickets 38%</li><li>Each metric normalized within own division</li><li>Core Score max 95 + Bonus max +5 = 100</li><li>Assist Bonus: top KPI metric vs peer max</li></ul></div>
+        <ul><li>AM: VIP Rate 57% + VIP Handled 38%</li><li>HD: CS Monitoring 38% + CS Handled 57%</li><li>Each metric normalized within own division</li><li>Core Score max 95 + Bonus max +5 = 100</li><li>Assist Bonus: top KPI metric vs peer max</li></ul></div>
       <div><div class="ph"><span class="cap" style="font-size:.6cqw">Pillar 02</span><span class="pw">30%</span></div><h3>CHAT QUALITY</h3><div class="sub" style="font-size:.75cqw">Consistency of service</div>
         <ul><li>2 cases observed per month</li><li>Scored via Google Form</li><li>10 criteria, max 100 pts</li><li>Average across ${m.map(i => MONTHS[i]).join(', ').replace(/, ([^,]*)$/, ' and $1')}</li>${N ? `<li>All ${N} agents scored ${Math.floor(chatMin / 5) * 5}+</li>` : ''}</ul></div>
       <div><div class="ph"><span class="cap" style="font-size:.6cqw">Pillar 03</span><span class="pw">20%</span></div><h3>ATTENDANCE</h3><div class="sub" style="font-size:.75cqw">Reliability &amp; punctuality</div>
         <ul><li>Attendance Rate × 0.70</li><li>Punctuality × 0.30</li><li>Late mins vs total work mins</li><li>Sick 75% credit · Personal Leave 50% credit · Alpha 0% credit</li><li>Perfect score = 100.00</li></ul></div>
     </div></div><div class="foot" style="z-index:1">${N ? (grades.length === 1 ? `All ${N} employees graded ${grades[0].toUpperCase()}` : `${N} employees assessed`) : ''}</div></section>`);
 
-  // 3 tickets
-  const mVals = m.map((_, i) => C.byTickets.map(a => a.tickets[i]));
-  const maxBar = Math.max(1, ...mVals.flat());
-  const step = niceStep(maxBar), top = Math.ceil(maxBar / step) * step;
-  const ticks = []; for (let v = 0; v <= top; v += step) ticks.push(v);
-  const tTot = sum(C.A.map(a => a.ticketTotal)), best = C.byTickets[0];
-  const tMax = best ? best.ticketTotal : 1;
-  out.push(`<section class="slide"><div class="edge"></div><div class="s-in">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><span class="tagb">Pillar 01</span> <span class="tagb y">50% Weight</span>
-      <div class="h2">Ticket Performance</div><div class="sub">Tickets Created, ${MONTHS[m[0]]} – ${MONTHS[m[2]]} ${y}</div></div><div style="margin-top:2.4cqw">${LOGO_D}</div></div>
-    <div class="two">
-      <div class="chart"><div class="cap" style="font-size:.66cqw">Monthly tickets created (${MONTHS[m[0]]} – ${MONTHS[m[2]]})</div>
-        <div class="plot"><div class="yax">${ticks.map(t => `<span>${fInt(t)}</span>`).join('')}</div>
-          <div class="area">${ticks.slice(1).map(t => `<div class="gl" style="bottom:${t / top * 100}%"></div>`).join('')}
-          ${mVals.map(vals => `<div class="grp">${vals.map((v, j) => `<div class="bar1" style="--c:${COLORS[j % COLORS.length]};height:${v / top * 100}%"><span>${fInt(v)}</span></div>`).join('')}</div>`).join('')}</div></div>
-        <div class="xax">${m.map(i => `<span>${MONTHS[i]}</span>`).join('')}</div>
-        <div class="lg">${C.byTickets.map((a, j) => `<span><i style="--c:${COLORS[j % COLORS.length]}"></i>${esc(a.name)}</span>`).join('')}</div>
-      </div>
-      <div class="rank"><div class="cap" style="font-size:.66cqw;margin-bottom:1.2cqw">Ticket performance ranking</div>
-        ${C.byTickets.map((a, i) => `<div class="row">${rk(i, i ? '' : 'first')}<div class="nm">${esc(a.name)}<span class="divchip">${a.div}</span></div><div class="vl num">${fInt(a.ticketTotal)}</div><div class="trk"><b style="width:${a.ticketTotal / tMax * 100}%;--c:${i ? '#A1A1AA' : 'var(--y)'}"></b></div></div>`).join('')}
-        <div class="callout">⚡ Total: ${fInt(tTot)} tickets created across ${tag}</div>
-      </div>
-    </div>
-    <div class="stats">
-      <div class="stat"><span class="cap" style="font-size:.6cqw">Total tickets created</span><b class="num">${fInt(tTot)}</b><small>Combined tickets handled during ${tag}</small></div>
-      <div class="stat"><span class="cap" style="font-size:.6cqw">Top performer</span><b class="num">${best ? fInt(best.ticketTotal) : 0} Tickets</b><small>${best ? esc(best.name) + ' — highest individual achievement' : '—'}</small></div>
-      <div class="stat"><span class="cap" style="font-size:.6cqw">Average per agent</span><b class="num">${N ? fInt(tTot / N) : 0} Tickets</b><small>Average tickets handled per team member</small></div>
-    </div></div>${foot}</section>`);
-
   // 4 breakdown
-  const agBlock = (a, i) => `<div class="ag"><div class="hd">${rk(i, i ? '' : 'first')}<div><b>${esc(a.name)}</b><small>${DIV[a.div].toUpperCase()}</small></div><div class="fsc num">${f2(a.prod)}<small>FINAL SCORE</small></div></div>
-    ${a.parts.map(p => `<div class="mt"><b>${p.k} <i>${p.w}%</i></b><span class="v num">+${f2(p.v)}</span><div class="trk"><b style="width:${p.max ? Math.min(100, p.val / p.max * 100) : 0}%;--c:${i ? '#A1A1AA' : 'var(--y)'}"></b></div><span class="tot">${esc(p.tot)}</span></div>`).join('')}
+  const agBlock = (a, i) => `<div class="ag"><div class="hd">${rk(i, i ? '' : 'first')}<div><b>${esc(a.name)}</b><small>${DIV[a.div].toUpperCase()}</small></div><div class="fsc"><span class="num">${f2(a.prod)}</span><small>FINAL SCORE</small></div></div>
+    ${a.parts.map(p => `<div class="mt"><b>${p.k} <i>${p.w}%</i></b><span class="v num">+${f2(p.v)}</span><div class="trk"><b style="--w:${p.max ? Math.min(100, p.val / p.max * 100) : 0}%;--c:${i ? '#A1A1AA' : 'var(--y)'}"></b></div><span class="tot">${esc(p.tot)}</span></div>`).join('')}
     <div class="core"><span>CORE SCORE</span><b class="num">${f2(a.core)}</b></div>
     <div class="bonus"><div>${a.bonusLabel.toUpperCase()}<small>${esc(a.bonusNote)}</small></div><b class="num">+${f2(a.bonus)}</b></div></div>`;
   out.push(`<section class="slide"><div class="s-in">
     <div class="cap" style="font-size:.62cqw">Productivity · Detailed breakdown</div><div class="h2" style="font-size:2.3cqw">Breakdown Productivity</div><div class="sub" style="font-size:.8cqw">Core Score &amp; Assist Bonus, by Division Scope</div>
-    <div class="infos"><div><b>Monitoring tickets</b><span>CS Monitoring and Tickets are weighted separately — high monitoring volume never inflates the tickets score.</span></div>
+    <div class="infos"><div><b>Monitoring vs handled</b><span>CS Monitoring and CS Handled are weighted separately — high monitoring volume never inflates the handled score.</span></div>
       <div><b>Own peer group only</b><span>Helpdesk compared to Helpdesk, AM compared to AM — never against each other's scale.</span></div>
       <div><b>Rate for AM, volume for HD</b><span>AM score uses VIP resolution rate (%), not case count — a smaller VIP queue isn't a penalty.</span></div></div>
-    <div class="bd"><div><h4>Helpdesk <span class="divchip">HD</span></h4>${C.hd.map(agBlock).join('') || '<div class="sub">—</div>'}</div>
+    <div class="bd ${dense ? 'dense' : ''}"><div><h4>Helpdesk <span class="divchip">HD</span></h4>${C.hd.map(agBlock).join('') || '<div class="sub">—</div>'}</div>
       <div><h4>Account Manager <span class="divchip">AM</span></h4>${C.am.map(agBlock).join('') || '<div class="sub">—</div>'}</div></div>
     <div class="fnote">Assist bonus = (agent value ÷ peer max) × 5 pts — rewards the strongest performer in each division's own core KPI. Productivity is capped at 100.</div>
   </div></section>`);
 
   // 5 chat
   const topChat = C.byChat.length ? C.byChat[0].chatAvg : 0;
-  out.push(`<section class="slide"><div class="edge b"></div><div class="s-in">
+  out.push(`<section class="slide ${N > 4 ? 'many' : ''}"><div class="edge b"></div><div class="s-in">
     <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><span class="cap" style="font-size:.66cqw">Pillar 02</span> <span class="tagb b">30% Weight</span><div class="h2">Chat Observation Quality</div></div><div style="margin-top:2.4cqw">${LOGO_D}</div></div>
     <div class="badges"><span>2 cases observed per month</span><span>Google Form assessment</span><span>10 evaluation criteria</span><span>Max 100 points per case</span><span>Average: ${m.map(i => MONTHS[i]).join(' + ')}</span></div>
-    <div class="ccards" style="grid-template-columns:repeat(${Math.max(1, Math.min(N, 6))},1fr)">${C.byChat.map((a, i) => {
+    <div class="ccards" style="grid-template-columns:repeat(${Math.max(1, cols)},1fr)">${C.byChat.map((a, i) => {
       const isTop = a.chatAvg === topChat, tied = isTop && C.byChat.filter(x => x.chatAvg === topChat).length > 1;
       const place = C.byChat.findIndex(x => x.chatAvg === a.chatAvg);
       return `<div class="cc ${isTop ? 'top' : ''}">${tied ? '<span class="tie">TIED 1ST</span>' : ''}<div class="hd">${rk(place)}<span>${a.div}</span></div>
       <div class="sc num">${f2(a.chatAvg)}</div><div class="nm">${esc(a.name)}</div>
-      ${m.map((mi, k) => `<div class="mrow"><span>${MSHORT[mi]}</span><div class="trk"><b style="width:${n(a.chat[k])}%"></b></div><em>${a.chat[k] == null ? '–' : fInt(a.chat[k])}</em></div>`).join('')}</div>`; }).join('')}</div>
+      ${m.map((mi, k) => `<div class="mrow"><span>${MSHORT[mi]}</span><div class="trk"><b style="--w:${n(a.chat[k])}%"></b></div><em>${a.chat[k] == null ? '–' : fInt(a.chat[k])}</em></div>`).join('')}</div>`; }).join('')}</div>
     <div class="cap" style="font-size:.66cqw;margin-top:2.2cqw">10 assessment criteria (Google Form)</div>
     <div class="crit">${CRITERIA.map((c, i) => `<div><i>${i + 1}</i>${c}</div>`).join('')}</div>
   </div>${foot}</section>`);
 
   // 6 attendance
   const attMax = C.byAtt.length ? C.byAtt[0].attS : 0;
-  out.push(`<section class="slide"><div class="edge g"></div><div class="s-in">
+  out.push(`<section class="slide ${N > 4 ? 'many' : ''}"><div class="edge g"></div><div class="s-in">
     <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><span class="cap" style="font-size:.66cqw">Pillar 03</span> <span class="tagb g">20% Weight</span><div class="h2">Attendance &amp; Punctuality</div></div><div style="margin-top:2.4cqw">${LOGO_D}</div></div>
-    <div class="acards" style="grid-template-columns:repeat(${Math.max(1, Math.min(N, 6))},1fr)">${C.byAtt.map((a, i) => `<div class="ac ${i === 0 ? 'top' : ''}">${a.attS >= 100 ? '<span class="perf">PERFECT ★</span>' : ''}
-      <div class="ring"><svg viewBox="0 0 36 36"><circle class="tr" cx="18" cy="18" r="15.9155"/><circle class="pr" cx="18" cy="18" r="15.9155" stroke-dasharray="${Math.min(100, a.attS)} 100"/></svg><div>${Math.round(a.attS)}<small>/ 100</small></div></div>
+    <div class="acards" style="grid-template-columns:repeat(${Math.max(1, cols)},1fr)">${C.byAtt.map((a, i) => `<div class="ac ${i === 0 ? 'top' : ''}">${a.attS >= 100 ? '<span class="perf">PERFECT ★</span>' : ''}
+      <div class="ring"><svg viewBox="0 0 36 36"><circle class="tr" cx="18" cy="18" r="15.9155"/><circle class="pr" cx="18" cy="18" r="15.9155" style="--da:${Math.min(100, a.attS)}"/></svg><div>${Math.round(a.attS)}<small>/ 100</small></div></div>
       <div class="sc num">${f2(a.attS)}</div><div class="nm">${esc(a.name)}</div><div class="dv">${a.div}</div></div>`).join('')}</div>
     <div class="boxes">
       <div class="box3"><div class="cap">Calculation formula</div>
@@ -549,31 +584,32 @@ function slides(p, data) {
         <div class="fr"><i style="background:#EF4444">0%</i><div><b>Alpha (No-show)</b></div></div>
         ${data.attNote ? `<div class="an"><b>${esc(data.attNote)}</b></div>` : ''}</div>
       <div class="box3"><div class="cap">${Q} attendance ranking</div>
-        ${C.byAtt.map((a, i) => `<div class="ar">${rk(i, i ? '' : 'first')}<span>${esc(a.name)}</span><b class="num">${f2(a.attS)}</b><div class="trk"><b style="width:${attMax ? a.attS / attMax * 100 : 0}%;opacity:${i ? .45 : 1}"></b></div></div>`).join('')}</div>
+        ${C.byAtt.map((a, i) => `<div class="ar">${rk(i, i ? '' : 'first')}<span>${esc(a.name)}</span><b class="num">${f2(a.attS)}</b><div class="trk"><b style="--w:${attMax ? a.attS / attMax * 100 : 0}%;opacity:${i ? .45 : 1}"></b></div></div>`).join('')}</div>
     </div></div>${foot}</section>`);
 
   // 7 winner
   const W = C.byFinal[0];
   if (W) {
     const parts = W.name.trim().split(/\s+/), first = parts.length > 1 ? parts.slice(0, -1).join(' ') : parts[0], last = parts.length > 1 ? parts[parts.length - 1] : '';
-    const conf = [[6, 18, 20], [9, 36, -30], [22, 52, 15], [30, 70, 60], [44, 16, -10], [47, 80, 35], [60, 30, 70], [70, 60, -45], [83, 22, 25], [88, 74, -20], [94, 44, 50], [17, 84, 10]]
-      .map(([x, yy, r], i) => `<i style="left:${x}%;top:${yy}%;transform:rotate(${r}deg);opacity:${.35 + (i % 3) * .2};${i % 4 === 0 ? 'background:#fff' : ''}"></i>`).join('');
+    const CC = ['#FFD000', '#FFD000', '#FFFFFF', '#F5B800', '#FDE68A', '#60A5FA'];
+    let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    const conf = Array.from({ length: 46 }, (_, i) => `<i style="left:${(rnd() * 100).toFixed(1)}%;background:${CC[i % CC.length]};--d:${(4 + rnd() * 4).toFixed(2)}s;--dl:${(-rnd() * 8).toFixed(2)}s;--x:${((rnd() - .5) * 14).toFixed(1)}cqw;--r:${Math.round(360 + rnd() * 720)}deg;${i % 3 ? '' : 'width:.3cqw;height:.3cqw;border-radius:50%'}"></i>`).join('');
     out.push(`<section class="slide dark win"><div class="glow"></div><div class="confetti">${conf}</div><div class="topline"></div><div class="s-in">
-      <div class="hd">${LOGO_W}<span>${String(7).padStart(2, '0')} / 08</span></div>
+      <div class="hd">${LOGO_W}<span>${String(out.length + 1).padStart(2, '0')} / ${String(out.length + 2).padStart(2, '0')}</span></div>
       <div class="main"><div>
         <div class="kick">🏅 Best Employee · ${tag}</div>
         <h1>${esc(first)}${last ? `<span>${esc(last)}</span>` : ''}</h1>
         <div class="dv">${DIV[W.div].toUpperCase()} DIVISION</div>
         <div class="fl">FINAL SCORE</div><div class="big num">${f2(W.final)}</div><div class="gr">out of 100 · ${grade(W.final)}</div>
         <div class="tiles"><div><b class="cP num">${f2(W.prod)}</b><small>PRODUCTIVITY</small><em>50% weight</em></div><div><b class="cC num">${f2(W.chatAvg)}</b><small>CHAT QUALITY</small><em>30% weight</em></div><div><b class="cA num">${f2(W.attS)}</b><small>ATTENDANCE</small><em>20% weight</em></div></div>
-      </div><div><div class="photo"><div class="r1"></div><div class="r2">${W.photo ? `<img src="${esc(W.photo)}" alt="">` : `<span class="ini">${esc(initials(W.name))}</span>`}</div><div class="rib">★ BEST EMPLOYEE ${tag}</div></div></div></div>
+      </div><div><div class="photo"><div class="r1"></div><div class="r2">${photoOf(W) ? `<img src="${esc(photoOf(W))}" alt="">` : `<span class="ini">${esc(initials(W.name))}</span>`}</div><div class="rib">★ BEST EMPLOYEE ${tag}</div></div></div></div>
     </div>${foot}</section>`);
   }
 
   // 8 scoreboard
-  out.push(`<section class="slide dark sb"><div class="glow"></div><div class="s-in">
+  out.push(`<section class="slide dark sb ${N > 5 ? 'many' : ''}"><div class="glow"></div><div class="s-in">
     <div class="hd"><div><div class="kick">🏆 Final Rankings · ${tag}</div><h2>The Final<span>Score Board</span></h2></div>${LOGO_W}</div>
-    <div class="rows">${C.byFinal.map((a, i) => `<div class="srow ${i ? '' : 'first'}">${rk(i)}<div class="nm"><b>${esc(a.name)}</b><small>${DIV[a.div].toUpperCase()}</small></div>
+    <div class="rows">${C.byFinal.map((a, i) => `<div class="srow ${i ? '' : 'first'}">${rk(i)}<div class="nm"><span class="av">${photoOf(a) ? `<img src="${esc(photoOf(a))}" alt="">` : esc(initials(a.name))}</span><b>${esc(a.name)}</b><small>${DIV[a.div].toUpperCase()}</small></div>
       <div class="k"><small>PRD</small><b class="cP num">${f2(a.prod)}</b></div><div class="k"><small>CHT</small><b class="cC num">${f2(a.chatAvg)}</b></div><div class="k"><small>ATD</small><b class="cA num">${f2(a.attS)}</b></div>
       <div class="sp"></div><div class="f"><small>FINAL</small><b class="num">${f2(a.final)}</b></div></div>`).join('')}</div>
   </div>${foot}</section>`);
@@ -642,15 +678,53 @@ function render() {
   else if (ST.online === false) note = `<div class="note">Server <b>/api/perf</b> tidak terjangkau${ST.source === 'cache' ? ' — menampilkan data terakhir yang tersimpan di browser ini' : ''}.</div>`;
   if (!ST.data || !(ST.data.agents || []).some(a => (a.name || '').trim())) {
     ST.slides = [];
-    deck.innerHTML = note + `<div class="empty"><h2>Belum ada data ${pLabel(p)}</h2><p>Isi data agent untuk periode ini — skor, ranking, dan Best Employee dihitung otomatis.</p><button class="btn y" id="emptyEdit">Isi data ${pLabel(p)}</button></div>`;
+    deck.innerHTML = note + `<div class="empty"><h2>Belum ada data ${pLabel(p)}</h2><p>Isi data agent untuk periode ini — skor, ranking, dan Best Employee dihitung otomatis.</p>${ROSTER[p] ? `<p style="font-size:13px">Tim ${pLabel(p)} sudah disiapkan (${ROSTER[p].length} agent): ${ROSTER[p].map(([nm, dv]) => `${esc(nm)} <b>${dv}</b>`).join(' · ')}</p>` : ''}<button class="btn y" id="emptyEdit">Isi data ${pLabel(p)}</button></div>`;
     $('#emptyEdit').onclick = openEditor;
   } else {
     ST.slides = slides(p, ST.data);
     deck.innerHTML = note + ST.slides.join('');
+    if (IO) IO.disconnect();
+    animateDeck();
   }
   $('#presentBtn').disabled = !ST.slides.length;
   $('#printBtn').disabled = !ST.slides.length;
 }
+
+
+/* =================== animasi =================== */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function prep(sl) {
+  [...sl.querySelectorAll('.s-in>*')].forEach((c, i) => c.style.setProperty('--i', i));
+  sl.querySelectorAll('.ag,.cc,.ac,.srow,.box3,.pillars>div,.crit>div,.infos>div,.wtiles>div,.win .tiles>div,.badges>span').forEach(el => {
+    const sib = [...el.parentElement.children].filter(x => x.matches('.ag,.cc,.ac,.srow,.box3,.pillars>div,.crit>div,.infos>div,.wtiles>div,.win .tiles>div,.badges>span'));
+    el.dataset.k = ''; el.style.setProperty('--k', sib.indexOf(el));
+  });
+  // bar & ring: urutan per baris supaya mengisi bergantian
+  sl.querySelectorAll('.trk b').forEach(b => { const card = b.closest('[data-k]'); const rows = card ? [...card.querySelectorAll('.trk b')] : [b];
+    b.style.setProperty('--k', (card ? +card.style.getPropertyValue('--k') : 0) + rows.indexOf(b) * .5); });
+  sl.querySelectorAll('.ring .pr').forEach(r => { const card = r.closest('[data-k]'); r.style.setProperty('--k', card ? card.style.getPropertyValue('--k') : 0); });
+  sl.querySelectorAll('.num').forEach(el => { if (el.dataset.t == null) el.dataset.t = el.textContent; });
+}
+function countUp(sl) {
+  sl.querySelectorAll('.num').forEach(el => {
+    const t = el.dataset.t, m = /^([^\d]*)([\d,]+(?:\.(\d+))?)(.*)$/.exec(t || '');
+    if (!m || RM) { if (t != null) el.textContent = t; return; }
+    const to = parseFloat(m[2].replace(/,/g, '')), dec = m[3] ? m[3].length : 0, comma = m[2].includes(',');
+    const card = el.closest('[data-k]'), delay = 250 + (card ? +card.style.getPropertyValue('--k') || 0 : 0) * 120, dur = 1300;
+    const fmt = v => { const x = v.toFixed(dec); return comma || to >= 1000 ? Number(x).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) : x; };
+    const t0 = performance.now() + delay; el.textContent = m[1] + fmt(0) + m[4];
+    const step = now => { const p = Math.min(1, Math.max(0, (now - t0) / dur)), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = m[1] + fmt(to * e) + m[4]; if (p < 1 && el.isConnected) requestAnimationFrame(step); else el.textContent = t; };
+    requestAnimationFrame(step);
+  });
+}
+function play(sl) { if (sl.classList.contains('play')) return; sl.classList.add('play'); countUp(sl); }
+function reset(sl) { sl.classList.remove('play'); sl.querySelectorAll('.num').forEach(el => { if (el.dataset.t != null) el.textContent = el.dataset.t; }); }
+const IO = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
+  if (e.intersectionRatio >= .35) play(e.target); else if (!e.isIntersecting) reset(e.target);
+}), { threshold: [0, .35] }) : null;
+function animateDeck() { document.querySelectorAll('#deck .slide').forEach(sl => { prep(sl); if (IO) IO.observe(sl); else play(sl); }); }
+window.addEventListener('beforeprint', () => document.querySelectorAll('.slide').forEach(sl => { sl.classList.add('play'); sl.querySelectorAll('.num').forEach(el => { if (el.dataset.t != null) el.textContent = el.dataset.t; }); }));
 
 /* =================== present =================== */
 let PV = null;
@@ -660,7 +734,7 @@ function present(start = 0) {
   PV = document.createElement('div'); PV.className = 'present';
   PV.innerHTML = `<div class="holder"></div><div class="nav"><button aria-label="Sebelumnya">‹</button><div class="dotsn"></div><button aria-label="Berikutnya">›</button></div><button class="btn x">✕ Esc</button>`;
   document.body.appendChild(PV);
-  const show = () => { PV.querySelector('.holder').innerHTML = ST.slides[i]; PV.querySelector('.dotsn').innerHTML = ST.slides.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join(''); };
+  const show = () => { const h = PV.querySelector('.holder'); h.innerHTML = ST.slides[i]; const sl = h.querySelector('.slide'); prep(sl); requestAnimationFrame(() => requestAnimationFrame(() => play(sl))); PV.querySelector('.dotsn').innerHTML = ST.slides.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join(''); };
   const go = d => { i = Math.max(0, Math.min(ST.slides.length - 1, i + d)); show(); };
   const close = () => { document.removeEventListener('keydown', key); PV.remove(); PV = null; if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); };
   const key = e => { if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); go(1); } else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); go(-1); } else if (e.key === 'Escape') close(); else if (e.key === 'Home') { i = 0; show(); } else if (e.key === 'End') { i = ST.slides.length - 1; show(); } };
@@ -674,10 +748,11 @@ function present(start = 0) {
 
 /* =================== editor =================== */
 let ED = null;
-function blankAgent(prev) { return { name: prev ? prev.name : '', div: prev ? prev.div : 'HD', photo: prev ? prev.photo || '' : '', tickets: ['', '', ''], chat: ['', '', ''], att: {} }; }
+function blankAgent(prev) { return { name: prev ? prev.name : '', div: prev ? prev.div : 'HD', photo: prev ? prev.photo || '' : '', chat: ['', '', ''], att: {} }; }
 function openEditor() {
   const p = ST.period;
   if (ST.data && (ST.data.agents || []).length) ED = clone(ST.data);
+  else if (ROSTER[p]) ED = { attNote: '', agents: ROSTER[p].map(([name, div]) => blankAgent({ name, div })) };
   else {
     // ambil nama agent dari periode sebelumnya (bila ada di cache/seed) supaya tidak mengetik ulang
     const all = periods(), idx = all.indexOf(p);
@@ -698,14 +773,13 @@ function drawEditor() {
     ${!ST.open ? `<div class="acard"><div class="f"><label>Password publish (PUBLISH_KEY)</label><input class="inp" type="password" id="pubKey" value="${esc(ls.get(KEY_PUB) || '')}" autocomplete="current-password"></div></div>` : ''}
     ${ED.agents.map((a, i) => { const L = live.get((a.name || '').trim()); const isAM = a.div === 'AM';
       return `<div class="acard" data-i="${i}">
-      <div class="top"><div class="ph">${a.photo ? `<img src="${esc(a.photo)}" alt="">` : 'Foto'}</div>
+      <div class="top"><div class="ph">${photoOf(a) ? `<img src="${esc(photoOf(a))}" alt="">` : 'Foto'}</div>
         <input class="inp" type="text" data-p="name" placeholder="Nama agent" value="${esc(a.name)}">
         <select class="inp" data-p="div" style="width:auto"><option value="HD" ${!isAM ? 'selected' : ''}>Helpdesk (HD)</option><option value="AM" ${isAM ? 'selected' : ''}>Account Manager (AM)</option></select>
         <label class="btn mini">Foto<input type="file" accept="image/*" data-photo hidden></label>${a.photo ? '<button class="btn mini" data-rmphoto>Hapus foto</button>' : ''}
         <button class="btn mini danger" data-del>Hapus agent</button>
         <span class="live">${L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · CHT ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''}</span></div>
       <fieldset class="fs"><legend>Productivity</legend><div class="grid">
-        ${m.map((mi, k) => fld(`Tickets ${MSHORT[mi]}`, `tickets.${k}`, a.tickets && a.tickets[k])).join('')}
         ${isAM ? fld('VIP handled (total)', 'vipTotal', a.vipTotal) + fld('VIP solved (total)', 'vipSolved', a.vipSolved) + fld('VIP rate % (rata² bulanan)', 'vipRate', a.vipRate, 'number', 'placeholder="otomatis: solved ÷ handled"')
                : fld('CS Monitoring (total)', 'csMon', a.csMon) + fld('CS Handled (total)', 'csHandled', a.csHandled)}
       </div></fieldset>

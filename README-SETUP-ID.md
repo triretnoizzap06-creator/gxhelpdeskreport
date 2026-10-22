@@ -15,5 +15,6 @@ Halaman:
 2. Supabase → SQL Editor → jalankan `schema.sql` (sudah termasuk tabel performance).
 3. Vercel → Settings → Environment Variables: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (opsional PUBLISH_KEY) → Redeploy.
 
+Foto agent: file photo-*.jpg (otomatis dipakai sesuai nama). Tim Q3/Q4 2026 sudah disiapkan; tinggal Edit data → isi angka → Simpan online.
 Menambah menu dashboard: edit daftar `MENUS` di index.html (1 baris per menu).
 Kunci service_role hanya di Vercel — jangan taruh di GitHub atau config.js.

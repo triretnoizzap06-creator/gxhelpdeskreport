@@ -8,7 +8,7 @@ Halaman:
 
 ## Update dari versi sebelumnya
 1. GitHub → Add file → Upload files → seret SEMUA file dari ZIP → Commit changes.
-2. Supabase → SQL Editor → jalankan `directory-schema.sql` (tabel karyawan baru). Bila belum: `perf-schema.sql` juga.
+2. Supabase → SQL Editor → jalankan `directory-schema.sql` (tabel karyawan + data 7 karyawan; aman dijalankan ulang, hanya mengisi kolom kosong). Bila belum: `perf-schema.sql` juga.
 3. Vercel → Environment Variables → tambah `PUBLISH_KEY` (password admin) → Redeploy.
    Tanpa PUBLISH_KEY, siapa pun yang punya link bisa mengubah data & melihat data karyawan.
 4. Cek https://gxhelpdeskreport.vercel.app/api/health → "performanceTable" & "directoryTable" = ok.

@@ -152,7 +152,7 @@ function render() {
       <div class="name">${esc(m.name)}</div>
       <div class="tags">${(m.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>`;
     return m.href
-      ? `<a class="card" href="${esc(m.href)}">${inner}</a>`
+      ? `<a class="card" href="${esc(m.href)}"${m.newTab ? ' target="_blank" rel="noopener"' : ''}>${inner}</a>`
       : `<div class="card soon" aria-disabled="true" title="${t('soon')}">${inner}</div>`;
   }).join('') : `<div class="empty">${t('empty')}</div>`;
 }

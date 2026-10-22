@@ -80,6 +80,7 @@ h2 .count{font-size:12px;font-weight:700;background:var(--grey);color:var(--mute
 .emp .ph .chip{position:absolute;top:10px;right:10px}
 .emp .bd{padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px;flex:1}
 .emp h3{margin:0;font-size:16px;line-height:1.3}
+.emp .nick{font-weight:600;color:var(--muted)}
 .emp .eid{font-size:12.5px;color:var(--muted);font-weight:600}
 .emp .eid.miss{color:var(--amber)}
 .emp dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0;font-size:13px}
@@ -141,7 +142,7 @@ h2 .count{font-size:12px;font-weight:700;background:var(--grey);color:var(--mute
   <section id="dirSec">
     <h2>Employee Directory <span class="count" id="count">0</span></h2>
     <div class="tools">
-      <input class="search" id="q" type="search" placeholder="Search name or Employee ID…" aria-label="Search name or Employee ID">
+      <input class="search" id="q" type="search" placeholder="Search name, nickname or Employee ID…" aria-label="Search name or Employee ID">
       <select class="sel" id="flt" aria-label="Filter">
         <option value="all">All employees</option><option value="soon">Expiring soon</option><option value="exp">Expired</option><option value="missing">Data incomplete</option>
       </select>
@@ -165,6 +166,7 @@ h2 .count{font-size:12px;font-weight:700;background:var(--grey);color:var(--mute
     <p>Mengubah End Contract = perpanjangan kontrak; kontrak lama otomatis disimpan di riwayat dan reminder mengikuti tanggal terbaru.</p>
     <div class="fgrid">
       <div class="f full"><label for="fName">Full name</label><input class="inp" id="fName" required maxlength="120"></div>
+      <div class="f"><label for="fNick">Nickname</label><input class="inp" id="fNick" maxlength="40" placeholder="mis. Bagas"></div>
       <div class="f"><label for="fEid">Employee ID</label><input class="inp" id="fEid" maxlength="40" placeholder="mis. 260100006"></div>
       <div class="f"><label for="fBday">Birthday</label><input class="inp" type="date" id="fBday"></div>
       <div class="f"><label for="fStart">Start Contract</label><input class="inp" type="date" id="fStart"></div>
@@ -315,7 +317,7 @@ function renderNotif(t) {
 function renderGrid(t) {
   const q = $('#q').value.trim().toLowerCase(), f = $('#flt').value;
   const list = ST.items.filter(e => {
-    if (q && !(e.full_name.toLowerCase().includes(q) || String(e.employee_id || '').toLowerCase().includes(q))) return false;
+    if (q && !(e.full_name.toLowerCase().includes(q) || String(e.nickname || '').toLowerCase().includes(q) || String(e.employee_id || '').toLowerCase().includes(q))) return false;
     const s = contractStatus(e, t).key;
     if (f === 'soon') return s === 'soon';
     if (f === 'exp') return s === 'exp';
@@ -328,7 +330,7 @@ function renderGrid(t) {
     const s = contractStatus(e, t), b = parseD(e.birthday);
     return `<article class="emp ${e.active ? '' : 'inactive'}">
       <div class="ph">${e.photo ? `<img src="${esc(e.photo)}" alt="${esc(e.full_name)}" loading="lazy">` : `<span class="ini">${esc(initials(e.full_name))}</span>`}<span class="chip ${s.key}">${s.label}</span></div>
-      <div class="bd"><div><h3>${esc(e.full_name)}</h3><div class="eid ${e.employee_id ? '' : 'miss'}">${e.employee_id ? 'Employee ID ' + esc(e.employee_id) : 'Employee ID not set'}</div></div>
+      <div class="bd"><div><h3>${esc(e.full_name)}${e.nickname ? ` <span class="nick">(${esc(e.nickname)})</span>` : ''}</h3><div class="eid ${e.employee_id ? '' : 'miss'}">${e.employee_id ? 'Employee ID ' + esc(e.employee_id) : 'Employee ID not set'}</div></div>
         <dl><dt>Birthday</dt>${dd(b, b && fmt(b))}<dt>Start Contract</dt>${dd(e.start_contract, fmt(parseD(e.start_contract)))}<dt>End Contract</dt>${dd(e.end_contract, fmt(parseD(e.end_contract)))}</dl>
         <div class="foot"><span>${s.end ? remainText(t, s.end) : ''}${e.active ? '' : ' · inactive'}</span>${canEdit() ? `<button class="btn sm" data-edit="${e.id}">Edit</button>` : ''}</div></div></article>`;
   }).join('') : `<div class="empty">No employee matches your search.</div>`;
@@ -337,9 +339,9 @@ function renderGrid(t) {
 /* =================== editor =================== */
 let EDIT = null;
 function openEditor(e) {
-  EDIT = e ? { ...e } : { id: null, full_name: '', employee_id: '', birthday: '', start_contract: '', end_contract: '', photo: '', active: true, contract_history: [] };
+  EDIT = e ? { ...e } : { id: null, full_name: '', nickname: '', employee_id: '', birthday: '', start_contract: '', end_contract: '', photo: '', active: true, contract_history: [] };
   $('#edT').textContent = e ? 'Edit employee' : 'Add employee';
-  $('#fName').value = EDIT.full_name; $('#fEid').value = EDIT.employee_id || '';
+  $('#fName').value = EDIT.full_name; $('#fNick').value = EDIT.nickname || ''; $('#fEid').value = EDIT.employee_id || '';
   $('#fBday').value = EDIT.birthday || ''; $('#fStart').value = EDIT.start_contract || ''; $('#fEnd').value = EDIT.end_contract || '';
   $('#fActive').checked = EDIT.active !== false;
   const opts = ['', ...PHOTO_FILES]; if (EDIT.photo && !opts.includes(EDIT.photo)) opts.push(EDIT.photo);
@@ -365,7 +367,7 @@ $('#fUpload').onchange = async ev => {
 $('#edCancel').onclick = () => $('#editor').classList.add('hidden');
 $('#edForm').onsubmit = async ev => {
   ev.preventDefault();
-  const body = { id: EDIT.id, full_name: $('#fName').value, employee_id: $('#fEid').value, birthday: $('#fBday').value || null,
+  const body = { id: EDIT.id, full_name: $('#fName').value, nickname: $('#fNick').value, employee_id: $('#fEid').value, birthday: $('#fBday').value || null,
     start_contract: $('#fStart').value || null, end_contract: $('#fEnd').value || null, photo: $('#fPhoto').value || null, active: $('#fActive').checked };
   if (EDIT.id == null) delete body.id;
   $('#edSave').disabled = true;

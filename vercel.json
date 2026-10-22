@@ -13,6 +13,10 @@
       "use": "@vercel/node"
     },
     {
+      "src": "employees.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "*.html",
       "use": "@vercel/static"
     },
@@ -51,12 +55,20 @@
       "dest": "/perf.js"
     },
     {
+      "src": "/api/employees/?",
+      "dest": "/employees.js"
+    },
+    {
       "src": "/helpdesk-report/?",
       "dest": "/helpdesk-report.html"
     },
     {
       "src": "/helpdesk-performance/?",
       "dest": "/helpdesk-performance.html"
+    },
+    {
+      "src": "/helpdesk-directory/?",
+      "dest": "/helpdesk-directory.html"
     },
     {
       "src": "/",

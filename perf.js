@@ -42,6 +42,7 @@ export default async function handler(req, res) {
     }
     if (req.method !== 'POST') return json(res, { error: 'method-not-allowed' }, 405);
     if (!keyOk(req.headers['x-publish-key'])) return json(res, { error: 'unauthorized' }, 401);
+    if (q.has('check')) return json(res, { ok: true, open: isOpen() });
     const period = q.get('period');
     if (!okPeriod(period)) return json(res, { error: 'bad-period' }, 400);
     const body = await readJson(req);

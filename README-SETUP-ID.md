@@ -1,20 +1,27 @@
 # Setup GX CS Dashboard (versi tanpa folder)
 
 Halaman:
-- `/` → Dashboard (menu report, pilihan bahasa ID/EN)
+- `/` → Dashboard (bahasa ID/EN, mode Terang/Gelap)
 - `/helpdesk-report` → Helpdesk Report (tag Aftersales)
-- `/helpdesk-performance` → Helpdesk Performance Report (tag Best Employee), periode 2026 Q2, Q3, Q4, 2027…
+- `/helpdesk-performance` → Helpdesk Performance Report (tag Best Employee) — slide EN/ID, mode viewer
+- `/helpdesk-directory` → Helpdesk Employee Directory (tag Helpdesk) — ulang tahun & reminder kontrak
 
 ## Update dari versi sebelumnya
 1. GitHub → Add file → Upload files → seret SEMUA file dari ZIP → Commit changes.
-2. Supabase → SQL Editor → paste isi `perf-schema.sql` → Run (tabel baru untuk Helpdesk Performance Report).
-3. Tunggu deploy Vercel selesai, lalu cek https://gxhelpdeskreport.vercel.app/api/health → "performanceTable": "ok …".
+2. Supabase → SQL Editor → jalankan `directory-schema.sql` (tabel karyawan baru). Bila belum: `perf-schema.sql` juga.
+3. Vercel → Environment Variables → tambah `PUBLISH_KEY` (password admin) → Redeploy.
+   Tanpa PUBLISH_KEY, siapa pun yang punya link bisa mengubah data & melihat data karyawan.
+4. Cek https://gxhelpdeskreport.vercel.app/api/health → "performanceTable" & "directoryTable" = ok.
+
+## Mode viewer / admin
+- PUBLISH_KEY diisi → orang lain hanya bisa melihat; tombol edit muncul setelah klik 🔒 Admin + password.
+- Helpdesk Performance: tombol 🔗 Link viewer menyalin link `?view=1` (tanpa tombol edit sama sekali).
+- Employee Directory: dengan PUBLISH_KEY, isi directory hanya bisa dibuka dengan password (data pribadi).
 
 ## Setup baru dari nol
 1. Upload semua file ke GitHub.
-2. Supabase → SQL Editor → jalankan `schema.sql` (sudah termasuk tabel performance).
-3. Vercel → Settings → Environment Variables: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (opsional PUBLISH_KEY) → Redeploy.
+2. Supabase → SQL Editor → jalankan `schema.sql` (sudah termasuk semua tabel).
+3. Vercel → SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, PUBLISH_KEY → Redeploy.
 
-Foto agent: file photo-*.jpg (otomatis dipakai sesuai nama). Tim Q3/Q4 2026 sudah disiapkan; tinggal Edit data → isi angka → Simpan online.
-Menambah menu dashboard: edit daftar `MENUS` di index.html (1 baris per menu).
+Menambah menu dashboard: edit daftar `MENUS` di index.html.
 Kunci service_role hanya di Vercel — jangan taruh di GitHub atau config.js.

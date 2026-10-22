@@ -25,6 +25,9 @@ export default async function handler(req, res) {
         out.performanceTable = 'missing';
         out.performanceHint = 'Tabel Helpdesk Performance belum ada: jalankan perf-schema.sql di Supabase → SQL Editor.';
       } else out.performanceTable = 'ok · ' + (pf.count ?? 0) + ' periode';
+      const em = await sb.from('hd_employees').select('id', { count: 'exact' }).limit(1);
+      if (em.error) { out.directoryTable = 'missing'; out.directoryHint = 'Tabel Employee Directory belum ada: jalankan directory-schema.sql di Supabase → SQL Editor.'; }
+      else out.directoryTable = 'ok · ' + (em.count ?? 0) + ' karyawan';
       out.database = 'ok';
       out.latestReport = st.data && st.data.import_id ? { importId: st.data.import_id, revision: st.data.revision, savedAt: st.data.updated_at } : null;
       out.hint = out.latestReport ? 'Semua siap. Semua yang membuka web melihat report terbaru ini.' : 'Semua siap. Import data sekali di web; report langsung terlihat oleh semua orang.';

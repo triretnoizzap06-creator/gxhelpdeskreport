@@ -347,6 +347,7 @@ button,input,select{font:inherit;color:inherit}
 .stk .s0{background:#27272A;color:#fff}.stk .s1{background:#A1A1AA;color:#111}.stk .sb{background:var(--y);color:#111}
 .prv{text-align:right;font-family:var(--disp);font-size:1.8cqw;font-weight:800}
 .pr.lead .prv{color:#111}.pr:not(.lead) .prv{color:#3F3F46}
+.rinfo{font-size:.95cqw;color:#71717A;margin:-1.6cqw 0 2.2cqw}
 .how{display:grid;grid-template-columns:auto repeat(3,1fr);gap:1.2cqw;margin-top:auto;margin-bottom:2.4cqw}
 .how span{display:flex;gap:.7cqw;align-items:flex-start;font-size:1.02cqw;color:#3F3F46;line-height:1.35}
 .how b{flex:none;width:1.7cqw;height:1.7cqw;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;font-size:.9cqw}
@@ -426,6 +427,7 @@ button,input,select{font:inherit;color:inherit}
 .mdt th:first-child,.mdt td:first-child{text-align:left}
 .mdt td{text-align:right;padding:7px 8px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
 .mdt td small{display:block;color:var(--muted);font-size:11px}
+.mdt .rr{color:#2563EB;background:rgba(37,99,235,.06)}.mdt th.rr small{display:block;font-size:10px;letter-spacing:0;text-transform:none;font-weight:600}
 .mdt tr.tot td{font-weight:800;background:var(--hover)}
 .mdn{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.5}
 .mdlg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}.mdlg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
@@ -628,19 +630,20 @@ const CRITERIA_ID = ['Salam Pembuka & Protokol', 'Identifikasi Pelanggan', 'Pema
 const DIV_ID = { HD: 'Helpdesk', AM: 'Account Manager' };
 const TX = {
   en: {
+    rrInfo: 'Resolution rate (CS & VIP) is shown as information only and is not part of the score — it also depends on the customer side. Click an agent to see it per month.', resRate: 'Resolution rate', infoOnly: 'info only', csSolvedL: 'solved',
     clickHint: 'Click an agent for monthly detail', clickDetail: 'Click for monthly detail', monthlyAvg: 'Monthly average', quarterScore: 'Quarter score', bestMonth: 'Best month', noMonthly: 'Monthly data has not been entered for this agent yet. Fill the monthly fields in Edit data to see the breakdown per month.', mdNote: 'Each month is scored with the same formula, compared with agents of the same division in that month. Quarter score uses the quarter totals.', month: 'Month', close: 'Close', totalQ: 'Quarter',
     example: 'Worked example', points: 'points', monitored: 'monitored', handled: 'handled', vipSolvedR: 'VIP resolved',
     prodTake2: 'Score = how close each agent is to the best result in their own division, per metric.', topIn: 'Top in', teamAvg: 'Team average', agents: 'agents',
     how1: 'Each metric is compared to the best in the same division', how2: 'Multiplied by its weight (core score max 95)', how3: 'Best core KPI earns up to +5 bonus · capped at 100',
-    chatTake2: min => `Quality is consistently high — every agent averages ${min}+ out of 100.`, monthlyScores: 'Monthly review scores', ranking: 'Ranking', agent: 'Agent', avgS: 'Average', trend: 'Trend',
+    chatTake2: min => `Observation scores are consistently high — every agent averages ${min}+ out of 100.`, monthlyScores: 'Monthly observation scores', ranking: 'Ranking', agent: 'Agent', avgS: 'Average', trend: 'Trend',
     axisFrom: lo => `Axis starts at ${lo}`, criteriaT: 'Scored on 10 criteria',
     attTop: (n, v) => `${n} leads attendance with ${v}`, scoreScale: lo => `Score (${lo}–100)`, score: 'Score', daysNote: 'Leave shown in days for the quarter',
     rateS: 'Attendance rate', punctS: 'Punctuality', rateD2: 'Attendance rate = days present ÷ working days (leave counts partially).', punctD2: 'Punctuality = 1 − late minutes ÷ total work minutes.',
     leaveEx: 'Example: 1 sick day counts as 0.75 day present.',
     howT: 'How the score works', howSub: 'Three parts, one final score out of 100.',
-    prodT: 'Productivity', chatT2: 'Chat Quality', attT2: 'Attendance',
+    prodT: 'Productivity', chatT2: 'Observation', attT2: 'Attendance',
     prodQ: 'How much work you handle', chatQ2: 'How well you talk to customers', attQ2: 'How reliably you show up',
-    prodHow: 'Helpdesk: CS monitoring & handled cases · AM: VIP resolution & handled', chatHow: 'Average of monthly chat reviews (10 criteria)', attHow: 'Attendance days & punctuality',
+    prodHow: 'Helpdesk: CS monitoring & handled cases · AM: VIP cases handled', chatHow: 'Average of monthly chat observations (10 criteria)', attHow: 'Attendance days & punctuality',
     gradeL: 'Grade', leads: (n, d, v) => `${n} leads${d ? ' ' + d : ''} with ${v}`, bonus: 'Bonus',
     prodNote: 'Each bar is the score out of 100. Agents are compared only within their own division.',
     chatTake: (names, v, min) => `${names} top the chat reviews with ${v} · everyone scored ${min}+`,
@@ -648,10 +651,10 @@ const TX = {
     attPerfect: n => `${n} had perfect attendance`, noLeave: 'No leave', d: 'd',
     attNote2: 'Sick days count 75%, personal leave 50%, absence 0%. Late minutes lower the score. Scale starts at 85.',
     cso: 'CSO DIVISION', erp: '★ Employee Recognition Program', awards: 'PERFORMANCE AWARDS', lede: t => `Recognizing consistency, excellence,<br>and dedication across ${t}.`,
-    hdDiv: 'HELPDESK DIVISION', bestHd: 'BEST HELPDESK', chatQ: 'CHAT QUALITY', prod: 'PRODUCTIVITY', att: 'ATTENDANCE',
+    hdDiv: 'HELPDESK DIVISION', bestHd: 'BEST HELPDESK', chatQ: 'OBSERVATION', prod: 'PRODUCTIVITY', att: 'ATTENDANCE',
     kpi: 'KPI Framework', pillarsT: 'THREE PILLARS.<br>ONE SCORE.', formula: 'Final Score = (Chat × 0.30) + (Attendance × 0.20) + (Productivity × 0.50)',
     pillar: 'Pillar', p1sub: 'Highest impact KPI — division-scoped', p2sub: 'Consistency of service', p3sub: 'Reliability &amp; punctuality',
-    p1: ['AM: VIP Rate 57% + VIP Handled 38%', 'HD: CS Monitoring 38% + CS Handled 57%', 'Each metric normalized within own division', 'Core Score max 95 + Bonus max +5 = 100', 'Assist Bonus: top KPI metric vs peer max'],
+    p1: ['AM: VIP Handled 95%', 'HD: CS Monitoring 38% + CS Handled 57%', 'Each metric normalized within own division', 'Core Score max 95 + Bonus max +5 = 100', 'Assist Bonus: top KPI metric vs peer max'],
     p2: ms => ['2 cases observed per month', 'Scored via Google Form', '10 criteria, max 100 pts', `Average across ${ms.join(', ').replace(/, ([^,]*)$/, ' and $1')}`],
     p2all: (n, s) => `All ${n} agents scored ${s}+`,
     p3: ['Attendance Rate × 0.70', 'Punctuality × 0.30', 'Late mins vs total work mins', 'Sick 75% credit · Personal Leave 50% credit · Alpha 0% credit', 'Perfect score = 100.00'],
@@ -661,7 +664,7 @@ const TX = {
     i2: ['Own peer group only', "Helpdesk compared to Helpdesk, AM compared to AM — never against each other's scale."],
     i3: ['Rate for AM, volume for HD', "AM score uses VIP resolution rate (%), not case count — a smaller VIP queue isn't a penalty."],
     finalScore: 'FINAL SCORE', core: 'CORE SCORE', bdNote: "Assist bonus = (agent value ÷ peer max) × 5 pts — rewards the strongest performer in each division's own core KPI. Productivity is capped at 100.",
-    weight: w => `${w}% Weight`, chatT: 'Chat Observation Quality',
+    weight: w => `${w}% Weight`, chatT: 'Observation',
     badges: ms => ['2 cases observed per month', 'Google Form assessment', '10 evaluation criteria', 'Max 100 points per case', `Average: ${ms.join(' + ')}`],
     tied: 'TIED 1ST', critT: '10 assessment criteria (Google Form)',
     attT: 'Attendance &amp; Punctuality', perfect: 'PERFECT ★', calc: 'Calculation formula', rate: 'Attendance Rate', rateD: 'Days present (with leave credit) ÷ total working days × 100',
@@ -671,22 +674,23 @@ const TX = {
     finalRank: t => `🏆 Final Rankings · ${t}`, sbT: 'The Final<span>Score Board</span>', final: 'FINAL',
     g: ['A — Excellent', 'B — Good', 'C — Fair', 'D — Needs improvement'],
     mon: 'CS Monitoring', hand: 'CS Handled Volume', vipR: 'VIP Resolution Rate', vipH: 'VIP Handled Volume', total: 'total',
-    bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP resolution rate', vsMax: 'vs peer max', avg: 'avg', of: 'of', vipHandled: 'VIP handled', rateW: 'rate',
+    bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs peer max', avg: 'avg', of: 'of', vipHandled: 'VIP handled', rateW: 'rate',
   },
   id: {
+    rrInfo: 'Resolution rate (CS & VIP) hanya ditampilkan sebagai info dan tidak masuk skor — karena juga dipengaruhi sisi customer. Klik agent untuk lihat per bulan.', resRate: 'Resolution rate', infoOnly: 'info, tidak masuk skor', csSolvedL: 'selesai',
     clickHint: 'Klik agent untuk detail per bulan', clickDetail: 'Klik untuk detail per bulan', monthlyAvg: 'Rata-rata bulanan', quarterScore: 'Skor kuartal', bestMonth: 'Bulan terbaik', noMonthly: 'Data bulanan agent ini belum diisi. Isi kolom per bulan di Edit data untuk melihat rinciannya.', mdNote: 'Tiap bulan dihitung dengan rumus yang sama, dibandingkan dengan agent satu divisi di bulan itu. Skor kuartal memakai total kuartal.', month: 'Bulan', close: 'Tutup', totalQ: 'Kuartal',
     example: 'Contoh perhitungan', points: 'poin', monitored: 'monitoring', handled: 'ditangani', vipSolvedR: 'VIP selesai',
     prodTake2: 'Skor = seberapa dekat tiap agent dengan hasil terbaik di divisinya, per metrik.', topIn: 'Teratas di', teamAvg: 'Rata-rata tim', agents: 'agent',
     how1: 'Tiap metrik dibandingkan dengan yang terbaik di divisi yang sama', how2: 'Dikali bobotnya (core score maks 95)', how3: 'KPI utama terbaik dapat bonus s/d +5 · maks 100',
-    chatTake2: min => `Kualitas chat konsisten tinggi — semua agent rata-rata ${min}+ dari 100.`, monthlyScores: 'Skor review per bulan', ranking: 'Peringkat', agent: 'Agent', avgS: 'Rata-rata', trend: 'Tren',
+    chatTake2: min => `Skor observasi konsisten tinggi — semua agent rata-rata ${min}+ dari 100.`, monthlyScores: 'Skor observasi per bulan', ranking: 'Peringkat', agent: 'Agent', avgS: 'Rata-rata', trend: 'Tren',
     axisFrom: lo => `Sumbu mulai dari ${lo}`, criteriaT: 'Dinilai dari 10 kriteria',
     attTop: (n, v) => `${n} teratas di kehadiran dengan ${v}`, scoreScale: lo => `Skor (${lo}–100)`, score: 'Skor', daysNote: 'Cuti ditulis dalam hari selama satu kuartal',
     rateS: 'Tingkat hadir', punctS: 'Ketepatan', rateD2: 'Tingkat hadir = hari hadir ÷ hari kerja (cuti dihitung sebagian).', punctD2: 'Ketepatan = 1 − menit telat ÷ total menit kerja.',
     leaveEx: 'Contoh: 1 hari sakit dihitung 0,75 hari hadir.',
     howT: 'Cara skor dihitung', howSub: 'Tiga bagian, satu skor akhir dari 100.',
-    prodT: 'Produktivitas', chatT2: 'Kualitas Chat', attT2: 'Kehadiran',
+    prodT: 'Produktivitas', chatT2: 'Observasi', attT2: 'Kehadiran',
     prodQ: 'Seberapa banyak pekerjaan yang ditangani', chatQ2: 'Seberapa baik melayani pelanggan', attQ2: 'Seberapa disiplin hadir',
-    prodHow: 'Helpdesk: CS monitoring & kasus ditangani · AM: VIP resolution & ditangani', chatHow: 'Rata-rata review chat bulanan (10 kriteria)', attHow: 'Hari hadir & ketepatan waktu',
+    prodHow: 'Helpdesk: CS monitoring & kasus ditangani · AM: kasus VIP ditangani', chatHow: 'Rata-rata observasi chat bulanan (10 kriteria)', attHow: 'Hari hadir & ketepatan waktu',
     gradeL: 'Nilai', leads: (n, d, v) => `${n} teratas${d ? ' di ' + d : ''} dengan ${v}`, bonus: 'Bonus',
     prodNote: 'Setiap bar = skor dari 100. Agent hanya dibandingkan dengan divisinya sendiri.',
     chatTake: (names, v, min) => `${names} teratas di review chat dengan ${v} · semua dapat ${min}+`,
@@ -694,10 +698,10 @@ const TX = {
     attPerfect: n => `${n} hadir sempurna`, noLeave: 'Tanpa cuti', d: 'h',
     attNote2: 'Sakit dihitung 75%, cuti pribadi 50%, alpha 0%. Menit telat menurunkan skor. Skala mulai dari 85.',
     cso: 'DIVISI CSO', erp: '★ Program Apresiasi Karyawan', awards: 'PERFORMANCE AWARDS', lede: t => `Apresiasi untuk konsistensi, keunggulan,<br>dan dedikasi sepanjang ${t}.`,
-    hdDiv: 'DIVISI HELPDESK', bestHd: 'HELPDESK TERBAIK', chatQ: 'KUALITAS CHAT', prod: 'PRODUKTIVITAS', att: 'KEHADIRAN',
+    hdDiv: 'DIVISI HELPDESK', bestHd: 'HELPDESK TERBAIK', chatQ: 'OBSERVASI', prod: 'PRODUKTIVITAS', att: 'KEHADIRAN',
     kpi: 'Kerangka KPI', pillarsT: 'TIGA PILAR.<br>SATU SKOR.', formula: 'Skor Akhir = (Chat × 0,30) + (Kehadiran × 0,20) + (Produktivitas × 0,50)',
     pillar: 'Pilar', p1sub: 'KPI paling berpengaruh — per divisi', p2sub: 'Konsistensi pelayanan', p3sub: 'Keandalan &amp; ketepatan waktu',
-    p1: ['AM: VIP Rate 57% + VIP Handled 38%', 'HD: CS Monitoring 38% + CS Handled 57%', 'Setiap metrik dinormalisasi dalam divisinya sendiri', 'Core Score maks 95 + Bonus maks +5 = 100', 'Assist Bonus: metrik KPI utama vs nilai tertinggi divisi'],
+    p1: ['AM: VIP Handled 95%', 'HD: CS Monitoring 38% + CS Handled 57%', 'Setiap metrik dinormalisasi dalam divisinya sendiri', 'Core Score maks 95 + Bonus maks +5 = 100', 'Assist Bonus: metrik KPI utama vs nilai tertinggi divisi'],
     p2: ms => ['2 kasus diobservasi per bulan', 'Dinilai lewat Google Form', '10 kriteria, maks 100 poin', `Rata-rata ${ms.join(', ').replace(/, ([^,]*)$/, ' dan $1')}`],
     p2all: (n, s) => `Semua ${n} agent mendapat skor ${s}+`,
     p3: ['Tingkat Kehadiran × 0,70', 'Ketepatan Waktu × 0,30', 'Menit telat dibanding total menit kerja', 'Sakit kredit 75% · Cuti Pribadi 50% · Alpha 0%', 'Skor sempurna = 100,00'],
@@ -707,7 +711,7 @@ const TX = {
     i2: ['Hanya dibandingkan dalam divisi', 'Helpdesk dibandingkan dengan Helpdesk, AM dengan AM — tidak pernah lintas divisi.'],
     i3: ['Rate untuk AM, volume untuk HD', 'Skor AM memakai VIP resolution rate (%), bukan jumlah kasus — antrean VIP yang lebih kecil tidak jadi penalti.'],
     finalScore: 'SKOR AKHIR', core: 'CORE SCORE', bdNote: 'Assist bonus = (nilai agent ÷ nilai tertinggi divisi) × 5 poin — untuk performer terkuat di KPI utama divisinya. Produktivitas maksimal 100.',
-    weight: w => `Bobot ${w}%`, chatT: 'Kualitas Observasi Chat',
+    weight: w => `Bobot ${w}%`, chatT: 'Observasi',
     badges: ms => ['2 kasus diobservasi per bulan', 'Penilaian Google Form', '10 kriteria penilaian', 'Maks 100 poin per kasus', `Rata-rata: ${ms.join(' + ')}`],
     tied: 'SAMA-SAMA #1', critT: '10 kriteria penilaian (Google Form)',
     attT: 'Kehadiran &amp; Ketepatan Waktu', perfect: 'SEMPURNA ★', calc: 'Rumus perhitungan', rate: 'Tingkat Kehadiran', rateD: 'Hari hadir (dengan kredit cuti) ÷ total hari kerja × 100',
@@ -717,7 +721,7 @@ const TX = {
     finalRank: t => `🏆 Peringkat Akhir · ${t}`, sbT: 'Papan Skor<span>Akhir</span>', final: 'AKHIR',
     g: ['A — Sangat Baik', 'B — Baik', 'C — Cukup', 'D — Perlu Ditingkatkan'],
     mon: 'CS Monitoring', hand: 'Volume CS Handled', vipR: 'VIP Resolution Rate', vipH: 'Volume VIP Handled', total: 'total',
-    bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP resolution rate', vsMax: 'vs tertinggi', avg: 'rata²', of: 'dari', vipHandled: 'VIP ditangani', rateW: 'rate',
+    bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs tertinggi', avg: 'rata²', of: 'dari', vipHandled: 'VIP ditangani', rateW: 'rate',
   },
 };
 const T = k => TX[LANG][k];
@@ -739,7 +743,7 @@ function normAgent(a) {
   return { name: a.name || '', div: a.div === 'AM' ? 'AM' : 'HD', photo: a.photo || '',
     csMon: n(a.csMon), csHandled: n(a.csHandled), vipTotal: n(a.vipTotal), vipSolved: n(a.vipSolved), vipRate: has(a.vipRate) ? n(a.vipRate) : null,
     chat: [0, 1, 2].map(i => (a.chat && has(a.chat[i])) ? n(a.chat[i]) : null),
-    csMonM: m3(a.csMonM), csHandledM: m3(a.csHandledM), vipTotalM: m3(a.vipTotalM), vipSolvedM: m3(a.vipSolvedM),
+    csMonM: m3(a.csMonM), csHandledM: m3(a.csHandledM), csSolvedM: m3(a.csSolvedM), csSolved: has(a.csSolved) ? n(a.csSolved) : null, vipTotalM: m3(a.vipTotalM), vipSolvedM: m3(a.vipSolvedM),
     att: Object.assign({ workDays: null, sick: 0, personal: 0, alpha: 0, lateMin: 0, workMin: null, manual: null }, a.att || {}) };
 }
 function attScore(t) {
@@ -756,6 +760,8 @@ function compute(data) {
   A.forEach(a => {   // data bulanan diisi → total kuartal & VIP rate dihitung dari bulan
     if (anyM(a.csMonM)) a.csMon = sum(a.csMonM.map(v => v || 0));
     if (anyM(a.csHandledM)) a.csHandled = sum(a.csHandledM.map(v => v || 0));
+    if (anyM(a.csSolvedM)) a.csSolved = sum(a.csSolvedM.map(v => v || 0));
+    a.csRate = a.csSolved != null && a.csHandled ? a.csSolved / a.csHandled * 100 : null;   // info saja, tidak masuk skor
     if (anyM(a.vipTotalM)) {
       a.vipTotal = sum(a.vipTotalM.map(v => v || 0)); a.vipSolved = sum(a.vipSolvedM.map(v => v || 0));
       const rates = a.vipTotalM.map((t, k) => t ? (a.vipSolvedM[k] || 0) / t * 100 : null).filter(v => v != null);
@@ -781,12 +787,12 @@ function compute(data) {
       a.bonusLabel = T('bonusHD');
       a.bonusNote = `${fInt(a.csMon)} ${T('vsMax')} ${fInt(mx.mon)}${a.csMon === mx.mon ? ' (100%)' : ''}`;
     } else {
+      // resolution rate VIP = info saja (dipengaruhi sisi customer) → skor AM dari volume VIP yang ditangani
       a.parts = [
-        { k: T('vipR'), w: 57, v: r2(a.vip / 100 * 57), tot: `${T('avg')} ${f2(a.vip)}%${a.vipTotal ? ` · ${fInt(a.vipSolved)} ${T('of')} ${fInt(a.vipTotal)} ${T('vipHandled')}` : ''}`, val: a.vip, max: 100 },
-        { k: T('vipH'), w: 38, v: part(a.vipTotal, mx.vipH, 38), tot: `${fInt(a.vipTotal)} ${T('total')}`, val: a.vipTotal, max: mx.vipH }];
-      a.bonus = part(a.vip, mx.vip, 5);
+        { k: T('vipH'), w: 95, v: part(a.vipTotal, mx.vipH, 95), tot: `${fInt(a.vipTotal)} ${T('total')}`, val: a.vipTotal, max: mx.vipH }];
+      a.bonus = part(a.vipTotal, mx.vipH, 5);
       a.bonusLabel = T('bonusAM');
-      a.bonusNote = `${T('rateW')} ${f2(a.vip)}% ${T('vsMax')} ${f2(mx.vip)}%${a.vip === mx.vip ? ' (100%)' : ''}`;
+      a.bonusNote = `${fInt(a.vipTotal)} ${T('vsMax')} ${fInt(mx.vipH)}${a.vipTotal === mx.vipH ? ' (100%)' : ''}`;
     }
     a.core = r2(sum(a.parts.map(p => p.v)));
     a.prod = r2(Math.min(100, a.core + a.bonus));
@@ -863,17 +869,18 @@ function slides(p, data) {
   {
     const avgP = N ? sum(C.A.map(a => a.prod)) / N : 0, lh = C.hd[0], la = C.am[0];
     const tile = (lab, val, sub, cls = '') => `<div class="kt ${cls}"><span>${lab}</span><b class="num">${val}</b><small>${sub}</small></div>`;
-    const raw = a => a.div === 'HD' ? `${fInt(a.csMon)} ${T('monitored')} · ${fInt(a.csHandled)} ${T('handled')}` : `${f2(a.vip)}% ${T('vipSolvedR')} · ${fInt(a.vipTotal)} VIP ${T('handled')}`;
+    const raw = a => a.div === 'HD' ? `${fInt(a.csMon)} ${T('monitored')} · ${fInt(a.csHandled)} ${T('handled')}` : `${fInt(a.vipTotal)} VIP ${T('handled')}`;
     const row = (a, i) => `<div class="pr ${i ? '' : 'lead'} clk" data-ag="${esc(a.name)}" role="button" tabindex="0" title="${T('clickDetail')}"><div class="prn">${av(a)}<div><b>${esc(a.name)}</b><small>${raw(a)}</small></div></div>
         <div class="stk">${a.parts.map((p, k) => `<i class="s${k}" style="--w:${p.v}%">${p.v >= 7 ? `<em>${f2(p.v).replace(/\.00$/, '')}</em>` : ''}</i>`).join('')}<i class="sb" style="--w:${Math.max(0, Math.min(a.bonus, 100 - a.core))}%"></i></div>
         <div class="prv num">${f2(a.prod)}</div></div>`;
-    const panel = (list, name, l0, l1) => list.length ? `<div class="ppan"><div class="pph"><b>${name}</b><span class="lgd"><i class="s0"></i>${l0}<i class="s1"></i>${l1}<i class="sb"></i>${T('bonus')} ≤5</span></div>
+    const panel = (list, name, l0, l1) => list.length ? `<div class="ppan"><div class="pph"><b>${name}</b><span class="lgd"><i class="s0"></i>${l0}${l1 ? `<i class="s1"></i>${l1}` : ''}<i class="sb"></i>${T('bonus')} ≤5</span></div>
         <div class="pscale"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>${list.map(row).join('')}</div>` : '';
     out.push(`<section class="slide v3 ${N > 5 ? 'many' : ''}"><div class="s-in">
       ${head(`${T('pillar')} 01`, T('prodT'), T('prodTake2'), 'y', T('weight')(50))}
       <div class="kts">${lh ? tile(`${T('topIn')} Helpdesk`, f2(lh.prod), esc(lh.name), 'y') : ''}${la ? tile(`${T('topIn')} Account Manager`, f2(la.prod), esc(la.name), 'y') : ''}${tile(T('teamAvg'), f2(avgP), `${N} ${T('agents')}`)}</div>
-      <div class="ppans">${panel(C.hd, 'Helpdesk', 'CS Monitoring 38', 'CS Handled 57')}${panel(C.am, 'Account Manager', 'VIP Rate 57', 'VIP Handled 38')}</div>
+      <div class="ppans">${panel(C.hd, 'Helpdesk', 'CS Monitoring 38', 'CS Handled 57')}${panel(C.am, 'Account Manager', 'VIP Handled 95', '')}</div>
       <div class="how"><span class="tap">👆 ${T('clickHint')}</span><span><b>1</b>${T('how1')}</span><span><b>2</b>${T('how2')}</span><span><b>3</b>${T('how3')}</span></div>
+      <div class="rinfo">ⓘ ${T('rrInfo')}</div>
     </div>${foot}</section>`);
   }
 
@@ -939,7 +946,7 @@ function slides(p, data) {
   out.push(`<section class="slide dark sb ${N > 5 ? 'many' : ''}"><div class="glow"></div><div class="s-in">
     <div class="hd"><div><div class="kick">${T('finalRank')(tag)}</div><h2>${T('sbT')}</h2></div>${LOGO_W}</div>
     <div class="rows">${C.byFinal.map((a, i) => `<div class="srow ${i ? '' : 'first'}">${rk(i)}<div class="nm"><span class="av">${photoOf(a) ? `<img src="${esc(photoOf(a))}" alt="">` : esc(initials(a.name))}</span><b>${esc(a.name)}</b><small>${DIV[a.div].toUpperCase()}</small></div>
-      <div class="k"><small>PRD</small><b class="cP num">${f2(a.prod)}</b></div><div class="k"><small>CHT</small><b class="cC num">${f2(a.chatAvg)}</b></div><div class="k"><small>ATD</small><b class="cA num">${f2(a.attS)}</b></div>
+      <div class="k"><small>PRD</small><b class="cP num">${f2(a.prod)}</b></div><div class="k"><small>OBS</small><b class="cC num">${f2(a.chatAvg)}</b></div><div class="k"><small>ATD</small><b class="cA num">${f2(a.attS)}</b></div>
       <div class="sp"></div><div class="f"><small>${T('final')}</small><b class="num">${f2(a.final)}</b></div></div>`).join('')}</div>
   </div>${foot}</section>`);
   return out;
@@ -1108,15 +1115,15 @@ function drawEditor() {
         <select class="inp" data-p="div" style="width:auto"><option value="HD" ${!isAM ? 'selected' : ''}>Helpdesk (HD)</option><option value="AM" ${isAM ? 'selected' : ''}>Account Manager (AM)</option></select>
         <label class="btn mini">Foto<input type="file" accept="image/*" data-photo hidden></label>${a.photo ? '<button class="btn mini" data-rmphoto>Hapus foto</button>' : ''}
         <button class="btn mini danger" data-del>Hapus agent</button>
-        <span class="live">${L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · CHT ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''}</span></div>
+        <span class="live">${L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · OBS ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''}</span></div>
       <fieldset class="fs"><legend>Productivity</legend><div class="grid">
-        ${isAM ? m.map((mi, k) => fld(`VIP handled ${MSHORT[mi]}`, `vipTotalM.${k}`, a.vipTotalM && a.vipTotalM[k])).join('') + m.map((mi, k) => fld(`VIP solved ${MSHORT[mi]}`, `vipSolvedM.${k}`, a.vipSolvedM && a.vipSolvedM[k])).join('')
-               : m.map((mi, k) => fld(`CS Monitoring ${MSHORT[mi]}`, `csMonM.${k}`, a.csMonM && a.csMonM[k])).join('') + m.map((mi, k) => fld(`CS Handled ${MSHORT[mi]}`, `csHandledM.${k}`, a.csHandledM && a.csHandledM[k])).join('')}
+        ${isAM ? m.map((mi, k) => fld(`VIP handled ${MSHORT[mi]}`, `vipTotalM.${k}`, a.vipTotalM && a.vipTotalM[k])).join('') + m.map((mi, k) => fld(`VIP solved ${MSHORT[mi]} (info)`, `vipSolvedM.${k}`, a.vipSolvedM && a.vipSolvedM[k])).join('')
+               : m.map((mi, k) => fld(`CS Monitoring ${MSHORT[mi]}`, `csMonM.${k}`, a.csMonM && a.csMonM[k])).join('') + m.map((mi, k) => fld(`CS Handled ${MSHORT[mi]}`, `csHandledM.${k}`, a.csHandledM && a.csHandledM[k])).join('') + m.map((mi, k) => fld(`CS Solved ${MSHORT[mi]} (info)`, `csSolvedM.${k}`, a.csSolvedM && a.csSolvedM[k])).join('')}
       </div><div class="help" style="margin:8px 0 4px">Atau isi total kuartal saja (dipakai bila data per bulan kosong — detail per bulan tidak tersedia):</div><div class="grid">
-        ${isAM ? fld('VIP handled (total)', 'vipTotal', a.vipTotal) + fld('VIP solved (total)', 'vipSolved', a.vipSolved) + fld('VIP rate % (rata² bulanan)', 'vipRate', a.vipRate, 'number', 'placeholder="otomatis: solved ÷ handled"')
-               : fld('CS Monitoring (total)', 'csMon', a.csMon) + fld('CS Handled (total)', 'csHandled', a.csHandled)}
+        ${isAM ? fld('VIP handled (total)', 'vipTotal', a.vipTotal) + fld('VIP solved (total, info)', 'vipSolved', a.vipSolved) + fld('VIP rate % (info)', 'vipRate', a.vipRate, 'number', 'placeholder="otomatis: solved ÷ handled"')
+               : fld('CS Monitoring (total)', 'csMon', a.csMon) + fld('CS Handled (total)', 'csHandled', a.csHandled) + fld('CS Solved (total, info)', 'csSolved', a.csSolved)}
       </div></fieldset>
-      <fieldset class="fs"><legend>Chat observation (0–100)</legend><div class="grid">${m.map((mi, k) => fld(`Chat ${MSHORT[mi]}`, `chat.${k}`, a.chat && a.chat[k])).join('')}</div></fieldset>
+      <fieldset class="fs"><legend>Observation (0–100)</legend><div class="grid">${m.map((mi, k) => fld(`Observation ${MSHORT[mi]}`, `chat.${k}`, a.chat && a.chat[k])).join('')}</div></fieldset>
       <fieldset class="fs"><legend>Attendance (total 1 kuartal)</legend><div class="grid">
         ${fld('Hari kerja', 'att.workDays', a.att && a.att.workDays)}${fld('Sick (hari)', 'att.sick', a.att && a.att.sick)}${fld('Personal leave (hari)', 'att.personal', a.att && a.att.personal)}${fld('Alpha (hari)', 'att.alpha', a.att && a.att.alpha)}
         ${fld('Menit telat', 'att.lateMin', a.att && a.att.lateMin)}${fld('Total menit kerja', 'att.workMin', a.att && a.att.workMin)}${fld('Skor attendance (manual)', 'att.manual', a.att && a.att.manual, 'number', 'placeholder="opsional"')}
@@ -1139,7 +1146,7 @@ $('#edBody').addEventListener('input', e => {
   setPath(ED.agents[+card.dataset.i], el.dataset.p, v);
   if (el.dataset.p === 'div') { drawEditor(); return; }
   const C = compute(ED), L = C.A.find(a => a.name === (ED.agents[+card.dataset.i].name || '').trim());
-  card.querySelector('.live').innerHTML = L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · CHT ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : '';
+  card.querySelector('.live').innerHTML = L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · OBS ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : '';
 });
 $('#edBody').addEventListener('change', async e => {
   const el = e.target;
@@ -1183,9 +1190,12 @@ function openProdDetail(name) {
   const have = M.filter(Boolean), avg = have.length ? sum(have.map(r => r.prod)) / have.length : null;
   const best = have.length ? have.reduce((b, r) => r.prod > b.prod ? r : b) : null, bestK = best ? M.indexOf(best) : -1;
   const colors = ['#27272A', '#A1A1AA', 'var(--y)'];
-  const lbl = a.div === 'HD' ? [T('mon'), T('hand')] : [T('vipR'), T('vipH')];
-  const rawM = (r, k) => a.div === 'HD' ? `${fInt(a.csMonM[k] || 0)} / ${fInt(a.csHandledM[k] || 0)}` : `${fInt(a.vipSolvedM[k] || 0)} / ${fInt(a.vipTotalM[k] || 0)} VIP`;
-  const rawQ = a.div === 'HD' ? `${fInt(a.csMon)} / ${fInt(a.csHandled)}` : `${f2(a.vip)}% · ${fInt(a.vipTotal)} VIP`;
+  const lbl = a.parts.map(p => p.k);
+  const rrM = k => a.div === 'HD' ? (a.csSolvedM[k] != null && a.csHandledM[k] ? a.csSolvedM[k] / a.csHandledM[k] * 100 : null) : (a.vipTotalM[k] ? (a.vipSolvedM[k] || 0) / a.vipTotalM[k] * 100 : null);
+  const rrQ = a.div === 'HD' ? a.csRate : (a.vipTotal ? a.vip : null);
+  const rrCell = v => `<td class="rr">${v == null ? '—' : f2(v) + '%'}</td>`;
+  const rawM = (r, k) => a.div === 'HD' ? `${fInt(a.csMonM[k] || 0)} / ${fInt(a.csHandledM[k] || 0)}${a.csSolvedM[k] != null ? ` · ${fInt(a.csSolvedM[k])} ${T('csSolvedL')}` : ''}` : `${fInt(a.vipTotalM[k] || 0)} VIP · ${fInt(a.vipSolvedM[k] || 0)} ${T('csSolvedL')}`;
+  const rawQ = a.div === 'HD' ? `${fInt(a.csMon)} / ${fInt(a.csHandled)}${a.csSolved != null ? ` · ${fInt(a.csSolved)} ${T('csSolvedL')}` : ''}` : `${fInt(a.vipTotal)} VIP · ${fInt(a.vipSolved)} ${T('csSolvedL')}`;
   const col = (r, k) => r ? `<div class="col"><div class="v">${f2(r.prod)}</div><div class="stk2" data-h="${r.prod}">${r.parts.map((p, j) => `<i style="height:${p.v / r.prod * 100}%;background:${colors[j]}"></i>`).join('')}<i style="height:${r.bonus / r.prod * 100}%;background:${colors[2]}"></i></div></div>`
     : `<div class="col"><div class="na">—</div></div>`;
   const el = document.createElement('div'); el.className = 'md';
@@ -1193,14 +1203,14 @@ function openProdDetail(name) {
     <div class="mdh"><span class="rav">${photoOf(a) ? `<img src="${esc(photoOf(a))}" alt="">` : esc(initials(a.name))}</span><div><h3>${esc(a.name)}</h3><small>${DIV[a.div]} · ${T('prodT')} · ${pLabel(ST.period)}</small></div><button class="btn x" type="button">${T('close')}</button></div>
     <div class="mdk"><div><span>${T('quarterScore')}</span><b>${f2(a.prod)}</b></div><div><span>${T('monthlyAvg')}</span><b>${avg == null ? '—' : f2(avg)}</b></div><div><span>${T('bestMonth')}</span><b>${best ? monthName(mm[bestK]) : '—'}</b></div></div>
     ${have.length ? `<div class="mdc">${M.map(col).join('')}</div><div class="mdx">${mm.map(i => `<span>${monthName(i)}</span>`).join('')}</div>
-      <div class="mdlg"><span><i style="background:${colors[0]}"></i>${lbl[0]}</span><span><i style="background:${colors[1]}"></i>${lbl[1]}</span><span><i style="background:${colors[2]}"></i>${T('bonus')}</span></div>
-      <table class="mdt"><thead><tr><th>${T('month')}</th><th>${lbl[0]}</th><th>${lbl[1]}</th><th>${T('bonus')}</th><th>${T('prodT')}</th></tr></thead><tbody>
-        ${M.map((r, k) => r ? `<tr><td>${monthName(mm[k])}<small>${rawM(r, k)}</small></td><td>${f2(r.parts[0].v)}</td><td>${f2(r.parts[1].v)}</td><td>+${f2(r.bonus)}</td><td><b>${f2(r.prod)}</b></td></tr>` : `<tr><td>${monthName(mm[k])}</td><td colspan="4" style="color:var(--muted)">—</td></tr>`).join('')}
-        <tr class="tot"><td>${T('totalQ')}<small>${rawQ}</small></td><td>${f2(a.parts[0].v)}</td><td>${f2(a.parts[1].v)}</td><td>+${f2(a.bonus)}</td><td>${f2(a.prod)}</td></tr></tbody></table>
-      <div class="mdn">${T('mdNote')}</div>`
+      <div class="mdlg">${lbl.map((l, j) => `<span><i style="background:${colors[j]}"></i>${l}</span>`).join('')}<span><i style="background:${colors[2]}"></i>${T('bonus')}</span></div>
+      <table class="mdt"><thead><tr><th>${T('month')}</th>${lbl.map(l => `<th>${l}</th>`).join('')}<th>${T('bonus')}</th><th>${T('prodT')}</th><th class="rr">${T('resRate')}<small>${T('infoOnly')}</small></th></tr></thead><tbody>
+        ${M.map((r, k) => r ? `<tr><td>${monthName(mm[k])}<small>${rawM(r, k)}</small></td>${r.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(r.bonus)}</td><td><b>${f2(r.prod)}</b></td>${rrCell(rrM(k))}</tr>` : `<tr><td>${monthName(mm[k])}</td><td colspan="${lbl.length + 3}" style="color:var(--muted)">—</td></tr>`).join('')}
+        <tr class="tot"><td>${T('totalQ')}<small>${rawQ}</small></td>${a.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(a.bonus)}</td><td>${f2(a.prod)}</td>${rrCell(rrQ)}</tr></tbody></table>
+      <div class="mdn">${T('mdNote')} ${T('rrInfo').split(' — ')[0]}.</div>`
     : `<div class="mdn" style="font-size:14px">${T('noMonthly')}</div>
-      <table class="mdt"><thead><tr><th></th><th>${lbl[0]}</th><th>${lbl[1]}</th><th>${T('bonus')}</th><th>${T('prodT')}</th></tr></thead><tbody>
-        <tr class="tot"><td>${T('totalQ')}<small>${rawQ}</small></td><td>${f2(a.parts[0].v)}</td><td>${f2(a.parts[1].v)}</td><td>+${f2(a.bonus)}</td><td>${f2(a.prod)}</td></tr></tbody></table>`}
+      <table class="mdt"><thead><tr><th></th>${lbl.map(l => `<th>${l}</th>`).join('')}<th>${T('bonus')}</th><th>${T('prodT')}</th><th class="rr">${T('resRate')}<small>${T('infoOnly')}</small></th></tr></thead><tbody>
+        <tr class="tot"><td>${T('totalQ')}<small>${rawQ}</small></td>${a.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(a.bonus)}</td><td>${f2(a.prod)}</td>${rrCell(rrQ)}</tr></tbody></table>`}
   </div>`;
   const close = () => { el.remove(); document.removeEventListener('keydown', esc1, true); };
   const esc1 = e => { if (e.key === 'Escape') { e.stopPropagation(); close(); } };

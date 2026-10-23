@@ -760,6 +760,79 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .hist-new{display:flex;gap:8px;margin-top:6px}.hist-new .sel{flex:1;border-radius:12px;padding:10px 14px}
 .hist-list{max-height:52vh;overflow:auto;margin-top:8px;border-top:1px solid var(--line)}.hrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 2px;border-bottom:1px solid var(--line)}.hmain{display:flex;flex-direction:column;gap:2px;min-width:0}.hmain b{font-size:14px}.hmain .mut{font-size:12px}.hact{display:flex;gap:6px;flex:none}
 </style>
+<style>
+/* VIP hold: sel kosong yang bisa diedit menampilkan placeholder hanya saat Edit text */
+.editing [data-edit].ph:empty::before{content:attr(data-ph);color:#A1A1AA;font-style:italic}
+[data-edit].ph:empty{display:none}.editing [data-edit].ph:empty{display:block;min-height:1em}
+</style>
+<style>
+/* ===== Traffic analysis & SWOT ===== */
+.hm{display:flex;flex-direction:column;gap:.25cqw;margin-top:.4cqw}
+.hm-r{display:grid;grid-template-columns:3.4cqw repeat(24,1fr);gap:.18cqw;align-items:center}
+.hm-r span{font-size:var(--t-small);font-weight:700;color:#6E6E73}
+.hm-r i{display:block;height:2.3cqw;border-radius:.3cqw;background:rgba(232,89,12,var(--o))}
+.hm-r i.nt{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.55) 0 .25cqw,transparent .25cqw .6cqw)}
+.hm-hd em{font-style:normal;font-size:.75cqw;color:#8E8E93;text-align:left}
+.swg{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:var(--gap);flex:1;min-height:0}
+.sw{display:flex;flex-direction:column;padding:1.2cqw 1.4cqw;border-top:.4cqw solid;min-height:0;overflow:hidden}
+.sw.s{border-top-color:#1E8E3E}.sw.w{border-top-color:#E8590C}.sw.o{border-top-color:#3B4CCA}.sw.t{border-top-color:#D70015}
+.sw-h{display:flex;align-items:baseline;gap:.8cqw;margin-bottom:.6cqw}.sw-h b{font-size:1.6cqw;letter-spacing:-.01em}.sw-h span{font-size:var(--t-small);color:#8E8E93;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.sw ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.55cqw}
+.sw li{font-size:var(--t-body);line-height:1.4;display:flex;gap:.6cqw;align-items:baseline}
+.sw-t{flex:none;font-size:.72cqw;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:.15cqw .5cqw;border-radius:999px}
+.sw-t.f{background:#E8F5EC;color:#1E6B36}.sw-t.a{background:#E8ECFF;color:#2B3AA0}.sw-t.q{background:#FFF1D6;color:#8A5A00}
+@media (max-width:820px){.swg{grid-template-columns:1fr;grid-template-rows:none}.hm-r i{height:14px}}
+</style>
+<style>
+/* area chart traffic per jam */
+.ac{flex:1;min-height:0;display:flex;gap:.6cqw;margin-top:.6cqw}
+.ac-y{position:relative;width:2.4cqw;flex:none;margin-bottom:2cqw}
+.ac-y span{position:absolute;right:0;transform:translateY(50%);font-size:.78cqw;color:#8E8E93}
+.ac-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.ac-plot{position:relative;flex:1;min-height:0;border-bottom:1px solid #D9DCE3}
+.ac-plot>s{position:absolute;left:0;right:0;border-top:1px dashed #ECEEF3}
+.ac-plot svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ac-plot svg path{transition:opacity .6s}
+.slide:not(.in) .ac-plot svg path{opacity:0}
+.ac-band{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,#F3F4F7 0 .4cqw,#FAFAFC .4cqw .8cqw);border-left:1px dashed #D9DCE3;border-right:1px dashed #D9DCE3}
+.ac-band span{position:absolute;bottom:.3cqw;left:50%;transform:translateX(-50%);font-size:.72cqw;font-weight:700;color:#9AA0AE;white-space:nowrap;text-transform:uppercase;letter-spacing:.06em}
+.ac-pt{position:absolute;width:.8cqw;height:.8cqw;margin:-.4cqw 0 0 -.4cqw;border-radius:50%;background:#fff;border:.22cqw solid var(--pc)}
+.ac-pt.pk{width:1.2cqw;height:1.2cqw;margin:-.6cqw 0 0 -.6cqw;background:var(--pc)}
+.ac-v{position:absolute;transform:translate(-50%,-140%);font-size:.88cqw;font-weight:800;color:#1D1D1F;white-space:nowrap;text-align:center;line-height:1.05}
+.ac-v small{display:block;font-size:.7cqw;font-weight:600;color:#8E8E93}
+.ac-v.dim{color:#9AA0AE;font-weight:700}.ac-v.pk{color:#E8590C;font-size:1.05cqw}
+.ac-x{display:flex;margin-top:.45cqw}.ac-x span{flex:1;text-align:center;font-size:.8cqw;color:#6E6E73;font-weight:600}.ac-x span.dim{color:#B0B4BE}.ac-x span.pk{color:#E8590C;font-weight:800}
+.slide:not(.in) .ac-pt,.slide:not(.in) .ac-v{opacity:0;transform:translate(-50%,-80%)}
+.ac-pt,.ac-v{transition:opacity .5s ease .4s,transform .6s cubic-bezier(.22,1,.36,1) .4s}
+.slide:not(.in) .ac-pt{transform:scale(.3)}
+.ac-pt{transform:none}
+</style>
+<style>
+.mwc{display:flex;flex-wrap:wrap;gap:.45cqw;align-items:center;margin-bottom:.6cqw}
+.mwc input.mws{width:9cqw;padding:.25cqw .5cqw}
+.mtiles{margin-bottom:.2cqw}.mtiles .tile{padding:.6cqw .9cqw!important;min-height:0!important}.mtiles .tval{font-size:1.9cqw!important}.mtiles .tfoot{font-size:.72cqw!important}.mtiles .ico{width:2cqw!important;height:2cqw!important}
+.mwc .mseg{display:inline-flex;align-items:center;background:#EEF0F4;border-radius:999px;padding:.2cqw}
+.mwc .mseg button{border:0;background:transparent;font-size:.8cqw;font-weight:700;color:#3A3A3C;padding:.3cqw .7cqw;border-radius:999px;cursor:pointer}
+.mwc .mseg button.on{background:#1D1D1F;color:#fff}
+.mwl{font-size:var(--t-small);font-weight:800;padding:0 .6cqw;font-variant-numeric:tabular-nums}
+.mws{font-size:.8cqw;font-weight:600;border:1px solid #D9DCE3;border-radius:999px;padding:.35cqw .9cqw;background:#fff}
+@media print{.mwc{display:none}}
+html.viewonly .mwc{display:flex}
+.ac.dense .ac-pt{width:.45cqw;height:.45cqw;margin:-.225cqw 0 0 -.225cqw;border-width:.14cqw}
+.ac.dense .ac-pt.pk{width:.8cqw;height:.8cqw;margin:-.4cqw 0 0 -.4cqw}
+.ac.dense .ac-v{font-size:.62cqw;font-weight:700;transform:translate(-50%,-150%)}
+.ac.dense .ac-v.pk{font-size:.9cqw}
+.ac.dense .ac-x span{font-size:.68cqw;overflow:visible;white-space:nowrap}
+</style>
+<style>
+.ac-scroll{flex:1;min-width:0;overflow-x:auto;overflow-y:hidden;display:flex;scrollbar-width:thin;padding-top:1.4cqw;margin-top:-1.4cqw}
+.ac-scroll .ac-main{flex:none}
+.mcard .ac{min-height:0}.mcard .ovw{flex:none}
+.ovw{position:relative;height:3cqw;margin:0 0 1cqw 3cqw;border:1px solid #ECEEF3;border-radius:.5cqw;background:#FAFBFD}
+.ovw svg{position:absolute;inset:0;width:100%;height:calc(100% - 1.1cqw)}
+.ovx span{position:absolute;bottom:.1cqw;font-size:.62cqw;color:#8E8E93;transform:translateX(-50%)}
+.ovp{position:absolute;top:0;bottom:1.1cqw;width:2px;background:#E8590C}
+</style>
 </head>
 <body>
 <header class="bar">
@@ -768,7 +841,7 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
   <select class="sel" id="period" aria-label="Report period"><option value="all">All imported dates</option><option value="7">Last 7 days of data</option><option value="month">Latest month in data</option><option value="custom">Custom range</option></select>
   <input type="date" class="sel hidden" id="pFrom" aria-label="From date"><input type="date" class="sel hidden" id="pTo" aria-label="To date">
   <button class="btn sync" id="syncBtn" title="Data online"><i></i><span>Online</span></button>
-  <button class="btn" id="viewLinkBtn" title="Salin link khusus lihat">🔗 Link viewer</button>
+  <button class="btn" id="viewLinkBtn" title="Salin link khusus lihat (viewer)">🔗 Viewer</button>
   <button class="btn" id="histBtn" title="Riwayat report yang tersimpan">Riwayat</button>
   <button class="btn" id="importBtn">Import data</button>
   <button class="btn" id="manageBtn">Customize Present</button>
@@ -1225,7 +1298,7 @@ const ICON={
 };
 function ed(key,def,tag='div',cls='',attrs=''){const v=S.edits['t.'+key];return `<${tag} class="${cls}" data-edit="${key}" ${attrs}>${v!=null?esc(v).replace(/\n/g,'<br>'):def}</${tag}>`}
 const num=(v,f='int')=>`<span data-n="${v}" data-f="${f}">${fmtN(v,f)}</span>`;
-function fmtN(v,f){return f==='int'?fInt(v):f==='p'?fPct(v,1):f==='p2'?fPct(v,2):f==='d1'?f1(v):fInt(v)}
+function fmtN(v,f){return f==='int'?fInt(v):f==='p'?fPct(v,1):f==='p2'?fPct(v,2):f==='d1'?f1(v):f==='d2'?(Math.round(v*100)/100).toFixed(2):fInt(v)}
 function tile(tone,icon,label,value,foot,f='int',vcls=''){return `<div class="card tile t-${tone}" data-a><div class="ico">${ICON[icon]}</div><div style="min-width:0"><div class="tlab">${label}</div><div class="tval ${vcls}">${value==null?'—':num(value,f)}</div><div class="tfoot">${foot||''}</div></div></div>`}
 function vbars(items,o={}){if(!items.length)return '<div class="empty">No data</div>';const max=Math.max(1,...items.map(x=>x.value));const n=items.length;
   const st=`--vg:${n>24?'.35cqw':n>12?'.6cqw':'1.4cqw'};--bw:${n>24?'86%':n>12?'78%':'58%'};--vn:${n>24?'.72cqw':'var(--t-small)'};--vx:${n>24?'.7cqw':'var(--t-small)'};${o.style||''}`;
@@ -1251,8 +1324,8 @@ const needCS=()=>empty('Belum ada data Customer Support','Klik Import data, lalu
 const needVIP=()=>empty('Belum ada data VIP Group','Import file VIP Group, atau map kolom VIP flag di file Customer Support.');
 const needRC=()=>empty('Belum ada data Repeat Complaint','Klik Import data, lalu pilih export Trouble Ticket Summary di kartu Repeat Complaint.');
 const needCol=(c,ds)=>empty(`Kolom ${c} belum dimapping`,`Buka Import data → ${ds} → Column mapping.`);
-const SECTION={gen:['','Helpdesk Report'],cs:['','Customer Support Report'],vip:['vip','VIP Report']};
-function head(id,sec,title,lede,toggle){return `<header class="sl-head"><div class="sl-eyb" data-a><span class="sectabs"><span class="${sec==='cs'?'on':''}">Customer Support Report</span><span class="${sec==='vip'?'on':''}">VIP Report</span></span><span class="pill ghost">Helpdesk Report · ${esc(C.short)}</span></div><h2 class="sl-title" data-a>${title}</h2>${lede?ed(id+'.lede',lede,'p','sl-lede','data-a'):''}${toggle||''}</header>`}
+const SECTION={gen:['','Helpdesk Report'],cs:['','Customer Support Report'],vip:['vip','VIP Report'],ops:['','Traffic Analysis']};
+function head(id,sec,title,lede,toggle){return `<header class="sl-head"><div class="sl-eyb" data-a><span class="sectabs">${sec==='ops'?'<span class="on">Traffic Analysis &amp; SWOT</span>':`<span class="${sec==='cs'?'on':''}">Customer Support Report</span><span class="${sec==='vip'?'on':''}">VIP Report</span>`}</span><span class="pill ghost">Helpdesk Report · ${esc(C.short)}</span></div><h2 class="sl-title" data-a>${title}</h2>${lede?ed(id+'.lede',lede,'p','sl-lede','data-a'):''}${toggle||''}</header>`}
 const body=(h,style='')=>`<div class="sl-body" style="${style}">${h}</div>`;
 const DAY_PAL={peak:'#E8590C',above:'#3B4CCA',below:'#C5CBF2',line:'#3B4CCA'};
 const dayItems=(m,o={})=>{const avg=m.avg,peak=avg*1.5;o={dark:DAY_PAL.above,...o};return m.daily.map((d,i)=>{const dt=new Date(d.day);return {label:(m.daily.length>20?String(dt.getDate()):String(dt.getDate()).padStart(2,'0')+' '+MS[dt.getMonth()]),short:String(dt.getDate()),full:isoDay(d.day),value:d.value,color:d.value>=peak?DAY_PAL.peak:d.value>=avg?(o.dark||DAY_PAL.above):DAY_PAL.below}})};
@@ -1375,8 +1448,9 @@ function sVipHold(){const m=C.vip,id='vip-hold',title='VIP Hold Cases — Detail
   if(!hold.length)return head(id,'vip',title,'Semua kasus VIP sudah solved')+body(`<div class="card" data-a style="display:flex;align-items:center;justify-content:center"><div class="afr-big" style="color:#1E8E3E">0 hold</div></div>`+hl(id,[`Semua <b>${fInt(m.total)}</b> kasus VIP periode ini sudah solved.`]));
   const sc=groupCount(hold,'status'),cut=(t,n)=>t.length>n?t.slice(0,n).trim()+'…':t;
   const rows=hold.map((r,i)=>{const acc=r.group||r.company||'—',who=[r.cid,r.uid].filter(Boolean).join(' · ');const why=r.note||r.desc||'';
-    return `<tr><td class="mut">${i+1}</td><td><b>${esc(acc)}</b>${who?`<div class="mut sm2">${esc(who)}</div>`:''}</td><td class="nw">${esc(r.ticket||'—')}<div class="mut sm2">${ID_DATE(r.day)}</div></td><td><span class="hst ${/hold/i.test(r.status)?'h':/no\s*resp/i.test(r.status)?'n':'p'}">${esc(r.status||'—')}</span>${r.inv?`<div class="mut sm2">H+1: ${esc(r.inv)}</div>`:''}</td><td>${esc(r.problem)}</td><td class="why">${ed('hold.'+keyOf(r.ticket||String(i)),esc(cut(why,170))||'<span class="mut">isi alasan…</span>')}</td><td class="mut nw">${esc(r.handler||'—')}</td></tr>`}).join('');
-  const tb=`<div class="card scroll fill1" data-a><table class="tbl rk hold"><thead><tr><th>No</th><th>Account / Group</th><th>Ticket</th><th>Status</th><th>Problem</th><th>Alasan hold</th><th>Handler</th></tr></thead><tbody>${rows}</tbody></table></div><div class="legend"><span>${sc.map(x=>`${esc(x.label)} ${fInt(x.value)}`).join(' · ')} · alasan diambil dari Investigation Notes / Description, klik Edit text untuk mengubah</span></div>`;
+    const K=keyOf(r.ticket||String(i)),stV=S.edits['t.hold.st.'+K]!=null?S.edits['t.hold.st.'+K]:(r.status||'—');
+    return `<tr><td class="mut">${i+1}</td><td>${ed('hold.acc.'+K,esc(acc),'b')}${ed('hold.who.'+K,esc(who),'div','mut sm2 ph','data-ph="isi nama akun…"')}</td><td class="nw">${ed('hold.tk.'+K,esc(r.ticket||'—'))}${ed('hold.dt.'+K,ID_DATE(r.day),'div','mut sm2')}</td><td><span class="hst ${/hold/i.test(stV)?'h':/no\s*resp/i.test(stV)?'n':'p'}">${ed('hold.st.'+K,esc(r.status||'—'),'span')}</span>${r.inv?`<div class="mut sm2">H+1: ${esc(r.inv)}</div>`:''}</td><td>${ed('hold.pb.'+K,esc(r.problem||'—'))}</td><td class="why">${ed('hold.'+K,esc(cut(why,170))||'<span class="mut">isi alasan…</span>')}</td><td class="mut nw">${ed('hold.hd.'+K,esc(r.handler||'—'))}</td></tr>`}).join('');
+  const tb=`<div class="card scroll fill1" data-a><table class="tbl rk hold"><thead><tr><th>No</th><th>Account / Group</th><th>Ticket</th><th>Status</th><th>Problem</th><th>Alasan hold</th><th>Handler</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   const grp=groupCount(hold,r=>r.group||r.company);
   const h=hl(id,[`<b>${fInt(hold.length)} kasus VIP</b> belum solved (${fPct(pct(hold.length,m.total),1)} dari ${fInt(m.total)} kasus).`,
     sc[0]?`Status terbanyak: <b>${esc(sc[0].label)}</b> (${fInt(sc[0].value)} kasus).`:'',
@@ -1585,6 +1659,174 @@ function sDivider(sec){const D={cs:['01','Customer Support Report','Performa pen
   return `<div class="cv2 dv ${D[3]}">${decor()}<div class="dv-in"><div class="dv-no" data-a>${D[0]}</div><div><div class="kick" data-a>Helpdesk Report</div><h1 class="dv-title" data-a>${D[1]}</h1>${ed('div.'+sec,D[2],'p','dv-sub','data-a')}<div class="agenda" data-a>${list.map(s=>`<span>${esc(s.t)}</span>`).join('')||'<span>Tidak ada slide aktif</span>'}</div></div></div><div class="cv2-foot" data-a><span><img src="${MARK}" alt="" style="height:1.3cqw;vertical-align:middle;margin-right:.5cqw">GlobalXtreme · Helpdesk Report</span><span>${esc(C.long)}</span></div></div>`}
 function sThanks(){const kind=C.days>=28?'Monthly':C.days>=6?'Weekly':'';return `<div class="cv2 cvA ty2"><div class="glowA"></div>${FIBER}<div class="cv2-top" data-a>${BRANDA}</div><div class="ty2-in"><div class="kickA" data-a>Helpdesk Report · ${esc(C.long)}</div>${ed('thanks.title','Thank you<span class="hlt">.</span>','h1','cv2-title','data-a')}${ed('thanks.sub','Aftersales Helpdesk CSO · Customer Service Division','p','subA','data-a')}<div class="metaA" data-a><div><small>Periode</small><b>${kind?kind+' · ':''}${esc(C.long)}</b></div><div><small>Disiapkan oleh</small>${ed('thanks.by','Helpdesk CSO','b')}</div></div></div><div class="cv2-foot" data-a><span>GlobalXtreme · Committed to better quality</span><span>Internal · Confidential</span></div></div>`}
 
+/* ---------- Traffic analysis (After Sales & Night Shift) + SWOT ----------
+   Sumber: tiket Customer Support + VIP pada periode aktif (tanpa duplikat tiket), dikelompokkan per JAM CREATED.
+   Night Shift = 22:00–06:59 (NIGHT.from–NIGHT.to). After Sales = jam di luar night shift → tidak ada case terhitung dobel. */
+const NIGHT={from:22,to:7};
+const HH=h=>String(h).padStart(2,'0')+':00';
+const isNightH=h=>NIGHT.from>NIGHT.to?(h>=NIGHT.from||h<NIGHT.to):(h>=NIGHT.from&&h<NIGHT.to);
+const DAYH=[...Array(24).keys()].filter(h=>!isNightH(h)),NIGHTH=[...Array(24).keys()].filter(isNightH).sort((a,b)=>((a-NIGHT.from+24)%24)-((b-NIGHT.from+24)%24));
+const DOW=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'],DOWS=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+let _TR=null,_TRk='';
+function trafficData(){
+  const lists=[C.cs&&C.cs.list,C.vip&&C.vip.list].filter(Boolean);const key=(C.short||'')+'|'+lists.map(l=>l.length).join(',');
+  if(_TR&&_TRk===key)return _TR;
+  const seen=new Set(),rows=[];let bad=0,midnight=0;
+  for(const l of lists)for(const r of l){const k=r.ticket||(r.date+'|'+r.cid+'|'+r.problem);if(seen.has(k))continue;seen.add(k);
+    if(r.date==null||!isFinite(r.date)){bad++;continue}const d=new Date(r.date);if(!d.getHours()&&!d.getMinutes()&&!d.getSeconds())midnight++;rows.push({d,h:d.getHours(),r})}
+  const hasTime=rows.length>0&&midnight/rows.length<.6;
+  const minD=rows.length?Math.min(...rows.map(x=>dayStart(+x.d))):null,maxD=rows.length?Math.max(...rows.map(x=>dayStart(+x.d))):null;
+  const days=[];if(minD!=null)for(let t=minD;t<=maxD;t=dayStart(t+36*3600e3))days.push(t);
+  const byH=Array(24).fill(0);rows.forEach(x=>byH[x.h]++);
+  const day=rows.filter(x=>!isNightH(x.h)),night=rows.filter(x=>isNightH(x.h));
+  /* night shift dimulai tanggal jam 22:00 → jam 00–06 milik malam sebelumnya */
+  const nightKey=x=>x.h>=NIGHT.from?dayStart(+x.d):dayStart(+x.d-24*3600e3);
+  const nights=new Map();night.forEach(x=>{const k=nightKey(x);if(!nights.has(k))nights.set(k,Array(24).fill(0));nights.get(k)[x.h]++});
+  const nightList=[];if(minD!=null){const keys=[...nights.keys()];const a0=Math.min(minD,...keys),a1=Math.max(minD,...keys);for(let t=a0;t<=a1;t=dayStart(t+36*3600e3))nightList.push({day:t,h:nights.get(t)||Array(24).fill(0),part:t<minD||t+864e5>maxD+864e5-1&&t>=maxD})}
+  /* malam pertama (sebelum data mulai) / terakhir (belum lengkap) tetap ditampilkan, tapi rata-rata pakai malam yang lengkap */
+  const fullNights=nightList.filter(n=>!n.part);
+  const dowCount=Array(7).fill(0),dowDays=Array(7).fill(0),heat=[...Array(7)].map(()=>Array(24).fill(0));
+  days.forEach(t=>dowDays[new Date(t).getDay()]++);
+  rows.forEach(x=>{const w=x.d.getDay();dowCount[w]++;heat[w][x.h]++});
+  const perDate=days.map(t=>({day:t,day_:rows.filter(x=>dayStart(+x.d)===t&&!isNightH(x.h)).length,all:rows.filter(x=>dayStart(+x.d)===t).length}));
+  _TR={rows,bad,hasTime,days,nDays:days.length,byH,day,night,nightList,fullNights,dowCount,dowDays,heat,perDate,min:minD,max:maxD};_TRk=key;return _TR}
+function areaChart(items,o={}){/* grafik area halus + angka di tiap titik (gaya monitoring traffic) */
+  if(!items.length)return '<div class="empty">No data</div>';const n=items.length,max=Math.max(1,...items.map(x=>x.value)),step=Math.max(1,niceStepT(max)),top=Math.ceil(max*1.12/step)*step;
+  const X=i=>(i+.5)/n*100,Y=v=>100-v/top*100,pts=items.map((x,i)=>[X(i),Y(x.value)]);
+  let d=`M${pts[0][0]},${pts[0][1]}`;for(let i=1;i<n;i++){const [x0,y0]=pts[i-1],[x1,y1]=pts[i],c=(x1-x0)*(o.dense?.25:.45);d+=` C${x0+c},${y0} ${x1-c},${y1} ${x1},${y1}`}
+  const area=`${d} L${pts[n-1][0]},100 L${pts[0][0]},100 Z`,gid='ag'+(o.id||'');const ticks=[];for(let v=0;v<=top;v+=step)ticks.push(v);
+  const bands=(o.bands||[]).map(([a,b,l])=>`<div class="ac-band" style="left:${a/n*100}%;width:${(b-a)/n*100}%"><span>${l||''}</span></div>`).join('');
+  return `<div class="ac ${o.dense?'dense':''}"><div class="ac-y">${ticks.map(t=>`<span style="bottom:${t/top*100}%">${fInt(t)}</span>`).join('')}</div>${o.scrollW?`<div class="ac-scroll" data-sl="${o.scrollTo||0}"><div class="ac-main" style="width:${o.scrollW}">`:'<div class="ac-main">'}<div class="ac-plot">${bands}${ticks.map(t=>`<s style="bottom:${t/top*100}%"></s>`).join('')}
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${o.color||'#3B4CCA'}" stop-opacity=".32"/><stop offset="1" stop-color="${o.color||'#3B4CCA'}" stop-opacity=".02"/></linearGradient></defs><path d="${area}" fill="url(#${gid})"/><path d="${d}" fill="none" stroke="${o.color||'#3B4CCA'}" stroke-width="2.4" vector-effect="non-scaling-stroke" stroke-linecap="round"/></svg>
+    ${items.map((x,i)=>o.hideZero&&!x.value?'':`<i class="ac-pt ${x.cls||''}" style="left:${X(i)}%;top:${Y(x.value)}%;--pc:${x.color||o.color||'#3B4CCA'}" title="${esc(x.full||'')}"></i><b class="ac-v ${x.cls||''}" style="left:${X(i)}%;top:${Y(x.value)}%">${fInt(x.value)}${x.sub?`<small>${x.sub}</small>`:''}</b>`).join('')}</div>
+    <div class="ac-x">${items.map((x,i)=>`<span class="${x.cls||''}">${!o.xEvery||i%o.xEvery===0?esc(x.label):''}</span>`).join('')}</div></div>${o.scrollW?'</div>':''}</div>`}
+function niceStepT(max){const raw=max/4,p=Math.pow(10,Math.floor(Math.log10(raw||1))),f=raw/p;return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p}
+function hourStats(T,hours,total,nPeriods){
+  const items=hours.map(h=>({h,v:T.byH[h]})),sum=items.reduce((s,x)=>s+x.v,0);
+  const avgH=nPeriods?sum/(hours.length*nPeriods):0,perHour=hours.length?sum/hours.length:0;   /* rata-rata per jam observasi = total ÷ (jumlah jam shift × jumlah hari) */
+  const pk=items.reduce((a,b)=>b.v>a.v?b:a,items[0]),lo=items.reduce((a,b)=>b.v<a.v?b:a,items[0]);
+  return {items,sum,avgH,perHour,pk,lo}}
+const tierColor=(v,m)=>v>=m*1.25?'#E8590C':v>=m*.85?'#3B4CCA':'#AEB7F0';
+function tileTxt(tone,icon,label,text,foot){return `<div class="card tile sm t-${tone}" data-a><div class="ico">${ICON[icon]}</div><div style="min-width:0"><div class="tlab">${label}</div><div class="tval">${text}</div><div class="tfoot">${foot||''}</div></div></div>`}
+const trafficSrc=T=>`Sumber: tiket Customer Support + VIP · jam Created · ${rangeLabel(T.min,T.max)} · ${fInt(T.nDays)} hari`;
+function noTraffic(id,title){const T=C.cs||C.vip?trafficData():null;
+  if(!T)return head(id,'ops',title)+body(needCS());
+  if(!T.hasTime)return head(id,'ops',title)+body(empty('Jam Created tidak tersedia','Kolom Created hanya berisi tanggal. Import ulang file yang punya kolom Created Time (atau Created At) supaya traffic per jam bisa dihitung.'));
+  return null}
+
+function sTrafficHour(){const id='ops-hour',title='After Sales Traffic by Hour';const nt=noTraffic(id,title);if(nt)return nt;
+  const T=trafficData(),S_=hourStats(T,DAYH,T.rows.length,T.nDays),allAvg=T.rows.length/24;
+  const busy=DAYH.filter(h=>T.byH[h]>=S_.perHour*1.1),top3=[...S_.items].sort((a,b)=>b.v-a.v).slice(0,3),top3Share=pct(top3.reduce((s,x)=>s+x.v,0),S_.sum);
+  /* jam mulai turun: jam pertama setelah peak yang turun di bawah rata-rata dan tetap di bawah */
+  let decl=null;for(let i=DAYH.indexOf(S_.pk.h)+1;i<DAYH.length;i++){if(DAYH.slice(i).every(h=>T.byH[h]<S_.perHour)){decl=DAYH[i];break}}
+  const items=[...Array(24).keys()].map(h=>({label:String(h).padStart(2,'0'),full:`${HH(h)}–${String(h).padStart(2,'0')}:59 · ${fInt(T.byH[h])} case · ${fPct(pct(T.byH[h],T.rows.length),1)} dari semua case${isNightH(h)?' · Night Shift':''}`,value:T.byH[h],color:isNightH(h)?'#D9DCE3':tierColor(T.byH[h],S_.perHour)}));
+  const k=on(id,'kpi')?`<div class="tiles" style="--cols:4">${sm('y','list','Case jam Helpdesk',S_.sum,`${HH(DAYH[0])}–${HH(NIGHT.from)} · ${fPct(pct(S_.sum,T.rows.length),1)} dari total`)}${tileTxt('o','clock','Peak hour',`${HH(S_.pk.h)}`,`${fInt(S_.pk.v)} case · ${fPct(pct(S_.pk.v,S_.sum),1)} After Sales`)}${tileTxt('b','clock','Lowest hour',`${HH(S_.lo.h)}`,`${fInt(S_.lo.v)} case · ${fPct(pct(S_.lo.v,S_.sum),1)}`)}${sm('g','gauge','Avg case / hour',S_.avgH,`per jam per hari · ${DAYH.length} jam × ${fInt(T.nDays)} hari`,'d1')}</div>`:'';
+  const aItems=[...Array(24).keys()].map(h=>({label:String(h).padStart(2,'0'),full:items[h].full,value:T.byH[h],color:isNightH(h)?'#9AA0AE':tierColor(T.byH[h],S_.perHour),cls:(isNightH(h)?'dim ':'')+(h===S_.pk.h?'pk':'')}));
+  const bands=[];if(NIGHT.from>NIGHT.to){bands.push([0,NIGHT.to,'Contact Center']);bands.push([NIGHT.from,24,'CC'])}
+  const chart=on(id,'chart')?`<div class="card fill1" data-a style="--f:1.7;display:flex;flex-direction:column"><div class="ctitle">Case masuk per jam (00–23) · total ${fInt(T.rows.length)} case · jam tim Helpdesk ${HH(NIGHT.to)}–${HH(NIGHT.from)}</div>${areaChart(aItems,{id,color:'#3B4CCA',bands})}<div class="legend"><span><i style="background:#E8590C"></i>Sibuk ≥ 125% rata-rata</span><span><i style="background:#3B4CCA"></i>Normal</span><span><i style="background:#AEB7F0"></i>Sepi</span><span><i style="background:#ECEEF3;border:1px solid #D9DCE3"></i>${HH(NIGHT.from)}–${HH(NIGHT.to)} back-up Contact Center</span></div></div>`:'';
+  const share=on(id,'share')?`<div class="card" data-a style="--f:.9;display:flex;flex-direction:column;overflow:hidden"><div class="ctitle">Top 5 jam · kontribusi ke After Sales</div>${hbars([...S_.items].sort((a,b)=>b.v-a.v).slice(0,5).map((x,j)=>({label:`${HH(x.h)}–${String(x.h).padStart(2,'0')}:59`,value:x.v,sv:fPct(pct(x.v,S_.sum),1),meta:`${f1(x.v/T.nDays)}/hari`,color:j?'#3B4CCA':'#E8590C'})),{style:'--hg:.55cqw;--bh:.45cqw'})}</div>`:'';
+  const h=hl(id,[`Case paling banyak masuk jam <b>${HH(S_.pk.h)}–${String(S_.pk.h).padStart(2,'0')}:59</b>: <b>${fInt(S_.pk.v)} case</b> (${fPct(pct(S_.pk.v,S_.sum),1)} After Sales, rata-rata ${f1(S_.pk.v/T.nDays)}/hari).`,
+    `Peak hour <b>${f1(S_.perHour?S_.pk.v/S_.perHour:0)}×</b> rata-rata jam After Sales dan <b>${f1(S_.lo.v?S_.pk.v/S_.lo.v:0)}×</b> jam tersepi (${HH(S_.lo.h)}). 3 jam tersibuk = <b>${fPct(top3Share,0)}</b> case.`,
+    busy.length?`Jam sibuk: <b>${busy.map(h=>HH(h).slice(0,2)).join(', ')}</b>${decl!=null?` · traffic mulai menurun dari <b>${HH(decl)}</b>`:''} — coverage tim paling dibutuhkan di jam sibuk.`:'']);
+  return head(id,'ops',title,trafficSrc(T))+body(k+row(chart,share)+h)}
+
+
+function sTrafficMinute(){const id='ops-min',title='Traffic per Minute';const nt=noTraffic(id,title);if(nt)return nt;
+  const T=trafficData();let st={};try{st=JSON.parse(S.chart[id]||'{}')}catch(e){}
+  /* jumlah case per menit (00:00–23:59) — total periode, atau satu tanggal tertentu */
+  const dayOpts=T.days,dSel=st.d&&dayOpts.includes(+st.d)?+st.d:'all';
+  const src=dSel==='all'?T.rows:T.rows.filter(x=>dayStart(+x.d)===dSel);
+  const byM=new Array(1440).fill(0);src.forEach(x=>byM[x.h*60+x.d.getMinutes()]++);
+  const dayMin=DAYH.length*60,daySum=T.day.length,avgMin=daySum/(dayMin*T.nDays);
+  let pkM=0;for(let i=1;i<1440;i++)if(byM[i]>byM[pkM])pkM=i;
+  const peakHour=(()=>{let b=DAYH[0];DAYH.forEach(h=>{if(T.byH[h]>T.byH[b])b=h});return b})();
+  const len=st.l===60?60:st.l===180?180:1440,start=Math.max(0,Math.min(1440-len,st.s!=null?+st.s:peakHour*60));
+  const MM=i=>`${String(Math.floor(i/60)).padStart(2,'0')}:${String(i%60).padStart(2,'0')}`;
+  /* lonjakan: menit dengan case terbanyak pada satu tanggal */
+  const burstMap=new Map();T.rows.forEach(x=>{const k=dayStart(+x.d)+'|'+(x.h*60+x.d.getMinutes());burstMap.set(k,(burstMap.get(k)||0)+1)});
+  let burst=null;for(const [k,v] of burstMap)if(!burst||v>burst.v)burst={k,v};
+  const [bD,bM]=burst?burst.k.split('|').map(Number):[0,0];
+  const win=byM.slice(start,start+len),wSum=win.reduce((a,b)=>a+b,0),wMax=Math.max(...win),wMaxI=start+win.indexOf(wMax),wZero=win.filter(v=>!v).length;
+  const wAvg=wSum/len;
+  const items=win.map((v,i)=>{const m=start+i;return {label:MM(m),value:v,full:`${MM(m)} · ${fInt(v)} case${dSel==='all'?` (total ${fInt(T.nDays)} hari)`:''}`,color:v>=Math.max(2,wAvg*2)?'#E8590C':'#3B4CCA',cls:(isNightH(Math.floor(m/60))?'dim ':'')+(m===wMaxI&&v?'pk':'')}});
+  const btn=(o,lab,cur)=>`<button data-mw='${JSON.stringify({...st,...o}).replace(/'/g,'&#39;')}' class="${cur?'on':''}">${lab}</button>`;
+  const ctrl=`<div class="mwc" data-a><div class="mseg">${btn({l:1440},'24 jam',len===1440)}${btn({l:180},'3 jam',len===180)}${btn({l:60},'1 jam',len===60)}</div>
+    ${len<1440?`<div class="mseg">${btn({s:Math.max(0,start-len)},'‹',false)}<span class="mwl">${MM(start)}–${MM(start+len-1)}</span>${btn({s:Math.min(1440-len,start+len)},'›',false)}</div>
+    <div class="mseg">${btn({s:peakHour*60},'Peak hour',start===peakHour*60)}${btn({s:pkM-pkM%60},'Menit tersibuk',start===pkM-pkM%60&&start!==peakHour*60)}</div>`:`<span class="mwl">00:00–23:59</span>`}
+    <div class="mseg">${[['7','7 hari'],['month','Bulan terakhir'],['all','Semua bulan'],['custom','Custom']].map(([v,l])=>`<button data-pm="${v}" class="${S.period.mode===v?'on':''}">${l}</button>`).join('')}</div>${S.period.mode==='custom'?`<input type="date" class="mws" data-pf value="${esc(S.period.from||'')}"> – <input type="date" class="mws" data-pt value="${esc(S.period.to||'')}">`:''}
+    <select class="mws" data-mwsel='${JSON.stringify(st).replace(/'/g,'&#39;')}'><option value="all">Semua tanggal (total)</option>${dayOpts.map(t=>`<option value="${t}" ${t===dSel?'selected':''}>${DOWS[new Date(t).getDay()]}, ${ID_DATE(t)}</option>`).join('')}</select></div>`;
+  const k=on(id,'kpi')?`<div class="tiles mtiles" style="--cols:4">${sm('g','gauge','Avg case / menit',avgMin,`jam Helpdesk ${HH(NIGHT.to)}–${HH(NIGHT.from)} · ${fInt(daySum)} case`,'d2')}${tileTxt('o','clock','Menit tersibuk',MM(pkM),`${fInt(byM[pkM])} case ${dSel==='all'?`total ${fInt(T.nDays)} hari`:'hari ini'}`)}${burst?tileTxt('b','alert','Lonjakan 1 menit',`${fInt(burst.v)} case`,`${ID_DATE(bD)} · ${MM(bM)}`):''}${sm('y','list','Case di jendela ini',wSum,`${MM(start)}–${MM(start+len-1)} · ${f2n(wAvg)}/menit`)}</div>`:'';
+  const chart=on(id,'chart')?`<div class="card fill1 mcard" data-a style="display:flex;flex-direction:column;min-height:0;overflow:hidden"><div class="ctitle">Case masuk per menit · ${MM(start)}–${MM(start+len-1)} · ${dSel==='all'?`total ${fInt(T.nDays)} hari`:`${DOW[new Date(dSel).getDay()]}, ${ID_DATE(dSel)}`}</div>${len===1440?overview(byM,pkM)+'':''}${areaChart(items,{id:id+start+len,color:'#3B4CCA',dense:1,xEvery:len===60?5:15,hideZero:len>60,scrollW:len===1440?'1440%':'',scrollTo:len===1440?Math.max(0,(peakHour*60-30)/1440):0})}<div class="legend"><span><i style="background:#E8590C"></i>≥ 2× rata-rata jendela</span><span><i style="background:#3B4CCA"></i>lainnya</span>${len>60?'<span>angka 0 disembunyikan</span>':''}${len===1440?'<span>↔ geser grafik bawah untuk melihat tiap menit · strip atas = gambaran 24 jam</span>':''}</div></div>`:'';
+  const h=hl(id,[`Rata-rata <b>${f2n(avgMin)} case per menit</b> di jam Helpdesk (≈ 1 case tiap <b>${avgMin?f1(1/avgMin):'—'} menit</b>).`,
+    `Menit tersibuk <b>${MM(pkM)}</b>: ${fInt(byM[pkM])} case${dSel==='all'?` dalam ${fInt(T.nDays)} hari`:''}${burst?` · lonjakan terbesar <b>${fInt(burst.v)} case dalam 1 menit</b> (${ID_DATE(bD)} ${MM(bM)})`:''}.`,
+    `Jendela ${MM(start)}–${MM(start+len-1)}: <b>${fInt(wSum)} case</b>, puncak ${MM(wMaxI)} (${fInt(wMax)} case), ${fInt(wZero)} menit tanpa case.`]);
+  return head(id,'ops',title,`${trafficSrc(T)} · per menit jam Created${dSel==='all'?' · dijumlah semua tanggal':''}`)+body(ctrl+k+chart+h)}
+function overview(byM,pkM){const mx=Math.max(1,...byM),pts=byM.map((v,i)=>`${(i+.5)/1440*100},${100-v/mx*92}`).join(' ');
+  return `<div class="ovw"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="#3B4CCA" stroke-width="1" vector-effect="non-scaling-stroke"/></svg><div class="ovx">${[0,3,6,9,12,15,18,21].map(h=>`<span style="left:${h/24*100}%">${HH(h)}</span>`).join('')}</div><i class="ovp" style="left:${(pkM+.5)/1440*100}%" title="menit tersibuk"></i></div>`}
+const f2n=v=>(Math.round(v*100)/100).toFixed(2);
+function setPeriodMode(v){S.period.mode=v;if(v==='custom'&&!S.period.from&&C&&C.a!=null){S.period.from=isoDay(C.a);S.period.to=isoDay(C.b)}const sel=document.getElementById('period');if(sel)sel.value=v;_TR=null;syncPeriod();refresh(0);if(typeof presenting!=='undefined'&&presenting&&typeof presRender==='function')presRender(0)}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-pm]');if(!b)return;e.stopPropagation();e.preventDefault();setPeriodMode(b.dataset.pm)},true);
+document.addEventListener('change',e=>{const f=e.target.closest('[data-pf],[data-pt]');if(!f)return;if(f.hasAttribute('data-pf'))S.period.from=f.value;else S.period.to=f.value;const a=document.getElementById('pFrom'),b=document.getElementById('pTo');if(a)a.value=S.period.from||'';if(b)b.value=S.period.to||'';setPeriodMode('custom')},true);
+new MutationObserver(()=>document.querySelectorAll('.ac-scroll[data-sl]:not([data-done])').forEach(el=>{el.dataset.done=1;requestAnimationFrame(()=>{el.scrollLeft=el.scrollWidth*(+el.dataset.sl||0)})})).observe(document.documentElement,{childList:true,subtree:true});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-mw]');if(!b)return;e.stopPropagation();e.preventDefault();S.chart['ops-min']=b.dataset.mw;save();renderStage(0);if(typeof presenting!=='undefined'&&presenting&&typeof presRender==='function')presRender(0)},true);
+document.addEventListener('change',e=>{const t=e.target.closest('[data-mwsel]');if(!t)return;let st={};try{st=JSON.parse(t.dataset.mwsel||'{}')}catch(_){}st.d=t.value==='all'?undefined:+t.value;S.chart['ops-min']=JSON.stringify(st);save();renderStage(0);if(typeof presenting!=='undefined'&&presenting&&typeof presRender==='function')presRender(0)},true);
+
+function sTrafficDays(){const id='ops-days',title='Traffic by Day & Hour';const nt=noTraffic(id,title);if(nt)return nt;
+  const T=trafficData(),order=[1,2,3,4,5,6,0];
+  const dAvg=order.map(w=>({w,avg:T.dowDays[w]?T.dowCount[w]/T.dowDays[w]:null,n:T.dowDays[w]}));const have=dAvg.filter(x=>x.avg!=null);
+  const maxCell=Math.max(1,...order.flatMap(w=>T.heat[w].map(v=>T.dowDays[w]?v/T.dowDays[w]:0)));
+  const heat=on(id,'heat')?`<div class="card fill1" data-a style="--f:1.8"><div class="ctitle">Rata-rata case per jam per hari (heatmap)</div><div class="hm"><div class="hm-r hm-hd"><span></span>${[...Array(24).keys()].map(h=>`<em>${h%3?'':String(h).padStart(2,'0')}</em>`).join('')}</div>
+    ${order.filter(w=>T.dowDays[w]).map(w=>`<div class="hm-r"><span>${DOWS[w]}</span>${T.heat[w].map((v,h)=>{const a=v/T.dowDays[w];return `<i title="${DOW[w]} ${HH(h)} · rata-rata ${f1(a)} case (${fInt(v)} dari ${T.dowDays[w]} hari)" style="--o:${(.06+.94*a/maxCell).toFixed(3)}" class="${isNightH(h)?'nt':''}"></i>`}).join('')}</div>`).join('')}</div>
+    <div class="legend"><span><i style="background:#E8590C"></i>lebih banyak</span><span><i style="background:#FCE4D6"></i>lebih sedikit</span><span>kolom bergaris = Night Shift</span></div></div>`:'';
+  const maxA=Math.max(1,...have.map(x=>x.avg));
+  const bars=on(id,'dow')?`<div class="card" data-a style="--f:.8;display:flex;flex-direction:column;overflow:hidden"><div class="ctitle">Rata-rata case per hari</div>${hbars(have.map(x=>({label:`${DOW[x.w]} (${x.n}h)`,value:Math.round(x.avg*10)/10,color:x.avg>=maxA*.95?'#E8590C':'#3B4CCA'})),{fmt:x=>f1(x.value),style:'--hg:.25cqw;--bh:.4cqw'})}<div class="legend"><span>(n h) = jumlah hari data</span></div></div>`:'';
+  const wk=have.filter(x=>x.w>=1&&x.w<=5),we=have.filter(x=>x.w===0||x.w===6),avgOf=a=>a.length?a.reduce((s,x)=>s+x.avg,0)/a.length:null;
+  const top=[...have].sort((a,b)=>b.avg-a.avg)[0],low=[...have].sort((a,b)=>a.avg-b.avg)[0];const few=have.some(x=>x.n<2);
+  const h=hl(id,[top?`Hari tersibuk: <b>${DOW[top.w]}</b> rata-rata <b>${f1(top.avg)} case</b>/hari; tersepi <b>${DOW[low.w]}</b> (${f1(low.avg)}).`:'',
+    wk.length&&we.length?`Hari kerja rata-rata <b>${f1(avgOf(wk))}</b> case/hari vs akhir pekan <b>${f1(avgOf(we))}</b> (${avgOf(we)>=avgOf(wk)?'+':''}${fPct(pct(avgOf(we)-avgOf(wk),avgOf(wk)),0)}).`:'Data belum mencakup hari kerja dan akhir pekan sekaligus — perbandingan belum bisa dibuat.',
+    few?`Sebagian hari baru punya 1 hari data di periode ini — pola per hari perlu dikonfirmasi dengan periode lebih panjang.`:`Pola jam sibuk terlihat dari warna paling gelap di heatmap; gunakan untuk menyusun jadwal per hari.`]);
+  return head(id,'ops',title,trafficSrc(T))+body(row(heat,bars)+h)}
+
+function sNightShift(){const id='ops-night',title=`Night Shift Case Report · ${HH(NIGHT.from)}–${HH(NIGHT.to)}`;const nt=noTraffic(id,title);if(nt)return nt;
+  const T=trafficData(),nN=T.nightList.length||1,S_=hourStats(T,NIGHTH,T.night.length,nN);
+  const withTeam=T.night.filter(x=>x.r.team),ccN=withTeam.filter(x=>/contact/i.test(x.r.team)).length,hdN=withTeam.filter(x=>/helpdesk|account/i.test(x.r.team)).length;
+  const items=NIGHTH.map(h=>({label:String(h).padStart(2,'0'),full:`${HH(h)}–${String(h).padStart(2,'0')}:59 · ${fInt(T.byH[h])} case · ${fPct(pct(T.byH[h],S_.sum),1)} Night Shift`,value:T.byH[h],color:tierColor(T.byH[h],S_.perHour)}));
+  /* jam yang konsisten tinggi: di atas rata-rata jam malam pada ≥ 60% malam */
+  const cons=NIGHTH.filter(h=>{const ok=T.fullNights.filter(n=>{const tot=NIGHTH.reduce((s,x)=>s+n.h[x],0);return tot&&n.h[h]>tot/NIGHTH.length}).length;return T.fullNights.length>=3&&ok/T.fullNights.length>=.6});
+  const per=T.nightList.map(n=>({day:n.day,v:NIGHTH.reduce((s,h)=>s+n.h[h],0),part:n.part}));
+  const avgN=per.length?per.reduce((s,x)=>s+x.v,0)/per.length:0,maxN=per.length?per.reduce((a,b)=>b.v>a.v?b:a):null,minN=per.length?per.reduce((a,b)=>b.v<a.v?b:a):null;
+  const k=on(id,'kpi')?`<div class="tiles" style="--cols:${withTeam.length?5:4}">${sm('y','list','Night Shift cases',S_.sum,`${fPct(pct(S_.sum,T.rows.length),1)} · ${fInt(per.length)} malam`)}${tileTxt('o','clock','Peak hour',HH(S_.pk.h),`${fInt(S_.pk.v)} case · ${fPct(pct(S_.pk.v,S_.sum),1)}`)}${tileTxt('b','clock','Lowest hour',HH(S_.lo.h),`${fInt(S_.lo.v)} case · ${fPct(pct(S_.lo.v,S_.sum),1)}`)}${sm('g','gauge','Avg / hour',S_.avgH,`${NIGHTH.length} jam × ${fInt(per.length)} malam`,'d1')}${withTeam.length?sm('b','check','Di-handle CC',pct(ccN,withTeam.length),`${fInt(ccN)} dari ${fInt(withTeam.length)} case`,'p2'):''}</div>`:'';
+  const chart=on(id,'chart')?`<div class="card fill1" data-a style="--f:1.3;display:flex;flex-direction:column"><div class="ctitle">Case masuk per jam · ${HH(NIGHT.from)}–${HH(NIGHT.to)}</div>${areaChart(items.map(x=>({...x,sub:fPct(pct(x.value,S_.sum),0),cls:x.value===S_.pk.v?'pk':''})),{id,color:'#5E5CE6'})}<div class="legend"><span><i style="background:#E8590C"></i>Sibuk ≥ 125% rata-rata</span><span><i style="background:#3B4CCA"></i>Normal</span><span><i style="background:#AEB7F0"></i>Sepi</span><span>angka kecil = % dari case malam</span></div></div>`:'';
+  const nights=on(id,'nights')?`<div class="card fill1" data-a style="--f:1.2"><div class="ctitle">Case Night Shift per malam · rata-rata ${f1(avgN)}</div>${vbars(per.map(x=>{const d=new Date(x.day);return {label:String(d.getDate()),full:`Malam ${DOW[d.getDay()]} ${ID_DATE(x.day)} → ${ID_DATE(x.day+864e5)} · ${fInt(x.v)} case${x.part?' · sebagian (di luar periode data)':''}`,value:x.v,color:x.v>=avgN*1.25?'#E8590C':x.v>=avgN*.85?'#3B4CCA':'#AEB7F0'}}))}<div class="legend"><span>angka = tanggal mulai shift (${HH(NIGHT.from)})${per.some(x=>x.part)?' · malam pertama/terakhir bisa sebagian karena batas periode data':''}</span></div></div>`:'';
+  const h=hl(id,[`Jam tersibuk Night Shift <b>${HH(S_.pk.h)}</b> (${fInt(S_.pk.v)} case, ${fPct(pct(S_.pk.v,S_.sum),1)}); tersepi <b>${HH(S_.lo.h)}</b> (${fInt(S_.lo.v)} case).`,
+    cons.length?`Konsisten tinggi hampir tiap malam: <b>${cons.map(HH).join(', ')}</b> — jam ini perlu coverage penuh.`:(T.fullNights.length<3?'Malam yang tercatat masih < 3 — konsistensi jam sibuk belum bisa disimpulkan.':'Tidak ada jam yang konsisten tinggi setiap malam; lonjakan bersifat harian.'),
+    withTeam.length?`Di luar jam tim Helpdesk, <b>${fPct(pct(ccN,withTeam.length),0)}</b> case malam di-handle <b>Contact Center</b> (${fInt(ccN)} case)${hdN?`; ${fInt(hdN)} case tetap di-handle Helpdesk/AM`:''}.`:'',
+    maxN?`Malam tersibuk <b>${ID_DATE(maxN.day)}</b> (${fInt(maxN.v)} case) vs tersepi ${ID_DATE(minN.day)} (${fInt(minN.v)}) — selisih ${fInt(maxN.v-minN.v)} case/malam.`:'']);
+  return head(id,'ops',title,`${trafficSrc(T)} · Night Shift = ${HH(NIGHT.from)}–${String((NIGHT.to+23)%24).padStart(2,'0')}:59 (back-up Contact Center), jam 00–06 dihitung ke malam sebelumnya`)+body(k+row(chart,nights)+h)}
+
+function sSwot(){const id='ops-swot',title='SWOT Analysis';const nt=noTraffic(id,title);if(nt)return nt;
+  const T=trafficData(),D=hourStats(T,DAYH,0,T.nDays),N=hourStats(T,NIGHTH,0,T.fullNights.length||1),cs=C.cs,vip=C.vip;
+  const top3=[...D.items].sort((a,b)=>b.v-a.v).slice(0,3),top3S=pct(top3.reduce((s,x)=>s+x.v,0),D.sum),nightShare=pct(N.sum,T.rows.length);
+  const md=cs?afrMed(cs):null,w5=cs?afrWithin(cs):null;
+  const F=(t)=>({k:'F',t}),A=(t)=>({k:'A',t}),Q=(t)=>({k:'Q',t});
+  const Sx=[cs&&cs.rateAdj>=90?F(`Resolution rate Customer Support <b>${fPct(cs.rateAdj,1)}</b> (target ≥ 90%).`):null,
+      vip&&vip.rateAdj>=95?F(`Resolution VIP <b>${fPct(vip.rateAdj,1)}</b> dari ${fInt(vip.total)} kasus.`):null,
+      md!=null&&md<=AFR_SLA?F(`Median first response <b>${f1(md)} menit</b>; ${fPct(w5,0)} tiket diambil ≤ ${AFR_SLA} menit.`):null,
+      F(`Case tetap tertangani 24 jam: ${fInt(N.sum)} case Night Shift masuk di ${fInt(T.fullNights.length||T.nightList.length)} malam.`)].filter(Boolean);
+  const Wx=[F(`Beban menumpuk: 3 jam tersibuk (${top3.map(x=>HH(x.h).slice(0,2)).join(', ')}) = <b>${fPct(top3S,0)}</b> case After Sales.`),
+      F(`Peak hour ${HH(D.pk.h)} = <b>${f1(D.perHour?D.pk.v/D.perHour:0)}×</b> rata-rata jam After Sales.`),
+      cs&&cs.nrAfter?F(`<b>${fInt(cs.nrAfter)}</b> case Customer Support masih No Response setelah H+1.`):null,
+      Q('Ketimpangan workload antar-agent per jam perlu dicek dengan data jadwal shift (belum ada di dataset).')].filter(Boolean);
+  const Ox=[A(`Sesuaikan jadwal: tambah coverage di ${top3.map(x=>HH(x.h)).join(', ')}; pindahkan pekerjaan non-urgent (follow-up, admin) ke ${HH(D.lo.h)}.`),
+      A(`Koordinasi dengan Contact Center: siapkan handover jam ${HH(NIGHT.from)} dan cek antrean jam ${HH(N.pk.h)} (peak malam) sebelum tim Helpdesk masuk ${HH(NIGHT.to)}.`),
+      A('Siapkan template/macro untuk problem terbanyak di jam sibuk supaya handling lebih cepat.')];
+  const Tx=[F(`Lonjakan di ${HH(D.pk.h)}: rata-rata <b>${f1(D.pk.v/T.nDays)} case</b>/hari dalam 1 jam — risiko antrean jika agent kurang.`),
+      F(`<b>${fPct(nightShare,1)}</b> case masuk di luar jam tim Helpdesk (${HH(NIGHT.from)}–${HH(NIGHT.to)}), ditangani back-up Contact Center.`),
+      Q('Risiko backlog saat back-up malam oleh Contact Center perlu divalidasi dengan jumlah agent CC per malam dan case yang diteruskan ke pagi.')];
+  const tag={F:'<span class="sw-t f">Fakta</span>',A:'<span class="sw-t a">Rekomendasi</span>',Q:'<span class="sw-t q">Perlu dicek</span>'};
+  const box=(cls,name,sub,list)=>`<div class="card sw ${cls}" data-a><div class="sw-h"><b>${name}</b><span>${sub}</span></div><ul>${list.map((x,i)=>`<li>${tag[x.k]}${ed(`${id}.${cls}${i}`,x.t,'span')}</li>`).join('')}</ul></div>`;
+  return head(id,'ops',title,`${trafficSrc(T)} · Fakta = dari data · Rekomendasi = usulan action · Perlu dicek = hipotesis`)+body(`<div class="swg">${box('s','Strengths','kekuatan',Sx)}${box('w','Weaknesses','kelemahan',Wx)}${box('o','Opportunities','peluang',Ox)}${box('t','Threats','risiko',Tx)}</div>`)}
+
 const SLIDES=[
  {id:'cover',g:'gen',t:'Cover',r:sCover,dark:1},
  {id:'cs-nr',g:'cs',t:'No Response Analysis & Resolution Rate Impact',r:sNoResp,need:'cs',blocks:[['before','Before investigation'],['after','After H+1 investigation'],['impact','Before vs after H+1'],['noresp','No response before → after'],['hl','Key highlights']]},
@@ -1606,9 +1848,14 @@ const SLIDES=[
  {id:'vip-hand-rank',g:'vip',t:'VIP Handling Agents — Ranked',r:()=>sRanked('vip','handler'),need:'vip',off:1,blocks:[['hl','Key highlights']]},
  {id:'rc-vip',g:'vip',t:'VIP Top 3 Repeat Complaints',r:()=>sRepeat('vip'),need:'rc',top3:'vip'},
  {id:'rc-vip-list',g:'vip',t:'VIP Other Repeat Complaints',r:()=>sRepeatList('vip'),need:'rc',blocks:[['hl','Key highlights']]},
+ {id:'ops-hour',g:'ops',t:'After Sales Traffic by Hour',r:sTrafficHour,need:'cs',blocks:[['kpi','KPI tiles'],['chart','Hourly chart'],['share','Top hours'],['hl','Key highlights']]},
+ {id:'ops-min',g:'ops',t:'Traffic per Minute',r:sTrafficMinute,need:'cs',blocks:[['kpi','KPI tiles'],['chart','Minute chart'],['hl','Key highlights']]},
+ {id:'ops-days',g:'ops',t:'Traffic by Day & Hour',r:sTrafficDays,need:'cs',blocks:[['heat','Heatmap'],['dow','Average per day'],['hl','Key highlights']]},
+ {id:'ops-night',g:'ops',t:'Night Shift Case Report',r:sNightShift,need:'cs',blocks:[['kpi','KPI tiles'],['chart','Hourly chart'],['nights','Per night'],['hl','Key highlights']]},
+ {id:'ops-swot',g:'ops',t:'SWOT Analysis',r:sSwot,need:'cs'},
  {id:'thanks',g:'gen',t:'Thank You',r:sThanks,dark:1}
 ];
-const GROUPS=[['gen','Opening & closing'],['cs','Customer Support Report'],['vip','VIP Report']];
+const GROUPS=[['gen','Opening & closing'],['cs','Customer Support Report'],['vip','VIP Report'],['ops','Traffic Analysis & SWOT']];
 const isOn=s=>S.vis[s.id]!==undefined?S.vis[s.id]!==false:!s.off;
 function ordered(){const ix=id=>{const i=(S.order||[]).indexOf(id);return i<0?1000+SLIDES.findIndex(x=>x.id===id):i};return [...SLIDES].sort((a,b)=>ix(a.id)-ix(b.id))}
 const visible=()=>ordered().filter(isOn);
@@ -2035,7 +2282,7 @@ function histInit(){$('#histBtn').onclick=()=>{$('#histName').value=curTitle();$
   }
   var b=document.getElementById('viewLinkBtn');
   if(b)b.onclick=function(){var u=location.origin+location.pathname+'?view=1';
-    (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(function(){b.textContent='✓ Link disalin';setTimeout(function(){b.textContent='🔗 Link viewer'},2200)},function(){window.prompt('Salin link viewer:',u)})};
+    (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(function(){b.textContent='✓ Link disalin';setTimeout(function(){b.textContent="🔗 Viewer"},2200)},function(){window.prompt('Salin link viewer:',u)})};
 })();
 </script>
 </body>

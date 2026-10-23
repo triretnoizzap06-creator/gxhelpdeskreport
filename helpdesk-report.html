@@ -318,7 +318,7 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .tk.more{display:grid;place-items:center;font-weight:700;flex:.4}
 .tl .ar{display:grid;place-items:center;color:#C7C7CC;font-size:var(--t-small);flex-shrink:0}
 /* ===== Repeat complaint redesign ===== */
-.rt{display:grid;grid-template-columns:20cqw minmax(0,1fr);gap:1.2cqw;flex:1;min-height:0}
+.rt{display:grid;grid-template-columns:20cqw minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:1.2cqw;flex:1;min-height:0}
 .rt-side{display:flex;flex-direction:column;gap:.9cqw;min-height:0}
 .rt-side .card{padding:.9cqw 1.1cqw;overflow:hidden}.rt-side .ctitle{font-size:.86cqw;margin-bottom:.6cqw;letter-spacing:.04em}
 .rt-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:.5cqw;flex-shrink:0}
@@ -746,6 +746,18 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .tk-xw{position:relative;display:inline-flex;flex-shrink:0}.tk-x{display:inline-flex;align-items:center;justify-content:center;width:1.5cqw;height:1.5cqw;border-radius:.35cqw}.tk-x svg{width:.95cqw;height:.95cqw}.tk-x:hover,.tk-xw:focus-within .tk-x{background:#FDE7E7;color:#D70015}
 .tk-m{display:none;position:absolute;right:0;top:100%;z-index:5;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:.5cqw;box-shadow:0 .4cqw 1.2cqw rgba(0,0,0,.12);padding:.25cqw;flex-direction:column;min-width:7cqw}
 .tk-xw:hover .tk-m,.tk-xw:focus-within .tk-m{display:flex}.tk-m button{border:0;background:transparent;font:inherit;font-size:.86cqw;text-align:left;padding:.3cqw .55cqw;border-radius:.35cqw;cursor:pointer;color:#1D1D1F}.tk-m button:hover{background:#FDE7E7;color:#B42318}
+.mpc{display:flex;gap:.45cqw;flex:1;min-height:7cqw}
+.mpc .c{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0}.mpc .v{font-size:.82cqw;font-weight:700;text-align:center;color:#1F3A5F;font-variant-numeric:tabular-nums}.mpc .v.sh{color:#E8590C}
+.mpc .trk{flex:1;position:relative;min-height:0}.mpc .mcv{position:absolute;left:0;right:0;bottom:0;background:#DDE2EE;border-radius:.35cqw .35cqw 0 0}
+.mpc .mnd{position:absolute;left:24%;right:24%;bottom:0;background:#1F3A5F;border-radius:.3cqw .3cqw 0 0;transition:height .6s ease-out}.mpc .mnd.sh{background:#E8590C}
+.mpc .mp9{position:absolute;left:10%;right:10%;height:0;border-top:.14cqw dashed #E8590C}.mpc .x{font-size:.78cqw;text-align:center;color:#6E6E73;margin-top:.3cqw}
+.mpt td,.mpt th{padding:.45cqw .35cqw}.mpt td:first-child{white-space:nowrap;color:#6E6E73}.mpt .hi{background:#FFF1E6}.mpt .lo{background:#EAF6EE}
+.mp-in{display:flex;flex-wrap:wrap;align-items:center;gap:.5cqw 1.1cqw;font-size:.85cqw;margin-bottom:.6cqw;flex:none}.mp-in label{display:flex;align-items:center;gap:.4cqw}.mp-in input{width:5cqw}
+.mpg{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);flex:1;min-height:0}.mpr{display:flex;flex-direction:column;border-top:.4cqw solid #F5C518;min-height:0}
+.mpr-h{display:flex;align-items:baseline;justify-content:space-between;gap:.8cqw;margin-bottom:.7cqw}.mpr-h b{font-size:1.5cqw}.mpr-h span{font-size:var(--t-small);color:#8E8E93;font-weight:600}
+.mpr ul{margin:0;padding:0 0 0 1.1cqw;display:flex;flex-direction:column;gap:.65cqw}.mpr li{font-size:var(--t-body);line-height:1.42}
+.mpa{flex:none;margin-top:var(--gap);font-size:.86cqw;line-height:1.45;color:#3A3A3C}.mpa b{margin-right:.5cqw;color:#1D1D1F}
+.card.fit-s{overflow:auto!important}.printing .card.fit-z,.printing .card.fit-s,.printing .card.scroll{overflow:hidden!important}.rcinfo{display:flex;flex-direction:column;gap:.3cqw;margin-bottom:.6cqw;flex:none}.rcinfo .rcr{font-size:.82cqw;color:#6E6E73;line-height:1.35}.rcinfo .rcr b{color:#1D1D1F;font-weight:600}.rcinfo .rcw{font-size:.88cqw;line-height:1.35;background:#FFF4DB;border:1px solid #F5C518;color:#7A4B00;border-radius:.6cqw;padding:.45cqw .8cqw}.rcinfo .rcw b{color:#5C3800}
 .delbar{display:flex;align-items:center;flex-wrap:wrap;gap:.4cqw .5cqw;font-size:.86cqw;color:#6E6E73;margin-bottom:.6cqw;flex:none}.delbar>svg{width:1cqw;height:1cqw}.delbar b{color:#1D1D1F;margin-right:.3cqw}
 .delbar button{border:1px solid rgba(0,0,0,.1);background:#fff;border-radius:999px;font:inherit;font-size:.82cqw;padding:.12cqw .6cqw;cursor:pointer;color:#1D1D1F}.delbar button em{font-style:normal;color:#B42318;font-weight:600}.delbar button:hover{border-color:#E0A800;background:#FFFBEA}.delbar .all{font-weight:600}
 @container deck (max-width:719px){.tk-x{width:26px;height:26px}.tk-x svg{width:15px;height:15px}.tk-m button,.delbar,.delbar button{font-size:12px}}
@@ -774,11 +786,11 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .hm-r i.nt{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.55) 0 .25cqw,transparent .25cqw .6cqw)}
 .hm-hd em{font-style:normal;font-size:.75cqw;color:#8E8E93;text-align:left}
 .swg{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:var(--gap);flex:1;min-height:0}
-.sw{display:flex;flex-direction:column;padding:1.2cqw 1.4cqw;border-top:.4cqw solid;min-height:0;overflow:hidden}
-.sw.s{border-top-color:#1E8E3E}.sw.w{border-top-color:#E8590C}.sw.o{border-top-color:#3B4CCA}.sw.t{border-top-color:#D70015}
+.swq{display:flex;flex-direction:column;padding:1.2cqw 1.4cqw;border-top:.4cqw solid;min-height:0;overflow:hidden}
+.swq.s{border-top-color:#1E8E3E}.swq.w{border-top-color:#E8590C}.swq.o{border-top-color:#3B4CCA}.swq.t{border-top-color:#D70015}
 .sw-h{display:flex;align-items:baseline;gap:.8cqw;margin-bottom:.6cqw}.sw-h b{font-size:1.6cqw;letter-spacing:-.01em}.sw-h span{font-size:var(--t-small);color:#8E8E93;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
-.sw ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.55cqw}
-.sw li{font-size:var(--t-body);line-height:1.4;display:flex;gap:.6cqw;align-items:baseline}
+.swq ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.55cqw}
+.swq li{font-size:var(--t-body);line-height:1.4;display:flex;gap:.6cqw;align-items:baseline}
 .sw-t{flex:none;font-size:.72cqw;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:.15cqw .5cqw;border-radius:999px}
 .sw-t.f{background:#E8F5EC;color:#1E6B36}.sw-t.a{background:#E8ECFF;color:#2B3AA0}.sw-t.q{background:#FFF1D6;color:#8A5A00}
 @media (max-width:820px){.swg{grid-template-columns:1fr;grid-template-rows:none}.hm-r i{height:14px}}
@@ -951,7 +963,7 @@ const shortRange=(a,b)=>{const A=new Date(a),B=new Date(b);return A.getMonth()==
 
 /* ---------- settings ---------- */
 const LS='gxcs-report-v5';
-const DEF_RC={woLink:'',hdOrigin:'Sales Representative',vipOrigin:'VIP WhatsApp Group',actValues:'Activation',complaintOnly:true,skipCanceled:true,excludeCats:'Billing, Account, Package, Termination, Administration'};
+const DEF_RC={woLink:'',hdOrigin:'Sales Representative',vipOrigin:'VIP WhatsApp Group',actValues:'Activation',complaintOnly:true,skipCanceled:true,allOrigins:false,excludeCats:'Billing, Account, Package, Termination, Administration'};
 const DEF_S=()=>({excl:'DotAI, AI',vis:{},edits:{},chart:{},blocks:{},order:[],anim:'subtle',rc:{...DEF_RC},period:{mode:'all',from:'',to:''},imports:[],cur:'cover'});
 let S=DEF_S();
 try{const o=JSON.parse(localStorage.getItem(LS)||'null');if(o&&typeof o==='object')S={...S,...o,rc:{...DEF_RC,...(o.rc||{})},period:{...S.period,...(o.period||{})},chart:o.chart||{},vis:o.vis||{},edits:o.edits||{},blocks:o.blocks||{},order:Array.isArray(o.order)?o.order:[],anim:o.anim||'subtle',imports:Array.isArray(o.imports)?o.imports:[]}}catch(e){}
@@ -1015,7 +1027,7 @@ function isMailCol(headers,rows,h){if(!h)return false;if(/mail/.test(norm(h)))re
 function fixRcUid(headers,rows,map){
   if(!map||!map.cid||!rows||map.uidManual)return false;
   const j=h=>headers.indexOf(h),vals=h=>rows.slice(0,3000).map(r=>String(r[j(h)]??'').trim()).filter(Boolean);
-  const dc=new Set(vals(map.cid)).size;if(dc<3)return false;
+  const dc=new Set(vals(map.cid).map(cidKey)).size;if(dc<3)return false;
   const stat=h=>{const v=vals(h);if(!v.length)return null;const d=new Set(v).size;return {ratio:d/dc,idl:v.filter(x=>/^[A-Za-z][A-Za-z0-9._\-]{3,}$/.test(x)).length/v.length,dig:v.filter(x=>/\d/.test(x)).length/v.length}};
   const ok=x=>x&&x.idl>=.8&&x.ratio>=.6&&x.ratio<=1.6;
   if(map.uid&&ok(stat(map.uid))&&!isMailCol(headers,rows,map.uid))return false;
@@ -1029,14 +1041,14 @@ function fixRcUid(headers,rows,map){
 function fixRcPkgExtra(headers,rows,map){
   if(!map||!map.product||!rows||map.pkgxManual)return false;
   const j=h=>headers.indexOf(h),vals=h=>rows.slice(0,3000).map(r=>String(r[j(h)]??'').trim()).filter(Boolean);
-  const dc=new Set(vals(map.cid)).size;if(dc<3)return false;
+  const dc=new Set(vals(map.cid).map(cidKey)).size;if(dc<3)return false;
   const used=new Set(Object.values(map).filter(v=>typeof v==='string'&&v));
   const ex=headers.filter(h=>!used.has(h)&&!isMailCol(headers,rows,h)&&/product|package|paket|plan|variant|speed|bandwidth|kecepatan|layanan|service|tier|mbps|produk/.test(norm(h))).filter(h=>{const v=vals(h);if(v.length<rows.length*.3)return false;const d=new Set(v).size;return d/dc<.75&&v.filter(x=>/^\d{1,4}[\/-]\d{1,2}[\/-]\d{1,4}/.test(x)).length<v.length*.5}).slice(0,2);
   if(!ex.length)return false;map.pkgx=ex;return true}
 function fixRcProduct(headers,rows,map){
   if(!map||!map.cid||!rows||map.product||map.productManual)return;
   const j=h=>headers.indexOf(h),vals=h=>rows.slice(0,3000).map(r=>String(r[j(h)]??'').trim()).filter(Boolean);
-  const dc=new Set(vals(map.cid)).size;if(dc<3)return;
+  const dc=new Set(vals(map.cid).map(cidKey)).size;if(dc<3)return;
   const used=new Set(Object.values(map).filter(v=>typeof v==='string'&&v));
   const c=headers.filter(h=>!used.has(h)&&!isMailCol(headers,rows,h)).map(h=>{const v=vals(h);if(v.length<rows.length*.5)return null;const d=new Set(v).size,txt=v.filter(x=>/[A-Za-z]/.test(x)&&!/^\d{1,4}[\/-]\d{1,2}[\/-]\d{1,4}/.test(x)).length/v.length;const hint=/paket|package|plan|produk|product|layanan|service|variant|tier|subscri/.test(norm(h));return txt>=.9&&d/dc<.75&&d>=1?[h,(hint?1:0)+(1-d/dc)]:null}).filter(Boolean).sort((a,b)=>b[1]-a[1]);
   if(c.length&&c[0][1]>=1)map.product=c[0][0]}
@@ -1070,6 +1082,18 @@ function mergeDateTime(t){const ren={};const H=t.headers;
     let ok=0;const vals=t.rows.map(r=>{const d=parseDate(r[j]);if(d==null)return '';const dd=new Date(d);const sec=timeSecs(r[tj]);if(sec==null)return '';ok++;const x=new Date(dd.getFullYear(),dd.getMonth(),dd.getDate(),0,0,sec);return `${x.getFullYear()}-${p2(x.getMonth()+1)}-${p2(x.getDate())} ${p2(x.getHours())}:${p2(x.getMinutes())}:${p2(x.getSeconds())}`});
     if(!ok)return;H.push(name);t.rows.forEach((r,i)=>r.push(vals[i]));ren[h]=name});
   return ren}
+function dsRange(ds){if(!ds||!ds.map||!ds.map.date)return null;const j=ds.headers.indexOf(ds.map.date);if(j<0)return null;const TZ=ds===DS.rc?0:tzShift(ds,idx(ds,MAIN_FIELDS));let a=null,b=null;const days=new Set();
+  for(const r of ds.rows){let d=parseDate(r[j]);if(d==null)continue;d+=TZ;if(a==null||d<a)a=d;if(b==null||d>b)b=d;days.add(dayStart(d))}return a==null?null:{a:dayStart(a),b:dayStart(b),n:days.size}}
+const TK_RE=/^(ticket number|ticket no|ticket id|no tiket|ticket|case id|case number|ticket code|nomor tiket)$/;
+function sameCols(a,b){const A=new Set(a.map(norm)),B=b.map(norm).filter(x=>!/^column \d+$/.test(x));if(!B.length)return false;const hit=B.filter(x=>A.has(x)).length;return hit/Math.max(A.size,B.length)>=.85}
+function alignRows(H,t){const pos=H.map(h=>t.headers.findIndex(x=>norm(x)===norm(h)));return t.rows.map(r=>pos.map(j=>j<0?'':(r[j]??'')))}
+function dedupeRows(H,rows){const k=H.findIndex(h=>TK_RE.test(norm(h)));if(k<0)return rows;const seen=new Set(),out=[];for(const r of rows){const v=String(r[k]??'').trim();if(v){if(seen.has(v))continue;seen.add(v)}out.push(r)}return out}
+/* gabungkan beberapa file (kolom sama) jadi satu dataset */
+function mergeTables(list){const base=list[0];const out={...base,headers:base.headers.slice(),rows:base.rows.slice(),joined:(base.joined||[]).slice()};
+  for(const t of list.slice(1)){if(!sameCols(out.headers,t.headers))throw new Error(`Kolom file "${t.name}" berbeda dengan "${base.name}", tidak bisa digabung.`);
+    const add=alignRows(out.headers,t);out.rows=out.rows.concat(add);out.joined.push(`file "${t.name}": +${fInt(add.length)} baris`)}
+  const before=out.rows.length;out.rows=dedupeRows(out.headers,out.rows);if(out.rows.length<before)out.joined.push(`${fInt(before-out.rows.length)} baris dobel dibuang`);
+  out.name=list.map(t=>t.name).join(' + ');return out}
 async function readTable(file){
   if(!window.XLSX)throw new Error('Pembaca Excel belum termuat. Cek koneksi internet lalu coba lagi.');
   let wb;
@@ -1079,6 +1103,10 @@ async function readTable(file){
   if(!sheets.length)throw new Error('File tidak berisi baris data.');
   sheets.sort((a,b)=>b.t.rows.length-a.t.rows.length);
   const main=sheets[0],T=main.t;const out={name:file.name,sheet:main.name,headers:T.headers.slice(),rows:T.rows,joined:[]};
+  /* sheet lain dengan kolom yang sama (mis. data dipecah per minggu / per tanggal) → digabung, bukan dibuang */
+  for(const sh of sheets.slice(1)){if(sameCols(T.headers,sh.t.headers)){const add=alignRows(T.headers,sh.t);T.rows=T.rows.concat(add);out.rows=T.rows;sh.merged=1;out.joined.push(`sheet "${sh.name}": +${fInt(add.length)} baris`)}}
+  if(out.joined.length){const before=out.rows.length;out.rows=dedupeRows(out.headers,out.rows);T.rows=out.rows;if(out.rows.length<before)out.joined.push(`${fInt(before-out.rows.length)} baris dobel dibuang`)}
+  sheets.splice(0,sheets.length,...sheets.filter(x=>!x.merged));
   /* join H+1 investigation outcome from another sheet (matched by ticket number) */
   const tkIdx=T.headers.findIndex(h=>/^(ticket number|ticket no|ticket id|no tiket|ticket|case id|case number|ticket code|nomor tiket)$/.test(norm(h)));
   const hasOutcome=T.headers.some((h,j)=>T.rows.slice(0,5000).some(r=>isOutcomeVal(r[j])));
@@ -1127,12 +1155,24 @@ const exclList=()=>String(S.excl??'DotAI, AI').split(',').map(norm).filter(Boole
 function afrIdx(ds,I){if(I.fr>=0&&ds.rows.slice(0,500).some(r=>/\d{1,2}[:.]\d{2}/.test(String(r[I.fr]))||typeof r[I.fr]==='number'&&r[I.fr]%1>0))return I.fr;return I.afrAt}
 function tsOf(v){if(typeof v==='string'){const s=v.trim();if(/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}/.test(s)&&/(?:[zZ]|[+-]\d{2}:?\d{2})$/.test(s)){const t=Date.parse(s.replace(' ','T'));if(!isNaN(t))return t}}return parseDate(v)}
 function numAfr(v){let s=String(v==null?'':v).trim();if(!s||/^(-|null|n.a)$/i.test(s))return null;if(s.includes(',')&&s.includes('.'))s=s.replace(/\./g,'').replace(',','.');else s=s.replace(',','.');const x=parseFloat(s);return isFinite(x)&&x>=0?x:null}
+/* Export GX CS Connect menulis jam Created dalam UTC, sedangkan Ticket ID (GX-CSC-YYYYMMDDhhmmss) memakai jam lokal.
+   Selisih dideteksi otomatis dari data (bukan asumsi) lalu dipakai untuk menggeser tanggal/jam Created. */
+function tzShift(ds,I){
+  if(!ds||I.date<0||I.ticket<0)return 0;const K=I.date+'|'+I.ticket+'|'+ds.rows.length;if(TZC.has(ds)&&TZC.get(ds).k===K)return TZC.get(ds).v;
+  const cnt=new Map();let n=0;const step=Math.max(1,Math.floor(ds.rows.length/3000));
+  for(let i=0;i<ds.rows.length;i+=step){const r=ds.rows[i];const m=String(r[I.ticket]??'').match(/(20\d{2})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);if(!m)continue;
+    const loc=new Date(+m[1],m[2]-1,+m[3],+m[4],+m[5],+m[6]).getTime(),d=parseDate(r[I.date]);if(d==null||isNaN(loc))continue;
+    const h=Math.round((loc-d)/1.8e6)/2;n++;cnt.set(h,(cnt.get(h)||0)+1)}
+  let best=0,bc=0;for(const [h,c] of cnt)if(c>bc){bc=c;best=h}
+  const sh=n>=20&&bc/n>=.8&&Math.abs(best)>=1&&Math.abs(best)<=14?best*3600e3:0;
+  TZC.set(ds,{k:K,v:sh});return sh}
+const TZC=new WeakMap();
 function prepMain(ds,kind,fromCs){
   if(!ds)return [];
   const I=idx(ds,MAIN_FIELDS),g=(r,k)=>I[k]<0?'':String(r[I[k]]??'').trim(),EX=exclList(),isEx=n=>!!n&&EX.includes(norm(n)),AT=afrIdx(ds,I);
-  const out=[],seen=new Set();
+  const out=[],seen=new Set(),TZ=tzShift(ds,I);
   for(const r of ds.rows){
-    const date=I.date<0?null:parseDate(r[I.date]);
+    let date=I.date<0?null:parseDate(r[I.date]);if(date!=null&&TZ)date+=TZ;
     const category=g(r,'category'),problem=g(r,'problem');
     if(date==null||!category||!problem)continue;                       /* Category & Problem Type wajib */
     if(I.vip>=0){const v=yes(g(r,'vip'));if(kind==='cs'&&v)continue;if(kind==='vip'&&!v)continue}   /* VIP = No → CS, VIP = Yes → VIP */
@@ -1202,7 +1242,7 @@ const fAfr=v=>v==null?'—':(v>=100?fInt(v):f1(v))+'m';
 /* ---------- repeat complaint status (dropdown per tiket) ---------- */
 const RC_ST=['Open','WO In Progress','Closed','Cancelled'];
 const RC_STC={'Open':{c:'#FF9F0A',bg:'#FFF0D6',fg:'#A85A00'},'WO In Progress':{c:'#0A84FF',bg:'#DCEBFF',fg:'#0A5FCC'},'Closed':{c:'#34C759',bg:'#DFF6E5',fg:'#1E7A35'},'Cancelled':{c:'#AEAEB2',bg:'#EDEDF0',fg:'#6E6E73'}};
-function rcStatus(raw){const s=String(raw||'').toLowerCase();if(/cancel|batal/.test(s))return 'Cancelled';if(/^(solved|closed|resolved|done|selesai|complete)/.test(s))return 'Closed';if(/\bwo\b|work ?order|progress|proses|process|on ?going|visit|dispatch|assign/.test(s))return 'WO In Progress';return 'Open'}
+function rcStatus(raw){const s=String(raw||'').toLowerCase();if(/cancel|batal/.test(s))return 'Cancelled';if(/\b(solved|closed|resolved|done|selesai|complete[d]?)\b/.test(s))return 'Closed';   /* termasuk "WO Closed" */if(/\bwo\b|work ?order|progress|proses|process|on ?going|visit|dispatch|assign/.test(s))return 'WO In Progress';return 'Open'}
 const rcDone=s=>s==='Closed'||s==='Cancelled';
 /* ---------- repeat complaint (same rules as repeatcomplainthd) ---------- */
 /* override isian manual per tiket: status, tanggal, no. tiket, problem, WO, kendala, action, notes; return true bila dihapus */
@@ -1215,6 +1255,11 @@ function rcApply(t){const E=x=>S.edits['rc.'+x+'.'+t.k];if(E('del'))return true;
   if(E('tk')!==undefined)t.ticket=E('tk');if(E('wo')!==undefined)t.wo=E('wo');
   if(E('dt')){const d=new Date(E('dt')+'T00:00:00').getTime();if(!isNaN(d))t.date=d}
   t.notes=E('nt')||'';t.ntOn=!!(t.notes||E('ntOn'));return false}
+/* cakupan file RC vs periode report: null = aman; selain itu {a,b,pa,pb} untuk peringatan */
+function rcCover(fMin,fMax,P){if(fMin==null)return null;const a=dayStart(fMin),b=dayStart(fMax);let pa=P.from!=null?dayStart(P.from):(C0min()),pb=P.to!=null?dayStart(P.to):(C0max());
+  if(pa==null||pb==null)return null;if(DATA_MAX!=null&&pb>dayStart(DATA_MAX))pb=dayStart(DATA_MAX);if(a<=pa&&b>=pb)return null;return {a,b,pa,pb}}
+const cidKey=c=>String(c||'').replace(/[\s.\-]/g,'').toUpperCase();   /* "240 092 411" = "240092411" */
+const C0min=()=>_PRMIN,C0max=()=>_PRMAX;let _PRMIN=null,_PRMAX=null;
 const isoD=t=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 function rcAnalyze(rep){
   const R=DS.rc;if(!R)return null;
@@ -1225,9 +1270,13 @@ function rcAnalyze(rep){
   const acts=String(st.actValues||'').split(',').map(norm).filter(Boolean),excl=String(st.excludeCats||'').split(',').map(norm).filter(Boolean);
   const hasComplaint=I.type>=0&&R.rows.some(r=>norm(r[I.type])==='complaint');
   const P=periodBounds();
-  const G=new Map(),seen=new Set(),dup=new Map(),elig=[],deleted=[];let min=null,max=null;
+  const G=new Map(),seen=new Set(),dup=new Map(),elig=[],deleted=[];let min=null,max=null,fMin=null,fMax=null;
+  /* cakupan tanggal file RC (semua baris) → dipakai untuk peringatan bila lebih pendek dari periode report */
+  if(I.date>=0)for(const r of R.rows){const d=parseDate(r[I.date]);if(d==null)continue;if(fMin==null||d<fMin)fMin=d;if(fMax==null||d>fMax)fMax=d}
+  /* mode "semua channel": customer yang pernah komplain via origin ini → semua tiket komplainnya (channel apa pun) dihitung */
+  let viaSet=null;if(st.allOrigins&&I.origin>=0){viaSet=new Set();for(const r of R.rows){if(norm(g(r,'origin'))!==want)continue;const dt=I.date<0?null:parseDate(r[I.date]);if(dt!=null&&((P.from!=null&&dt<P.from)||(P.to!=null&&dt>P.to)))continue;viaSet.add(cidKey(g(r,'cid')))}}
   for(const r of R.rows){
-    if(I.origin>=0&&norm(g(r,'origin'))!==want)continue;
+    if(I.origin>=0&&(viaSet?!viaSet.has(cidKey(g(r,'cid'))):norm(g(r,'origin'))!==want))continue;
     const dt=I.date<0?null:parseDate(r[I.date]);
     if(dt!=null&&((P.from!=null&&dt<P.from)||(P.to!=null&&dt>P.to)))continue;
     if(rep==='hd'&&acts.includes(norm(g(r,'problem'))))continue;
@@ -1235,26 +1284,27 @@ function rcAnalyze(rep){
     if(st.skipCanceled&&/cancel/i.test(g(r,'status')))continue;
     const cat=g(r,'category');if(cat&&excl.some(x=>norm(cat).includes(x)))continue;
     const tk=g(r,'ticket');if(tk){if(seen.has(tk))continue;seen.add(tk)}
-    const cid=g(r,'cid');if(!cid)continue;
+    const cid0=g(r,'cid');if(!cid0)continue;const cid=cidKey(cid0);
     if(dt!=null){min=min==null?dt:Math.min(min,dt);max=max==null?dt:Math.max(max,dt)}
     const kendala=g(r,'kendala'),action=g(r,'action'),res=[kendala,action].filter(Boolean).join(' → ');
     const note=res||[g(r,'status'),g(r,'ctso')?'CTSO: '+g(r,'ctso'):(g(r,'cso')?'CSO: '+g(r,'cso'):'')].filter(Boolean).join(' · ');
-    const t={k:keyOf(tk||cid+'_'+dt),kendala,action,ticket:tk,date:dt??0,problem:g(r,'problem')||'(problem kosong)',category:cat,status:g(r,'status'),wo:g(r,'wo'),note,ctso:!!g(r,'ctso'),uid:g(r,'uid'),name:g(r,'name'),branch:g(r,'branch').replace(/^GlobalXtreme\s*/i,''),product:pkgOf(r)};
+    const t={k:keyOf(tk||cid+'_'+dt),kendala,action,ticket:tk,date:dt??0,problem:g(r,'problem')||'(problem kosong)',category:cat,cidRaw:cid0,origin:g(r,'origin'),status:g(r,'status'),wo:g(r,'wo'),note,ctso:!!g(r,'ctso'),uid:g(r,'uid'),name:g(r,'name'),branch:g(r,'branch').replace(/^GlobalXtreme\s*/i,''),product:pkgOf(r)};
     if(rcApply(t)){deleted.push({k:t.k,ticket:t.ticket,date:t.date,problem:t.problem,cid,why:S.edits['rc.del.'+t.k]});continue}
     elig.push(t);if(!G.has(cid))G.set(cid,[]);G.get(cid).push(t);
   }
+  const cidShow=new Map();for(const t of elig)if(t.cidRaw){const k=cidKey(t.cidRaw);if(!cidShow.has(k)||/\s/.test(t.cidRaw))cidShow.set(k,t.cidRaw)}
   /* tiket tambahan manual */
   for(const m of (S.edits['rc.manual.'+rep]||[])){const t={k:'m_'+m.id,manual:1,kendala:'',action:'',ticket:'',date:m.date||Date.now(),problem:'',category:'',status:'Open',wo:'',note:'',ctso:false,uid:m.uid||'',name:'',branch:'',product:''};
-    if(rcApply(t))continue;elig.push(t);if(!G.has(m.cid))G.set(m.cid,[]);G.get(m.cid).push(t)}
+    if(rcApply(t))continue;elig.push(t);const mk=cidKey(m.cid)||m.cid;if(!G.has(mk))G.set(mk,[]);G.get(mk).push(t)}
   const sev=n=>n>=6?'HIGH':n>=5?'MONITOR':n>=3?'MEDIUM':'LOW';
-  const list=[...G].map(([cid,t])=>{t.sort((a,b)=>a.date-b.date);const uc=groupCount(t,'uid');return {sev:sev(t.length),allRes:t.every(k=>rcDone(k.status)),cid,manual:t.every(k=>k.manual),uid:S.edits['rc.uid.'+keyOf(cid)]||(uc.length?uc[0].label:(/^NEW-/.test(cid)?'User baru':cid)),name:t.find(x=>x.name)?.name||'',branch:t.find(x=>x.branch)?.branch||'',product:(()=>{const pg=groupCount(t,'product');return pg.slice(0,3).map(x=>x.label).join(' / ')+(pg.length>3?' +'+(pg.length-3):'')})(),count:t.length,np:new Set(t.map(x=>x.problem)).size,latest:t[t.length-1].date,tickets:t}});
+  const list=[...G].map(([cid,t])=>{t.sort((a,b)=>a.date-b.date);const uc=groupCount(t,'uid');return {sev:sev(t.length),allRes:t.every(k=>rcDone(k.status)),cid:cidShow.get(cid)||cid,ck:cid,origins:groupCount(t,'origin'),manual:t.every(k=>k.manual),uid:S.edits['rc.uid.'+keyOf(cidShow.get(cid)||cid)]||(uc.length?uc[0].label:(/^NEW-/.test(cid)?'User baru':cid)),name:t.find(x=>x.name)?.name||'',branch:t.find(x=>x.branch)?.branch||'',product:(()=>{const pg=groupCount(t,'product');return pg.slice(0,3).map(x=>x.label).join(' / ')+(pg.length>3?' +'+(pg.length-3):'')})(),count:t.length,np:new Set(t.map(x=>x.problem)).size,latest:t[t.length-1].date,tickets:t}});
   const delN=new Map();for(const d of deleted)delN.set(d.cid,(delN.get(d.cid)||0)+1);
-  for(const x of list){x.del=delN.get(x.cid)||0}
+  for(const x of list){x.del=delN.get(x.ck)||0}
   const cand=list.filter(x=>x.count+x.del>=2).sort((a,b)=>b.count-a.count||b.np-a.np||b.latest-a.latest);
-  const sel=(S.edits['top3.'+rep]||[]).map(id=>cand.find(x=>x.cid===id)).filter(Boolean);
+  const sel=(S.edits['top3.'+rep]||[]).map(id=>cand.find(x=>x.cid===id||x.ck===cidKey(id))).filter(Boolean);
   /* urutan Top 3: pilihan manual → user yang sudah punya isian (supaya isian tidak tergeser) → otomatis */
   const top=[];for(const x of sel)if(top.length<3&&!top.includes(x))top.push(x);for(const x of cand)if(top.length<3&&!top.includes(x)&&rcFilled({...x,rep}))top.push(x);for(const x of cand)if(top.length<3&&!top.includes(x))top.push(x);
-  return {elig,deleted,list,cand,top,repTickets:cand.reduce((n,x)=>n+x.count,0),openN:cand.reduce((n,x)=>n+x.tickets.filter(k=>!rcDone(k.status)).length,0),prob:groupCount(elig,'problem'),min,max,hasOrigin:I.origin>=0,complaintOnly:st.complaintOnly&&hasComplaint};
+  return {elig,deleted,list,cand,top,repTickets:cand.reduce((n,x)=>n+x.count,0),openN:cand.reduce((n,x)=>n+x.tickets.filter(k=>!rcDone(k.status)).length,0),prob:groupCount(elig,'problem'),min,max,fMin,fMax,cover:rcCover(fMin,fMax,P),allOrigins:!!viaSet,hasOrigin:I.origin>=0,complaintOnly:st.complaintOnly&&hasComplaint};
 }
 
 /* ---------- period filter ---------- */
@@ -1274,6 +1324,7 @@ function buildContext(){
   DATA_MAX=null;for(const r of csAll.concat(vipAll))if(DATA_MAX==null||r.date>DATA_MAX)DATA_MAX=r.date;
   if(DATA_MAX==null&&DS.rc){const I=idx(DS.rc,RC_FIELDS);if(I.date>=0)for(const r of DS.rc.rows){const d=parseDate(r[I.date]);if(d!=null&&(DATA_MAX==null||d>DATA_MAX))DATA_MAX=d}}
   const csA=inPeriod(csAll),vipA=inPeriod(vipAll),cs=csA.filter(r=>!r.afrOnly),vip=vipA.filter(r=>!r.afrOnly);
+  _PRMIN=_PRMAX=null;for(const r of csA.concat(vipA)){if(_PRMIN==null||r.day<_PRMIN)_PRMIN=r.day;if(_PRMAX==null||r.day>_PRMAX)_PRMAX=r.day}
   const ctx={cs:cs.length?metrics(cs,'cs'):null,vip:vip.length?metrics(vip,'vip'):null,   /* AFR = bagian dari Total Cases (tiket Handle By DotAI tidak dihitung) */rc:{hd:rcAnalyze('hd'),vip:rcAnalyze('vip')}};
   const all=cs.concat(vip),gk=all.some(r=>r.group)?'group':'company';const corpRows=all.filter(r=>r[gk]);ctx.corp={rows:corpRows,key:gk,top:groupCount(corpRows,gk)};
   const src=ctx.cs||ctx.vip;let a=src?src.min:null,b=src?src.max:null;
@@ -1302,7 +1353,8 @@ function fmtN(v,f){return f==='int'?fInt(v):f==='p'?fPct(v,1):f==='p2'?fPct(v,2)
 function tile(tone,icon,label,value,foot,f='int',vcls=''){return `<div class="card tile t-${tone}" data-a><div class="ico">${ICON[icon]}</div><div style="min-width:0"><div class="tlab">${label}</div><div class="tval ${vcls}">${value==null?'—':num(value,f)}</div><div class="tfoot">${foot||''}</div></div></div>`}
 function vbars(items,o={}){if(!items.length)return '<div class="empty">No data</div>';const max=Math.max(1,...items.map(x=>x.value));const n=items.length;
   const st=`--vg:${n>24?'.35cqw':n>12?'.6cqw':'1.4cqw'};--bw:${n>24?'86%':n>12?'78%':'58%'};--vn:${n>24?'.72cqw':'var(--t-small)'};--vx:${n>24?'.7cqw':'var(--t-small)'};${o.style||''}`;
-  return `<div class="vb ${o.cls||''} ${n>10?'many':''}" style="${st}">${items.map((x,j)=>`<div class="c"><div class="n">${o.fmt?o.fmt(x):fInt(x.value)}</div><div class="trk"><div class="b" style="--h:${Math.max(1.5,x.value/max*100)}%;--j:${j};--fc:${x.color||PAL[0]}"></div></div><div class="x" title="${esc(x.full||x.label)}">${x.short!=null?`<span class="xf">${esc(x.label)}</span><span class="xn">${esc(x.short)}</span>`:esc(x.label)}</div></div>`).join('')}</div>`}
+  const k=n>34?Math.ceil(n/31):1,lab=(x,j)=>k===1||j%k===0||x.value===max;   /* data panjang (mis. 2–3 bulan): angka & label diselang supaya tidak tumpuk */
+  return `<div class="vb ${o.cls||''} ${n>10?'many':''}" style="${st}">${items.map((x,j)=>`<div class="c"><div class="n">${lab(x,j)?(o.fmt?o.fmt(x):fInt(x.value)):''}</div><div class="trk"><div class="b" style="--h:${Math.max(1.5,x.value/max*100)}%;--j:${j};--fc:${x.color||PAL[0]}"></div></div><div class="x" title="${esc(x.full||x.label)}">${k>1&&j%k?'':x.short!=null?`<span class="xf">${esc(x.label)}</span><span class="xn">${esc(x.short)}</span>`:esc(x.label)}</div></div>`).join('')}</div>`}
 function hbars(items,o={}){if(!items.length)return '<div class="empty">No data</div>';const max=o.max||Math.max(1,...items.map(x=>x.value));
   const few=items.length<=4?'--hg:2.6cqw;--bh:1cqw;':items.length<=6?'--hg:1.8cqw;--bh:.75cqw;':'';
   return `<div class="hb" style="${few}${o.style||''}">${items.map((x,j)=>`<div class="r"><div class="lab" title="${esc(x.label)}">${o.pre?o.pre(x,j):''}${esc(x.label)}${x.meta?`<span class="meta">${x.meta}</span>`:''}</div><div class="val">${o.fmt?o.fmt(x):fInt(x.value)}${x.sv?`<small>${x.sv}</small>`:''}</div><div class="trk"><div class="f" style="--w:${Math.max(.8,x.value/max*100)}%;--j:${j};--fc:${x.color||PAL[0]}"></div></div></div>`).join('')}</div>`}
@@ -1324,8 +1376,8 @@ const needCS=()=>empty('Belum ada data Customer Support','Klik Import data, lalu
 const needVIP=()=>empty('Belum ada data VIP Group','Import file VIP Group, atau map kolom VIP flag di file Customer Support.');
 const needRC=()=>empty('Belum ada data Repeat Complaint','Klik Import data, lalu pilih export Trouble Ticket Summary di kartu Repeat Complaint.');
 const needCol=(c,ds)=>empty(`Kolom ${c} belum dimapping`,`Buka Import data → ${ds} → Column mapping.`);
-const SECTION={gen:['','Helpdesk Report'],cs:['','Customer Support Report'],vip:['vip','VIP Report'],ops:['','Traffic Analysis']};
-function head(id,sec,title,lede,toggle){return `<header class="sl-head"><div class="sl-eyb" data-a><span class="sectabs">${sec==='ops'?'<span class="on">Traffic Analysis &amp; SWOT</span>':`<span class="${sec==='cs'?'on':''}">Customer Support Report</span><span class="${sec==='vip'?'on':''}">VIP Report</span>`}</span><span class="pill ghost">Helpdesk Report · ${esc(C.short)}</span></div><h2 class="sl-title" data-a>${title}</h2>${lede?ed(id+'.lede',lede,'p','sl-lede','data-a'):''}${toggle||''}</header>`}
+const SECTION={gen:['','Helpdesk Report'],cs:['','Customer Support Report'],vip:['vip','VIP Report'],ops:['','Traffic Analysis'],mp:['','Manpower Planning']};
+function head(id,sec,title,lede,toggle){return `<header class="sl-head"><div class="sl-eyb" data-a><span class="sectabs">${sec==='ops'||sec==='mp'?`<span class="${sec==='ops'?'on':''}">Traffic Analysis &amp; SWOT</span><span class="${sec==='mp'?'on':''}">Manpower Planning</span>`:`<span class="${sec==='cs'?'on':''}">Customer Support Report</span><span class="${sec==='vip'?'on':''}">VIP Report</span>`}</span><span class="pill ghost">Helpdesk Report · ${esc(C.short)}</span></div><h2 class="sl-title" data-a>${title}</h2>${lede?ed(id+'.lede',lede,'p','sl-lede','data-a'):''}${toggle||''}</header>`}
 const body=(h,style='')=>`<div class="sl-body" style="${style}">${h}</div>`;
 const DAY_PAL={peak:'#E8590C',above:'#3B4CCA',below:'#C5CBF2',line:'#3B4CCA'};
 const dayItems=(m,o={})=>{const avg=m.avg,peak=avg*1.5;o={dark:DAY_PAL.above,...o};return m.daily.map((d,i)=>{const dt=new Date(d.day);return {label:(m.daily.length>20?String(dt.getDate()):String(dt.getDate()).padStart(2,'0')+' '+MS[dt.getMonth()]),short:String(dt.getDate()),full:isoDay(d.day),value:d.value,color:d.value>=peak?DAY_PAL.peak:d.value>=avg?(o.dark||DAY_PAL.above):DAY_PAL.below}})};
@@ -1588,19 +1640,24 @@ function tkCell(k,rep){const m=RC_STC[k.status],K=esc(k.k);return `<div class="t
 const SEVC={HIGH:'#FF375F',MONITOR:'#FF9F0A',MEDIUM:'#F5C518',LOW:'#9DB8D9'};
 function stLegend(tk){return stCnt(tk).filter(x=>x.value).map(x=>`<span class="lgi"><i style="background:${x.color}"></i>${x.value} ${x.label}</span>`).join('')}
 function delBar(r){const d=r.deleted||[];if(!d.length)return '';return `<div class="delbar ed-only">${TRASH}<b>${d.length} tiket dihapus</b>${d.slice(0,6).map(x=>`<button data-rcundel="${esc(x.k)}" title="Pulihkan tiket ini">${x.ticket?'#'+esc(x.ticket):ddmm(x.date)} · ${esc(x.problem)} <em>${esc(x.why===1||x.why==='1'?'Hapus':x.why)}</em> ↺</button>`).join('')}${d.length>6?`<span class="mut">+${d.length-6}</span>`:''}<button class="all" data-rcundel="${d.map(x=>esc(x.k)).join(',')}">Pulihkan semua</button></div>`}
+/* aturan & cakupan data yang dipakai — tampil di slide supaya angka bisa dicek */
+function rcInfo(r,rep){const o=rep==='vip'?S.rc.vipOrigin:S.rc.hdOrigin,cv=r.cover;
+  const rule=`Aturan: ${r.allOrigins?`customer via <b>${esc(o)}</b>, semua channel dihitung`:`Via Origin <b>${esc(o)}</b>`}${r.complaintOnly?' · Type Complaint':''}${S.rc.skipCanceled?' · tanpa Canceled':''}${rep==='hd'&&S.rc.actValues?' · tanpa '+esc(S.rc.actValues):''} · tanpa kategori administratif · 1 CID ≥ 2 tiket`;
+  const warn=cv?`<span class="rcw">⚠ Data RC hanya <b>${esc(rangeLabel(cv.a,cv.b,false))}</b>, sedangkan periode report ${esc(rangeLabel(cv.pa,cv.pb,false))}. Repeat complaint di luar tanggal itu belum terhitung — import file RC untuk seluruh periode (bisa gabung beberapa file).</span>`:'';
+  return `<div class="rcinfo">${warn}<span class="rcr">${rule}</span></div>`}
 function sRepeat(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}`,sec=vip?'vip':'cs';const title=vip?'VIP Top 3 Repeat Complaints':'Top 3 Repeat Complaints';
   if(!r)return head(id,sec,title)+body(needRC());
   const o=vip?S.rc.vipOrigin:S.rc.hdOrigin;
-  if(!r.top.length)return head(id,sec,title)+body(empty('Tidak ada repeat complaint','Tidak ada user dengan 2+ tiket di periode ini.'));
+  if(!r.top.length)return head(id,sec,title)+body(rcInfo(r,rep)+empty('Tidak ada repeat complaint','Tidak ada user dengan 2+ tiket di periode ini.'));
   const MAX=3,all=r.top.flatMap(x=>x.tickets);
   const strip=`<div class="t3-hd" data-a><div class="ks-row"><div class="ks"><b>${fInt(r.cand.length)}</b>repeat users</div><div class="ks"><b>${fInt(r.repTickets)}</b>repeat tickets</div><div class="ks"><b>${fInt(r.openN)}</b>belum closed</div></div><div class="ss">${sbar(all)}<div class="lgs">${stLegend(all)}</div></div></div>`;
   const cols=r.top.map((x,i)=>{const t=x.tickets,show=t,more=0;
     return `<div class="card uc" data-a><div class="uc-h"><div class="ru-top"><span class="rkc">${i+1}</span><div class="ru-id idw" title="${esc(x.uid)}${x.name?' · '+esc(x.name):''} — klik untuk ganti user"><span class="idt">${esc(x.uid)}</span><span class="idc" aria-hidden="true">▾</span><select class="idsel" data-pick="${rep}" data-rank="${i}" aria-label="Ganti user rank ${i+1}">${r.cand.slice(0,300).map(c=>`<option value="${esc(c.cid)}" ${c.cid===x.cid?'selected':''}>${esc(c.uid)} · ${c.count} tiket</option>`).join('')}</select></div><span class="cnt">${x.count} ticket${x.count>1?'s':''} · ${t.filter(k=>k.wo).length} WO${x.del?`<span class="ed-only"> · ${x.del} dihapus</span>`:''}</span></div><div class="ru-cid">${esc(x.cid)}${x.product?' · '+esc(x.product):''}${more?` · +${more} tiket sebelumnya`:''}${x.allRes?' · <b class="okt">✓ Resolved</b>':''}</div>${ed(`rc.${rep}.cid.${keyOf(x.cid)}`,'','div','ru-note','style="color:#D70015"')}${sbar(t)}</div><div class="uc-tk">${show.map(k=>tkCell(k,rep)).join('')}<button class="tk-add ed-only" data-rcadd="${esc(x.cid)}" data-rep="${rep}">+ Tambah tiket</button></div></div>`}).join('');
-  return head(id,sec,title,`Via ${esc(o)} · ${fInt(r.cand.length)} repeat users`,strip)+body(delBar(r)+`<div class="t3"><div class="t3-cols">${cols}</div></div>`)}
+  return head(id,sec,title,`Via ${esc(o)} · ${fInt(r.cand.length)} repeat users`,strip)+body(delBar(r)+rcInfo(r,rep)+`<div class="t3"><div class="t3-cols">${cols}</div></div>`)}
 function sRepeatList(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}-list`,sec=vip?'vip':'cs';const title=vip?'VIP Other Repeat Complaints':'Other Repeat Complaints';
   if(!r)return head(id,sec,title)+body(needRC());
   const rest=r.cand.filter(x=>!r.top.includes(x));
-  if(!rest.length)return head(id,sec,title)+body(empty('Tidak ada repeat complaint lain','Semua repeat user sudah tampil di Top 3.')+`<div style="text-align:center"><button class="tk-add ed-only" data-rcnewu="${rep}">+ Tambah repeat user</button></div>`);
+  if(!rest.length)return head(id,sec,title)+body(rcInfo(r,rep)+empty('Tidak ada repeat complaint lain','Semua repeat user sudah tampil di Top 3.')+`<div style="text-align:center"><button class="tk-add ed-only" data-rcnewu="${rep}">+ Tambah repeat user</button></div>`);
   const rows=rest.map((x,i)=>{const pr=groupCount(x.tickets,'problem').map(p=>`${esc(p.label)}${p.value>1?` ×${p.value}`:''}`).join(', ');const wos=x.tickets.filter(k=>k.wo),dn=x.tickets.filter(k=>rcDone(k.status)).length;
     return `<tr><td class="mut">${i+4}</td><td class="b">${esc(x.uid)}<div class="mut sm2">${esc(x.cid)}${x.product?' · '+esc(x.product):''}</div></td><td class="n b">${x.count}</td><td class="pr">${pr}</td><td>${wos.length?wos.slice(0,2).map(k=>woChip(k.wo)).join(' ')+(wos.length>2?` <span class="mut">+${wos.length-2}</span>`:''):'<span class="mut">—</span>'}</td><td class="mut">${ddmm(x.tickets[0].date)} – ${ddmm(x.latest)}</td><td class="stc">${sbar(x.tickets)}<div class="mut sm2">${dn}/${x.count} selesai</div></td><td class="ed-only"><button class="btn sm rx-t" data-rcopen="${esc(x.cid)}">${S.edits['rc.open.'+keyOf(x.cid)]?'Tutup':'Edit'}</button></td></tr>${S.edits['rc.open.'+keyOf(x.cid)]?`<tr class="rx ed-only"><td colspan="8"><div class="rx-u"><label>User ID <input class="ie rx-uid" data-rcuid="${esc(x.cid)}" value="${esc(x.uid)}"></label><span class="mut">CID ${esc(x.cid)}</span></div><div class="rx-g">${x.tickets.map(k=>tkCell(k,rep)).join('')}<button class="tk-add" data-rcadd="${esc(x.cid)}" data-rep="${rep}">+ Tambah tiket</button></div></td></tr>`:''}`}).join('');
   const restT=rest.flatMap(x=>x.tickets),openR=restT.filter(k=>!rcDone(k.status)).length;
@@ -1608,8 +1665,8 @@ function sRepeatList(rep){const r=C.rc[rep],vip=rep==='vip',id=`rc-${rep}-list`,
   const t=ctype(id,'pie');
   const lvl=t==='bar'?vbars(stCnt(restT)):pieBlock(stCnt(restT),restT.length,String(openR),'',{});
   const mx2=Math.max(1,...rest.map(x=>x.count)),topU=`<div class="rt-bars">${rest.slice(0,3).map(x=>`<div class="rb"><div class="rbl"><span title="${esc(x.uid)}">${esc(x.uid)}</span><em>${x.count} tickets</em></div><div class="sbt"><div class="sbar" style="width:${x.count/mx2*100}%"><i style="flex:1;background:#1F3A5F"></i></div></div></div>`).join('')}</div>`;
-  const side=`<div class="rt-side"><div class="card rt-dn" data-a style="flex:none"><div class="ctitle">Status · ${restT.length} tickets</div>${lvl}</div><div class="card" data-a style="flex:1;min-height:0"><div class="ctitle">Top users · tickets</div>${topU}</div></div>`;
-  return head(id,sec,title,`Repeat users beyond the Top 3 · ${esc(C.long)}`,seg(id,['pie','bar']))+body(delBar(r)+`<div class="rt rt-list">${side}<div class="card scroll fill1" data-a><table class="tbl rk rl"><thead><tr><th>No</th><th>User ID / Customer</th><th class="n">Tickets</th><th>Problems</th><th>Work Order</th><th>Period</th><th>Status</th><th class="ed-only"></th></tr></thead><tbody>${rows}</tbody></table><button class="tk-add ed-only" style="margin:.6cqw 0" data-rcnewu="${rep}">+ Tambah repeat user</button></div></div>`+h)}
+  const side=`<div class="rt-side"><div class="card rt-dn" data-a style="flex:1;min-height:0"><div class="ctitle">Status · ${restT.length} tickets</div>${lvl}</div><div class="card" data-a style="flex:none"><div class="ctitle">Top users · tickets</div>${topU}</div></div>`;
+  return head(id,sec,title,`Repeat users beyond the Top 3 · ${esc(C.long)}`,seg(id,['pie','bar']))+body(delBar(r)+rcInfo(r,rep)+`<div class="rt rt-list">${side}<div class="card scroll fill1" data-a><table class="tbl rk rl"><thead><tr><th>No</th><th>User ID / Customer</th><th class="n">Tickets</th><th>Problems</th><th>Work Order</th><th>Period</th><th>Status</th><th class="ed-only"></th></tr></thead><tbody>${rows}</tbody></table><button class="tk-add ed-only" style="margin:.6cqw 0" data-rcnewu="${rep}">+ Tambah repeat user</button></div></div>`+h)}
 function sVipOverview(){const id='vip-overview',m=C.vip,title='VIP Overview';const tg=on(id,'daily')?seg(id,['bar','line']):'';
   if(!m)return head(id,'vip',title,'',tg)+body(needVIP());
   const it=m.issue.slice(0,3).map(x=>({...x,color:x.label==='Internet'?'#F5C518':x.label==='Administration'?'#1F3A5F':'#3E6E9E'}));const pk=peakDay(m);
@@ -1675,7 +1732,7 @@ function trafficData(){
   for(const l of lists)for(const r of l){const k=r.ticket||(r.date+'|'+r.cid+'|'+r.problem);if(seen.has(k))continue;seen.add(k);
     if(r.date==null||!isFinite(r.date)){bad++;continue}const d=new Date(r.date);if(!d.getHours()&&!d.getMinutes()&&!d.getSeconds())midnight++;rows.push({d,h:d.getHours(),r})}
   const hasTime=rows.length>0&&midnight/rows.length<.6;
-  const minD=rows.length?Math.min(...rows.map(x=>dayStart(+x.d))):null,maxD=rows.length?Math.max(...rows.map(x=>dayStart(+x.d))):null;
+  let minD=null,maxD=null;for(const x of rows){const d=dayStart(+x.d);if(minD==null||d<minD)minD=d;if(maxD==null||d>maxD)maxD=d}
   const days=[];if(minD!=null)for(let t=minD;t<=maxD;t=dayStart(t+36*3600e3))days.push(t);
   const byH=Array(24).fill(0);rows.forEach(x=>byH[x.h]++);
   const day=rows.filter(x=>!isNightH(x.h)),night=rows.filter(x=>isNightH(x.h));
@@ -1779,7 +1836,7 @@ function sTrafficDays(){const id='ops-days',title='Traffic by Day & Hour';const 
     ${order.filter(w=>T.dowDays[w]).map(w=>`<div class="hm-r"><span>${DOWS[w]}</span>${T.heat[w].map((v,h)=>{const a=v/T.dowDays[w];return `<i title="${DOW[w]} ${HH(h)} · rata-rata ${f1(a)} case (${fInt(v)} dari ${T.dowDays[w]} hari)" style="--o:${(.06+.94*a/maxCell).toFixed(3)}" class="${isNightH(h)?'nt':''}"></i>`}).join('')}</div>`).join('')}</div>
     <div class="legend"><span><i style="background:#E8590C"></i>lebih banyak</span><span><i style="background:#FCE4D6"></i>lebih sedikit</span><span>kolom bergaris = Night Shift</span></div></div>`:'';
   const maxA=Math.max(1,...have.map(x=>x.avg));
-  const bars=on(id,'dow')?`<div class="card" data-a style="--f:.8;display:flex;flex-direction:column;overflow:hidden"><div class="ctitle">Rata-rata case per hari</div>${hbars(have.map(x=>({label:`${DOW[x.w]} (${x.n}h)`,value:Math.round(x.avg*10)/10,color:x.avg>=maxA*.95?'#E8590C':'#3B4CCA'})),{fmt:x=>f1(x.value),style:'--hg:.25cqw;--bh:.4cqw'})}<div class="legend"><span>(n h) = jumlah hari data</span></div></div>`:'';
+  const bars=on(id,'dow')?`<div class="card" data-a style="--f:.8;display:flex;flex-direction:column;overflow:hidden"><div class="ctitle">Rata-rata case per hari</div>${hbars(have.map(x=>({label:`${DOW[x.w]} · ${x.n} hari`,value:Math.round(x.avg*10)/10,color:x.avg>=maxA*.95?'#E8590C':'#3B4CCA'})),{fmt:x=>f1(x.value),style:'--hg:.25cqw;--bh:.4cqw'})}<div class="legend"><span>n hari = jumlah hari yang ada datanya</span></div></div>`:'';
   const wk=have.filter(x=>x.w>=1&&x.w<=5),we=have.filter(x=>x.w===0||x.w===6),avgOf=a=>a.length?a.reduce((s,x)=>s+x.avg,0)/a.length:null;
   const top=[...have].sort((a,b)=>b.avg-a.avg)[0],low=[...have].sort((a,b)=>a.avg-b.avg)[0];const few=have.some(x=>x.n<2);
   const h=hl(id,[top?`Hari tersibuk: <b>${DOW[top.w]}</b> rata-rata <b>${f1(top.avg)} case</b>/hari; tersepi <b>${DOW[low.w]}</b> (${f1(low.avg)}).`:'',
@@ -1824,8 +1881,86 @@ function sSwot(){const id='ops-swot',title='SWOT Analysis';const nt=noTraffic(id
       F(`<b>${fPct(nightShare,1)}</b> case masuk di luar jam tim Helpdesk (${HH(NIGHT.from)}–${HH(NIGHT.to)}), ditangani back-up Contact Center.`),
       Q('Risiko backlog saat back-up malam oleh Contact Center perlu divalidasi dengan jumlah agent CC per malam dan case yang diteruskan ke pagi.')];
   const tag={F:'<span class="sw-t f">Fakta</span>',A:'<span class="sw-t a">Rekomendasi</span>',Q:'<span class="sw-t q">Perlu dicek</span>'};
-  const box=(cls,name,sub,list)=>`<div class="card sw ${cls}" data-a><div class="sw-h"><b>${name}</b><span>${sub}</span></div><ul>${list.map((x,i)=>`<li>${tag[x.k]}${ed(`${id}.${cls}${i}`,x.t,'span')}</li>`).join('')}</ul></div>`;
+  const box=(cls,name,sub,list)=>`<div class="card swq ${cls}" data-a><div class="sw-h"><b>${name}</b><span>${sub}</span></div><ul>${list.map((x,i)=>`<li>${tag[x.k]}${ed(`${id}.${cls}${i}`,x.t,'span')}</li>`).join('')}</ul></div>`;
   return head(id,'ops',title,`${trafficSrc(T)} · Fakta = dari data · Rekomendasi = usulan action · Perlu dicek = hipotesis`)+body(`<div class="swg">${box('s','Strengths','kekuatan',Sx)}${box('w','Weaknesses','kelemahan',Wx)}${box('o','Opportunities','peluang',Ox)}${box('t','Threats','risiko',Tx)}</div>`)}
+
+/* ---------- Manpower Planning (Helpdesk = Customer Support, VIP = Account Manager) ----------
+   Shift: Pagi 07–16 & Siang 13–22 (9 jam, break 1 jam → 8 jam efektif), Shift ½ 09–13 (4 jam).
+   Per orang per minggu: 5 hari full + 1 hari ½ + 1 hari libur (6 hari kerja) → 44 jam efektif.
+   Semua angka dari data periode yang dipilih; asumsi bisa diubah di mode edit. */
+const MP={open:7,close:22,pagi:[7,16],siang:[13,22],half:[9,13],eff:8,halfH:4,full:5,halfN:1,week:44};
+const MPH=[...Array(MP.close-MP.open).keys()].map(i=>i+MP.open);
+const mpNum=(k)=>{const v=S.edits['mp.'+k];if(v==null||v==='')return null;const n=parseFloat(String(v).replace(',','.'));return isFinite(n)&&n>0?n:null};
+const pctl=(a,p)=>{if(!a.length)return 0;const s=[...a].sort((x,y)=>x-y),i=(s.length-1)*p,lo=Math.floor(i),hi=Math.ceil(i);return s[lo]+(s[hi]-s[lo])*(i-lo)};
+/* coverage rata-rata orang on-duty per jam untuk P orang pagi & Q orang siang (break dibuat bergantian → faktor 8/9) */
+function mpCov(P,Q){const f=MP.full/7*MP.eff/9,hf=MP.halfN/7;return MPH.map(h=>(h>=MP.pagi[0]&&h<MP.pagi[1]?P*f:0)+(h>=MP.siang[0]&&h<MP.siang[1]?Q*f:0)+(h>=MP.half[0]&&h<MP.half[1]?(P+Q)*hf:0))}
+function mpBest(req,total){/* susunan pagi/siang terkecil yang menutup kebutuhan tiap jam (min. 1 orang on-duty) */
+  let best=null;const need=req.map(v=>Math.max(v,1));
+  for(let n=2;n<=60;n++){if(total!=null&&n!==total)continue;for(let P=1;P<n;P++){const Q=n-P,c=mpCov(P,Q),ratio=Math.min(...c.map((v,i)=>v/need[i])),ok=ratio>=1-1e-9;
+      const sc=total!=null?ratio:(ok?-c.reduce((s,v,i)=>s+Math.max(0,v-need[i]),0):-1e9);
+      if(!best||(total!=null?ratio>best.ratio:(ok&&!best.ok)||(ok===best.ok&&sc>best.sc)))best={P,Q,n,cov:c,ratio,ok,sc}}
+    if(total==null&&best&&best.ok)return best}
+  return best}
+function mpData(kind){const m=C[kind];if(!m)return null;const T=trafficData();if(!T.hasTime)return {noTime:1};
+  const vip=kind==='vip',re=vip?/account|^am\b/i:/helpdesk/i;
+  let team=m.list.filter(r=>re.test(r.team||'')),teamFound=true;if(team.length<m.list.length*.05){team=m.list.filter(r=>r.handler);teamFound=false}
+  const days=m.daily.map(d=>d.day),nD=days.length||1,di=new Map(days.map((d,i)=>[d,i]));
+  const cnt=days.map(()=>Array(24).fill(0)),dowN=Array(7).fill(0),dowD=Array(7).fill(0),dowH=[...Array(7)].map(()=>Array(24).fill(0));
+  days.forEach(d=>dowD[new Date(d).getDay()]++);
+  let opN=0;for(const r of team){const d=new Date(r.date),h=d.getHours(),i=di.get(r.day);if(i==null)continue;cnt[i][h]++;if(h>=MP.open&&h<MP.close){opN++;dowN[d.getDay()]++;dowH[d.getDay()][h]++}}
+  const dem=MPH.map(h=>cnt.reduce((s,x)=>s+x[h],0)/nD),dem90=MPH.map(h=>pctl(cnt.map(x=>x[h]),.9));
+  /* case jam operasional yang di-handle tim lain (mis. Contact Center) */
+  const other=m.list.filter(r=>{const h=new Date(r.date).getHours();return h>=MP.open&&h<MP.close&&!re.test(r.team||'')&&r.team&&r.team!=='Unassigned'});
+  const otherTop=groupCount(other,'team')[0];
+  /* produktivitas: case per agent per hari kerja (agent-day dengan ≥1 case), P75 = kapasitas realistis saat ramai */
+  const ad=new Map(),ag=new Map();for(const r of team){if(!r.handler)continue;const k=r.handler+'|'+r.day;ad.set(k,(ad.get(k)||0)+1);ag.set(r.handler,(ag.get(r.handler)||0)+1)}
+  const adv=[...ad.values()],capData=adv.length?pctl(adv,.75):null,capMed=adv.length?pctl(adv,.5):null;
+  const agents=[...ag].map(([n,v])=>({n,v})).sort((a,b)=>b.v-a.v),core=agents.filter(a=>a.v>=Math.max(3,team.length*.03));
+  const hcData=core.length,cap=mpNum(kind+'.cap')||capData,hc=mpNum(kind+'.hc')||hcData,p90=S.edits['mp.basis']==='p90';
+  if(!cap)return {m,team,teamFound,noCap:1};
+  const capH=cap/MP.eff,base=p90?dem90:dem,req=base.map(v=>v/capH),req90=dem90.map(v=>v/capH);
+  const fte=req.reduce((s,v)=>s+v,0)*7/MP.week,fte90=req90.reduce((s,v)=>s+v,0)*7/MP.week;
+  const rec=mpBest(req),cur=hc>=2?mpBest(req,Math.round(hc)):null;
+  const short=cur?MPH.filter((h,i)=>cur.cov[i]+1e-9<Math.max(req[i],1)):[];
+  const dow=[1,2,3,4,5,6,0].map(w=>{const avg=dowD[w]?dowN[w]/dowD[w]:0,needDay=dowD[w]?MPH.reduce((s,h)=>s+dowH[w][h]/dowD[w],0)/cap:0;return {w,avg,days:dowD[w],need:needDay,maxOff:dowD[w]?Math.max(0,Math.floor(hc-Math.max(needDay*1.15,2))):null}}).filter(x=>x.days);
+  const pk=MPH.reduce((a,h,i)=>req[i]>req[a]?i:a,0);
+  return {m,team,teamFound,nD,opN,dem,dem90,req,req90,cap,capData,capMed,capH,hc,hcData,core,fte,fte90,rec,cur,short,dow,other,otherTop,p90,pk}}
+function mpChart(D,cov,covLab){const rows=MPH.map((h,i)=>({h,need:D.req[i],n90:D.req90[i],cov:cov?cov[i]:0}));
+  const top=Math.max(1,...rows.map(r=>Math.max(r.need,r.n90,r.cov)))*1.12;
+  return `<div class="mpc">${rows.map(r=>{const sh=cov&&r.cov+1e-9<Math.max(r.need,1);return `<div class="c" title="${HH(r.h)} · butuh ${f1(r.need)} orang (P90 ${f1(r.n90)}) · coverage ${f1(r.cov)}"><div class="v ${sh?'sh':''}">${f1(r.need)}</div><div class="trk">${cov?`<i class="mcv" style="height:${r.cov/top*100}%"></i>`:''}<i class="mnd ${sh?'sh':''}" style="height:${r.need/top*100}%"></i><i class="mp9" style="bottom:${r.n90/top*100}%"></i></div><div class="x">${String(r.h).padStart(2,'0')}</div></div>`}).join('')}</div>
+  <div class="legend"><span><i style="background:#1F3A5F"></i>Butuh on-duty (rata-rata${D.p90?' · basis P90':''})</span><span><i style="background:#E8590C"></i>Kurang orang</span>${cov?`<span><i style="background:#DDE2EE"></i>${covLab||'Coverage'}</span>`:''}<span><i style="background:none;border-top:2px dashed #E8590C;height:0;border-radius:0"></i>Hari ramai (P90)</span></div>`}
+function mpInputs(kind,D){return `<div class="mp-in ed-only"><b>Asumsi (bisa diubah):</b><label>Headcount <input class="ie" data-mp="${kind}.hc" value="${S.edits['mp.'+kind+'.hc']??''}" placeholder="${D.hcData}"></label><label>Kapasitas case/agent/hari <input class="ie" data-mp="${kind}.cap" value="${S.edits['mp.'+kind+'.cap']??''}" placeholder="${f1(D.capData||0)}"></label><label>Basis <select class="ie" data-mp="basis"><option value="">Rata-rata</option><option value="p90" ${D.p90?'selected':''}>Hari ramai (P90)</option></select></label><span class="mut">kosongkan = pakai angka dari data</span></div>`}
+function sManpower(kind){const vip=kind==='vip',id='ops-mp-'+(vip?'vip':'hd'),tn=vip?'VIP (Account Manager)':'Helpdesk',title=`Manpower Planning — ${vip?'VIP':'Helpdesk'}`;
+  if(!C[kind])return head(id,'mp',title)+body(vip?needVIP():needCS());
+  const D=mpData(kind);
+  if(D.noTime)return head(id,'mp',title)+body(empty('Jam Created tidak tersedia','Manpower per jam butuh kolom Created Time / Created At.'));
+  if(D.noCap)return head(id,'mp',title)+body(empty('Kolom Handle By belum terbaca','Kapasitas per agent dihitung dari Handle By. Cek Import data → Column mapping.'));
+  const R=D.rec,gap=R?R.n-D.hc:0;
+  const k=on(id,'kpi')?`<div class="tiles" style="--cols:5">${sm('y','list',`Case ${tn.split(' ')[0]} / hari`,D.opN/D.nD,`jam ${HH(MP.open)}–${HH(MP.close)} · ${fInt(D.nD)} hari`,'d1')}${sm('b','gauge','Kapasitas / agent',D.cap,`case per hari kerja${mpNum(kind+'.cap')?' (diubah manual)':' · P75 data'} · ≈ ${f1(D.capH)}/jam`,'d1')}${sm('o','cal','Beban kerja (FTE)',D.fte,`${MP.week} jam/orang/minggu${D.p90?'':` · hari ramai ${f1(D.fte90)}`}`,'d1')}${tileTxt(gap>0?'o':'g','check','Headcount ideal',fInt(R?R.n:0),`sekarang ${fInt(D.hc)} · ${gap>0?`kurang ${gap}`:gap<0?`lebih ${-gap}`:'pas'}`)}${tileTxt('b','clock','Pagi / Siang',`${R?R.P:0} / ${R?R.Q:0}`,`pagi ${HH(MP.pagi[0]).slice(0,2)}–${HH(MP.pagi[1]).slice(0,2)} · siang ${HH(MP.siang[0]).slice(0,2)}–${HH(MP.siang[1]).slice(0,2)} · ½ ${HH(MP.half[0]).slice(0,2)}–${HH(MP.half[1]).slice(0,2)}`)}</div>`:'';
+  const chart=on(id,'chart')?`<div class="card fill1" data-a style="--f:1.55;display:flex;flex-direction:column"><div class="ctitle">Kebutuhan agent on-duty per jam vs coverage ${D.cur?`${fInt(D.hc)} orang sekarang (${D.cur.P} pagi + ${D.cur.Q} siang)`:R?`${R.P} pagi + ${R.Q} siang`:''}</div>${mpChart(D,D.cur?D.cur.cov:R&&R.cov,D.cur?'Coverage '+fInt(D.hc)+' orang sekarang':'Coverage susunan rekomendasi')}</div>`:'';
+  const tb=on(id,'dow')?(()=>{const mx=Math.max(...D.dow.map(y=>y.need)),mn=Math.min(...D.dow.map(y=>y.need)),cl=x=>x.need===mx?'hi':x.need===mn?'lo':'';
+    return `<div class="card" data-a style="--f:1;display:flex;flex-direction:column"><div class="ctitle">Per hari · atur libur & shift ½</div><table class="tbl mpt"><thead><tr><th></th>${D.dow.map(x=>`<th class="n ${cl(x)}">${DOWS[x.w]}</th>`).join('')}</tr></thead><tbody><tr><td>Case/hari</td>${D.dow.map(x=>`<td class="n ${cl(x)}">${f1(x.avg)}</td>`).join('')}</tr><tr><td>Butuh on-duty</td>${D.dow.map(x=>`<td class="n b ${cl(x)}">${f1(x.need)}</td>`).join('')}</tr><tr><td>Maks libur/½</td>${D.dow.map(x=>`<td class="n ${cl(x)}">${x.maxOff==null?'—':fInt(x.maxOff)}</td>`).join('')}</tr></tbody></table><div class="legend" style="margin-top:auto"><span><i style="background:#EAF6EE"></i>tersepi → cocok libur/½</span><span><i style="background:#FFF1E6"></i>teramai</span><span>maks libur = headcount − kebutuhan (+15%)</span></div></div>`})():'';
+  const pkH=MPH[D.pk],sorted=[...D.dow].sort((a,b)=>a.need-b.need),low=sorted.slice(0,2).map(x=>DOW[x.w]),high=sorted.slice(-2).reverse().map(x=>DOW[x.w]);
+  const h=hl(id,[`Beban ${f1(D.opN/D.nD)} case/hari = <b>${f1(D.fte)} FTE</b>; supaya tiap jam ${HH(MP.open)}–${HH(MP.close)} tertutup butuh <b>${R?R.n:0} orang (${R?R.P:0} pagi + ${R?R.Q:0} siang)</b>, sekarang ${fInt(D.hc)}${gap>0?` → <b>kurang ${gap}</b>`:gap<0?` → slack ${-gap}`:''}.`,
+    D.short.length?`Dengan ${fInt(D.hc)} orang, jam <b>${D.short.map(HH).join(', ')}</b> belum tertutup.`:`Jam paling butuh orang <b>${HH(pkH)}</b> (${f1(D.req[D.pk])} agent on-duty).`,
+    `Libur & shift ½ paling aman di <b>${low.join(' / ')}</b>; hindari ${high.join(' / ')} (paling ramai).`]);
+  return head(id,'mp',title,`Sumber: case ${vip?'VIP':'Customer Support'} yang di-handle ${D.teamFound?(vip?'Account Manager':'tim Helpdesk'):'semua tim'} · jam Created ${HH(MP.open)}–${HH(MP.close)} · ${esc(C.long)} · kapasitas = P75 case per agent per hari`)+body(mpInputs(kind,D)+k+row(chart,tb)+h)}
+function sManpowerRec(){const id='ops-mp-rec',title='Manpower Recommendation';
+  const hd=C.cs?mpData('cs'):null,vp=C.vip?mpData('vip'):null;
+  if(!hd&&!vp)return head(id,'mp',title)+body(needCS());
+  const adv=(D,kind)=>{if(!D||D.noTime||D.noCap)return [];const R=D.rec,gap=R.n-D.hc,vip=kind==='vip',out=[];
+    const sorted=[...D.dow].sort((a,b)=>a.need-b.need),low=sorted.slice(0,2).map(x=>DOW[x.w]),high=sorted.slice(-2).reverse();
+    out.push(gap>0?`Tambah <b>${gap} orang</b> (total ${R.n}) — dengan ${fInt(D.hc)} orang, jam ${D.short.length?D.short.map(HH).join(', '):'puncak'} tidak tertutup.`:gap<0?`Headcount ${fInt(D.hc)} sudah di atas minimum ${R.n}; slack ${-gap} orang bisa dipakai untuk follow-up repeat complaint / back-up ${vip?'Helpdesk':'VIP'}.`:`Headcount ${fInt(D.hc)} pas dengan kebutuhan minimum — tidak ada cadangan saat ada yang sakit/cuti.`);
+    out.push(`Susunan shift: <b>${R.P} pagi (${HH(MP.pagi[0])}–${HH(MP.pagi[1])}) + ${R.Q} siang (${HH(MP.siang[0])}–${HH(MP.siang[1])})</b>; overlap ${HH(MP.siang[0])}–${HH(MP.pagi[1])} pas dipakai untuk jam ${HH(MPH[D.pk])}.`);
+    {const mo=Math.min(...high.map(x=>x.maxOff??0));out.push(`Libur & shift ½ (${HH(MP.half[0])}–${HH(MP.half[1])}) diarahkan ke <b>${low.join(' / ')}</b>; ${mo>0?`di ${high.map(x=>DOW[x.w]).join(' / ')} maksimal ${fInt(mo)} orang libur/½ di hari yang sama`:`di ${high.map(x=>DOW[x.w]).join(' / ')} jangan ada yang libur/½ — dengan ${fInt(D.hc)} orang tim sudah pas-pasan`}.`)}
+    out.push(`Break 1 jam digilir, jangan di ${HH(MPH[D.pk])}; shift siang break setelah jam ramai.`);
+    if(D.other.length&&!vip)out.push(`${fInt(D.other.length)} case jam ${HH(MP.open)}–${HH(MP.close)} di-handle tim lain${D.otherTop?` (terbanyak ${esc(D.otherTop.label)} ${fInt(D.otherTop.value)})`:''}; bila semua jadi tanggung jawab Helpdesk perlu ≈ <b>${f1(D.other.length/D.nD/D.cap*7/6)}</b> FTE tambahan.`);
+    if(D.fte90>D.fte*1.15)out.push(`Hari ramai (P90) butuh ${f1(D.fte90)} FTE vs rata-rata ${f1(D.fte)} — siapkan 1 orang on-call / lembur di hari ramai.`);
+    return out.slice(0,5)};
+  const col=(D,kind,name)=>{if(D&&!D.teamFound)name+=' (semua handler)';const a=adv(D,kind);if(!a.length)return '';return `<div class="card mpr" data-a><div class="mpr-h"><b>${name}</b>${D.rec?`<span>${D.rec.n} orang · ${D.rec.P} pagi + ${D.rec.Q} siang</span>`:''}</div><ul>${a.map((t,i)=>`<li>${ed(`${id}.${kind}${i}`,t,'span')}</li>`).join('')}</ul></div>`};
+  const asum=`<div class="card mpa" data-a><b>Cara hitung</b> Kebutuhan per jam = rata-rata case masuk per jam ÷ kapasitas per agent per jam (P75 case per agent per hari ÷ ${MP.eff} jam efektif). Coverage: shift 9 jam dengan break 1 jam (efektif ${MP.eff} jam), per orang ${MP.full} hari full + ${MP.halfN} hari ½ (${MP.halfH} jam) + 1 libur → ${MP.week} jam/minggu. Minimal 1 orang on-duty tiap jam ${HH(MP.open)}–${HH(MP.close)}. Belum termasuk cuti tahunan, sakit, training, dan pekerjaan non-ticket.</div>`;
+  return head(id,'mp',title,`Rekomendasi dari data ${esc(C.long)} · bisa diedit`)+body(`<div class="mpg">${col(hd,'cs','Helpdesk')}${col(vp,'vip','VIP · Account Manager')}</div>${asum}`)}
+document.addEventListener('change',e=>{const t=e.target.closest('[data-mp]');if(!t)return;const k='mp.'+t.dataset.mp,v=String(t.value).trim();if(v)S.edits[k]=v;else delete S.edits[k];save();refresh(0)},true);
 
 const SLIDES=[
  {id:'cover',g:'gen',t:'Cover',r:sCover,dark:1},
@@ -1853,11 +1988,17 @@ const SLIDES=[
  {id:'ops-days',g:'ops',t:'Traffic by Day & Hour',r:sTrafficDays,need:'cs',blocks:[['heat','Heatmap'],['dow','Average per day'],['hl','Key highlights']]},
  {id:'ops-night',g:'ops',t:'Night Shift Case Report',r:sNightShift,need:'cs',blocks:[['kpi','KPI tiles'],['chart','Hourly chart'],['nights','Per night'],['hl','Key highlights']]},
  {id:'ops-swot',g:'ops',t:'SWOT Analysis',r:sSwot,need:'cs'},
+ {id:'ops-mp-hd',g:'mp',t:'Manpower Planning — Helpdesk',r:()=>sManpower('cs'),need:'cs',blocks:[['kpi','KPI tiles'],['chart','Per-hour need'],['dow','Per day'],['hl','Key highlights']]},
+ {id:'ops-mp-vip',g:'mp',t:'Manpower Planning — VIP',r:()=>sManpower('vip'),need:'vip',blocks:[['kpi','KPI tiles'],['chart','Per-hour need'],['dow','Per day'],['hl','Key highlights']]},
+ {id:'ops-mp-rec',g:'mp',t:'Manpower Recommendation',r:sManpowerRec,need:'cs'},
  {id:'thanks',g:'gen',t:'Thank You',r:sThanks,dark:1}
 ];
-const GROUPS=[['gen','Opening & closing'],['cs','Customer Support Report'],['vip','VIP Report'],['ops','Traffic Analysis & SWOT']];
+const GROUPS=[['gen','Opening & closing'],['cs','Customer Support Report'],['vip','VIP Report'],['ops','Traffic Analysis & SWOT'],['mp','Manpower Planning']];
 const isOn=s=>S.vis[s.id]!==undefined?S.vis[s.id]!==false:!s.off;
-function ordered(){const ix=id=>{const i=(S.order||[]).indexOf(id);return i<0?1000+SLIDES.findIndex(x=>x.id===id):i};return [...SLIDES].sort((a,b)=>ix(a.id)-ix(b.id))}
+function ordered(){const ord=(S.order||[]).filter(id=>SLIDES.some(x=>x.id===id));if(!ord.length)return [...SLIDES];
+  /* slide baru (belum ada di urutan tersimpan) disisipkan tepat setelah slide sebelumnya di daftar bawaan */
+  const out=ord.slice();SLIDES.forEach((x,i)=>{if(out.includes(x.id))return;let j=-1;for(let k=i-1;k>=0&&j<0;k--)j=out.indexOf(SLIDES[k].id);out.splice(j+1,0,x.id)});
+  return out.map(id=>SLIDES.find(x=>x.id===id))}
 const visible=()=>ordered().filter(isOn);
 const hasData=s=>!s.need||(s.need==='rc'?!!DS.rc:s.need==='cs'?!!C.cs:!!C.vip);
 
@@ -1868,7 +2009,19 @@ function makeSlide(s,{anim=true,mode=''}={}){const el=document.createElement('di
   el.innerHTML=html;$$('[data-a]',el).forEach((e,i)=>e.style.setProperty('--i',Math.min(i,8)));
   if(!anim||S.anim==='off')el.classList.add('in','static');return el}
 function enter(el){if(el.classList.contains('static'))return;requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('in')))}
-function swap(host,el,dir){const old=[...host.children];host.appendChild(el);
+/* auto-fit: isi card yang kepanjangan (data banyak / nama panjang) diperkecil proporsional, bukan ketumpuk / kepotong.
+   Batas 62% — kalau masih tidak muat, card bisa di-scroll. */
+function fitSlide(el){if(!el||!el.isConnected)return;
+  $$('.card',el).forEach(c=>{const kids=[...c.children].filter(k=>!k.classList.contains('ctitle'));kids.forEach(k=>{k.style.zoom='';k.classList.remove('fit-z')});c.classList.remove('fit-s')});
+  for(let pass=0;pass<2;pass++)$$('.card',el).forEach(c=>{if(c.classList.contains('scroll')&&!el.classList.contains('printing'))return;
+    const over=c.scrollHeight-c.clientHeight;if(over<=2)return;
+    const kids=[...c.children].filter(k=>!k.classList.contains('ctitle')&&!k.classList.contains('ed-only'));if(!kids.length)return;
+    const t=c.querySelector(':scope>.ctitle'),cs=getComputedStyle(c),pad=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom),avail=c.clientHeight-pad-(t?t.offsetHeight:0);
+    const need=c.scrollHeight-pad-(t?t.offsetHeight:0);if(avail<=0||need<=0)return;
+    const MINZ=el.classList.contains('printing')?.42:.62,cur=parseFloat(kids[0].style.zoom)||1,z=Math.max(MINZ,Math.min(1,cur*avail/need*.98));
+    kids.forEach(k=>{k.style.zoom=z;k.classList.add('fit-z')});
+    if(z<=MINZ&&c.scrollHeight-c.clientHeight>2)c.classList.add('fit-s')})}
+function swap(host,el,dir){const old=[...host.children];host.appendChild(el);requestAnimationFrame(()=>fitSlide(el));
   const calm=S.anim==='off'||matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(old.length&&dir&&el.animate&&!calm){old.forEach(o=>{o.style.pointerEvents='none';const a=o.animate([{opacity:1},{opacity:0}],{duration:220,easing:'ease-out',fill:'forwards'});a.onfinish=()=>o.remove()});el.animate([{opacity:0},{opacity:1}],{duration:280,easing:'ease-out'})}
   else old.forEach(o=>o.remove());
@@ -1951,6 +2104,7 @@ function dataCheck(ds,k){if(!ds||k==='rc')return '';const I=idx(ds,MAIN_FIELDS),
   const oc=Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([a,b])=>`${esc(a)} ${fInt(b)}`).join(' · ')||'—';
   return `<div class="dcheck"><b>Data check</b>
    <div>${fInt(n)} baris · ${fInt(noCat)} tanpa Category/Problem (tidak dihitung) · ${fInt(ex)} user dikecualikan</div>
+   ${(()=>{const z=tzShift(ds,I);return z?`<div>Jam Created di file tertulis dalam UTC (dicek dari Ticket ID) → otomatis digeser <b>${z>0?'+':''}${z/3600e3} jam</b> ke jam lokal untuk tanggal, periode & traffic.</div>`:''})()}
    ${I.vip>=0?`<div>VIP = Yes: <b>${fInt(vy)}</b> → ${k==='cs'?'VIP Report':'dipakai'} · VIP = No/kosong: <b>${fInt(vn)}</b> → ${k==='cs'?'Customer Support':'diabaikan'}</div>`:`<div class="warn">Kolom VIP belum dimapping — ${k==='cs'?'semua baris dianggap Customer Support':'semua baris dianggap VIP'}.</div>`}
    <div>Status Solved: ${fInt(sol)}${I.fr>=0?` · dengan first response: ${fInt(fr)} (= Solved resmi)`:' · <span class="warn">kolom First Response belum dimapping</span>'} · No Resp BC2/After Conn.: ${fInt(nr)}</div>
    ${afrCheck(ds,I,A)}
@@ -1964,8 +2118,9 @@ function renderImport(){
   {const H=S.imports||[],L={cs:'Customer Support',vip:'VIP',rc:'Repeat Complaint'};$('#ihist').innerHTML=`<h3>Riwayat import</h3>${H.length?`<table class="tbl"><thead><tr><th>Waktu import</th><th>Data</th><th>File</th><th class="n">Baris</th><th>Periode data</th></tr></thead><tbody>${H.map((x,i)=>`<tr${i===0?' class="b"':''}><td>${hhmm(x.at)}</td><td>${L[x.k]||x.k}</td><td>${esc(x.name)}</td><td class="n">${fInt(x.rows)}</td><td class="mut">${x.from?ddmm(x.from)+' – '+ddmm(x.to):'—'}</td></tr>`).join('')}</tbody></table>`:'<div class="sub">Belum ada import.</div>'}<div class="sub" style="margin-top:6px">${typeof SY!=='undefined'&&SY.avail?'Data &amp; riwayat ini tersimpan online — semua yang membuka link melihat import terakhir.':'Penyimpanan online belum aktif (lihat README) — data &amp; riwayat ini hanya ada di browser ini.'}</div>`}
   $('#dsgrid').innerHTML=['cs','vip','rc'].map(k=>{const ds=DS[k],F=FIELDS_OF(k),info=DSINFO[k];const miss=ds?F.filter(f=>f.req&&!ds.map[f.k]).map(f=>f.l):[];
     return `<div class="dscard"><div><span class="tag">${info.tag}</span></div><h3>${info.t}</h3><div class="sub">${info.d}</div>
-     <div class="drop"><input type="file" accept=".csv,.xlsx,.xls" data-file="${k}" aria-label="${info.t}"></div>
-     <div class="fstatus ${ds?(miss.length?'err':'ok'):''}" id="st-${k}">${ds?`${esc(ds.name)} · ${fInt(ds.rows.length)} rows · ${ds.headers.length} columns${ds.joined&&ds.joined.length?'<br>Digabung dari sheet lain: '+esc(ds.joined.join(', ')):''}${miss.length?'<br>Kolom wajib belum dimapping: '+esc(miss.join(', ')):''}`:'Belum ada file.'}</div>
+     <div class="drop"><input type="file" accept=".csv,.xlsx,.xls" multiple data-file="${k}" aria-label="${info.t}"></div>
+     ${ds?`<label class="sub addf">＋ Gabung file lain ke data ini (mis. tanggal 1–22 + 23–30): <input type="file" accept=".csv,.xlsx,.xls" multiple data-file="${k}" data-append="1" aria-label="Gabung file ${info.t}"></label>`:'<div class="sub">Bisa pilih beberapa file sekaligus (kolom sama) → otomatis digabung.</div>'}
+     <div class="fstatus ${ds?(miss.length?'err':'ok'):''}" id="st-${k}">${ds?`${esc(ds.name)} · ${fInt(ds.rows.length)} rows · ${ds.headers.length} columns${(()=>{const r=dsRange(ds);return r?'<br>Isi tanggal: <b>'+esc(rangeLabel(r.a,r.b,true))+'</b> ('+r.n+' hari ada data)':''})()}${ds.joined&&ds.joined.length?'<br>Digabung: '+esc(ds.joined.join(', ')):''}${miss.length?'<br>Kolom wajib belum dimapping: '+esc(miss.join(', ')):''}`:'Belum ada file.'}</div>
      ${dataCheck(ds,k)}
      ${ds?`<details ${miss.length?'open':''}><summary>Column mapping</summary><div class="maps">${F.map(f=>`<label>${esc(f.l)}${f.req?' <span class="req">*</span>':''}<select data-map="${k}" data-key="${f.k}"><option value="">— not mapped —</option>${ds.headers.map(h=>`<option ${ds.map[f.k]===h?'selected':''}>${esc(h)}</option>`).join('')}</select></label>`).join('')}</div></details><div><button class="btn sm danger" data-clear="${k}">Remove file</button></div>`:''}
      ${k==='cs'?`<details><summary>Analytics rules</summary><div class="rules"><label>User yang dikecualikan (Monitor / Handle / Reporter, pisahkan koma)<input type="text" data-excl value="${esc(S.excl??'DotAI, AI')}"></label><span class="sub">Ticket dengan user ini tidak dihitung (sesuai Analytics Formulas: DotAI / Software Development).</span></div></details>`:''}
@@ -1977,11 +2132,13 @@ function renderImport(){
        <label>Category administratif dikeluarkan (koma)<input type="text" data-rule="excludeCats" value="${esc(S.rc.excludeCats)}"></label>
        <span class="chk"><input type="checkbox" data-rule="complaintOnly" ${S.rc.complaintOnly?'checked':''}> Hanya Type = Complaint</span>
        <span class="chk"><input type="checkbox" data-rule="skipCanceled" ${S.rc.skipCanceled?'checked':''}> Abaikan tiket Canceled</span>
+       <span class="chk"><input type="checkbox" data-rule="allOrigins" ${S.rc.allOrigins?'checked':''}> Hitung semua channel: customer yang pernah komplain via origin di atas → tiket komplainnya dari channel lain (Omnichannel, DotAI, dst.) ikut dihitung</span>
        <div><button class="btn sm" data-rule-reset>Reset rules</button></div></div></details>`:''}</div>`}).join('');
-  $$('[data-file]').forEach(inp=>inp.onchange=async()=>{const f=inp.files[0];if(!f)return;const k=inp.dataset.file,st=$('#st-'+k);st.className='fstatus';st.textContent='Membaca file…';
-    try{const t=await readTable(f);t.map=detect(t.headers,FIELDS_OF(k),t.rows);DS[k]=t;await idbPut(k,t);
-      const ds=t.rows.map(r=>{const j=t.headers.indexOf(t.map.date);return j<0?null:parseDate(r[j])}).filter(x=>x!=null);
-      S.imports=[{k,name:f.name,rows:t.rows.length,at:Date.now(),from:ds.length?Math.min(...ds):null,to:ds.length?Math.max(...ds):null},...(S.imports||[])].slice(0,30);save();renderImport();refresh(0)}catch(err){st.className='fstatus err';st.textContent='Gagal membaca file: '+err.message}});
+  $$('[data-file]').forEach(inp=>inp.onchange=async()=>{const fs=[...inp.files];if(!fs.length)return;const k=inp.dataset.file,st=$('#st-'+k);st.className='fstatus';st.textContent='Membaca file…';
+    try{const ts=[];for(const f of fs)ts.push(await readTable(f));if(inp.dataset.append&&DS[k])ts.unshift(DS[k]);
+      const t=ts.length>1?mergeTables(ts):ts[0];const keep=inp.dataset.append&&DS[k]?DS[k].map:null;t.map=keep||detect(t.headers,FIELDS_OF(k),t.rows);DS[k]=t;await idbPut(k,t);
+      const j=t.headers.indexOf(t.map.date);let a=null,b=null;if(j>=0)for(const r of t.rows){const d=parseDate(r[j]);if(d==null)continue;if(a==null||d<a)a=d;if(b==null||d>b)b=d}
+      S.imports=[{k,name:t.name,rows:t.rows.length,at:Date.now(),from:a,to:b},...(S.imports||[])].slice(0,30);save();renderImport();refresh(0)}catch(err){st.className='fstatus err';st.textContent='Gagal membaca file: '+err.message}});
   $$('[data-map]').forEach(sel=>sel.onchange=async()=>{const k=sel.dataset.map;DS[k].map[sel.dataset.key]=sel.value;await idbPut(k,DS[k]);renderImport();refresh(0)});
   $$('[data-clear]').forEach(b=>b.onclick=async()=>{const k=b.dataset.clear;DS[k]=null;await idbPut(k,null);renderImport();refresh(0)});
   const ex=$('[data-excl]');if(ex)ex.onchange=()=>{S.excl=ex.value;save();refresh(0)};
@@ -2092,7 +2249,9 @@ $('#stage').addEventListener('click',e=>{const q=(a)=>e.target.closest(a);let b;
 $('#stage').addEventListener('click',e=>{const b=e.target.closest('[data-wo]');if(!b)return;e.preventDefault();e.stopPropagation();openWo(b.dataset.wo)});
 
 /* ---------- print ---------- */
-function buildPrint(){const root=$('#printRoot');root.innerHTML='';visible().forEach(s=>{const h=document.createElement('div');h.className='ph';h.appendChild(makeSlide(s,{anim:false,mode:'printing'}));root.appendChild(h)})}
+function buildPrint(){const root=$('#printRoot');root.innerHTML='';visible().forEach(s=>{const h=document.createElement('div');h.className='ph';h.appendChild(makeSlide(s,{anim:false,mode:'printing'}));root.appendChild(h)});
+  /* ukur di luar layar (1280×720 sama dengan halaman PDF) supaya isi yang panjang ikut diperkecil, tidak kepotong */
+  root.style.cssText='display:block;position:fixed;left:-20000px;top:0';const PH='container:deck/inline-size;position:relative;width:1280px;height:720px;overflow:hidden';$$('.ph',root).forEach(h=>h.style.cssText=PH);$$('.ph>.slide',root).forEach(fitSlide);$$('.ph',root).forEach(h=>h.style.cssText='');root.style.cssText=''}
 addEventListener('beforeprint',buildPrint);addEventListener('afterprint',()=>{$('#printRoot').innerHTML=''});
 $('#printBtn').onclick=()=>{if(!visible().length){alert('Tidak ada slide yang ditampilkan.');return}buildPrint();print()};
 

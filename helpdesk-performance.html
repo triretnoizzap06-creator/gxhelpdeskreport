@@ -374,6 +374,8 @@ button,input,select{font:inherit;color:inherit}
 .rt td span,.at td span{overflow:hidden;text-overflow:ellipsis}
 .rt .rav,.at .rav{width:2.6cqw;height:2.6cqw}
 .rt tr.lead td,.at tr.lead td{background:#FFFBEA}
+.at .ld{display:block;font-size:.75cqw;color:#A16207;font-weight:700}
+.rt tr.grp td{font-size:.8cqw;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#A16207;padding:.7cqw .4cqw .3cqw;border-bottom:1px solid #F5E6A8;display:table-cell!important}
 .rt td b,.at td b{font-weight:800}
 .tr.up{color:#15803D;font-weight:700}.tr.dn{color:#B91C1C;font-weight:700}.tr{color:#A1A1AA}
 .crit2{display:flex;flex-wrap:wrap;gap:.45cqw .6cqw;align-items:center;margin-top:auto;margin-bottom:2.4cqw}
@@ -463,7 +465,7 @@ button,input,select{font:inherit;color:inherit}
 .etab th.etm{border-bottom:2px solid #FFD000;color:inherit}.etab td{padding:3px 2px;border-bottom:1px solid var(--line)}
 .etab .etn{text-align:left;white-space:nowrap;max-width:170px;overflow:hidden;text-overflow:ellipsis;font-weight:700;padding-right:8px}.etab .etd{color:#71717A;text-align:center}
 .etab input.et{width:58px;padding:5px 5px;font-size:12px;text-align:right}.etab .etr input.et{width:62px}.etab .etg{border-left:1px solid var(--line)}
-.etab .etr{background:rgba(59,130,246,.07)}.etab .ets{text-align:right;font-weight:700;padding:3px 6px;white-space:nowrap}.etab .etf{background:rgba(255,208,0,.15)}.etblk{margin-top:10px}.etblk+.etblk{margin-top:16px}.etab td.etb{background:rgba(59,130,246,.06)}.etab th.etb{color:#2563EB}.etab .etx{color:#2563EB}
+.etab .etr{background:rgba(59,130,246,.07)}.etab .ets{text-align:right;font-weight:700;padding:3px 6px;white-space:nowrap}.etab .etf{background:rgba(255,208,0,.15)}.etab .ett{background:rgba(0,0,0,.035)}.etmins{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:12px;margin:4px 0 6px}.etmins label{display:flex;align-items:center;gap:6px}.etmins input.et{width:76px}.sumq{font-size:12.5px;margin:2px 0 8px;line-height:1.5}.etblk{margin-top:10px}.etblk+.etblk{margin-top:16px}.etab td.etb{background:rgba(59,130,246,.06)}.etab th.etb{color:#2563EB}.etab .etx{color:#2563EB}
 .acard{background:var(--solid);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
 .acard .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
 .acard .top input[type=text]{flex:1;min-width:180px}
@@ -583,16 +585,16 @@ const SEED = {
     { name: 'Kadek Arisita Dhyana Putri', div: 'HD', csMonM: [669, 677, 648], csHandledM: [225, 231, 234], vipTotalM: [0, 26, 16], vipSolvedM: [0, 25, 16], ticketsM: [226, 259, 254], rrM: [100, 96.15, 100], chat: [90, 95, 95], att: { workDays: 78, sick: 8, personal: 4, alpha: 0, lateMin: 35, workMin: 37440 } },
   ] },
   /* Q3 2026 — Jul & Agu dari Monitoring_Customer_Support_2026_Responses.xlsx (sheet July / August), Sep dari Tickets-2026-09-01_2026-09-30.xlsx.
-     VIP Handled Jul & Agu belum ada di file → isi lewat Edit data. Observation & Attendance Q3 juga belum ada. */
-  '2026-Q3': { attNote: '', agents: [
-    { name: 'Devin Bagaskara', div: 'AM', csMonM: [586, 2, 22], csHandledM: [221, 2, 14], vipTotalM: [null, null, 272], rrM: [99.1, 100.0, 99.65], chat: ['', '', ''], att: {} },
-    { name: 'Ni Kadek Desi Mirayani', div: 'AM', csMonM: [201, 133, 56], csHandledM: [64, 49, 19], vipTotalM: [null, null, 307], rrM: [98.44, 100.0, 100.0], chat: ['', '', ''], att: {} },
-    { name: 'Aulia Sevi Diana', div: 'AM', csMonM: [147, 65, 19], csHandledM: [56, 27, 11], vipTotalM: [null, null, 324], rrM: [100.0, 100.0, 100.0], chat: ['', '', ''], att: {} },
-    { name: 'Kadek Arisita Dhyana Putri', div: 'HD', csMonM: [801, 642, 539], csHandledM: [297, 259, 194], vipTotalM: [null, null, 8], rrM: [97.98, 99.61, 96.53], chat: ['', '', ''], att: {} },
-    { name: 'Gede Dimas Pery Narendra', div: 'HD', csMonM: [407, 487, 444], csHandledM: [114, 167, 144], vipTotalM: [null, null, 0], rrM: [100.0, 100.0, 97.22], chat: ['', '', ''], att: {} },
-    { name: 'Bayu Sukma Ramadhan', div: 'HD', csMonM: [301, 517, 375], csHandledM: [75, 159, 142], vipTotalM: [null, null, 0], rrM: [100.0, 99.37, 97.18], chat: ['', '', ''], att: {} },
-    { name: 'A.A Ngurah Kiyana Adhisa Oka Pertama', div: 'HD', csMonM: [15, 447, 453], csHandledM: [3, 147, 142], vipTotalM: [null, null, 0], rrM: [100.0, 100.0, 100.0], chat: ['', '', ''], att: {} },
-    { name: 'Nilma Syahrani', div: 'HD', csMonM: [0, 315, 386], csHandledM: [0, 112, 165], vipTotalM: [null, null, 0], rrM: [null, 100.0, 96.97], chat: ['', '', ''], att: {} },
+     VIP Handled Jul & Agu belum ada di file → isi lewat Edit data. Attendance dari Attendance Recap (screenshot Jul–Sep). Observation Q3 belum ada. */
+  '2026-Q3': { attNote: 'Attendance Recap Juli–September (siklus 26–25)', attMins: [12480, 12480, 12480], agents: [
+    { name: 'Devin Bagaskara', div: 'AM', csMonM: [586, 2, 22], csHandledM: [221, 2, 14], vipTotalM: [null, null, 272], rrM: [99.1, 100.0, 99.65], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 23, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 2, alpha: 0, late: 0, lateDays: 0 }] },
+    { name: 'Ni Kadek Desi Mirayani', div: 'AM', csMonM: [201, 133, 56], csHandledM: [64, 49, 19], vipTotalM: [null, null, 307], rrM: [98.44, 100.0, 100.0], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 2, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }] },
+    { name: 'Aulia Sevi Diana', div: 'AM', csMonM: [147, 65, 19], csHandledM: [56, 27, 11], vipTotalM: [null, null, 324], rrM: [100.0, 100.0, 100.0], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 2, alpha: 0, late: 11, lateDays: 0 }, { pl: 0, sick: 3, alpha: 0, late: 1, lateDays: 1 }, { pl: 0, sick: 2, alpha: 1, late: 30, lateDays: 3 }] },
+    { name: 'Kadek Arisita Dhyana Putri', div: 'HD', csMonM: [801, 642, 539], csHandledM: [297, 259, 194], vipTotalM: [null, null, 8], rrM: [97.98, 99.61, 96.53], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 2, alpha: 0, late: 12, lateDays: 5 }, { pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 3, alpha: 0, late: 13, lateDays: 2 }] },
+    { name: 'Gede Dimas Pery Narendra', div: 'HD', csMonM: [407, 487, 444], csHandledM: [114, 167, 144], vipTotalM: [null, null, 0], rrM: [100.0, 100.0, 97.22], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 0, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 0, alpha: 2, late: 0, lateDays: 0 }, { pl: 0, sick: 0, alpha: 0, late: 34, lateDays: 1 }] },
+    { name: 'Bayu Sukma Ramadhan', div: 'HD', csMonM: [301, 517, 375], csHandledM: [75, 159, 142], vipTotalM: [null, null, 0], rrM: [100.0, 99.37, 97.18], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 0, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 0, alpha: 1, late: 24, lateDays: 3 }, { pl: 0, sick: 1, alpha: 0, late: 5, lateDays: 1 }] },
+    { name: 'A.A Ngurah Kiyana Adhisa Oka Pertama', div: 'HD', csMonM: [15, 447, 453], csHandledM: [3, 147, 142], vipTotalM: [null, null, 0], rrM: [100.0, 100.0, 100.0], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 0, alpha: 0, late: 56, lateDays: 1 }, { pl: 0, sick: 5, alpha: 0, late: 136, lateDays: 7 }, { pl: 0, sick: 1, alpha: 4, late: 175, lateDays: 14 }] },
+    { name: 'Nilma Syahrani', div: 'HD', csMonM: [0, 315, 386], csHandledM: [0, 112, 165], vipTotalM: [null, null, 0], rrM: [null, 100.0, 96.97], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 1, alpha: 0, late: 6, lateDays: 0 }, { pl: 0, sick: 4, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 9, lateDays: 3 }] },
   ] },
 };
 
@@ -706,6 +708,7 @@ const TX = {
     crossL: 'back-up → final', crossNote: 'Back-up bonus (max +2.5 on the Final Score): Helpdesk handling VIP or AM handling CS is valued on the other division’s scale and compared with the biggest back-up in the team.',
     mdT: 'Monthly Productivity Data', mdSub: ms => `Input per month (${ms}) and the resulting productivity score.`, vipDone: 'VIP Done', divL: 'Div.',
     mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Done excludes admin hold · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS solved ÷ CS handled · AM: VIP done ÷ VIP total. Shown as information only — not part of the score. Click a row for the monthly detail.',
+    lateL: 'Late (min)', attPctL: '% Attendance per month', attPctD: '(working days − PL − sick − alpha) ÷ working days − late minutes ÷ working minutes', attQD: 'Quarter score = average of the monthly % (attendance cycle 26th – 25th).', attEx: 'Example: 26 working days, 2 sick days, 11 late minutes → 92.31% − 0.09% = 92.22%.',
     tixL: 'Tickets Created', mon: 'CS Monitoring', hand: 'CS Handled Volume', vipR: 'VIP Resolution Rate', vipH: 'VIP Handled Volume', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs peer max', avg: 'avg', of: 'of', vipHandled: 'VIP handled', rateW: 'rate',
   },
@@ -758,6 +761,7 @@ const TX = {
     crossL: 'back-up → skor akhir', crossNote: 'Bonus back-up (maks +2,5 di Skor Akhir): Helpdesk yang pegang VIP atau AM yang pegang CS dinilai pakai skala divisi lain, lalu dibandingkan dengan back-up terbesar di tim.',
     mdT: 'Data Produktivitas Bulanan', mdSub: ms => `Input per bulan (${ms}) dan skor produktivitas yang dihasilkan.`, vipDone: 'VIP Selesai', divL: 'Div.',
     mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Selesai tanpa hold admin · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS selesai ÷ CS handled · AM: VIP selesai ÷ total VIP. Hanya info — tidak masuk skor. Klik baris untuk detail per bulan.',
+    lateL: 'Telat (mnt)', attPctL: '% Attendance per bulan', attPctD: '(hari kerja − PL − sakit − alpha) ÷ hari kerja − menit telat ÷ menit kerja', attQD: 'Skor kuartal = rata-rata % bulanan (siklus absensi tgl 26 – 25).', attEx: 'Contoh: 26 hari kerja, sakit 2 hari, telat 11 menit → 92,31% − 0,09% = 92,22%.',
     tixL: 'Tiket Dibuat', mon: 'CS Monitoring', hand: 'Volume CS Handled', vipR: 'VIP Resolution Rate', vipH: 'Volume VIP Handled', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs tertinggi', avg: 'rata²', of: 'dari', vipHandled: 'VIP ditangani', rateW: 'rate',
   },
@@ -781,7 +785,7 @@ function normAgent(a) {
   return { name: a.name || '', div: a.div === 'AM' ? 'AM' : 'HD', photo: a.photo || '',
     csMon: n(a.csMon), csHandled: n(a.csHandled), vipTotal: n(a.vipTotal), vipSolved: n(a.vipSolved), vipRate: has(a.vipRate) ? n(a.vipRate) : null,
     chat: [0, 1, 2].map(i => (a.chat && has(a.chat[i])) ? n(a.chat[i]) : null),
-    csMonM: m3(a.csMonM), csHandledM: m3(a.csHandledM), csSolvedM: m3(a.csSolvedM), csSolved: has(a.csSolved) ? n(a.csSolved) : null, vipTotalM: m3(a.vipTotalM), vipSolvedM: m3(a.vipSolvedM), rrM: m3(a.rrM), ticketsM: m3(a.ticketsM),
+    csMonM: m3(a.csMonM), csHandledM: m3(a.csHandledM), csSolvedM: m3(a.csSolvedM), csSolved: has(a.csSolved) ? n(a.csSolved) : null, vipTotalM: m3(a.vipTotalM), vipSolvedM: m3(a.vipSolvedM), rrM: m3(a.rrM), ticketsM: m3(a.ticketsM), attM: [0, 1, 2].map(i => { const o = a.attM && a.attM[i]; if (!o) return null; const f = k => has(o[k]) ? n(o[k]) : null; const r = { pl: f('pl'), sick: f('sick'), alpha: f('alpha'), late: f('late'), lateDays: f('lateDays') }; return Object.values(r).some(v => v != null) ? r : null; }),
     att: Object.assign({ workDays: null, sick: 0, personal: 0, alpha: 0, lateMin: 0, workMin: null, manual: null }, a.att || {}) };
 }
 function attScore(t) {
@@ -793,6 +797,10 @@ function attScore(t) {
   const punct = n(t.workMin) > 0 ? Math.max(0, (1 - n(t.lateMin) / n(t.workMin)) * 100) : 100;
   return { score: rate * 0.7 + punct * 0.3, rate, punct };
 }
+/* attendance bulanan (Q3+, format Attendance Recap): % = (hari kerja − PL − sakit − alpha) ÷ hari kerja − menit telat ÷ menit kerja · skor kuartal = rata-rata bulan */
+const ATT_MIN_DAY = 480, ATT_MINS_DEF = 12480;
+function attMonth(o, mins) { if (!o) return null; const M = n(mins) || ATT_MINS_DEF, wd = M / ATT_MIN_DAY; const off = n(o.pl) + n(o.sick) + n(o.alpha);
+  const pct = Math.max(0, (wd - off) / wd * 100 - n(o.late) / M * 100); return { pct, ded: 100 - pct, wd, M }; }
 /* resolution rate per bulan (info): isian manual bila ada, kalau kosong dihitung — HD: CS solved ÷ CS handled · AM: VIP solved ÷ VIP total */
 function rrAuto(a, k) { return a.div === 'HD' ? (a.csSolvedM[k] != null && a.csHandledM[k] ? a.csSolvedM[k] / a.csHandledM[k] * 100 : null) : (a.vipTotalM[k] ? (a.vipSolvedM[k] || 0) / a.vipTotalM[k] * 100 : null); }
 function rrOf(a, k) { return a.rrM && a.rrM[k] != null ? a.rrM[k] : rrAuto(a, k); }
@@ -870,7 +878,12 @@ function compute(data) {
     a.core = r2(sum(a.parts.map(p => p.v)));
     const cs = a.chat.filter(v => v != null);
     a.chatAvg = cs.length ? r2(sum(cs) / cs.length) : 0;
-    a.attX = attScore(a.att);
+    const am = a.attM.map((o, k) => attMonth(o, (data.attMins || [])[k]));
+    if (am.some(Boolean) && !has(a.att.manual)) {
+      const v = am.filter(Boolean); a.attMo = am;
+      a.att = { ...a.att, sick: sum(a.attM.map(o => o ? n(o.sick) : 0)), personal: sum(a.attM.map(o => o ? n(o.pl) : 0)), alpha: sum(a.attM.map(o => o ? n(o.alpha) : 0)), lateMin: sum(a.attM.map(o => o ? n(o.late) : 0)), lateDays: sum(a.attM.map(o => o ? n(o.lateDays) : 0)) };
+      a.attX = { score: sum(v.map(x => x.pct)) / v.length, monthly: true };
+    } else a.attX = attScore(a.att);
     a.attS = r2(a.attX.score);
   });
   /* bonus back-up lintas divisi (extra mile): HD yang pegang VIP / AM yang pegang CS.
@@ -899,6 +912,10 @@ function compute(data) {
 /* =================== slides =================== */
 const LOGO_D = '<img class="logo" src="wordmark.png" alt="GlobalXtreme">';
 const LOGO_W = '<img class="logo" src="wordmark-white.png" alt="GlobalXtreme">';
+/* urutan acak tapi tetap (seed = periode) supaya Score Board tidak membocorkan peringkat */
+function shuffleBy(arr, seedStr) { let h = 2166136261; for (const c of String(seedStr)) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
+  const rnd = () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 100000) / 100000; };
+  const a = arr.slice().sort((x, y) => x.name.localeCompare(y.name)); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function rk(i, cls = '') { return `<span class="rk ${cls}">${i + 1}</span>`; }
 
 function slides(p, data) {
@@ -976,16 +993,18 @@ function slides(p, data) {
 
   // ---------- 4: chat ----------
   {
-    const list = C.byChat, lo = Math.min(80, Math.floor(Math.min(100, ...C.A.flatMap(a => a.chat.filter(v => v != null))) / 5) * 5), Y = v => Math.max(0, (v - lo) / (100 - lo) * 100);
+    const list = legacyRules() ? C.byChat : [...C.byChat.filter(x => x.div === 'HD'), ...C.byChat.filter(x => x.div === 'AM')], lo = Math.min(80, Math.floor(Math.min(100, ...C.A.flatMap(a => a.chat.filter(v => v != null))) / 5) * 5), Y = v => Math.max(0, (v - lo) / (100 - lo) * 100);
     const ticks = []; for (let v = lo; v <= 100; v += 5) ticks.push(v);
     const MC = ['#BFDBFE', '#60A5FA', '#1D4ED8'];
     const chart = `<div class="cch"><div class="cyax">${ticks.map(t => `<span style="bottom:${Y(t)}%">${t}</span>`).join('')}</div>
       <div class="cplot">${ticks.map(t => `<s style="bottom:${Y(t)}%"></s>`).join('')}
         ${list.map((a, i) => `<div class="cg"><div class="cbars">${a.chat.map((v, k) => `<i style="--h:${v == null ? 0 : Y(v)}%;--c:${MC[k]};--k:${i * .4 + k * .15}"><em>${v == null ? '' : fInt(v)}</em></i>`).join('')}</div><span class="cx">${esc(nick(a))}</span></div>`).join('')}</div></div>
       <div class="clg">${m.map((mi, k) => `<span><i style="background:${MC[k]}"></i>${monthName(mi)}</span>`).join('')}<span class="mut">${T('axisFrom')(lo)}</span></div>`;
-    const tb = `<table class="rt"><thead><tr><th>#</th><th>${T('agent')}</th><th>${T('avgS')}</th><th>${T('trend')}</th></tr></thead><tbody>
-      ${list.map((a, i) => { const f = a.chat.find(v => v != null), l = [...a.chat].reverse().find(v => v != null), d = (l ?? 0) - (f ?? 0);
-        return `<tr class="${i ? '' : 'lead'}"><td>${C.byChat.findIndex(x => x.chatAvg === a.chatAvg) + 1}</td><td>${av(a)}<span>${esc(a.name)}</span></td><td class="num"><b>${f2(a.chatAvg)}</b></td><td class="tr ${d > 0 ? 'up' : d < 0 ? 'dn' : ''}">${d > 0 ? '▲ +' + d : d < 0 ? '▼ ' + d : '—'}</td></tr>`; }).join('')}</tbody></table>`;
+    const NEW = !legacyRules(), groups = NEW ? [['HD', 'Helpdesk'], ['AM', 'Account Manager']].map(([d, nm]) => [nm, list.filter(x => x.div === d)]).filter(g => g[1].length) : [['', list]];
+    let no = 0;
+    const tb = `<table class="rt"><thead><tr><th>${NEW ? 'No.' : '#'}</th><th>${T('agent')}</th><th>${T('avgS')}</th><th>${T('trend')}</th></tr></thead><tbody>
+      ${groups.map(([gn, gl]) => (gn ? `<tr class="grp"><td colspan="4">${gn}</td></tr>` : '') + gl.map((a, i) => { const f = a.chat.find(v => v != null), l = [...a.chat].reverse().find(v => v != null), d = (l ?? 0) - (f ?? 0); no++;
+        return `<tr class="${NEW || i ? '' : 'lead'}"><td>${NEW ? no : C.byChat.findIndex(x => x.chatAvg === a.chatAvg) + 1}</td><td>${av(a)}<span>${esc(a.name)}</span></td><td class="num"><b>${f2(a.chatAvg)}</b></td><td class="tr ${d > 0 ? 'up' : d < 0 ? 'dn' : ''}">${d > 0 ? '▲ +' + d : d < 0 ? '▼ ' + d : '—'}</td></tr>`; }).join('')).join('')}</tbody></table>`;
     out.push(`<section class="slide v4 ${N > 5 ? 'many' : ''}"><div class="s-in">
       ${head(`${T('pillar')} 02`, T('chatT2'), T('chatTake2')(N ? Math.floor(Math.min(...C.A.map(a => a.chatAvg)) / 5) * 5 : 0), 'b', T('weight')(30))}
       <div class="v4g"><div class="cbox"><div class="cap">${T('monthlyScores')}</div>${chart}</div><div class="cbox"><div class="cap">${T('ranking')}</div>${tb}</div></div>
@@ -997,19 +1016,24 @@ function slides(p, data) {
   {
     const list = C.byAtt, lo = Math.min(90, Math.floor(Math.min(100, ...list.map(a => a.attS)) / 5) * 5), X = v => Math.max(0, (v - lo) / (100 - lo) * 100);
     const cell = v => n(v) ? `<b>${n(v)}</b>` : '<span class="z">–</span>';
-    const tb = `<table class="at"><thead><tr><th>${T('agent')}</th><th>${T('sick')}</th><th>${T('pl')}</th><th>Alpha</th><th class="w">${T('scoreScale')(lo)}</th><th>${T('score')}</th></tr></thead><tbody>
-      ${list.map((a, i) => `<tr class="${i ? '' : 'lead'}"><td>${av(a)}<span>${esc(a.name)}</span></td><td>${cell(a.att.sick)}</td><td>${cell(a.att.personal)}</td><td>${cell(a.att.alpha)}</td>
+    const MON = list.some(a => a.attX && a.attX.monthly);
+    const tb = `<table class="at"><thead><tr><th>${T('agent')}</th><th>${T('sick')}</th><th>${T('pl')}</th><th>Alpha</th>${MON ? `<th>${T('lateL')}</th>` : ''}<th class="w">${T('scoreScale')(lo)}</th><th>${T('score')}</th></tr></thead><tbody>
+      ${list.map((a, i) => `<tr class="${i ? '' : 'lead'}"><td>${av(a)}<span>${esc(a.name)}</span></td><td>${cell(a.att.sick)}</td><td>${cell(a.att.personal)}</td><td>${cell(a.att.alpha)}</td>${MON ? `<td>${cell(a.att.lateMin)}${n(a.att.lateDays) ? `<small class="ld">${n(a.att.lateDays)}×</small>` : ''}</td>` : ''}
         <td class="w"><div class="ab"><i style="--w:${X(a.attS)}%"></i></div></td><td class="num"><b>${f2(a.attS)}</b>${a.attS >= 100 ? ' <span class="pf">★</span>' : ''}</td></tr>`).join('')}</tbody></table>`;
     const top = list[0];
     out.push(`<section class="slide v5 ${N > 5 ? 'many' : ''}"><div class="s-in">
       ${head(`${T('pillar')} 03`, T('attT2'), top ? (top.attS >= 100 ? T('attPerfect')(esc(top.name)) : T('attTop')(esc(top.name), f2(top.attS))) : '', 'g', T('weight')(20))}
       <div class="v5g"><div class="cbox">${tb}<div class="tnote">${T('daysNote')}${data.attNote ? ' · ' + esc(data.attNote) : ''}</div></div>
-        <div class="cbox side"><div class="cap">${T('calc')}</div>
+        ${MON ? `<div class="cbox side"><div class="cap">${T('calc')}</div>
+          <p class="fx"><b>${T('attPctL')}</b> = ${T('attPctD')}</p><p class="fx">${T('attQD')}</p>
+          <div class="cap" style="margin-top:1.4cqw">${T('leave')}</div>
+          <div class="lc"><span><i class="k x">0%</i>${T('sick')}</span><span><i class="k x">0%</i>${T('pl')}</span><span><i class="k x">0%</i>${T('alpha')}</span></div>
+          <p class="fx">${T('attEx')}</p></div>` : `<div class="cbox side"><div class="cap">${T('calc')}</div>
           <div class="fbar"><i class="r" style="--w:70%">70% ${T('rateS')}</i><i class="pu" style="--w:30%">30% ${T('punctS')}</i></div>
           <p class="fx">${T('rateD2')}</p><p class="fx">${T('punctD2')}</p>
           <div class="cap" style="margin-top:1.4cqw">${T('leave')}</div>
           <div class="lc"><span><i class="k s">75%</i>${T('sick')}</span><span><i class="k p">50%</i>${T('pl')}</span><span><i class="k x">0%</i>${T('alpha')}</span></div>
-          <p class="fx">${T('leaveEx')}</p></div></div>
+          <p class="fx">${T('leaveEx')}</p></div>`}</div>
     </div>${foot}</section>`);
   }
 
@@ -1035,7 +1059,7 @@ function slides(p, data) {
   // 8 scoreboard
   out.push(`<section class="slide dark sb ${N > 5 ? 'many' : ''}"><div class="glow"></div><div class="s-in">
     <div class="hd"><div><div class="kick">${T('finalRank')(tag)}</div><h2>${T('sbT')}</h2></div>${LOGO_W}</div>
-    <div class="rows">${C.byFinal.map((a, i) => `<div class="srow ${i ? '' : 'first'}">${rk(i)}<div class="nm"><span class="av">${photoOf(a) ? `<img src="${esc(photoOf(a))}" alt="">` : esc(initials(a.name))}</span><b>${esc(a.name)}</b><small>${DIV[a.div].toUpperCase()}</small></div>
+    <div class="rows">${(legacyRules() ? C.byFinal : shuffleBy(C.byFinal, p)).map((a, i) => `<div class="srow ${i || !legacyRules() ? '' : 'first'}">${rk(i)}<div class="nm"><span class="av">${photoOf(a) ? `<img src="${esc(photoOf(a))}" alt="">` : esc(initials(a.name))}</span><b>${esc(a.name)}</b><small>${DIV[a.div].toUpperCase()}</small></div>
       <div class="k"><small>PRD</small><b class="cP num">${f2(a.prod)}</b></div><div class="k"><small>OBS</small><b class="cC num">${f2(a.chatAvg)}</b></div><div class="k"><small>ATD</small><b class="cA num">${f2(a.attS)}</b></div>
       <div class="sp"></div><div class="f"><small>${T('final')}${a.crossF ? ` · +${f2(a.crossF)} B-UP` : ''}</small><b class="num">${f2(a.final)}</b></div></div>`).join('')}</div>
   </div>${foot}</section>`);
@@ -1101,7 +1125,7 @@ function render() {
   const deck = $('#deck'), p = ST.period;
   let note = '';
   if (ST.source === 'locked') note = `<div class="note">Data <b>${pLabel(p)}</b> dikunci sesuai file <b>${LOCKED[p]}</b> (hasil final yang sudah diumumkan) — tidak bisa diedit.</div>`;
-  else if (ST.source === 'seed' && p === '2026-Q3') note = `<div class="note">Data <b>${pLabel(p)}</b>: Juli & Agustus dari <b>Monitoring Customer Support</b>, September dari <b>export Tickets</b>. Belum ada: <b>VIP Handled Juli & Agustus</b>, <b>Observation</b> dan <b>Attendance</b> Q3 — isi di <b>Edit data</b> lalu <b>Simpan online</b>.</div>`;
+  else if (ST.source === 'seed' && p === '2026-Q3') note = `<div class="note">Data <b>${pLabel(p)}</b>: Juli & Agustus dari <b>Monitoring Customer Support</b>, September dari <b>export Tickets</b>. Attendance dari <b>Attendance Recap</b>. Belum ada: <b>VIP Handled Juli & Agustus</b> dan <b>Observation</b> Q3 — isi di <b>Edit data</b> lalu <b>Simpan online</b>.</div>`;
   else if (ST.source === 'seed') note = `<div class="note">Data <b>${pLabel(p)}</b> ini diambil dari slide Q2 Report Helpdesk (Figma). Buka <b>Edit data</b> → <b>Simpan online</b> supaya tersimpan untuk semua orang.</div>`;
   else if (ST.online === 'err' && ST.err && ST.err.error === 'schema-missing') note = `<div class="note">Tabel <b>perf_reports</b> belum ada di Supabase. Jalankan file <b>perf-schema.sql</b> di Supabase → SQL Editor → Run, lalu muat ulang halaman ini.</div>`;
   else if (ST.online === 'err' && ST.err && ST.err.error === 'storage-not-configured') note = `<div class="note">Env <b>SUPABASE_URL</b> / <b>SUPABASE_SERVICE_ROLE_KEY</b> belum diisi di Vercel, jadi data belum bisa disimpan online.</div>`;
@@ -1203,6 +1227,7 @@ function drawEditor() {
     Attendance: isi hari kerja, cuti & menit telat — atau langsung isi <b>Skor attendance (manual)</b> bila sudah dihitung di Excel.</p>
     ${!ST.open ? `<div class="acard"><div class="f"><label>Password publish (PUBLISH_KEY)</label><input class="inp" type="password" id="pubKey" value="${esc(ls.get(KEY_PUB) || '')}" autocomplete="current-password"></div></div>` : ''}
     ${edTable(m, live)}
+    ${legacyRules() ? '' : edAttTable(m, live)}
     ${ED.agents.map((a, i) => { const L = live.get((a.name || '').trim()); const isAM = a.div === 'AM';
       return `<div class="acard" data-i="${i}">
       <div class="top"><div class="eph">${photoOf(a) ? `<img src="${esc(photoOf(a))}" alt="">` : 'Foto'}</div>
@@ -1211,16 +1236,16 @@ function drawEditor() {
         <label class="btn mini">Foto<input type="file" accept="image/*" data-photo hidden></label>${a.photo ? '<button class="btn mini" data-rmphoto>Hapus foto</button>' : ''}
         <button class="btn mini danger" data-del>Hapus agent</button>
         <span class="live">${L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · OBS ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''}</span></div>
-      <fieldset class="fs"><legend>Productivity</legend><div class="grid">
-        <div class="help" style="grid-column:1/-1;margin:0">Data per bulan diisi di tabel <b>Productivity — data bulanan</b> di atas. Kolom di bawah hanya cadangan bila data per bulan kosong:</div>
+      <fieldset class="fs"><legend>Productivity</legend><div class="sumq" data-sum="prod">${prodSum(L)}</div>${L && L.hasMonthly ? '' : `<div class="grid">
+        <div class="help" style="grid-column:1/-1;margin:0">Belum ada data per bulan di tabel di atas — boleh isi total kuartal di sini:</div>
         ${isAM ? fld('VIP handled (total)', 'vipTotal', a.vipTotal) + fld('VIP solved (total, info)', 'vipSolved', a.vipSolved) + fld('VIP rate % (info)', 'vipRate', a.vipRate, 'number', 'placeholder="otomatis: solved ÷ handled"')
                : fld('CS Monitoring (total)', 'csMon', a.csMon) + fld('CS Handled (total)', 'csHandled', a.csHandled)}
-      </div></fieldset>
+      </div>`}</fieldset>
       <fieldset class="fs"><legend>Observation (0–100)</legend><div class="grid">${m.map((mi, k) => fld(`Observation ${MSHORT[mi]}`, `chat.${k}`, a.chat && a.chat[k])).join('')}</div></fieldset>
-      <fieldset class="fs"><legend>Attendance (total 1 kuartal)</legend><div class="grid">
+      ${!legacyRules() ? `<fieldset class="fs"><legend>Attendance</legend><div class="sumq" data-sum="att">${attSum(L)}</div><div class="grid">${fld('Skor attendance (manual, opsional)', 'att.manual', a.att && a.att.manual, 'number', 'placeholder="kosong = dari tabel bulanan"')}</div></fieldset>` : `<fieldset class="fs"><legend>Attendance (total 1 kuartal)</legend><div class="grid">
         ${fld('Hari kerja', 'att.workDays', a.att && a.att.workDays)}${fld('Sick (hari)', 'att.sick', a.att && a.att.sick)}${fld('Personal leave (hari)', 'att.personal', a.att && a.att.personal)}${fld('Alpha (hari)', 'att.alpha', a.att && a.att.alpha)}
         ${fld('Menit telat', 'att.lateMin', a.att && a.att.lateMin)}${fld('Total menit kerja', 'att.workMin', a.att && a.att.workMin)}${fld('Skor attendance (manual)', 'att.manual', a.att && a.att.manual, 'number', 'placeholder="opsional"')}
-      </div></fieldset></div>`; }).join('')}
+      </div></fieldset>`}</div>`; }).join('')}
     <button class="btn" id="addAgent">+ Tambah agent</button>
     <div class="acard" style="margin-top:14px"><div class="f"><label>Catatan attendance (tampil di slide Attendance)</label><input class="inp" type="text" data-p="attNote" data-root value="${esc(ED.attNote || '')}" placeholder="mis. April note — Desi: Sick 1d + PL 1d"></div></div>`;
 }
@@ -1239,21 +1264,45 @@ function edTable(m, live) {
       return `<tr data-i="${i}"><td class="etn">${esc(a.name || '(tanpa nama)')}</td>
         ${m.map((mi, k) => cols.map(([f, , c], j) => inp(`${f}.${k}`, a[f] && a[f][k], `${c || ''} ${j ? '' : 'etg'}`)).join('')
           + `<td class="etr"><input class="inp et" type="number" step="any" min="0" max="100" data-p="rrM.${k}" value="${esc(a.rrM && a.rrM[k] != null ? a.rrM[k] : '')}" placeholder="%"></td>`).join('')}
+        <td class="ets etg ett" data-o="tcsMon">${L ? fInt(L.csMon) : '–'}</td><td class="ets ett" data-o="tcsHand">${L ? fInt(L.csHandled) : '–'}</td><td class="ets ett" data-o="tvip">${L ? fInt(L.vipTotal) : '–'}</td>
         <td class="ets etg" data-o="core">${L ? f2(L.core) : '–'}</td><td class="ets" data-o="bonus">${L ? f2(L.bonus) : '–'}</td><td class="ets etx" data-o="cross" title="${L ? esc(L.crossVol) : ''}">${L ? '+' + f2(L.crossF) : '–'}</td><td class="ets xp" data-o="pen">${L && L.pen ? '−' + f2(L.pen) : '0'}</td><td class="ets etf" data-o="prod">${L ? f2(L.prod) : '–'}</td><td class="ets" data-o="rrq">${L && rrQavg(L) != null ? f2(rrQavg(L)) + '%' : '–'}</td></tr>`; }).join('');
     const name = div === 'HD' ? 'Helpdesk' : 'Account Manager';
     const how = div === 'HD' ? 'Skor: CS Monitoring 38% + CS Handled 57% + assist bonus 5 · <span class="etx">VIP Hand. = bonus back-up</span>' : 'Skor: VIP Handled 95% + assist bonus 5 · <span class="etx">CS Mon. & CS Hand. = bonus back-up</span>';
     return `<div class="etblk"><div class="eth"><b>${name}</b><span>${how}</span></div>${list.length ? `<div class="ets-scroll"><table class="etab"><thead>
-      <tr><th rowspan="2" class="etn">Nama</th>${m.map(mi => `<th colspan="${w}" class="etm etg">${MONTHS[mi].toUpperCase()} ${y}</th>`).join('')}<th rowspan="2" class="ets etg">Core</th><th rowspan="2" class="ets">Bonus</th><th rowspan="2" class="ets etx">Back-up<br>→ Final</th><th rowspan="2" class="ets xp">Penalti<br>Res.</th><th rowspan="2" class="ets etf">Final<br>Prod.</th><th rowspan="2" class="ets">Res. %<br>${q} avg</th></tr>
-      <tr>${m.map(() => cols.map(([, t, c], j) => `<th class="${c || ''} ${j ? '' : 'etg'}">${t}</th>`).join('') + '<th class="etr">Res. %</th>').join('')}</tr></thead><tbody>${rows}</tbody></table></div>` : `<div class="help">Belum ada agent ${name}. Atur divisi di kartu agent di bawah.</div>`}</div>`; };
+      <tr><th rowspan="2" class="etn">Nama</th>${m.map(mi => `<th colspan="${w}" class="etm etg">${MONTHS[mi].toUpperCase()} ${y}</th>`).join('')}<th colspan="3" class="etm etg">TOTAL ${q}</th><th rowspan="2" class="ets etg">Core</th><th rowspan="2" class="ets">Bonus</th><th rowspan="2" class="ets etx">Back-up<br>→ Final</th><th rowspan="2" class="ets xp">Penalti<br>Res.</th><th rowspan="2" class="ets etf">Final<br>Prod.</th><th rowspan="2" class="ets">Res. %<br>${q} avg</th></tr>
+      <tr>${m.map(() => cols.map(([, t, c], j) => `<th class="${c || ''} ${j ? '' : 'etg'}">${t}</th>`).join('') + '<th class="etr">Res. %</th>').join('')}<th class="etg">CS Mon.</th><th>CS Hand.</th><th>VIP</th></tr></thead><tbody>${rows}</tbody></table></div>` : `<div class="help">Belum ada agent ${name}. Atur divisi di kartu agent di bawah.</div>`}</div>`; };
   return `<div class="acard etw"><div class="eth"><b>Productivity — data bulanan · ${q} ${y}</b><span>Res. % = resolution rate semua case agent per bulan · target Helpdesk ${RR_TARGET.HD}% · AM ${RR_TARGET.AM}% (rata-rata kuartal) · di bawah target −${RR_PEN_PER} poin per 1% (maks −${RR_PEN_MAX})</span></div>
     ${table('HD')}${table('AM')}
     <div class="help" style="margin:8px 0 0"><b class="etx">Back-up</b> (maks +2,5, ditambahkan ke <b>Final Score</b>, bukan productivity) = kerja di divisi lain (kolom biru) dinilai pakai skala divisi itu, dibandingkan dengan back-up terbesar di tim. Productivity = Core + Bonus (maks 100) − Penalti Res.</div></div>`;
 }
+function prodSum(L) { if (!L) return '<span class="mut">Isi nama agent dulu.</span>';
+  return `Total kuartal (otomatis): <b>${fInt(L.csMon)}</b> CS Mon. · <b>${fInt(L.csHandled)}</b> CS Hand. · <b>${fInt(L.vipTotal)}</b> VIP${rrQavg(L) != null ? ` · Res. <b>${f2(rrQavg(L))}%</b>` : ''} → Productivity <b>${f2(L.prod)}</b>${L.pen ? ` <span class="xp">(−${f2(L.pen)} res.)</span>` : ''}${L.crossF ? ` · back-up <b class="etx">+${f2(L.crossF)}</b>` : ''} · Final <b>${f2(L.final)}</b>`; }
+function attSum(L) { if (!L) return ''; if (!L.attX || !L.attX.monthly) return '<span class="mut">Isi di tabel <b>Attendance — data bulanan</b> di atas.</span>';
+  return `Total kuartal (otomatis): sakit <b>${fInt(L.att.sick)}</b> · PL <b>${fInt(L.att.personal)}</b> · alpha <b>${fInt(L.att.alpha)}</b> · telat <b>${fInt(L.att.lateMin)}</b> mnt (${fInt(L.att.lateDays)}×) → Attendance <b>${f2(L.attS)}</b>`; }
+/* tabel attendance bulanan (format Attendance Recap): PL, sakit, alpha, telat (menit), terlambat (hari) → % attendance per bulan */
+function edAttTable(m, live) {
+  const y = ST.period.slice(0, 4), q = ST.period.slice(5), mins = [0, 1, 2].map(k => (ED.attMins && has(ED.attMins[k])) ? ED.attMins[k] : '');
+  const F = [['pl', 'PL'], ['sick', 'Sakit'], ['alpha', 'Alpha'], ['late', 'Telat (mnt)'], ['lateDays', 'Terlambat (hari)']];
+  const table = div => {
+    const list = ED.agents.map((a, i) => [a, i]).filter(([a]) => (a.div === 'AM' ? 'AM' : 'HD') === div);
+    const rows = list.map(([a, i]) => { const L = live.get((a.name || '').trim());
+      return `<tr data-i="${i}"><td class="etn">${esc(a.name || '(tanpa nama)')}</td>${m.map((mi, k) => F.map(([f], j) => `<td class="${j ? '' : 'etg'}"><input class="inp et" type="number" step="any" min="0" data-p="attM.${k}.${f}" value="${esc(a.attM && a.attM[k] && has(a.attM[k][f]) ? a.attM[k][f] : '')}"></td>`).join('')
+        + `<td class="ets etr" data-o="att${k}">${L && L.attMo && L.attMo[k] ? f2(L.attMo[k].pct) + '%' : '–'}</td>`).join('')}<td class="ets etg etf" data-o="attq">${L && L.attX && L.attX.monthly ? f2(L.attS) : '–'}</td></tr>`; }).join('');
+    const name = div === 'HD' ? 'Helpdesk' : 'Account Manager';
+    return `<div class="etblk"><div class="eth"><b>${name}</b></div>${list.length ? `<div class="ets-scroll"><table class="etab"><thead>
+      <tr><th rowspan="2" class="etn">Nama</th>${m.map(mi => `<th colspan="6" class="etm etg">${MONTHS[mi].toUpperCase()} ${y}</th>`).join('')}<th rowspan="2" class="ets etg etf">Skor<br>${q}</th></tr>
+      <tr>${m.map(() => F.map(([, t], j) => `<th class="${j ? '' : 'etg'}">${t}</th>`).join('') + '<th class="etr">%</th>').join('')}</tr></thead><tbody>${rows}</tbody></table></div>` : `<div class="help">Belum ada agent ${name}.</div>`}</div>`; };
+  return `<div class="acard etw"><div class="eth"><b>Attendance — data bulanan · ${q} ${y}</b><span>% = (hari kerja − PL − sakit − alpha) ÷ hari kerja − menit telat ÷ menit kerja · skor kuartal = rata-rata bulan · siklus absensi tgl 26 – 25</span></div>
+    <div class="etmins">${m.map((mi, k) => `<label>Menit kerja ${MONTHS[mi]} <input class="inp et" type="number" min="0" data-p="attMins.${k}" data-root2 value="${esc(mins[k])}" placeholder="${ATT_MINS_DEF}"></label>`).join('')}<span class="mut">contoh 26 hari × 480 menit = 12480</span></div>
+    ${table('HD')}${table('AM')}</div>`;
+}
 function edLive() {
   const C = compute(ED), live = new Map(C.A.map(a => [a.name, a]));
-  $$('#edBody .acard[data-i]').forEach(card => { const L = live.get((ED.agents[+card.dataset.i].name || '').trim()); const s = card.querySelector('.live'); if (s) s.innerHTML = L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · OBS ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''; });
+  $$('#edBody .acard[data-i]').forEach(card => { const L = live.get((ED.agents[+card.dataset.i].name || '').trim()); const ps = card.querySelector('[data-sum="prod"]'), as = card.querySelector('[data-sum="att"]'); if (ps) ps.innerHTML = prodSum(L); if (as) as.innerHTML = attSum(L); const s = card.querySelector('.live'); if (s) s.innerHTML = L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · OBS ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''; });
   $$('#edBody tr[data-i]').forEach(tr => { const a = ED.agents[+tr.dataset.i], L = live.get((a.name || '').trim()), set = (o, v) => { const c = tr.querySelector(`[data-o="${o}"]`); if (c) c.textContent = v; };
-    set('core', L ? f2(L.core) : '–'); set('bonus', L ? f2(L.bonus) : '–'); set('cross', L ? '+' + f2(L.crossF) : '–'); set('pen', L && L.pen ? '−' + f2(L.pen) : '0'); set('prod', L ? f2(L.prod) : '–'); const q = L ? rrQavg(L) : null; set('rrq', q != null ? f2(q) + '%' : '–');
+    set('tcsMon', L ? fInt(L.csMon) : '–'); set('tcsHand', L ? fInt(L.csHandled) : '–'); set('tvip', L ? fInt(L.vipTotal) : '–');
+    [0, 1, 2].forEach(k => set('att' + k, L && L.attMo && L.attMo[k] ? f2(L.attMo[k].pct) + '%' : '–')); set('attq', L && L.attX && L.attX.monthly ? f2(L.attS) : '–');
+        set('core', L ? f2(L.core) : '–'); set('bonus', L ? f2(L.bonus) : '–'); set('cross', L ? '+' + f2(L.crossF) : '–'); set('pen', L && L.pen ? '−' + f2(L.pen) : '0'); set('prod', L ? f2(L.prod) : '–'); const q = L ? rrQavg(L) : null; set('rrq', q != null ? f2(q) + '%' : '–');
     if (L) tr.querySelectorAll('[data-p^="rrM."]').forEach(inp => { const k = +inp.dataset.p.slice(4), au = rrAuto(L, k); inp.placeholder = au != null ? f2(au) : '%'; }); });
 }
 function setPath(o, path, v) { const k = path.split('.'); let t = o; for (let i = 0; i < k.length - 1; i++) { t[k[i]] = t[k[i]] || (/^\d+$/.test(k[i + 1]) ? [] : {}); t = t[k[i]]; } t[k[k.length - 1]] = v; }
@@ -1267,6 +1316,7 @@ $('#edBody').addEventListener('input', e => {
   const el = e.target; if (!el.dataset.p) return;
   const card = el.closest('[data-i]'); const v = el.type === 'number' ? (el.value === '' ? '' : Number(el.value)) : el.value;
   if (el.hasAttribute('data-root')) { ED.attNote = v; return; }
+  if (el.hasAttribute('data-root2')) { setPath(ED, el.dataset.p, v); edLive(); return; }
   if (!card) return;
   setPath(ED.agents[+card.dataset.i], el.dataset.p, v);
   if (el.dataset.p === 'div') { drawEditor(); return; }
@@ -1298,7 +1348,7 @@ function localSave(clean) {
 }
 $('#edSave').onclick = async () => {
   const k = $('#pubKey'); if (k) ls.set(KEY_PUB, k.value);
-  const clean = { attNote: ED.attNote || '', agents: ED.agents.filter(a => (a.name || '').trim()) };
+  const clean = { attNote: ED.attNote || '', attMins: ED.attMins || null, agents: ED.agents.filter(a => (a.name || '').trim()) };
   const btn = $('#edSave'); btn.disabled = true; btn.textContent = 'Menyimpan…';
   try {
     const r = await api('?period=' + encodeURIComponent(ST.period), { method: 'POST', body: JSON.stringify({ data: clean, revision: ST.revision }) });

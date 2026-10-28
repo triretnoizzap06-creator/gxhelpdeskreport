@@ -115,6 +115,11 @@ h2 .count{font-size:12px;font-weight:700;background:var(--grey);color:var(--mute
 @media (max-width:900px){.notif{grid-template-columns:1fr}}
 @media (max-width:600px){.emp{flex-direction:row}.emp .ph{width:108px;flex:none;aspect-ratio:auto;min-height:100%}.emp .ph .chip{top:auto;bottom:8px;right:auto;left:8px;font-size:10px}.emp .bd{padding:12px;gap:8px}.emp h3{font-size:15px}.emp dl{font-size:12.5px;gap:4px 8px}}
 @media (max-width:600px){main{padding:16px 12px 60px}.bar{padding:8px 12px}.brand small{display:none}.fgrid{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.hide-m{display:none}h1{font-size:20px}}
+.att{border-top:1px solid var(--line,#E4E4E7);margin-top:10px;padding-top:9px;font-size:12px}
+.atth{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.atth b{font-size:12px;letter-spacing:.02em}
+.atp{font-weight:800;font-size:12px;padding:2px 8px;border-radius:999px;color:#fff}.atp.g{background:#15803D}.atp.y{background:#B45309}.atp.r{background:#B91C1C}
+.atm{display:flex;flex-wrap:wrap;gap:4px 6px;margin-bottom:5px}.atm span{padding:2px 7px;border-radius:999px;background:rgba(0,0,0,.05)}.atm span.g b{color:#15803D}.atm span.y b{color:#B45309}.atm span.r b{color:#B91C1C}
+.ats{color:#71717A}
 </style>
 </head>
 <body>
@@ -264,6 +269,36 @@ async function load(quiet) {
     else { ST.online = r.isJson ? 'err' : false; ST.err = r.j.error || ('HTTP ' + r.status); ST.detail = r.j.detail; }
   } catch (e) { ST.online = false; ST.err = 'offline'; }
   render();
+  loadAtt();
+}
+
+/* attendance dari Helpdesk Performance Report (data online kuartal terbaru yang punya attendance bulanan) */
+const ATT = { period: null, by: new Map() };
+const MONTHS_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const nkey = s => String(s || '').toLowerCase().replace(/[^a-z]/g, '');
+async function loadAtt() {
+  try {
+    const L = await fetch('/api/perf?list=1', { cache: 'no-store' }); if (!L.ok) return; const items = ((await L.json()).items || []).map(x => x.period).sort().reverse();
+    for (const p of items) {
+      const r = await fetch('/api/perf?period=' + encodeURIComponent(p), { cache: 'no-store' }); if (!r.ok) continue; const d = (await r.json()).data || {};
+      const ag = (d.agents || []).filter(a => (a.attM || []).some(Boolean)); if (!ag.length) continue;
+      const q = +p.slice(-1), months = [0, 1, 2].map(i => (q - 1) * 3 + i), mins = d.attMins || [];
+      ATT.period = p; ATT.by = new Map();
+      ag.forEach(a => { const mo = [0, 1, 2].map(k => { const o = a.attM[k]; if (!o) return null; const M = +mins[k] || 12480, wd = M / 480, off = (+o.pl || 0) + (+o.sick || 0) + (+o.alpha || 0);
+          return { m: months[k], pct: Math.max(0, (wd - off) / wd * 100 - (+o.late || 0) / M * 100), o }; });
+        const v = mo.filter(Boolean), tot = k => v.reduce((s, x) => s + (+x.o[k] || 0), 0);
+        ATT.by.set(nkey(a.name), { mo, avg: v.reduce((s, x) => s + x.pct, 0) / v.length, sick: tot('sick'), pl: tot('pl'), alpha: tot('alpha'), late: tot('late'), lateDays: tot('lateDays') }); });
+      break;
+    }
+    if (ATT.period) render();
+  } catch (e) {}
+}
+function attBlock(e) {
+  const a = ATT.by.get(nkey(e.full_name)); if (!a) return '';
+  const cls = v => v >= 95 ? 'g' : v >= 85 ? 'y' : 'r';
+  return `<div class="att"><div class="atth"><b>Attendance ${esc(ATT.period.replace('-', ' '))}</b><span class="atp ${cls(a.avg)}">${a.avg.toFixed(2)}%</span></div>
+    <div class="atm">${a.mo.map(x => x ? `<span class="${cls(x.pct)}">${MONTHS_EN[x.m]} <b>${x.pct.toFixed(2)}%</b></span>` : '').join('')}</div>
+    <div class="ats">Sick ${a.sick} · PL ${a.pl} · Alpha ${a.alpha} · Late ${a.late} min${a.lateDays ? ` (${a.lateDays}×)` : ''}</div></div>`;
 }
 
 /* =================== render =================== */
@@ -335,6 +370,7 @@ function renderGrid(t) {
       <div class="ph">${e.photo ? `<img src="${esc(e.photo)}" alt="${esc(e.full_name)}" loading="lazy">` : `<span class="ini">${esc(initials(e.full_name))}</span>`}<span class="chip ${s.key}">${s.label}</span></div>
       <div class="bd"><div><h3>${esc(e.full_name)}${e.nickname ? ` <span class="nick">(${esc(e.nickname)})</span>` : ''}</h3><div class="eid ${e.subdivision ? '' : 'miss'}">${e.subdivision ? esc(e.subdivision) : 'Subdivision not set'}</div></div>
         <dl><dt>Birthday</dt>${dd(b, b && fmt(b))}<dt>Start Contract</dt>${dd(e.start_contract, fmt(parseD(e.start_contract)))}<dt>End Contract</dt>${dd(e.end_contract, fmt(parseD(e.end_contract)))}</dl>
+        ${attBlock(e)}
         <div class="foot"><span>${s.end ? remainText(t, s.end) : ''}${e.active ? '' : ' · inactive'}</span>${canEdit() ? `<button class="btn sm" data-edit="${e.id}">Edit</button>` : ''}</div></div></article>`;
   }).join('') : `<div class="empty">No employee matches your search.</div>`;
 }

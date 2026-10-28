@@ -13,6 +13,10 @@ html.viewonly textarea[data-rcf],html.viewonly input[data-rcf],html.viewonly sel
 html.viewonly [draggable="true"]{cursor:default}
 .viewtag{display:none;font-size:12px;font-weight:700;color:#6E6E73;padding:6px 10px;border-radius:999px;background:rgba(0,0,0,.05)}
 html.viewonly .viewtag{display:inline-flex}
+/* viewer = deck saja: tanpa daftar slide (hide/unhide), tanpa periode / Riwayat / pengaturan tampilan */
+html.viewonly .main{grid-template-columns:minmax(0,1fr)}
+html.viewonly #side,html.viewonly #tools,html.viewonly #notice,html.viewonly #period,html.viewonly #pFrom,html.viewonly #pTo,html.viewonly .dmy,html.viewonly #histBtn,html.viewonly #printBtn,html.viewonly #hbBack,html.viewonly .seg,html.viewonly .mseg{display:none!important}
+html.viewonly .hist-banner em{display:none}
 </style>
 
 <script>(function(){try{var m=localStorage.getItem("gx-theme");if(m==="dark"||m==="light")document.documentElement.setAttribute("data-theme",m)}catch(e){}})()</script>
@@ -54,6 +58,8 @@ button{cursor:pointer}
 .btn:disabled{opacity:.35;cursor:default}
 .sel{border:0;background:var(--hover);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:600}
 input[type=date].sel{padding:6px 10px}
+.dmy{display:inline-flex;align-items:center;gap:2px;position:relative}.dmy.hidden{display:none!important}.dmy .dmy-n{position:absolute;left:0;bottom:0;width:1px;height:1px;opacity:0;pointer-events:none;padding:0;border:0}.dmy .dmy-t{width:8.6em}.dmy .dmy-t.bad{border-color:#D70015!important;color:#D70015}.dmy-b{border:0;background:transparent;cursor:pointer;font-size:.9em;padding:0 2px;line-height:1}html.viewonly .dmy-b{display:none}
+
 .main{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:calc(100vh - 57px)}
 .side{padding:14px 10px 30px;overflow:auto;max-height:calc(100vh - 57px);position:sticky;top:57px;border-right:1px solid var(--line)}
 .side h4{margin:16px 10px 6px;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
@@ -953,13 +959,12 @@ function parseDate(v){
   if((m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})(?:[ T,]+(\d{1,2})[:.](\d{2})(?:[:.](\d{2}))?)?/))){let a=+m[1],b=+m[2],y=+m[3];if(y<100)y+=2000;let d=a,mo=b;if(b>12&&a<=12){d=b;mo=a}return new Date(y,mo-1,d,+m[4]||0,+m[5]||0,+m[6]||0).getTime()}
   const t=Date.parse(s);return isNaN(t)?null:t;
 }
+/* format tanggal: tgl/bulan/tahun */
+const dmy=t=>{const d=new Date(t);return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()};
 function rangeLabel(a,b,long){
-  if(a==null||b==null)return '';const A=new Date(a),B=new Date(b),M=long?MONTH:MS;
-  if(A.getFullYear()===B.getFullYear()&&A.getMonth()===B.getMonth())return A.getDate()===B.getDate()?`${M[A.getMonth()]} ${A.getDate()}, ${A.getFullYear()}`:`${M[A.getMonth()]} ${A.getDate()} – ${B.getDate()}, ${A.getFullYear()}`;
-  if(A.getFullYear()===B.getFullYear())return `${M[A.getMonth()]} ${A.getDate()} – ${M[B.getMonth()]} ${B.getDate()}, ${A.getFullYear()}`;
-  return `${M[A.getMonth()]} ${A.getDate()}, ${A.getFullYear()} – ${M[B.getMonth()]} ${B.getDate()}, ${B.getFullYear()}`;
+  if(a==null||b==null)return '';return dayStart(a)===dayStart(b)?dmy(a):`${dmy(a)} – ${dmy(b)}`;
 }
-const shortRange=(a,b)=>{const A=new Date(a),B=new Date(b);return A.getMonth()===B.getMonth()?`${MS[A.getMonth()]} ${A.getDate()}–${B.getDate()}`:`${MS[A.getMonth()]} ${A.getDate()} – ${MS[B.getMonth()]} ${B.getDate()}`};
+const shortRange=(a,b)=>{const A=new Date(a),B=new Date(b);return A.getFullYear()===B.getFullYear()?`${ddmm(a)} – ${ddmm(b)}/${B.getFullYear()}`:`${dmy(a)} – ${dmy(b)}`};
 
 /* ---------- settings ---------- */
 const LS='gxcs-report-v5';
@@ -1380,8 +1385,8 @@ const SECTION={gen:['','Helpdesk Report'],cs:['','Customer Support Report'],vip:
 function head(id,sec,title,lede,toggle){return `<header class="sl-head"><div class="sl-eyb" data-a><span class="sectabs">${sec==='ops'||sec==='mp'?`<span class="${sec==='ops'?'on':''}">Traffic Analysis &amp; SWOT</span><span class="${sec==='mp'?'on':''}">Manpower Planning</span>`:`<span class="${sec==='cs'?'on':''}">Customer Support Report</span><span class="${sec==='vip'?'on':''}">VIP Report</span>`}</span><span class="pill ghost">Helpdesk Report · ${esc(C.short)}</span></div><h2 class="sl-title" data-a>${title}</h2>${lede?ed(id+'.lede',lede,'p','sl-lede','data-a'):''}${toggle||''}</header>`}
 const body=(h,style='')=>`<div class="sl-body" style="${style}">${h}</div>`;
 const DAY_PAL={peak:'#E8590C',above:'#3B4CCA',below:'#C5CBF2',line:'#3B4CCA'};
-const dayItems=(m,o={})=>{const avg=m.avg,peak=avg*1.5;o={dark:DAY_PAL.above,...o};return m.daily.map((d,i)=>{const dt=new Date(d.day);return {label:(m.daily.length>20?String(dt.getDate()):String(dt.getDate()).padStart(2,'0')+' '+MS[dt.getMonth()]),short:String(dt.getDate()),full:isoDay(d.day),value:d.value,color:d.value>=peak?DAY_PAL.peak:d.value>=avg?(o.dark||DAY_PAL.above):DAY_PAL.below}})};
-const ID_DATE=t=>{const d=new Date(t);return `${d.getDate()} ${['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][d.getMonth()]}`};
+const dayItems=(m,o={})=>{const avg=m.avg,peak=avg*1.5;o={dark:DAY_PAL.above,...o};return m.daily.map((d,i)=>{const dt=new Date(d.day);return {label:(m.daily.length>20?String(dt.getDate()):ddmm(d.day)),short:String(dt.getDate()),full:dmy(d.day),value:d.value,color:d.value>=peak?DAY_PAL.peak:d.value>=avg?(o.dark||DAY_PAL.above):DAY_PAL.below}})};
+const ID_DATE=t=>dmy(t);
 const SPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" opacity=".6"/></svg>';
 
 /* ---------- slides ---------- */
@@ -2417,8 +2422,10 @@ async function histRestore(){if(!VIEWING||!HBK)return;if(!confirm('Jadikan riway
   HBK=null;$('#histBanner').classList.add('hidden');document.body.classList.remove('viewing-hist');
   histApplyMem(p);lss(SY.kDs,'1');for(const k of ['cs','vip','rc'])await idbPut(k,DS[k]);save()}
 async function renderHist(){const el=$('#histList');el.innerHTML='<div class="sub">Memuat…</div>';const items=await histItems();const own=syOwner()||!SY.avail;
-  el.innerHTML=items.length?items.map((x,i)=>`<div class="hrow"><div class="hmain"><b>${esc(x.title)}</b><span class="mut">${hhmm(x.at)} · ${x.auto?'Otomatis (selesai Present)':'Manual'}${x.local?' · <em>hanya di browser ini</em>':''}${x.size?` · ${(x.size/1e6).toFixed(1)} MB`:''}</span></div><span class="hact"><button class="btn sm pri" data-hopen="${i}">Buka</button>${own?`<button class="btn sm" data-hdel="${i}" title="Hapus riwayat">Hapus</button>`:''}</span></div>`).join(''):'<div class="sub">Belum ada riwayat. Riwayat otomatis tersimpan setiap selesai Present.</div>';
+  el.innerHTML=items.length?items.map((x,i)=>`<div class="hrow"><div class="hmain"><b>${esc(x.title)}</b><span class="mut">${hhmm(x.at)} · ${x.auto?'Otomatis (selesai Present)':'Manual'}${x.local?' · <em>hanya di browser ini</em>':''}${x.size?` · ${(x.size/1e6).toFixed(1)} MB`:''}</span></div><span class="hact"><button class="btn sm pri" data-hopen="${i}">Buka</button>${!x.local&&own?`<button class="btn sm" data-hlink="${i}" title="Salin link viewer untuk riwayat ini saja">🔗 Viewer</button>`:''}${own?`<button class="btn sm" data-hdel="${i}" title="Hapus riwayat">Hapus</button>`:''}</span></div>`).join(''):'<div class="sub">Belum ada riwayat. Riwayat otomatis tersimpan setiap selesai Present.</div>';
   el.querySelectorAll('[data-hopen]').forEach(b=>b.onclick=()=>histOpen(items[+b.dataset.hopen]));
+  el.querySelectorAll('[data-hlink]').forEach(b=>b.onclick=()=>{const it=items[+b.dataset.hlink];const u=location.origin+location.pathname+'?view=1&snap='+encodeURIComponent(it.id);
+    (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>{b.textContent='✓ Link disalin';setTimeout(()=>b.textContent='🔗 Viewer',2200)},()=>window.prompt('Salin link viewer riwayat ini:',u))});
   el.querySelectorAll('[data-hdel]').forEach(b=>b.onclick=async()=>{const it=items[+b.dataset.hdel];if(!confirm('Hapus riwayat "'+it.title+'"?'))return;
     if(it.local){hlSet(hlGet().filter(x=>x.id!==it.id));await idbPut('hist:'+it.id,null)}else await syFetch(SY.api+'?del='+encodeURIComponent(it.id),{method:'POST',headers:{'x-publish-key':syKey()}});renderHist()})}
 function histInit(){$('#histBtn').onclick=()=>{$('#histName').value=curTitle();$('#histMsg').textContent=VIEWING?'Sedang melihat riwayat — kembali ke data terbaru untuk menyimpan.':'';openModal('histModal');renderHist()};
@@ -2442,6 +2449,38 @@ function histInit(){$('#histBtn').onclick=()=>{$('#histName').value=curTitle();$
   var b=document.getElementById('viewLinkBtn');
   if(b)b.onclick=function(){var u=location.origin+location.pathname+'?view=1';
     (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(function(){b.textContent='✓ Link disalin';setTimeout(function(){b.textContent="🔗 Viewer"},2200)},function(){window.prompt('Salin link viewer:',u)})};
+})();
+</script>
+<script>
+/* input tanggal ditampilkan tgl/bulan/tahun (date picker bawaan browser ikut bahasa browser, jadi diganti teks dd/mm/yyyy + tombol kalender) */
+(function(){
+  const fmt=v=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v||'');return m?`${m[3]}/${m[2]}/${m[1]}`:''};
+  const parse=t=>{const m=/^\s*(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})\s*$/.exec(t||'');if(!m)return null;let y=+m[3];if(y<100)y+=2000;const d=new Date(y,+m[2]-1,+m[1]);if(d.getMonth()!==+m[2]-1)return null;return `${y}-${String(+m[2]).padStart(2,'0')}-${String(+m[1]).padStart(2,'0')}`};
+  function wrap(n){if(n.dataset.dmy)return;n.dataset.dmy='1';
+    const t=document.createElement('input');t.type='text';t.className=n.className.replace(/\bhidden\b/,'')+' dmy-t';t.placeholder='dd/mm/yyyy';t.inputMode='numeric';t.setAttribute('aria-label',n.getAttribute('aria-label')||'Tanggal');t.value=fmt(n.value);
+    const b=document.createElement('button');b.type='button';b.className='dmy-b';b.title='Pilih tanggal';b.setAttribute('aria-label','Pilih tanggal');b.textContent='📅';
+    const w=document.createElement('span');w.className='dmy '+(n.classList.contains('hidden')?'hidden ':'')+(n.classList.contains('ed-only')?'ed-only':'');n.parentNode.insertBefore(w,n);w.append(t,b,n);n.classList.add('dmy-n');
+    const push=()=>{const v=t.value.trim()?parse(t.value):'';if(v===null){t.classList.add('bad');return}t.classList.remove('bad');if(n.value===v)return;n.value=v;n.dispatchEvent(new Event('input',{bubbles:true}));n.dispatchEvent(new Event('change',{bubbles:true}))};
+    t.addEventListener('change',push);t.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();push()}});
+    b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();try{n.showPicker()}catch(_){n.focus()}});
+    n.addEventListener('change',()=>{t.value=fmt(n.value)});
+  }
+  function sync(){document.querySelectorAll('input[type=date]').forEach(n=>{wrap(n);const w=n.parentNode;if(!w||!w.classList.contains('dmy'))return;const t=w.querySelector('.dmy-t');if(t&&document.activeElement!==t)t.value=fmt(n.value);w.classList.toggle('hidden',n.classList.contains('hidden'))})}
+  window.dmySync=sync;
+  new MutationObserver(()=>requestAnimationFrame(sync)).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+  sync();setInterval(sync,1500);
+})();
+</script>
+<script>
+/* viewer: navigasi hanya slide yang tampil di Present · ?snap=<id> membuka satu riwayat saja */
+(function(){
+  const q=new URLSearchParams(location.search);if(!q.has('view'))return;
+  if(typeof ordered==='function'){const o=ordered;ordered=function(){return o().filter(isOn)}}
+  const id=q.get('snap');if(!id)return;
+  document.documentElement.classList.add('snapview');
+  let tries=0;const go=async()=>{tries++;if(typeof SY==='undefined'||SY.avail==null||SY.loading||SY.busy){if(tries<60)return setTimeout(go,250)}
+    try{const items=await histItems();const it=items.find(x=>String(x.id)===id)||{id,title:'Riwayat',at:Date.now()};await histOpen(it)}catch(e){console.error(e)}};
+  setTimeout(go,600);
 })();
 </script>
 </body>

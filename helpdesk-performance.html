@@ -335,7 +335,7 @@ button,input,select{font:inherit;color:inherit}
 .pph{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.4cqw}
 .pph b{font-family:var(--disp);font-size:1.4cqw}
 .pscale{display:flex;justify-content:space-between;font-size:.85cqw;color:#A1A1AA;margin:.8cqw 7cqw .2cqw 16cqw}
-.lgd{font-size:.95cqw;color:#52525B;display:flex;align-items:center;gap:.35cqw;flex-wrap:wrap}.lgd i{display:inline-block;width:.9cqw;height:.9cqw;border-radius:.2cqw;margin-left:.8cqw}.lgd i.s0{background:#27272A}.lgd i.s1{background:#A1A1AA}.lgd i.sb{background:var(--y)}
+.lgd{font-size:.95cqw;color:#52525B;display:flex;align-items:center;gap:.35cqw;flex-wrap:wrap}.lgd i{display:inline-block;width:.9cqw;height:.9cqw;border-radius:.2cqw;margin-left:.8cqw}.lgd i.s0{background:#27272A}.lgd i.s1{background:#A1A1AA}.lgd i.s2{background:#D6D3CB}.lgd i.sb{background:var(--y)}
 .pr{display:grid;grid-template-columns:15cqw minmax(0,1fr) 6cqw;gap:1cqw;align-items:center;padding:1cqw 0;border-top:1px solid #EFEFF2}
 .prn{display:flex;align-items:center;gap:.7cqw;min-width:0}.prn>div{min-width:0}
 .prn b{display:block;font-size:1.1cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -344,7 +344,7 @@ button,input,select{font:inherit;color:inherit}
 .stk i{display:flex;align-items:center;justify-content:center;height:100%;width:0;overflow:hidden;transition:width 1.6s cubic-bezier(.22,1,.36,1);transition-delay:calc(.2s + var(--k,0)*.12s)}
 .slide.play .stk i{width:var(--w)}
 .xb{color:#2563EB;font-weight:700}.stk em{font-style:normal;font-size:.9cqw;font-weight:800;white-space:nowrap}
-.stk .s0{background:#27272A;color:#fff}.stk .s1{background:#A1A1AA;color:#111}.stk .sb{background:var(--y);color:#111}.stk .sx{background:#3B82F6}.ec.x em{color:#2563EB}.stk .sp{background:repeating-linear-gradient(45deg,#FCA5A5 0 .35cqw,#FEE2E2 .35cqw .7cqw)}.lgd i.sp{background:#FCA5A5}.xp{color:#DC2626;font-weight:700}.lgd i.sx{background:#3B82F6}
+.stk .s0{background:#27272A;color:#fff}.stk .s1{background:#A1A1AA;color:#111}.stk .s2{background:#D6D3CB;color:#111}.stk .sb{background:var(--y);color:#111}.stk .sx{background:#3B82F6}.ec.x em{color:#2563EB}.stk .sp{background:repeating-linear-gradient(45deg,#FCA5A5 0 .35cqw,#FEE2E2 .35cqw .7cqw)}.lgd i.sp{background:#FCA5A5}.xp{color:#DC2626;font-weight:700}.lgd i.sx{background:#3B82F6}
 .prv{text-align:right;font-family:var(--disp);font-size:1.8cqw;font-weight:800}
 .pr.lead .prv{color:#111}.pr:not(.lead) .prv{color:#3F3F46}
 .rinfo{font-size:.95cqw;color:#71717A;margin:-1.6cqw 0 2.2cqw}
@@ -563,6 +563,9 @@ const CROSS_MAX = 5;
 const RR_TARGET = { HD: 90, AM: 95 }, RR_PEN_PER = 1, RR_PEN_MAX = 5;   // resolution rate di bawah target → −1 poin per 1% (maks −5, seimbang dengan bonus) dari productivity
 const CROSS_FINAL = 0.5;
 const RULES_FROM = '2026-Q3';   // penalti res. rate & bonus back-up berlaku mulai Q3 2026 (Q2 tetap sesuai hasil yang sudah diumumkan)
+/* Q2 2026 = data & rumus final dari file Q2-Best_Employee_Helpdesk.xlsx (dikunci, tidak bisa diedit) */
+const LOCKED = { '2026-Q2': 'Q2-Best_Employee_Helpdesk.xlsx' };
+const legacyRules = () => { try { return ST.period === '2026-Q2'; } catch (e) { return false; } };
 const newRules = () => { try { return (ST.period || '') >= RULES_FROM; } catch (e) { return false; } };   // bonus back-up masuk ke Final Score dengan bobot sama seperti productivity (maks +2.5)   // bonus back-up lintas divisi maks +5 poin (produktivitas tetap maks 100)                      // periode pertama: 2026 Q2
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MSHORT = MONTHS.map(m => m.slice(0, 3));
@@ -573,11 +576,11 @@ const CRITERIA = ['Opening & Greeting Protocol', 'Customer Identification', 'Iss
 
 /* Data Q2 2026 (dari slide Figma Q2 Report Helpdesk + sheet bulanan Q2; Res. % Q2 = VIP done ÷ VIP, bulan tanpa VIP = 100%) — dipakai sampai data online disimpan */
 const SEED = {
-  '2026-Q2': { attNote: 'April note — Desi: Sick 1d + PL 1d · Kadek: Sick 2d + PL 4d', agents: [
-    { name: 'Devin Bagaskara', div: 'HD', csMon: 2261, csHandled: 732, csMonM: [750, 788, 723], csHandledM: [201, 216, 315], vipTotalM: [10, 55, 81], vipSolvedM: [9, 54, 80], rrM: [90.00, 98.18, 98.77], chat: [95, 95, 95], att: { manual: 100 } },
-    { name: 'Ni Kadek Desi Mirayani', div: 'AM', vipTotal: 1364, vipSolved: 1350, vipRate: 98.76, csMonM: [107, 99, 255], csHandledM: [37, 36, 99], vipTotalM: [332, 536, 496], vipSolvedM: [323, 535, 492], rrM: [97.29, 99.81, 99.19], chat: [95, 95, 95], att: { sick: 1, personal: 1, manual: 98.88 } },
-    { name: 'Aulia Sevi Diana', div: 'AM', vipTotal: 1224, vipSolved: 1204, vipRate: 98.23, csMonM: [175, 98, 79], csHandledM: [59, 36, 37], vipTotalM: [380, 473, 371], vipSolvedM: [377, 472, 355], rrM: [99.21, 99.79, 95.69], chat: [90, 95, 95], att: { manual: 97.91 } },
-    { name: 'Kadek Arisita D.P.', div: 'HD', csMon: 1994, csHandled: 690, csMonM: [669, 677, 648], csHandledM: [225, 231, 234], vipTotalM: [0, 26, 16], vipSolvedM: [0, 25, 16], rrM: [100, 96.15, 100], chat: [90, 95, 95], att: { sick: 2, personal: 4, manual: 96.38 } },
+  '2026-Q2': { attNote: 'Dari Q2-Best_Employee_Helpdesk.xlsx · 26 hari kerja/bulan · Desi: sakit 3, PL 1 · Aulia: sakit 5, alpha 1, telat 88 mnt · Kadek: sakit 8, PL 4, telat 35 mnt', agents: [
+    { name: 'Ni Kadek Desi Mirayani', div: 'AM', csMonM: [107, 99, 255], csHandledM: [37, 36, 99], vipTotalM: [332, 536, 496], vipSolvedM: [323, 535, 492], ticketsM: [343, 560, 534], rrM: [97.29, 99.81, 99.19], chat: [95, 95, 95], att: { workDays: 78, sick: 3, personal: 1, alpha: 0, lateMin: 0, workMin: 37440 } },
+    { name: 'Aulia Sevi Diana', div: 'AM', csMonM: [175, 98, 79], csHandledM: [59, 36, 37], vipTotalM: [380, 473, 371], vipSolvedM: [377, 472, 355], ticketsM: [352, 432, 332], rrM: [99.21, 99.79, 95.69], chat: [90, 95, 95], att: { workDays: 78, sick: 5, personal: 0, alpha: 1, lateMin: 88, workMin: 37440 } },
+    { name: 'Devin Bagaskara', div: 'HD', csMonM: [750, 788, 723], csHandledM: [201, 216, 315], vipTotalM: [10, 55, 81], vipSolvedM: [9, 54, 80], ticketsM: [208, 258, 385], rrM: [90.00, 98.18, 98.77], chat: [95, 95, 95], att: { workDays: 78, sick: 0, personal: 0, alpha: 0, lateMin: 0, workMin: 37440 } },
+    { name: 'Kadek Arisita Dhyana Putri', div: 'HD', csMonM: [669, 677, 648], csHandledM: [225, 231, 234], vipTotalM: [0, 26, 16], vipSolvedM: [0, 25, 16], ticketsM: [226, 259, 254], rrM: [100, 96.15, 100], chat: [90, 95, 95], att: { workDays: 78, sick: 8, personal: 4, alpha: 0, lateMin: 35, workMin: 37440 } },
   ] },
 };
 
@@ -624,7 +627,7 @@ function monthlyProd(data) {
   const out = {};
   for (let k = 0; k < 3; k++) {
     const agents = (data.agents || []).map(normAgent).filter(a => a.name.trim()).filter(a => a.div === 'HD' ? (a.csMonM[k] != null || a.csHandledM[k] != null) : a.vipTotalM[k] != null)
-      .map(a => ({ name: a.name, div: a.div, csMon: a.csMonM[k] || 0, csHandled: a.csHandledM[k] || 0, vipTotal: a.vipTotalM[k] || 0, vipSolved: a.vipSolvedM[k] || 0, rrM: [rrOf(a, k), null, null], chat: [], att: { manual: 0 } }));
+      .map(a => ({ name: a.name, div: a.div, csMon: a.csMonM[k] || 0, csHandled: a.csHandledM[k] || 0, vipTotal: a.vipTotalM[k] || 0, vipSolved: a.vipSolvedM[k] || 0, rrM: [rrOf(a, k), null, null], ticketsM: [a.ticketsM[k], null, null], vipTotalM: [a.vipTotalM[k], null, null], vipSolvedM: [a.vipSolvedM[k], null, null], chat: [], att: { manual: 0 } }));
     if (!agents.length) continue;
     compute({ agents }).A.forEach(r => { (out[r.name] = out[r.name] || [null, null, null])[k] = r; });
   }
@@ -643,6 +646,7 @@ const CRITERIA_ID = ['Salam Pembuka & Protokol', 'Identifikasi Pelanggan', 'Pema
 const DIV_ID = { HD: 'Helpdesk', AM: 'Account Manager' };
 const TX = {
   en: {
+    rrInfoQ2: 'Q2 2026 uses the final Q2 formula — Helpdesk: CS Monitoring 38 + CS Handled 19 + Tickets Created 38 · AM: VIP Resolution Rate 57 + Tickets Created 38 (months without VIP = 100%) · bonus max +5',
     rrInfoOld: 'Resolution rate (CS & VIP) is shown as information only and is not part of the score — it also depends on the customer side. Click an agent to see it per month.',
     rrInfo: 'Resolution rate target: Helpdesk 90% · Account Manager 95% (quarter average). Below target = −1 point per 1% from productivity (max −5). Click an agent to see it per month.', penL: 'res. rate', resRate: 'Resolution rate', infoOnly: 'target HD 90% · AM 95%', infoOld: 'info only', csSolvedL: 'solved',
     clickHint: 'Click an agent for monthly detail', clickDetail: 'Click for monthly detail', monthlyAvg: 'Monthly average', quarterScore: 'Quarter score', bestMonth: 'Best month', noMonthly: 'Monthly data has not been entered for this agent yet. Fill the monthly fields in Edit data to see the breakdown per month.', mdNote: 'Each month is scored with the same formula, compared with agents of the same division in that month. Quarter score uses the quarter totals.', month: 'Month', close: 'Close', totalQ: 'Quarter',
@@ -690,10 +694,11 @@ const TX = {
     crossL: 'back-up → final', crossNote: 'Back-up bonus (max +2.5 on the Final Score): Helpdesk handling VIP or AM handling CS is valued on the other division’s scale and compared with the biggest back-up in the team.',
     mdT: 'Monthly Productivity Data', mdSub: ms => `Input per month (${ms}) and the resulting productivity score.`, vipDone: 'VIP Done', divL: 'Div.',
     mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Done excludes admin hold · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS solved ÷ CS handled · AM: VIP done ÷ VIP total. Shown as information only — not part of the score. Click a row for the monthly detail.',
-    mon: 'CS Monitoring', hand: 'CS Handled Volume', vipR: 'VIP Resolution Rate', vipH: 'VIP Handled Volume', total: 'total',
+    tixL: 'Tickets Created', mon: 'CS Monitoring', hand: 'CS Handled Volume', vipR: 'VIP Resolution Rate', vipH: 'VIP Handled Volume', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs peer max', avg: 'avg', of: 'of', vipHandled: 'VIP handled', rateW: 'rate',
   },
   id: {
+    rrInfoQ2: 'Q2 2026 memakai rumus final Q2 — Helpdesk: CS Monitoring 38 + CS Handled 19 + Tiket Dibuat 38 · AM: VIP Resolution Rate 57 + Tiket Dibuat 38 (bulan tanpa VIP = 100%) · bonus maks +5',
     rrInfoOld: 'Resolution rate (CS & VIP) hanya ditampilkan sebagai info dan tidak masuk skor — karena juga dipengaruhi sisi customer. Klik agent untuk lihat per bulan.',
     rrInfo: 'Target resolution rate: Helpdesk 90% · Account Manager 95% (rata-rata kuartal). Di bawah target = −1 poin per 1% dari productivity (maks −5). Klik agent untuk lihat per bulan.', penL: 'res. rate', resRate: 'Resolution rate', infoOnly: 'target HD 90% · AM 95%', infoOld: 'info, tidak masuk skor', csSolvedL: 'selesai',
     clickHint: 'Klik agent untuk detail per bulan', clickDetail: 'Klik untuk detail per bulan', monthlyAvg: 'Rata-rata bulanan', quarterScore: 'Skor kuartal', bestMonth: 'Bulan terbaik', noMonthly: 'Data bulanan agent ini belum diisi. Isi kolom per bulan di Edit data untuk melihat rinciannya.', mdNote: 'Tiap bulan dihitung dengan rumus yang sama, dibandingkan dengan agent satu divisi di bulan itu. Skor kuartal memakai total kuartal.', month: 'Bulan', close: 'Tutup', totalQ: 'Kuartal',
@@ -741,7 +746,7 @@ const TX = {
     crossL: 'back-up → skor akhir', crossNote: 'Bonus back-up (maks +2,5 di Skor Akhir): Helpdesk yang pegang VIP atau AM yang pegang CS dinilai pakai skala divisi lain, lalu dibandingkan dengan back-up terbesar di tim.',
     mdT: 'Data Produktivitas Bulanan', mdSub: ms => `Input per bulan (${ms}) dan skor produktivitas yang dihasilkan.`, vipDone: 'VIP Selesai', divL: 'Div.',
     mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Selesai tanpa hold admin · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS selesai ÷ CS handled · AM: VIP selesai ÷ total VIP. Hanya info — tidak masuk skor. Klik baris untuk detail per bulan.',
-    mon: 'CS Monitoring', hand: 'Volume CS Handled', vipR: 'VIP Resolution Rate', vipH: 'Volume VIP Handled', total: 'total',
+    tixL: 'Tiket Dibuat', mon: 'CS Monitoring', hand: 'Volume CS Handled', vipR: 'VIP Resolution Rate', vipH: 'Volume VIP Handled', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs tertinggi', avg: 'rata²', of: 'dari', vipHandled: 'VIP ditangani', rateW: 'rate',
   },
 };
@@ -764,7 +769,7 @@ function normAgent(a) {
   return { name: a.name || '', div: a.div === 'AM' ? 'AM' : 'HD', photo: a.photo || '',
     csMon: n(a.csMon), csHandled: n(a.csHandled), vipTotal: n(a.vipTotal), vipSolved: n(a.vipSolved), vipRate: has(a.vipRate) ? n(a.vipRate) : null,
     chat: [0, 1, 2].map(i => (a.chat && has(a.chat[i])) ? n(a.chat[i]) : null),
-    csMonM: m3(a.csMonM), csHandledM: m3(a.csHandledM), csSolvedM: m3(a.csSolvedM), csSolved: has(a.csSolved) ? n(a.csSolved) : null, vipTotalM: m3(a.vipTotalM), vipSolvedM: m3(a.vipSolvedM), rrM: m3(a.rrM),
+    csMonM: m3(a.csMonM), csHandledM: m3(a.csHandledM), csSolvedM: m3(a.csSolvedM), csSolved: has(a.csSolved) ? n(a.csSolved) : null, vipTotalM: m3(a.vipTotalM), vipSolvedM: m3(a.vipSolvedM), rrM: m3(a.rrM), ticketsM: m3(a.ticketsM),
     att: Object.assign({ workDays: null, sick: 0, personal: 0, alpha: 0, lateMin: 0, workMin: null, manual: null }, a.att || {}) };
 }
 function attScore(t) {
@@ -798,12 +803,43 @@ function compute(data) {
   const max = (arr, f) => Math.max(0, ...arr.map(f));
   const hd = by('HD'), am = by('AM');
   const mx = { mon: max(hd, a => a.csMon), hand: max(hd, a => a.csHandled), vipH: max(am, a => a.vipTotal) };
+  const LEG = legacyRules();
+  if (LEG) {   // rumus sheet Q2: tiket dibuat ikut dihitung, AM pakai VIP solved rate (bulan tanpa VIP = 100%)
+    A.forEach(a => { a.tickets = sum(a.ticketsM.map(v => v || 0)); const has = [0, 1, 2].filter(k => a.vipTotalM[k] != null);
+      a.lrate = has.length ? sum(has.map(k => a.vipTotalM[k] ? (a.vipSolvedM[k] || 0) / a.vipTotalM[k] * 100 : 100)) / has.length : (a.vipTotal ? a.vipSolved / a.vipTotal * 100 : 0); });
+    mx.tixH = max(hd, a => a.tickets); mx.tixA = max(am, a => a.tickets); mx.lrate = max(am, a => a.lrate);
+  }
   A.forEach(a => {
     a.vip = a.vipRate != null ? a.vipRate : (a.vipTotal ? a.vipSolved / a.vipTotal * 100 : 0);
   });
   mx.vip = max(am, a => a.vip);
   const part = (v, m, w) => m > 0 ? r2(v / m * w) : 0;
   A.forEach(a => {
+    if (LEG) {
+      const P = (v, m, w) => m > 0 ? v / m * w : 0;
+      if (a.div === 'HD') {
+        a.parts = [
+          { k: T('mon'), w: 38, v: r2(P(a.csMon, mx.mon, 38)), tot: `${fInt(a.csMon)} ${T('total')}`, val: a.csMon, max: mx.mon },
+          { k: 'CS Handled', w: 19, v: r2(P(a.csHandled, mx.hand, 19)), tot: `${fInt(a.csHandled)} ${T('total')}`, val: a.csHandled, max: mx.hand },
+          { k: T('tixL'), w: 38, v: r2(P(a.tickets, mx.tixH, 38)), tot: `${fInt(a.tickets)} ${T('total')}`, val: a.tickets, max: mx.tixH }];
+        a.coreRaw = P(a.csMon, mx.mon, 38) + P(a.csHandled, mx.hand, 19) + P(a.tickets, mx.tixH, 38);
+        a.bonusRaw = P(a.csMon, mx.mon, 5); a.bonusLabel = T('bonusHD');
+        a.bonusNote = `${fInt(a.csMon)} ${T('vsMax')} ${fInt(mx.mon)}${a.csMon === mx.mon ? ' (100%)' : ''}`;
+      } else {
+        a.parts = [
+          { k: T('vipR'), w: 57, v: r2(a.lrate / 100 * 57), tot: `${f2(a.lrate)}%`, val: a.lrate, max: 100 },
+          { k: T('tixL'), w: 38, v: r2(P(a.tickets, mx.tixA, 38)), tot: `${fInt(a.tickets)} ${T('total')}`, val: a.tickets, max: mx.tixA }];
+        a.coreRaw = a.lrate / 100 * 57 + P(a.tickets, mx.tixA, 38);
+        a.bonusRaw = P(a.lrate, mx.lrate, 5); a.bonusLabel = T('vipR') + ' bonus';
+        a.bonusNote = `${f2(a.lrate)}% ${T('vsMax')} ${f2(mx.lrate)}%`;
+      }
+      a.bonus = r2(a.bonusRaw); a.core = r2(a.coreRaw);
+      const cs = a.chat.filter(v => v != null);
+      a.chatAvg = cs.length ? sum(cs) / cs.length : 0;
+      a.attX = attScore(a.att);
+      a.attS = a.attX.score;
+      return;
+    }
     if (a.div === 'HD') {
       a.parts = [
         { k: T('mon'), w: 38, v: part(a.csMon, mx.mon, 38), tot: `${fInt(a.csMon)} ${T('total')}`, val: a.csMon, max: mx.mon },
@@ -837,10 +873,11 @@ function compute(data) {
     a.rrQ = rrQavg(a);
     const tg = RR_TARGET[a.div];
     a.pen = newRules() && a.rrQ != null && a.rrQ < tg ? r2(Math.min(RR_PEN_MAX, (tg - a.rrQ) * RR_PEN_PER)) : 0;
-    a.prod = r2(Math.max(0, Math.min(100, a.core + a.bonus) - a.pen));
+    a.prod = LEG ? r2(Math.min(100, a.coreRaw + a.bonusRaw)) : r2(Math.max(0, Math.min(100, a.core + a.bonus) - a.pen));
     if (!newRules()) a.cross = 0;
     a.crossF = r2(a.cross * CROSS_FINAL);
-    a.final = r2(Math.min(100, a.prod * 0.5 + a.chatAvg * 0.3 + a.attS * 0.2 + a.crossF));
+    a.final = LEG ? r2(Math.min(100, a.coreRaw + a.bonusRaw) * 0.5 + a.chatAvg * 0.3 + a.attS * 0.2) : r2(Math.min(100, a.prod * 0.5 + a.chatAvg * 0.3 + a.attS * 0.2 + a.crossF));
+    a.chatAvg = r2(a.chatAvg); a.attS = r2(a.attS);
   });
   const rankBy = f => A.slice().sort((x, y) => f(y) - f(x));
   return { A, hd: rankBy(a => a.prod).filter(a => a.div === 'HD'), am: rankBy(a => a.prod).filter(a => a.div === 'AM'),
@@ -909,19 +946,19 @@ function slides(p, data) {
   {
     const avgP = N ? sum(C.A.map(a => a.prod)) / N : 0, lh = C.hd[0], la = C.am[0];
     const tile = (lab, val, sub, cls = '') => `<div class="kt ${cls}"><span>${lab}</span><b class="num">${val}</b><small>${sub}</small></div>`;
-    const raw = a => (a.div === 'HD' ? `${fInt(a.csMon)} ${T('monitored')} · ${fInt(a.csHandled)} ${T('handled')}` : `${fInt(a.vipTotal)} VIP ${T('handled')}`) + (a.crossF > 0 ? ` · <span class="xb">+${f2(a.crossF)} ${T('crossL').toLowerCase()}</span>` : '') + (a.pen > 0 ? ` · <span class="xp">−${f2(a.pen)} ${T('penL')} ${f2(a.rrQ)}%</span>` : '');
+    const raw = a => (legacyRules() ? (a.div === 'HD' ? `${fInt(a.csMon)} ${T('monitored')} · ${fInt(a.tickets)} tickets` : `VIP ${f2(a.lrate)}% · ${fInt(a.tickets)} tickets`) : a.div === 'HD' ? `${fInt(a.csMon)} ${T('monitored')} · ${fInt(a.csHandled)} ${T('handled')}` : `${fInt(a.vipTotal)} VIP ${T('handled')}`) + (a.crossF > 0 ? ` · <span class="xb">+${f2(a.crossF)} ${T('crossL').toLowerCase()}</span>` : '') + (a.pen > 0 ? ` · <span class="xp">−${f2(a.pen)} ${T('penL')} ${f2(a.rrQ)}%</span>` : '');
     const row = (a, i) => `<div class="pr ${i ? '' : 'lead'} clk" data-ag="${esc(a.name)}" role="button" tabindex="0" title="${T('clickDetail')}"><div class="prn">${av(a)}<div><b>${esc(a.name)}</b><small>${raw(a)}</small></div></div>
         <div class="stk">${(() => { let left = a.prod; const seg = v => { const w = Math.max(0, Math.min(v, left)); left -= w; return w; };
           return a.parts.map((p, k) => { const w = seg(p.v); return `<i class="s${k}" style="--w:${w}%">${w >= 7 ? `<em>${f2(w).replace(/\.00$/, '')}</em>` : ''}</i>`; }).join('') + `<i class="sb" style="--w:${seg(a.bonus)}%"></i>` + (a.pen ? `<i class="sp" style="--w:${a.pen}%"></i>` : ''); })()}</div>
         <div class="prv num">${f2(a.prod)}</div></div>`;
-    const panel = (list, name, l0, l1) => list.length ? `<div class="ppan"><div class="pph"><b>${name}</b><span class="lgd"><i class="s0"></i>${l0}${l1 ? `<i class="s1"></i>${l1}` : ''}<i class="sb"></i>${T('bonus')} ≤5${list.some(x => x.pen) ? `<i class="sp"></i>−${T('penL')}` : ''}</span></div>
+    const panel = (list, name) => list.length ? `<div class="ppan"><div class="pph"><b>${name}</b><span class="lgd">${list[0].parts.map((p, k) => `<i class="s${k}"></i>${p.k} ${p.w}`).join('')}<i class="sb"></i>${T('bonus')} ≤5${list.some(x => x.pen) ? `<i class="sp"></i>−${T('penL')}` : ''}</span></div>
         <div class="pscale"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>${list.map(row).join('')}</div>` : '';
     out.push(`<section class="slide v3 ${N > 5 ? 'many' : ''}"><div class="s-in">
       ${head(`${T('pillar')} 01`, T('prodT'), T('prodTake2'), 'y', T('weight')(50))}
       <div class="kts">${lh ? tile(`${T('topIn')} Helpdesk`, f2(lh.prod), esc(lh.name), 'y') : ''}${la ? tile(`${T('topIn')} Account Manager`, f2(la.prod), esc(la.name), 'y') : ''}${tile(T('teamAvg'), f2(avgP), `${N} ${T('agents')}`)}</div>
-      <div class="ppans">${panel(C.hd, 'Helpdesk', 'CS Monitoring 38', 'CS Handled 57')}${panel(C.am, 'Account Manager', 'VIP Handled 95', '')}</div>
+      <div class="ppans">${panel(C.hd, 'Helpdesk')}${panel(C.am, 'Account Manager')}</div>
       <div class="how"><span class="tap">👆 ${T('clickHint')}</span><span><b>1</b>${T('how1')}</span><span><b>2</b>${T('how2')}</span><span><b>3</b>${T('how3')}</span></div>
-      <div class="rinfo">ⓘ ${T(newRules() ? 'rrInfo' : 'rrInfoOld')}${C.A.some(x => x.cross > 0) ? '<br>⇄ ' + T('crossNote') : ''}</div>
+      <div class="rinfo">ⓘ ${T(newRules() ? 'rrInfo' : legacyRules() ? 'rrInfoQ2' : 'rrInfoOld')}${C.A.some(x => x.cross > 0) ? '<br>⇄ ' + T('crossNote') : ''}</div>
     </div>${foot}</section>`);
   }
 
@@ -1023,6 +1060,7 @@ function defaultPeriod() {
 }
 async function loadPeriod(p, quiet) {
   ST.period = p; history.replaceState(null, '', '#' + p);
+  if (LOCKED[p] && SEED[p]) { ST.data = clone(SEED[p]); ST.revision = null; ST.source = 'locked'; render(); syncStatus(); applyMode(); return; }
   let got = false;
   if (ST.online !== false) {
     try {
@@ -1040,6 +1078,7 @@ async function loadPeriod(p, quiet) {
   render(); syncStatus();
 }
 function syncStatus() {
+  if (ST.source === 'locked') { setStatus('ok', 'Final · dikunci'); return; }
   if (ST.online === true) setStatus('ok', ST.source === 'online' ? 'Data online' : ST.source === 'seed' ? 'Belum disimpan online' : 'Online · kosong');
   else if (ST.online === 'err') setStatus('err', (ST.err && ST.err.error === 'schema-missing') ? 'Tabel belum dibuat' : (ST.err && ST.err.error === 'storage-not-configured') ? 'Supabase belum diisi' : 'Server error');
   else setStatus('warn', ST.source === 'cache' ? 'Offline · cache' : 'Offline');
@@ -1049,7 +1088,8 @@ function syncStatus() {
 function render() {
   const deck = $('#deck'), p = ST.period;
   let note = '';
-  if (ST.source === 'seed') note = `<div class="note">Data <b>${pLabel(p)}</b> ini diambil dari slide Q2 Report Helpdesk (Figma). Buka <b>Edit data</b> → <b>Simpan online</b> supaya tersimpan untuk semua orang.</div>`;
+  if (ST.source === 'locked') note = `<div class="note">Data <b>${pLabel(p)}</b> dikunci sesuai file <b>${LOCKED[p]}</b> (hasil final yang sudah diumumkan) — tidak bisa diedit.</div>`;
+  else if (ST.source === 'seed') note = `<div class="note">Data <b>${pLabel(p)}</b> ini diambil dari slide Q2 Report Helpdesk (Figma). Buka <b>Edit data</b> → <b>Simpan online</b> supaya tersimpan untuk semua orang.</div>`;
   else if (ST.online === 'err' && ST.err && ST.err.error === 'schema-missing') note = `<div class="note">Tabel <b>perf_reports</b> belum ada di Supabase. Jalankan file <b>perf-schema.sql</b> di Supabase → SQL Editor → Run, lalu muat ulang halaman ini.</div>`;
   else if (ST.online === 'err' && ST.err && ST.err.error === 'storage-not-configured') note = `<div class="note">Env <b>SUPABASE_URL</b> / <b>SUPABASE_SERVICE_ROLE_KEY</b> belum diisi di Vercel, jadi data belum bisa disimpan online.</div>`;
   else if (ST.online === false) note = `<div class="note">Server <b>/api/perf</b> tidak terjangkau${ST.source === 'cache' ? ' — menampilkan data terakhir yang tersimpan di browser ini' : ''}.</div>`;
@@ -1237,6 +1277,12 @@ $('#edBody').addEventListener('click', e => {
 });
 $('#edCancel').onclick = closeEditor;
 $('#editor').addEventListener('click', e => { if (e.target.id === 'editor') closeEditor(); });
+/* server /api/perf tidak ada (mis. preview / offline): simpan di browser ini saja supaya tetap bisa dicek, TIDAK online */
+function localSave(clean) {
+  ST.data = clean; ST.source = 'cache'; ST.online = false;
+  ls.set(CACHE + ST.period, JSON.stringify({ data: clean, revision: ST.revision }));
+  closeEditor(); render(); syncStatus(); toast('Server tidak terjangkau — data hanya tersimpan di browser ini (belum online).');
+}
 $('#edSave').onclick = async () => {
   const k = $('#pubKey'); if (k) ls.set(KEY_PUB, k.value);
   const clean = { attNote: ED.attNote || '', agents: ED.agents.filter(a => (a.name || '').trim()) };
@@ -1249,8 +1295,9 @@ $('#edSave').onclick = async () => {
       closeEditor(); await loadList(); fillPeriods(); render(); syncStatus(); toast('Tersimpan online ✓ — semua orang melihat data ini');
     } else if (r.status === 409) { toast('Ada perubahan lebih baru dari perangkat lain — data dimuat ulang, cek lalu simpan lagi.'); const keep = ED; await loadPeriod(ST.period); ED = keep; ED && drawEditor(); }
     else if (r.status === 401) toast('Password publish salah / belum diisi.');
+    else if (!r.json) localSave(clean);
     else toast('Gagal menyimpan: ' + (r.j.detail || r.j.error || ('HTTP ' + r.status)));
-  } catch (err) { toast('Server tidak terjangkau — data belum tersimpan.'); }
+  } catch (err) { localSave(clean); }
   btn.disabled = false; btn.textContent = 'Simpan online';
 };
 
@@ -1276,12 +1323,12 @@ function openProdDetail(name) {
     <div class="mdk"><div><span>${T('quarterScore')}</span><b>${f2(a.prod)}</b></div><div><span>${T('monthlyAvg')}</span><b>${avg == null ? '—' : f2(avg)}</b></div><div><span>${T('bestMonth')}</span><b>${best ? monthName(mm[bestK]) : '—'}</b></div></div>
     ${have.length ? `<div class="mdc">${M.map(col).join('')}</div><div class="mdx">${mm.map(i => `<span>${monthName(i)}</span>`).join('')}</div>
       <div class="mdlg">${lbl.map((l, j) => `<span><i style="background:${colors[j]}"></i>${l}</span>`).join('')}<span><i style="background:${colors[2]}"></i>${T('bonus')}</span></div>
-      <table class="mdt"><thead><tr><th>${T('month')}</th>${lbl.map(l => `<th>${l}</th>`).join('')}<th>${T('bonus')}</th><th>${T('prodT')}</th><th class="rr">${T('resRate')}<small>${newRules() ? T('infoOnly') : T('infoOld')}</small></th></tr></thead><tbody>
+      <table class="mdt"><thead><tr><th>${T('month')}</th>${lbl.map(l => `<th>${l}</th>`).join('')}<th>${T('bonus')}</th><th>${T('prodT')}</th><th class="rr">${T('resRate')}<small>${newRules() ? T('infoOnly') : legacyRules() ? 'Q2' : T('infoOld')}</small></th></tr></thead><tbody>
         ${M.map((r, k) => r ? `<tr><td>${monthName(mm[k])}<small>${rawM(r, k)}</small></td>${r.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(r.bonus)}</td><td><b>${f2(r.prod)}</b>${r.pen ? `<small class="xp">−${f2(r.pen)} res.</small>` : ''}</td>${rrCell(rrM(k))}</tr>` : `<tr><td>${monthName(mm[k])}</td><td colspan="${lbl.length + 3}" style="color:var(--muted)">—</td></tr>`).join('')}
         <tr class="tot"><td>${T('totalQ')}<small>${rawQ}</small></td>${a.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(a.bonus)}</td><td>${f2(a.prod)}${a.pen ? `<small class="xp">−${f2(a.pen)} res.</small>` : ''}</td>${rrCell(rrQ)}</tr></tbody></table>
-      <div class="mdn">${T('mdNote')} ${T(newRules() ? 'rrInfo' : 'rrInfoOld').split(' — ')[0]}.</div>`
+      <div class="mdn">${T('mdNote')} ${T(newRules() ? 'rrInfo' : legacyRules() ? 'rrInfoQ2' : 'rrInfoOld').split(' — ')[0]}.</div>`
     : `<div class="mdn" style="font-size:14px">${T('noMonthly')}</div>
-      <table class="mdt"><thead><tr><th></th>${lbl.map(l => `<th>${l}</th>`).join('')}<th>${T('bonus')}</th><th>${T('prodT')}</th><th class="rr">${T('resRate')}<small>${newRules() ? T('infoOnly') : T('infoOld')}</small></th></tr></thead><tbody>
+      <table class="mdt"><thead><tr><th></th>${lbl.map(l => `<th>${l}</th>`).join('')}<th>${T('bonus')}</th><th>${T('prodT')}</th><th class="rr">${T('resRate')}<small>${newRules() ? T('infoOnly') : legacyRules() ? 'Q2' : T('infoOld')}</small></th></tr></thead><tbody>
         <tr class="tot"><td>${T('totalQ')}<small>${rawQ}</small></td>${a.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(a.bonus)}</td><td>${f2(a.prod)}${a.pen ? `<small class="xp">−${f2(a.pen)} res.</small>` : ''}</td>${rrCell(rrQ)}</tr></tbody></table>`}
   </div>`;
   const close = () => { el.remove(); document.removeEventListener('keydown', esc1, true); };
@@ -1299,7 +1346,7 @@ document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === 
 const VIEW = new URLSearchParams(location.search).has('view');
 const canEdit = () => !VIEW && (ST.open || ST.authed);
 function applyMode() {
-  $('#editBtn').classList.toggle('hidden', !canEdit());
+  $('#editBtn').classList.toggle('hidden', !canEdit() || !!LOCKED[ST.period]);
   $('#shareBtn').classList.toggle('hidden', !canEdit());
   $('#adminBtn').classList.toggle('hidden', VIEW || ST.open || !!ST.authed || ST.online !== true);
   const e = $('#emptyEdit'); if (e) e.classList.toggle('hidden', !canEdit());
@@ -1320,7 +1367,7 @@ applyLangUI();
 
 /* =================== init =================== */
 $('#period').onchange = e => loadPeriod(e.target.value);
-$('#editBtn').onclick = () => { if (canEdit()) openEditor(); };
+$('#editBtn').onclick = () => { if (canEdit() && !LOCKED[ST.period]) openEditor(); };
 $('#presentBtn').onclick = () => present(0);
 $('#printBtn').onclick = () => window.print();
 (async () => {

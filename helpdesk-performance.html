@@ -582,6 +582,18 @@ const SEED = {
     { name: 'Devin Bagaskara', div: 'HD', csMonM: [750, 788, 723], csHandledM: [201, 216, 315], vipTotalM: [10, 55, 81], vipSolvedM: [9, 54, 80], ticketsM: [208, 258, 385], rrM: [90.00, 98.18, 98.77], chat: [95, 95, 95], att: { workDays: 78, sick: 0, personal: 0, alpha: 0, lateMin: 0, workMin: 37440 } },
     { name: 'Kadek Arisita Dhyana Putri', div: 'HD', csMonM: [669, 677, 648], csHandledM: [225, 231, 234], vipTotalM: [0, 26, 16], vipSolvedM: [0, 25, 16], ticketsM: [226, 259, 254], rrM: [100, 96.15, 100], chat: [90, 95, 95], att: { workDays: 78, sick: 8, personal: 4, alpha: 0, lateMin: 35, workMin: 37440 } },
   ] },
+  /* Q3 2026 — Jul & Agu dari Monitoring_Customer_Support_2026_Responses.xlsx (sheet July / August), Sep dari Tickets-2026-09-01_2026-09-30.xlsx.
+     VIP Handled Jul & Agu belum ada di file → isi lewat Edit data. Observation & Attendance Q3 juga belum ada. */
+  '2026-Q3': { attNote: '', agents: [
+    { name: 'Devin Bagaskara', div: 'AM', csMonM: [586, 2, 22], csHandledM: [221, 2, 14], vipTotalM: [null, null, 272], rrM: [99.1, 100.0, 99.65], chat: ['', '', ''], att: {} },
+    { name: 'Ni Kadek Desi Mirayani', div: 'AM', csMonM: [201, 133, 56], csHandledM: [64, 49, 19], vipTotalM: [null, null, 307], rrM: [98.44, 100.0, 100.0], chat: ['', '', ''], att: {} },
+    { name: 'Aulia Sevi Diana', div: 'AM', csMonM: [147, 65, 19], csHandledM: [56, 27, 11], vipTotalM: [null, null, 324], rrM: [100.0, 100.0, 100.0], chat: ['', '', ''], att: {} },
+    { name: 'Kadek Arisita Dhyana Putri', div: 'HD', csMonM: [801, 642, 539], csHandledM: [297, 259, 194], vipTotalM: [null, null, 8], rrM: [97.98, 99.61, 96.53], chat: ['', '', ''], att: {} },
+    { name: 'Gede Dimas Pery Narendra', div: 'HD', csMonM: [407, 487, 444], csHandledM: [114, 167, 144], vipTotalM: [null, null, 0], rrM: [100.0, 100.0, 97.22], chat: ['', '', ''], att: {} },
+    { name: 'Bayu Sukma Ramadhan', div: 'HD', csMonM: [301, 517, 375], csHandledM: [75, 159, 142], vipTotalM: [null, null, 0], rrM: [100.0, 99.37, 97.18], chat: ['', '', ''], att: {} },
+    { name: 'A.A Ngurah Kiyana Adhisa Oka Pertama', div: 'HD', csMonM: [15, 447, 453], csHandledM: [3, 147, 142], vipTotalM: [null, null, 0], rrM: [100.0, 100.0, 100.0], chat: ['', '', ''], att: {} },
+    { name: 'Nilma Syahrani', div: 'HD', csMonM: [0, 315, 386], csHandledM: [0, 112, 165], vipTotalM: [null, null, 0], rrM: [null, 100.0, 96.97], chat: ['', '', ''], att: {} },
+  ] },
 };
 
 /* Foto agent (file photo-*.jpg). Nama lain/singkatan diarahkan lewat ALIAS. */
@@ -1089,6 +1101,7 @@ function render() {
   const deck = $('#deck'), p = ST.period;
   let note = '';
   if (ST.source === 'locked') note = `<div class="note">Data <b>${pLabel(p)}</b> dikunci sesuai file <b>${LOCKED[p]}</b> (hasil final yang sudah diumumkan) — tidak bisa diedit.</div>`;
+  else if (ST.source === 'seed' && p === '2026-Q3') note = `<div class="note">Data <b>${pLabel(p)}</b>: Juli & Agustus dari <b>Monitoring Customer Support</b>, September dari <b>export Tickets</b>. Belum ada: <b>VIP Handled Juli & Agustus</b>, <b>Observation</b> dan <b>Attendance</b> Q3 — isi di <b>Edit data</b> lalu <b>Simpan online</b>.</div>`;
   else if (ST.source === 'seed') note = `<div class="note">Data <b>${pLabel(p)}</b> ini diambil dari slide Q2 Report Helpdesk (Figma). Buka <b>Edit data</b> → <b>Simpan online</b> supaya tersimpan untuk semua orang.</div>`;
   else if (ST.online === 'err' && ST.err && ST.err.error === 'schema-missing') note = `<div class="note">Tabel <b>perf_reports</b> belum ada di Supabase. Jalankan file <b>perf-schema.sql</b> di Supabase → SQL Editor → Run, lalu muat ulang halaman ini.</div>`;
   else if (ST.online === 'err' && ST.err && ST.err.error === 'storage-not-configured') note = `<div class="note">Env <b>SUPABASE_URL</b> / <b>SUPABASE_SERVICE_ROLE_KEY</b> belum diisi di Vercel, jadi data belum bisa disimpan online.</div>`;

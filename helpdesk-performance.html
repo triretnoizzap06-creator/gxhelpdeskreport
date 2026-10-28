@@ -378,6 +378,7 @@ button,input,select{font:inherit;color:inherit}
 .rt .rav,.at .rav{width:2.6cqw;height:2.6cqw}
 .rt tr.lead td,.at tr.lead td{background:#FFFBEA}
 .at.atmo{font-size:1.02cqw}.at.atmo td{padding:.6cqw .3cqw}.at.atmo th{padding:0 .3cqw .5cqw}.at.atmo td:first-child{max-width:15.5cqw}.at.atmo .rav{width:2.2cqw;height:2.2cqw}
+.at td.mo .mol{display:block;font-size:.72cqw;font-weight:600;color:#A16207}
 .at th.mo,.at td.mo{text-align:right;font-variant-numeric:tabular-nums}.at td.mo.g{color:#15803D;font-weight:700}.at td.mo.y{color:#B45309;font-weight:700}.at td.mo.r{color:#B91C1C;font-weight:700}
 .at .ld{display:block;font-size:.75cqw;color:#A16207;font-weight:700}
 .rt tr.grp td{text-align:left!important;font-size:.8cqw;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#A16207;padding:.7cqw .4cqw .3cqw;border-bottom:1px solid #F5E6A8;display:table-cell!important}
@@ -386,6 +387,8 @@ button,input,select{font:inherit;color:inherit}
 .crit2{display:flex;flex-wrap:wrap;gap:.45cqw .6cqw;align-items:center;margin-top:auto;margin-bottom:2.4cqw}
 .crit2 .cap{font-size:.95cqw;margin-right:.4cqw}
 .crit2 span:not(.cap){display:inline-flex;align-items:center;gap:.4cqw;font-size:.92cqw;background:#F4F4F5;border-radius:999px;padding:.25cqw .7cqw .25cqw .3cqw}
+.crit2.obt .crc{padding:.45cqw 1cqw .45cqw .4cqw;font-size:1cqw;font-weight:700}.crit2.obt i{width:auto;padding:0 .45cqw;border-radius:.4cqw;font-size:.75cqw;height:1.5cqw}.crit2 .obn{font-weight:600;color:#71717A;font-size:.8cqw;margin-left:.3cqw}
+.obl{margin:14px 0 6px;padding-left:22px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.5}.obl.ed{padding-left:0}.obl.ed label{display:flex;gap:10px;align-items:flex-start}.obl.ed b{width:22px;text-align:right;padding-top:8px}.obl.ed textarea{flex:1}
 .crb{font-size:14px;line-height:1.6;padding:6px 2px 12px}.cre{display:flex;flex-direction:column;gap:8px;align-items:flex-end}.cre textarea{width:100%}
 .crit2 .crc{cursor:pointer;transition:background .15s}.crit2 .crc:hover{background:#E0ECFF}.crit2 em{font-style:normal}
 .crit2 i{font-style:normal;width:1.3cqw;height:1.3cqw;border-radius:50%;background:#3B82F6;color:#fff;font-size:.75cqw;font-weight:800;display:grid;place-items:center}
@@ -718,8 +721,9 @@ const TX = {
     crossL: 'back-up → final', crossNote: 'Back-up bonus (max +2.5 on the Final Score): Helpdesk handling VIP or AM handling CS is valued on the other division’s scale and compared with the biggest back-up in the team.',
     mdT: 'Monthly Productivity Data', mdSub: ms => `Input per month (${ms}) and the resulting productivity score.`, vipDone: 'VIP Done', divL: 'Div.',
     mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Done excludes admin hold · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS solved ÷ CS handled · AM: VIP done ÷ VIP total. Shown as information only — not part of the score. Click a row for the monthly detail.',
+    obsTypes: 'Observation types', obs10: '10 points', obsPh: 'Point',
     critClick: 'Click for details', critTBA: 'Details will be added (TBA).', critEditHint: 'Write the details for this criterion — shown to everyone after saving.',
-    lateDL: 'Late (days)', monNote: 'Monthly % from the Attendance Recap (cycle 26th–25th)', lateL: 'Late (min)', attPctL: '% Attendance per month', attPctD: '(working days − PL − sick − alpha) ÷ working days − late minutes ÷ working minutes', attQD: 'Quarter score = average of the monthly % (attendance cycle 26th – 25th).', attEx: 'Example: 26 working days, 2 sick days, 11 late minutes → 92.31% − 0.09% = 92.22%.',
+    lateDL: 'Late (days)', monNote: 'Monthly % from the Attendance Recap (cycle 26th–25th) · small text = late days × · late minutes', lateL: 'Late (min)', attPctL: '% Attendance per month', attPctD: '(working days − PL − sick − alpha) ÷ working days − late minutes ÷ working minutes', attQD: 'Quarter score = average of the monthly % (attendance cycle 26th – 25th).', attEx: 'Example: 26 working days, 2 sick days, 11 late minutes → 92.31% − 0.09% = 92.22%.',
     tixL: 'Tickets Created', mon: 'CS Monitoring', hand: 'CS Handled Volume', vipR: 'VIP Resolution Rate', vipH: 'VIP Handled Volume', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs peer max', avg: 'avg', of: 'of', vipHandled: 'VIP handled', rateW: 'rate',
   },
@@ -772,8 +776,9 @@ const TX = {
     crossL: 'back-up → skor akhir', crossNote: 'Bonus back-up (maks +2,5 di Skor Akhir): Helpdesk yang pegang VIP atau AM yang pegang CS dinilai pakai skala divisi lain, lalu dibandingkan dengan back-up terbesar di tim.',
     mdT: 'Data Produktivitas Bulanan', mdSub: ms => `Input per bulan (${ms}) dan skor produktivitas yang dihasilkan.`, vipDone: 'VIP Selesai', divL: 'Div.',
     mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Selesai tanpa hold admin · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS selesai ÷ CS handled · AM: VIP selesai ÷ total VIP. Hanya info — tidak masuk skor. Klik baris untuk detail per bulan.',
+    obsTypes: 'Tipe observation', obs10: '10 poin', obsPh: 'Poin',
     critClick: 'Klik untuk detail', critTBA: 'Detail akan ditambahkan (TBA).', critEditHint: 'Tulis detail kriteria ini — tampil untuk semua orang setelah disimpan.',
-    lateDL: 'Telat (hari)', monNote: '% per bulan dari Attendance Recap (siklus tgl 26–25)', lateL: 'Telat (mnt)', attPctL: '% Attendance per bulan', attPctD: '(hari kerja − PL − sakit − alpha) ÷ hari kerja − menit telat ÷ menit kerja', attQD: 'Skor kuartal = rata-rata % bulanan (siklus absensi tgl 26 – 25).', attEx: 'Contoh: 26 hari kerja, sakit 2 hari, telat 11 menit → 92,31% − 0,09% = 92,22%.',
+    lateDL: 'Telat (hari)', monNote: '% per bulan dari Attendance Recap (siklus tgl 26–25) · teks kecil = hari telat × · menit telat', lateL: 'Telat (mnt)', attPctL: '% Attendance per bulan', attPctD: '(hari kerja − PL − sakit − alpha) ÷ hari kerja − menit telat ÷ menit kerja', attQD: 'Skor kuartal = rata-rata % bulanan (siklus absensi tgl 26 – 25).', attEx: 'Contoh: 26 hari kerja, sakit 2 hari, telat 11 menit → 92,31% − 0,09% = 92,22%.',
     tixL: 'Tiket Dibuat', mon: 'CS Monitoring', hand: 'Volume CS Handled', vipR: 'VIP Resolution Rate', vipH: 'Volume VIP Handled', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs tertinggi', avg: 'rata²', of: 'dari', vipHandled: 'VIP ditangani', rateW: 'rate',
   },
@@ -1022,7 +1027,7 @@ function slides(p, data) {
     out.push(`<section class="slide v4 ${N > 5 ? 'many' : ''}"><div class="s-in">
       ${head(`${T('pillar')} 02`, T('chatT2'), T('chatTake2')(N ? Math.floor(Math.min(...C.A.map(a => a.chatAvg)) / 5) * 5 : 0), 'b', T('weight')(30))}
       <div class="v4g"><div class="cbox"><div class="cap">${T('monthlyScores')}</div>${chart}</div><div class="cbox"><div class="cap">${T('ranking')}</div>${tb}</div></div>
-      <div class="crit2"><span class="cap">${T('criteriaT')}</span>${(LANG === 'id' ? CRITERIA_ID : CRITERIA).map((c, i) => `<span class="crc" data-crit="${i}" role="button" tabindex="0" title="${T('critClick')}"><i>${i + 1}</i><em>${c}</em></span>`).join('')}</div>
+      <div class="crit2 obt"><span class="cap">${T('obsTypes')}</span>${[['HD', 'Helpdesk'], ['AM', 'Account Manager']].map(([d, nm]) => `<span class="crc obc" data-obs="${d}" role="button" tabindex="0" title="${T('critClick')}"><i>${d}</i><em>Observation ${nm}</em><b class="obn">${T('obs10')}</b></span>`).join('')}</div>
     </div>${foot}</section>`);
   }
 
@@ -1033,7 +1038,7 @@ function slides(p, data) {
     const MON = list.some(a => a.attX && a.attX.monthly);
     const tb = `<table class="at ${MON ? 'atmo' : ''}"><thead><tr><th>${T('agent')}</th><th>${T('sick')}</th><th>${T('pl')}</th><th>Alpha</th>${MON ? `<th>${T('lateL')}</th><th>${T('lateDL')}</th>${m.map(mi => `<th class="mo">${monthShort(mi)}</th>`).join('')}` : `<th class="w">${T('scoreScale')(lo)}</th>`}<th>${T('score')}</th></tr></thead><tbody>
       ${list.map((a, i) => `<tr class="${i ? '' : 'lead'}"><td>${av(a)}<span>${esc(a.name)}</span></td><td>${cell(a.att.sick)}</td><td>${cell(a.att.personal)}</td><td>${cell(a.att.alpha)}</td>${MON ? `<td>${cell(a.att.lateMin)}</td><td>${cell(a.att.lateDays)}</td>` : ''}
-        ${MON ? m.map((mi, k) => { const x = a.attMo && a.attMo[k]; return `<td class="mo ${x ? (x.pct >= 95 ? 'g' : x.pct >= 85 ? 'y' : 'r') : ''}">${x ? f2(x.pct) : '–'}</td>`; }).join('') : `<td class="w"><div class="ab"><i style="--w:${X(a.attS)}%"></i></div></td>`}<td class="num"><b>${f2(a.attS)}</b>${a.attS >= 100 ? ' <span class="pf">★</span>' : ''}</td></tr>`).join('')}</tbody></table>`;
+        ${MON ? m.map((mi, k) => { const x = a.attMo && a.attMo[k]; const o = a.attM && a.attM[k]; return `<td class="mo ${x ? (x.pct >= 95 ? 'g' : x.pct >= 85 ? 'y' : 'r') : ''}">${x ? f2(x.pct) : '–'}${o && (n(o.lateDays) || n(o.late)) ? `<small class="mol">${n(o.lateDays)}× · ${n(o.late)}m</small>` : ''}</td>`; }).join('') : `<td class="w"><div class="ab"><i style="--w:${X(a.attS)}%"></i></div></td>`}<td class="num"><b>${f2(a.attS)}</b>${a.attS >= 100 ? ' <span class="pf">★</span>' : ''}</td></tr>`).join('')}</tbody></table>`;
     const top = list[0];
     out.push(`<section class="slide v5 ${N > 5 ? 'many' : ''}"><div class="s-in">
       ${head(`${T('pillar')} 03`, T('attT2'), top ? (top.attS >= 100 ? T('attPerfect')(esc(top.name)) : T('attTop')(esc(top.name), f2(top.attS))) : '', 'g', T('weight')(20))}
@@ -1120,12 +1125,31 @@ async function loadPeriod(p, quiet) {
       else ST.online = r.json ? 'err' : false, ST.err = r.j;
     } catch (e) { ST.online = false; }
   }
+  ST.merged = got && ST.source === 'online' && SEED[p] && !LOCKED[p] ? mergeSeed(ST.data, SEED[p]) : 0;
   if (!got) {
     const c = ls.get(CACHE + p);
     if (c) { const o = JSON.parse(c); ST.data = o.data; ST.revision = o.revision; ST.source = 'cache'; }
     else { ST.data = SEED[p] ? clone(SEED[p]) : null; ST.revision = null; ST.source = SEED[p] ? 'seed' : 'none'; }
   }
   render(); syncStatus();
+  if (ST.merged && ST.source === 'online') setTimeout(async () => { if (canEdit() && ST.merged) { ST.merged = 0; await persistData('Data dari file otomatis disimpan online ✓'); render(); } }, 1500);
+}
+/* data dari file (SEED) diisikan ke data online yang kolomnya masih kosong — angka yang sudah diisi manual tidak ditimpa */
+function mergeSeed(data, seed) {
+  if (!data || !seed) return 0; let n = 0;
+  const empty = v => v == null || v === '';
+  if (seed.attMins && !(data.attMins || []).some(v => !empty(v))) { data.attMins = seed.attMins.slice(); n++; }
+  if (!data.attNote && seed.attNote) data.attNote = seed.attNote;
+  const key = x => String(x || '').toLowerCase().replace(/[^a-z]/g, '');
+  (seed.agents || []).forEach(sa => {
+    const a = (data.agents || []).find(x => key(x.name) === key(sa.name)); if (!a) return;
+    const hadSolved = ['csSolvedM', 'vipSolvedM'].some(f => (a[f] || []).some(v => !empty(v)));
+    if (!hadSolved && (sa.csSolvedM || sa.vipSolvedM) && a.rrM) { delete a.rrM; n++; }   // Res. % lama (dari versi file sebelumnya) → sekarang otomatis dari solved
+    ['csMonM', 'csHandledM', 'csSolvedM', 'vipTotalM', 'vipSolvedM'].forEach(f => { if (!sa[f]) return; a[f] = a[f] || [null, null, null];
+      sa[f].forEach((v, k) => { if (empty(a[f][k]) && !empty(v)) { a[f][k] = v; n++; } }); });
+    if (sa.attM) { a.attM = a.attM || [null, null, null]; sa.attM.forEach((o, k) => { const cur = a.attM[k]; if (o && (!cur || !Object.values(cur).some(v => !empty(v)))) { a.attM[k] = { ...o }; n++; } }); }
+  });
+  return n;
 }
 function syncStatus() {
   if (ST.source === 'locked') { setStatus('ok', 'Final · dikunci'); return; }
@@ -1138,7 +1162,8 @@ function syncStatus() {
 function render() {
   const deck = $('#deck'), p = ST.period;
   let note = '';
-  if (ST.source === 'locked') note = `<div class="note">Data <b>${pLabel(p)}</b> dikunci sesuai file <b>${LOCKED[p]}</b> (hasil final yang sudah diumumkan) — tidak bisa diedit.</div>`;
+  if (ST.merged && ST.source === 'online') note = `<div class="note">Data dari file (VIP Juli–Agustus, CS/VIP solved, attendance) sudah diisikan ke kolom yang masih kosong. Buka <b>Edit data</b> → <b>Simpan online</b> supaya tersimpan untuk semua orang & muncul di Employee Directory.</div>`;
+  else if (ST.source === 'locked') note = `<div class="note">Data <b>${pLabel(p)}</b> dikunci sesuai file <b>${LOCKED[p]}</b> (hasil final yang sudah diumumkan) — tidak bisa diedit.</div>`;
   else if (ST.source === 'seed' && p === '2026-Q3') note = `<div class="note">Data <b>${pLabel(p)}</b>: CS Juli & Agustus dari <b>Monitoring Customer Support</b>, VIP Juli & Agustus dari <b>Monitoring VIP</b>, September dari <b>export Tickets</b>, attendance dari <b>Attendance Recap</b>. Belum ada: <b>Observation</b> Q3 — isi di <b>Edit data</b> lalu <b>Simpan online</b>.</div>`;
   else if (ST.source === 'seed') note = `<div class="note">Data <b>${pLabel(p)}</b> ini diambil dari slide Q2 Report Helpdesk (Figma). Buka <b>Edit data</b> → <b>Simpan online</b> supaya tersimpan untuk semua orang.</div>`;
   else if (ST.online === 'err' && ST.err && ST.err.error === 'schema-missing') note = `<div class="note">Tabel <b>perf_reports</b> belum ada di Supabase. Jalankan file <b>perf-schema.sql</b> di Supabase → SQL Editor → Run, lalu muat ulang halaman ini.</div>`;
@@ -1407,7 +1432,7 @@ $('#edSave').onclick = async () => {
   try {
     const r = await api('?period=' + encodeURIComponent(ST.period), { method: 'POST', body: JSON.stringify({ data: clean, revision: ST.revision }) });
     if (r.status === 200 && r.j.ok) {
-      ST.data = clean; ST.revision = r.j.revision; ST.source = 'online'; ST.online = true;
+      ST.data = clean; ST.revision = r.j.revision; ST.source = 'online'; ST.online = true; ST.merged = 0;
       ls.set(CACHE + ST.period, JSON.stringify({ data: clean, revision: ST.revision }));
       closeEditor(); await loadList(); fillPeriods(); render(); syncStatus(); toast('Tersimpan online ✓ — semua orang melihat data ini');
     } else if (r.status === 409) { toast('Ada perubahan lebih baru dari perangkat lain — data dimuat ulang, cek lalu simpan lagi.'); const keep = ED; await loadPeriod(ST.period); ED = keep; ED && drawEditor(); }
@@ -1490,20 +1515,20 @@ applyLangUI();
 $('#period').onchange = e => loadPeriod(e.target.value);
 $('#editBtn').onclick = () => { if (canEdit() && !LOCKED[ST.period]) openEditor(); };
 /* poin observation bisa diklik → detail (TBA, bisa diisi admin) */
-function openCrit(i) {
-  const list = LANG === 'id' ? CRITERIA_ID : CRITERIA, k = slideKey({ classList: ['v4'] }), store = (ST.data && ST.data.texts) || {};
-  const title = store['v4|' + list[i]] || list[i], notes = (ST.data && ST.data.critNotes) || {}, txt = notes[i] || '';
+function openObs(div) {
+  const nm = div === 'AM' ? 'Account Manager' : 'Helpdesk', pts = ((ST.data && ST.data.obsPoints) || {})[div] || [];
   const can = canEdit() && !LOCKED[ST.period];
   const el = document.createElement('div'); el.className = 'md'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
-  el.innerHTML = `<div class="mdb" style="max-width:560px"><div class="mdh"><div><small>${T('criteriaT')}</small><h3>${i + 1}. ${esc(title)}</h3></div><button class="btn x">Close</button></div>
-    <div class="crb">${txt ? esc(txt).replace(/\n/g, '<br>') : `<span class="mut">${T('critTBA')}</span>`}</div>
-    ${can ? `<div class="cre"><textarea class="inp" rows="5" placeholder="${T('critEditHint')}">${esc(txt)}</textarea><button class="btn y sv">Simpan</button></div>` : ''}</div>`;
+  const items = [...Array(10).keys()];
+  el.innerHTML = `<div class="mdb" style="max-width:640px"><div class="mdh"><div><small>${T('obsTypes')}</small><h3>Observation ${nm}</h3></div><button class="btn x">Close</button></div>
+    ${can ? `<div class="obl ed">${items.map(i => `<label><b>${i + 1}</b><textarea class="inp" rows="2" data-op="${i}" placeholder="${T('obsPh')} ${i + 1}">${esc(pts[i] || '')}</textarea></label>`).join('')}</div><div class="cre"><button class="btn y sv">Simpan</button></div>`
+      : `<ol class="obl">${items.map(i => `<li>${pts[i] ? esc(pts[i]).replace(/\n/g, '<br>') : `<span class="mut">TBA</span>`}</li>`).join('')}</ol>`}</div>`;
   document.body.appendChild(el);
   const close = () => el.remove(); el.querySelector('.x').onclick = close; el.addEventListener('click', e => { if (e.target === el) close(); });
-  const sv = el.querySelector('.sv'); if (sv) sv.onclick = async () => { ST.data.critNotes = ST.data.critNotes || {}; const v = el.querySelector('textarea').value.trim(); if (v) ST.data.critNotes[i] = v; else delete ST.data.critNotes[i]; await persistData('Detail kriteria tersimpan ✓'); close(); };
+  const sv = el.querySelector('.sv'); if (sv) sv.onclick = async () => { ST.data.obsPoints = ST.data.obsPoints || {}; ST.data.obsPoints[div] = items.map(i => el.querySelector(`[data-op="${i}"]`).value.trim()); await persistData('Poin observation tersimpan ✓'); close(); };
 }
-document.addEventListener('click', e => { if (TEXTING) return; const c = e.target.closest('[data-crit]'); if (c) { e.preventDefault(); openCrit(+c.dataset.crit); } });
-document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('[data-crit]')) { e.preventDefault(); openCrit(+e.target.dataset.crit); } });
+document.addEventListener('click', e => { if (TEXTING) return; const c = e.target.closest('[data-obs]'); if (c) { e.preventDefault(); openObs(c.dataset.obs); } });
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('[data-obs]')) { e.preventDefault(); openObs(e.target.dataset.obs); } });
 $('#textBtn').onclick = async () => { if (!canEdit() || LOCKED[ST.period]) return;
   if (!TEXTING) { TEXTING = true; ST.textDirty = false; document.body.classList.add('texting'); $('#textBtn').textContent = '✓ Selesai edit text'; gtDeck(); toast('Klik teks di slide untuk mengubah · kosongkan untuk kembali ke teks asli'); return; }
   document.activeElement && document.activeElement.blur && document.activeElement.blur();

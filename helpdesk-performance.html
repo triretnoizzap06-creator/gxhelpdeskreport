@@ -413,7 +413,16 @@ button,input,select{font:inherit;color:inherit}
 .fbar .r{background:#16A34A}.fbar .pu{background:#2563EB}
 .fx{font-size:1cqw;color:#3F3F46;margin:.6cqw 0 0;line-height:1.4}
 .lc{display:flex;flex-direction:column;gap:.5cqw}
-.mut2{color:#71717A}.axh{margin-top:.7cqw;font-size:.95cqw;color:#52525B}
+.mut2{color:#71717A}
+.afp{display:flex;flex-direction:column;gap:.7cqw}.afp .afh{margin-bottom:0}
+.fc{border-radius:.8cqw;padding:.8cqw 1cqw;color:#fff;flex:1;display:flex;flex-direction:column;justify-content:center}.fc.g{background:#16A34A}.fc.b{background:#2563EB}.fc.k{background:#18181B}
+.fch{display:flex;align-items:baseline;gap:.8cqw}.fch b{font-family:var(--disp);font-size:2.3cqw;font-weight:900;line-height:1}.fc.k .fch b{color:#FFD000}
+.fch span{font-size:1.15cqw;font-weight:800}.fch em{font-style:normal;margin-right:.35cqw;opacity:.85}
+.fc p{margin:.45cqw 0 0;font-size:1.02cqw;font-weight:600;line-height:1.35}.fc small{display:block;margin-top:.3cqw;font-size:.82cqw;opacity:.85}
+.ahl{display:grid;grid-template-columns:repeat(4,1fr);gap:.7cqw;margin-top:.8cqw}
+.ahc{border-radius:.7cqw;padding:.6cqw .8cqw;background:#F4F4F5;border:1px solid #E4E4E7;display:flex;flex-direction:column;min-width:0}
+.ahc i{font-style:normal;font-size:1.1cqw}.ahc b{font-family:var(--disp);font-size:1.7cqw;font-weight:900;line-height:1.1}.ahc span{font-size:.82cqw;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#52525B}
+.ahc small{font-size:.78cqw;color:#71717A;margin-top:.15cqw;line-height:1.3}.ahc.t{background:#FEFCE8;border-color:#FDE68A}.ahc.p{background:#F0FDF4;border-color:#BBF7D0}.ahc.z{background:#EFF6FF;border-color:#BFDBFE}.ahc.u{background:#FAF5FF;border-color:#E9D5FF}.axh{margin-top:.7cqw;font-size:.95cqw;color:#52525B}
 .axt{width:100%;border-collapse:collapse;margin-top:.35cqw;font-size:.85cqw;font-variant-numeric:tabular-nums}.axt th{font-size:.72cqw;color:#71717A;font-weight:700;text-align:right;padding:.2cqw .3cqw;border-bottom:1px solid #E4E4E7}.axt td{text-align:right;padding:.25cqw .3cqw;border-bottom:1px solid #F4F4F5}.axt th:first-child,.axt td:first-child{text-align:left;font-weight:700}
 .axf{background:#F4F4F5;border-radius:.5cqw;padding:.45cqw .7cqw;margin-top:.5cqw!important}
 .at tr.clk{cursor:pointer}.at tr.clk:hover td{background:#F0FDF4}.at tr.clk:focus-visible{outline:2px solid #16A34A;outline-offset:-2px}.ahint{color:#15803D;font-weight:700}
@@ -616,7 +625,7 @@ const SEED = {
   ] },
   /* Q3 2026 — Jul & Agu dari Monitoring_Customer_Support_2026_Responses.xlsx (sheet July / August), Sep dari Tickets-2026-09-01_2026-09-30.xlsx.
      VIP Jul & Agu dari Monitoring_VIP.xlsx (Handled By). Attendance dari Attendance Recap (screenshot Jul–Sep). Observation Q3 belum ada. */
-  '2026-Q3': { attNote: 'Attendance Recap Juli–September (siklus 26–25)', attMins: [12480, 12480, 12480], agents: [
+  '2026-Q3': { attNote: 'Attendance Recap Juli–September (siklus 26–25)', attMins: [12480, 12000, 12960], attMinsV: 2, agents: [
     { name: 'Devin Bagaskara', div: 'AM', csMonM: [586, 2, 22], csHandledM: [221, 2, 14], vipTotalM: [52, 41, 272], csSolvedM: [219, 2, 13], vipSolvedM: [52, 41, 272], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 23, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 2, alpha: 0, late: 0, lateDays: 0 }] },
     { name: 'Ni Kadek Desi Mirayani', div: 'AM', csMonM: [201, 133, 56], csHandledM: [64, 49, 19], vipTotalM: [666, 484, 307], csSolvedM: [63, 49, 19], vipSolvedM: [665, 484, 307], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 2, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }] },
     { name: 'Aulia Sevi Diana', div: 'AM', csMonM: [147, 65, 19], csHandledM: [56, 27, 11], vipTotalM: [587, 421, 324], csSolvedM: [56, 27, 11], vipSolvedM: [587, 421, 324], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 2, alpha: 0, late: 11, lateDays: 0 }, { pl: 0, sick: 3, alpha: 0, late: 1, lateDays: 1 }, { pl: 0, sick: 2, alpha: 1, late: 30, lateDays: 3 }] },
@@ -740,7 +749,7 @@ const TX = {
     mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Done excludes admin hold · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS solved ÷ CS handled · AM: VIP done ÷ VIP total. Shown as information only — not part of the score. Click a row for the monthly detail.',
     obsTypes: 'Observation types', obs10: '10 points', obsPh: 'Point',
     critClick: 'Click for details', critTBA: 'Details will be added (TBA).', critEditHint: 'Write the details for this criterion — shown to everyone after saving.',
-    attRate70: 'Attendance Rate (70%)', punct30: 'Punctuality (30%)', attW20: 'Attendance Weight (20%)', rateF: '(Working Days − Sick Leave − PL − Alpha) ÷ Working Days × 100%', punctF: '(Total Working Minutes − Late Minutes) ÷ Total Working Minutes × 100%', minsF: 'Total Working Minutes = Working Days × 480', wF: q => `${q} Attendance Score × 20% — contribution to the Best Employee total score`, wdS: 'Days', lateS: 'Late', q3Score: q => `${q} Attendance Score`, contribL2: 'Final contribution', avgRate: 'Avg. attendance rate', avgPunct: 'Avg. punctuality', monthlyBD: 'Monthly breakdown', recapQ: q => `${q} recap`, wdL: 'Working days', minS: 'min', lateMinL: 'Late minutes', lateX: 'late', monthScore: 'Monthly score', avgL: 'average', clickAtt: 'Click an agent for the attendance detail.', lateDL: 'Late (days)', rateD3: '(Working days − Sick − PL − Alpha) ÷ Working days × 100%', punctD3: '(1 − Late minutes ÷ Total working minutes) × 100%, where total working minutes = working days × 480', monNote: 'Monthly scores from the Attendance Recap (cycle: 26th–25th). Small text = times late · minutes late.', lateL: 'Late (min)', barR: 'Attendance rate', barP: 'Punctuality', att20: '20% of the Final Score', attScoreL: 'Attendance score', contribL: 'Final Score contribution', contribD: 'Attendance score × 20% (max 20 points)', of20: 'of 20 points', exIn: (wd, s, pl, al, l) => `${wd} working days · ${s} sick · ${pl} PL · ${al} alpha · ${l} late minutes`, attPctL: '% Attendance per month', attPctD: '(working days − PL − sick − alpha) ÷ working days − late minutes ÷ working minutes', attQD: 'Attendance rate × 70% + Punctuality × 30%. Quarter score = average of the 3 months.', attEx: 'Example: 26 working days, 2 sick days, 11 late minutes → 92.31% − 0.09% = 92.22%.',
+    attRate70: 'Attendance Rate (70%)', punct30: 'Punctuality (30%)', attW20: 'Attendance Weight (20%)', rateF: '(Working Days − Sick Leave − PL − Alpha) ÷ Working Days × 100%', punctF: '(Total Working Minutes − Late Minutes) ÷ Total Working Minutes × 100%', minsF: 'Total Working Minutes = Working Days × 480', wF: q => `${q} Attendance Score × 20% — contribution to the Best Employee total score`, wdS: 'Days', lateS: 'Late', q3Score: q => `${q} Attendance Score`, contribL2: 'Final contribution', avgRate: 'Avg. attendance rate', avgPunct: 'Avg. punctuality', monthlyBD: 'Monthly breakdown', recapQ: q => `${q} recap`, wdL: 'Working days', minS: 'min', lateMinL: 'Late minutes', lateX: 'late', monthScore: 'Monthly score', avgL: 'average', clickAtt: 'Click an agent for the attendance detail.', barR2: 'Attendance rate', rateF2: '(Working days − Sick − PL − Alpha) ÷ Working days', punctF2: '(Working minutes − Late minutes) ÷ Working minutes', minsF2: 'Working minutes = days × 480', daysW: 'days', q3F: 'Monthly score = ① × 70% + ② × 30% · Q3 = average of the 3 months', max20: '× 20% = contribution to the Final Score (max 20 points)', hlTop: 'Highest score', hlPerf: 'Perfect 100.00 months', hlZero: 'Zero late minutes', hlUp: 'Improved every month', lateDL: 'Late (days)', rateD3: '(Working days − Sick − PL − Alpha) ÷ Working days × 100%', punctD3: '(1 − Late minutes ÷ Total working minutes) × 100%, where total working minutes = working days × 480', monNote: 'Monthly scores from the Attendance Recap (cycle: 26th–25th). Small text = times late · minutes late.', lateL: 'Late (min)', barR: 'Attendance rate', barP: 'Punctuality', att20: '20% of the Final Score', attScoreL: 'Attendance score', contribL: 'Final Score contribution', contribD: 'Attendance score × 20% (max 20 points)', of20: 'of 20 points', exIn: (wd, s, pl, al, l) => `${wd} working days · ${s} sick · ${pl} PL · ${al} alpha · ${l} late minutes`, attPctL: '% Attendance per month', attPctD: '(working days − PL − sick − alpha) ÷ working days − late minutes ÷ working minutes', attQD: 'Attendance rate × 70% + Punctuality × 30%. Quarter score = average of the 3 months.', attEx: 'Example: 26 working days, 2 sick days, 11 late minutes → 92.31% − 0.09% = 92.22%.',
     tixL: 'Tickets Created', mon: 'CS Monitoring', hand: 'CS Handled', vipR: 'VIP Resolution Rate', vipH: 'VIP Handled', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs peer max', avg: 'avg', of: 'of', vipHandled: 'VIP handled', rateW: 'rate',
   },
@@ -795,7 +804,7 @@ const TX = {
     mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Selesai tanpa hold admin · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS selesai ÷ CS handled · AM: VIP selesai ÷ total VIP. Hanya info — tidak masuk skor. Klik baris untuk detail per bulan.',
     obsTypes: 'Tipe observasi', obs10: '10 poin', obsPh: 'Poin',
     critClick: 'Klik untuk detail', critTBA: 'Detail akan ditambahkan (TBA).', critEditHint: 'Tulis detail kriteria ini — tampil untuk semua orang setelah disimpan.',
-    attRate70: 'Tingkat Kehadiran (70%)', punct30: 'Ketepatan Waktu (30%)', attW20: 'Bobot Kehadiran (20%)', rateF: '(Hari Kerja − Sakit − PL − Alpha) ÷ Hari Kerja × 100%', punctF: '(Total Menit Kerja − Menit Telat) ÷ Total Menit Kerja × 100%', minsF: 'Total Menit Kerja = Hari Kerja × 480', wF: q => `Skor Kehadiran ${q} × 20% — kontribusi ke total nilai Best Employee`, wdS: 'Hari', lateS: 'Telat', q3Score: q => `Skor Kehadiran ${q}`, contribL2: 'Kontribusi akhir', avgRate: 'Rata-rata tingkat kehadiran', avgPunct: 'Rata-rata ketepatan waktu', monthlyBD: 'Rincian per bulan', recapQ: q => `Rekap ${q}`, wdL: 'Hari kerja', minS: 'mnt', lateMinL: 'Menit telat', lateX: 'telat', monthScore: 'Skor bulanan', avgL: 'rata-rata', clickAtt: 'Klik agent untuk detail kehadiran.', lateDL: 'Telat (hari)', rateD3: '(Hari kerja − Sakit − PL − Alpha) ÷ Hari kerja × 100%', punctD3: '(1 − Menit telat ÷ Total menit kerja) × 100%, dengan total menit kerja = hari kerja × 480', monNote: 'Skor bulanan dari Attendance Recap (siklus tgl 26–25). Teks kecil = jumlah telat · menit telat.', lateL: 'Telat (mnt)', barR: 'Kehadiran', barP: 'Ketepatan', att20: '20% dari Skor Akhir', attScoreL: 'Skor kehadiran', contribL: 'Kontribusi ke Skor Akhir', contribD: 'Skor kehadiran × 20% (maks 20 poin)', of20: 'dari 20 poin', exIn: (wd, s, pl, al, l) => `${wd} hari kerja · sakit ${s} · PL ${pl} · alpha ${al} · telat ${l} menit`, attPctL: '% Attendance per bulan', attPctD: '(hari kerja − PL − sakit − alpha) ÷ hari kerja − menit telat ÷ menit kerja', attQD: 'Tingkat kehadiran × 70% + Ketepatan waktu × 30%. Skor kuartal = rata-rata 3 bulan.', attEx: 'Contoh: 26 hari kerja, sakit 2 hari, telat 11 menit → 92,31% − 0,09% = 92,22%.',
+    attRate70: 'Tingkat Kehadiran (70%)', punct30: 'Ketepatan Waktu (30%)', attW20: 'Bobot Kehadiran (20%)', rateF: '(Hari Kerja − Sakit − PL − Alpha) ÷ Hari Kerja × 100%', punctF: '(Total Menit Kerja − Menit Telat) ÷ Total Menit Kerja × 100%', minsF: 'Total Menit Kerja = Hari Kerja × 480', wF: q => `Skor Kehadiran ${q} × 20% — kontribusi ke total nilai Best Employee`, wdS: 'Hari', lateS: 'Telat', q3Score: q => `Skor Kehadiran ${q}`, contribL2: 'Kontribusi akhir', avgRate: 'Rata-rata tingkat kehadiran', avgPunct: 'Rata-rata ketepatan waktu', monthlyBD: 'Rincian per bulan', recapQ: q => `Rekap ${q}`, wdL: 'Hari kerja', minS: 'mnt', lateMinL: 'Menit telat', lateX: 'telat', monthScore: 'Skor bulanan', avgL: 'rata-rata', clickAtt: 'Klik agent untuk detail kehadiran.', barR2: 'Tingkat kehadiran', rateF2: '(Hari kerja − Sakit − PL − Alpha) ÷ Hari kerja', punctF2: '(Menit kerja − Menit telat) ÷ Menit kerja', minsF2: 'Menit kerja = hari × 480', daysW: 'hari', q3F: 'Skor bulanan = ① × 70% + ② × 30% · Q3 = rata-rata 3 bulan', max20: '× 20% = kontribusi ke Skor Akhir (maks 20 poin)', hlTop: 'Skor tertinggi', hlPerf: 'Bulan sempurna 100.00', hlZero: 'Nol menit telat', hlUp: 'Naik tiap bulan', lateDL: 'Telat (hari)', rateD3: '(Hari kerja − Sakit − PL − Alpha) ÷ Hari kerja × 100%', punctD3: '(1 − Menit telat ÷ Total menit kerja) × 100%, dengan total menit kerja = hari kerja × 480', monNote: 'Skor bulanan dari Attendance Recap (siklus tgl 26–25). Teks kecil = jumlah telat · menit telat.', lateL: 'Telat (mnt)', barR: 'Kehadiran', barP: 'Ketepatan', att20: '20% dari Skor Akhir', attScoreL: 'Skor kehadiran', contribL: 'Kontribusi ke Skor Akhir', contribD: 'Skor kehadiran × 20% (maks 20 poin)', of20: 'dari 20 poin', exIn: (wd, s, pl, al, l) => `${wd} hari kerja · sakit ${s} · PL ${pl} · alpha ${al} · telat ${l} menit`, attPctL: '% Attendance per bulan', attPctD: '(hari kerja − PL − sakit − alpha) ÷ hari kerja − menit telat ÷ menit kerja', attQD: 'Tingkat kehadiran × 70% + Ketepatan waktu × 30%. Skor kuartal = rata-rata 3 bulan.', attEx: 'Contoh: 26 hari kerja, sakit 2 hari, telat 11 menit → 92,31% − 0,09% = 92,22%.',
     tixL: 'Tiket Dibuat', mon: 'CS Monitoring', hand: 'CS Handled', vipR: 'VIP Resolution Rate', vipH: 'VIP Handled', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs tertinggi', avg: 'rata²', of: 'dari', vipHandled: 'VIP ditangani', rateW: 'rate',
   },
@@ -976,6 +985,20 @@ function prodHL(C, m) {
   }
   return `<div class="phl"><div class="phl-h">✦ ${T('khl')}<span>👆 ${T('clickHint')}</span></div><ul>${L.slice(0, 5).map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>`;
 }
+/* 4 kartu key highlights attendance (positif, dihitung dari data) */
+function attHL(list, m, nick) {
+  const top = list[0]; if (!top) return '';
+  const tops = list.filter(a => a.attS === top.attS), nm = arr => arr.map(nick).join(', ');
+  const perf = list.flatMap(a => (a.attMo || []).map((x, k) => x && r2(x.pct) >= 100 ? { a, k } : null).filter(Boolean));
+  const zero = list.filter(a => a.attMo && !n(a.att.lateMin));
+  const up = list.filter(a => a.attMo && a.attMo.every(Boolean) && a.attMo[0].pct < a.attMo[1].pct && a.attMo[1].pct < a.attMo[2].pct);
+  const byA = new Map(); perf.forEach(e => { byA.set(e.a, [...(byA.get(e.a) || []), monthShort(m[e.k])]); });
+  const card = (cls, ico, val, lab, sub) => `<div class="ahc ${cls}"><i>${ico}</i><b class="num">${val}</b><span>${lab}</span><small>${sub || '—'}</small></div>`;
+  return `<div class="ahl">${card('t', '🏆', f2(top.attS), T('hlTop'), nm(tops))}
+    ${card('p', '✨', perf.length, T('hlPerf'), [...byA].map(([a, ms]) => `${nick(a)} (${ms.join(', ')})`).join(', '))}
+    ${card('z', '⏱', zero.length, T('hlZero'), nm(zero))}
+    ${card('u', '📈', up.length, T('hlUp'), up.map(a => `${nick(a)} ${a.attMo.map(x => f2(x.pct)).join('→')}`).join(', '))}</div>`;
+}
 function rk(i, cls = '') { return `<span class="rk ${cls}">${i + 1}</span>`; }
 
 function slides(p, data) {
@@ -1082,16 +1105,12 @@ function slides(p, data) {
     const top = list[0];
     out.push(`<section class="slide v5 ${N > 5 ? 'many' : ''}"><div class="s-in">
       ${head(`${T('pillar')} 03`, T('attT2'), top ? (top.attS >= 100 ? T('attPerfect')(esc(top.name)) : (() => { const tie = list.filter(a => a.attS === top.attS); return tie.length > 1 ? T('attTie')(tie.map(a => esc(nick(a))).join(LANG === 'id' ? ' dan ' : ' and '), f2(top.attS)) : T('attTop')(esc(top.name), f2(top.attS)); })()) : '', 'g', T('weight')(20))}
-      <div class="v5g"><div class="cbox">${tb}<div class="tnote">${MON ? `<b class="ahint">👆 ${T('clickAtt')}</b> ` + T('monNote') + ' ' : ''}${T('daysNote')}${data.attNote && !(MON && /^Attendance Recap/i.test(data.attNote)) ? ' · ' + esc(data.attNote) : ''}</div></div>
-        ${MON ? (() => { const ex = list.find(a => /^gede dimas/i.test(a.name) && a.attMo) || list.find(a => a.attMo); if (!ex) return '';
-            const mo = ex.attMo.map((x, k) => x && { x, o: ex.attM[k] || {}, k }).filter(Boolean), sc = mo.map(e => f2(e.x.pct));
-            return `<div class="cbox side"><div class="cap afh">${T('calc')}<span class="a20">${T('att20')}</span></div>
-          <div class="fbar"><i class="r" style="--w:70%">70% ${T('barR')}</i><i class="pu" style="--w:30%">30% ${T('barP')}</i></div>
-          <ol class="afx"><li><em>①</em><b>${T('attRate70')}</b> = ${T('rateF')}</li><li><em>②</em><b>${T('punct30')}</b> = ${T('punctF')} · <span class="mut2">${T('minsF')}</span></li><li><em>③</em><b>${T('attW20')}</b> = ${T('wF')(Q)}</li></ol>
-          <div class="axh">${T('example')}: <b>${esc(ex.name)}</b></div>
-          <table class="axt"><thead><tr><th></th><th>${T('wdS')}</th><th>S/PL/A</th><th>${T('lateS')}</th><th>① 70%</th><th>② 30%</th><th>${T('score')}</th></tr></thead><tbody>
-            ${mo.map(e => `<tr><td>${monthShort(m[e.k])}</td><td>${fInt(e.x.wd)}</td><td>${fInt(n(e.o.sick))}/${fInt(n(e.o.pl))}/${fInt(n(e.o.alpha))}</td><td>${fInt(n(e.o.late))}</td><td>${f2(e.x.rate)}%</td><td>${f2(e.x.punct)}%</td><td><b>${f2(e.x.pct)}</b></td></tr>`).join('')}</tbody></table>
-          <p class="fx axf">${T('q3Score')(Q)} = (${sc.join(' + ')}) ÷ ${sc.length} = <b>${f2(ex.attS)}</b><br>③ ${f2(ex.attS)} × 20% = <b>${f2(ex.attS * .2)}</b> ${T('of20')}</p></div>`; })() : `<div class="cbox side"><div class="cap">${T('calc')}</div>
+      <div class="v5g"><div class="cbox">${tb}<div class="tnote">${MON ? `<b class="ahint">👆 ${T('clickAtt')}</b> ` + T('monNote') + ' ' : ''}${T('daysNote')}${data.attNote && !(MON && /^Attendance Recap/i.test(data.attNote)) ? ' · ' + esc(data.attNote) : ''}</div>${MON ? attHL(list, m, nick) : ''}</div>
+        ${MON ? (() => { const wd = [0, 1, 2].map(k => n((data.attMins || [])[k]) || ATT_MINS_DEF).map(M => M / ATT_MIN_DAY);
+            return `<div class="cbox side afp"><div class="cap afh">${T('calc')}<span class="a20">${T('att20')}</span></div>
+          <div class="fc g"><div class="fch"><b>70%</b><span><em>①</em>${T('barR2')}</span></div><p>${T('rateF2')}</p></div>
+          <div class="fc b"><div class="fch"><b>30%</b><span><em>②</em>${T('punctS')}</span></div><p>${T('punctF2')}</p><small>${T('minsF2')} · ${m.map((mi, k) => `${monthShort(mi)} ${fInt(wd[k])}`).join(' · ')} ${T('daysW')}</small></div>
+          <div class="fc k"><div class="fch"><b>× 20%</b><span><em>③</em>${T('q3Score')(Q)}</span></div><p>${T('q3F')}</p><small>${T('max20')}</small></div></div>`; })() : `<div class="cbox side"><div class="cap">${T('calc')}</div>
           <div class="fbar"><i class="r" style="--w:70%">70% ${T('rateS')}</i><i class="pu" style="--w:30%">30% ${T('punctS')}</i></div>
           <p class="fx">${T('rateD2')}</p><p class="fx">${T('punctD2')}</p>
           <div class="cap" style="margin-top:1.4cqw">${T('leave')}</div>
@@ -1175,9 +1194,13 @@ async function loadPeriod(p, quiet) {
     if (c) { const o = JSON.parse(c); ST.data = o.data; ST.revision = o.revision; ST.source = 'cache'; }
     else { ST.data = SEED[p] ? clone(SEED[p]) : null; ST.revision = null; ST.source = SEED[p] ? 'seed' : 'none'; }
   }
+  const fx = LOCKED[p] ? 0 : fixWorkDays(p, ST.data); if (fx && ST.source === 'online') ST.merged = (ST.merged || 0) + fx;
   render(); syncStatus();
   if (ST.merged && ST.source === 'online') setTimeout(async () => { if (canEdit() && ST.merged) { ST.merged = 0; await persistData('Data dari file otomatis disimpan online ✓'); render(); } }, 1500);
 }
+/* hari kerja resmi per bulan (menimpa data lama yang masih 26 hari semua): Q3 = Jul 26 (30−4) · Agu 25 (31−4−2, libur 17 & 25 Agu) · Sep 27 (31−4) */
+const WORKDAYS_FIX = { '2026-Q3': [12480, 12000, 12960] };
+function fixWorkDays(p, d) { if (!d || !WORKDAYS_FIX[p] || d.attMinsV >= 2) return 0; d.attMins = WORKDAYS_FIX[p].slice(); d.attMinsV = 2; return 1; }
 /* data dari file (SEED) diisikan ke data online yang kolomnya masih kosong — angka yang sudah diisi manual tidak ditimpa */
 function mergeSeed(data, seed) {
   if (!data || !seed) return 0; let n = 0;
@@ -1482,7 +1505,7 @@ function localSave(clean) {
 }
 $('#edSave').onclick = async () => {
   const k = $('#pubKey'); if (k) ls.set(KEY_PUB, k.value);
-  const clean = stampCalc({ attNote: ED.attNote || '', attMins: ED.attMins || null, agents: ED.agents.filter(a => (a.name || '').trim()), obsPoints: (ST.data && ST.data.obsPoints) || ED.obsPoints });
+  const clean = stampCalc({ attNote: ED.attNote || '', attMins: ED.attMins || null, attMinsV: ED.attMinsV, agents: ED.agents.filter(a => (a.name || '').trim()), obsPoints: (ST.data && ST.data.obsPoints) || ED.obsPoints });
   const btn = $('#edSave'); btn.disabled = true; btn.textContent = 'Menyimpan…';
   try {
     const r = await api('?period=' + encodeURIComponent(ST.period), { method: 'POST', body: JSON.stringify({ data: clean, revision: ST.revision }) });

@@ -298,7 +298,7 @@ function attBlock(e) {
   const cls = v => v >= 95 ? 'g' : v >= 85 ? 'y' : 'r';
   return `<div class="att"><div class="atth"><b>Attendance ${esc(ATT.period.replace('-', ' '))}</b><span class="atp ${cls(a.avg)}">${a.avg.toFixed(2)}%</span></div>
     <div class="atm">${a.mo.map(x => x ? `<span class="${cls(x.pct)}">${MONTHS_EN[x.m]} <b>${x.pct.toFixed(2)}%</b></span>` : '').join('')}</div>
-    <div class="ats">Sick ${a.sick} · PL ${a.pl} · Alpha ${a.alpha} · Late ${a.late} min${a.lateDays ? ` (${a.lateDays}×)` : ''}</div></div>`;
+    <div class="ats">Sick ${a.sick} · PL ${a.pl} · Alpha ${a.alpha} · Late ${a.late} min · Late ${a.lateDays} day${a.lateDays === 1 ? '' : 's'}</div></div>`;
 }
 
 /* =================== render =================== */

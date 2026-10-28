@@ -343,7 +343,8 @@ button,input,select{font:inherit;color:inherit}
 .stk{display:flex;height:2.5cqw;border-radius:.4cqw;background:#ECECEF;overflow:hidden}
 .stk i{display:flex;align-items:center;justify-content:center;height:100%;width:0;overflow:hidden;transition:width 1.6s cubic-bezier(.22,1,.36,1);transition-delay:calc(.2s + var(--k,0)*.12s)}
 .slide.play .stk i{width:var(--w)}
-.xb{color:#2563EB;font-weight:700}.stk em{font-style:normal;font-size:.9cqw;font-weight:800;white-space:nowrap}
+.xb{color:#2563EB;font-weight:700}.texting .gt-ed{outline:1.5px dashed #E0A800;outline-offset:2px;border-radius:3px;cursor:text}.texting .gt-ed:focus{outline:2px solid #E0A800;background:#FFFBEA;color:#111}
+.stk em{font-style:normal;font-size:.9cqw;font-weight:800;white-space:nowrap}
 .stk .s0{background:#27272A;color:#fff}.stk .s1{background:#A1A1AA;color:#111}.stk .s2{background:#D6D3CB;color:#111}.stk .sb{background:var(--y);color:#111}.stk .sx{background:#3B82F6}.ec.x em{color:#2563EB}.stk .sp{background:repeating-linear-gradient(45deg,#FCA5A5 0 .35cqw,#FEE2E2 .35cqw .7cqw)}.lgd i.sp{background:#FCA5A5}.xp{color:#DC2626;font-weight:700}.lgd i.sx{background:#3B82F6}
 .prv{text-align:right;font-family:var(--disp);font-size:1.8cqw;font-weight:800}
 .pr.lead .prv{color:#111}.pr:not(.lead) .prv{color:#3F3F46}
@@ -370,19 +371,25 @@ button,input,select{font:inherit;color:inherit}
 .rt,.at{width:100%;border-collapse:collapse;font-size:1.2cqw}
 .rt th,.at th{text-align:left;font-size:.85cqw;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#71717A;padding:0 .4cqw .5cqw;border-bottom:1px solid #E4E4E7}
 .rt td,.at td{padding:.85cqw .4cqw;border-bottom:1px solid #F0F0F2;vertical-align:middle;white-space:nowrap}
-.rt td:nth-child(2),.at td:first-child{display:flex;align-items:center;gap:.6cqw;max-width:20cqw;overflow:hidden}
+.at td:first-child{display:flex;align-items:center;gap:.6cqw;max-width:20cqw;overflow:hidden}
+.rt{table-layout:fixed}.rt th:nth-child(1),.rt td:nth-child(1){width:3.4cqw}.rt th:nth-child(3),.rt td:nth-child(3){width:7cqw;text-align:right}.rt th:nth-child(4),.rt td:nth-child(4){width:6.5cqw;text-align:right;white-space:nowrap}
+.rt .rtn{display:flex;align-items:center;gap:.6cqw;min-width:0}.rt .rtn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rt td span,.at td span{overflow:hidden;text-overflow:ellipsis}
 .rt .rav,.at .rav{width:2.6cqw;height:2.6cqw}
 .rt tr.lead td,.at tr.lead td{background:#FFFBEA}
+.at.atmo{font-size:1.02cqw}.at.atmo td{padding:.6cqw .3cqw}.at.atmo th{padding:0 .3cqw .5cqw}.at.atmo td:first-child{max-width:15.5cqw}.at.atmo .rav{width:2.2cqw;height:2.2cqw}
+.at th.mo,.at td.mo{text-align:right;font-variant-numeric:tabular-nums}.at td.mo.g{color:#15803D;font-weight:700}.at td.mo.y{color:#B45309;font-weight:700}.at td.mo.r{color:#B91C1C;font-weight:700}
 .at .ld{display:block;font-size:.75cqw;color:#A16207;font-weight:700}
-.rt tr.grp td{font-size:.8cqw;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#A16207;padding:.7cqw .4cqw .3cqw;border-bottom:1px solid #F5E6A8;display:table-cell!important}
+.rt tr.grp td{text-align:left!important;font-size:.8cqw;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#A16207;padding:.7cqw .4cqw .3cqw;border-bottom:1px solid #F5E6A8;display:table-cell!important}
 .rt td b,.at td b{font-weight:800}
 .tr.up{color:#15803D;font-weight:700}.tr.dn{color:#B91C1C;font-weight:700}.tr{color:#A1A1AA}
 .crit2{display:flex;flex-wrap:wrap;gap:.45cqw .6cqw;align-items:center;margin-top:auto;margin-bottom:2.4cqw}
 .crit2 .cap{font-size:.95cqw;margin-right:.4cqw}
 .crit2 span:not(.cap){display:inline-flex;align-items:center;gap:.4cqw;font-size:.92cqw;background:#F4F4F5;border-radius:999px;padding:.25cqw .7cqw .25cqw .3cqw}
+.crb{font-size:14px;line-height:1.6;padding:6px 2px 12px}.cre{display:flex;flex-direction:column;gap:8px;align-items:flex-end}.cre textarea{width:100%}
+.crit2 .crc{cursor:pointer;transition:background .15s}.crit2 .crc:hover{background:#E0ECFF}.crit2 em{font-style:normal}
 .crit2 i{font-style:normal;width:1.3cqw;height:1.3cqw;border-radius:50%;background:#3B82F6;color:#fff;font-size:.75cqw;font-weight:800;display:grid;place-items:center}
-.v4.many .cch{height:16cqw}.v4.many .cbars i{width:.9cqw}.v4.many .cbars em{display:none}.v4.many .rt td{padding:.25cqw .4cqw}.v4.many .crit2{display:none}
+.v4.many .cch{height:16cqw}.v4.many .cbars i{width:.9cqw}.v4.many .cbars em{display:none}.v4.many .rt td{padding:.25cqw .4cqw}.v4.many .crit2{margin-bottom:.6cqw;gap:.3cqw .45cqw}.v4.many .crit2 span:not(.cap){font-size:.8cqw;padding:.15cqw .55cqw .15cqw .25cqw}
 /* v5 */
 .v5g{display:grid;grid-template-columns:1.6fr 1fr;gap:1.6cqw;margin-top:1.4cqw;min-height:0}
 .at th:not(:first-child),.at td:not(:first-child){text-align:center}
@@ -465,7 +472,7 @@ button,input,select{font:inherit;color:inherit}
 .etab th.etm{border-bottom:2px solid #FFD000;color:inherit}.etab td{padding:3px 2px;border-bottom:1px solid var(--line)}
 .etab .etn{text-align:left;white-space:nowrap;max-width:170px;overflow:hidden;text-overflow:ellipsis;font-weight:700;padding-right:8px}.etab .etd{color:#71717A;text-align:center}
 .etab input.et{width:58px;padding:5px 5px;font-size:12px;text-align:right}.etab .etr input.et{width:62px}.etab .etg{border-left:1px solid var(--line)}
-.etab .etr{background:rgba(59,130,246,.07)}.etab .ets{text-align:right;font-weight:700;padding:3px 6px;white-space:nowrap}.etab .etf{background:rgba(255,208,0,.15)}.etab .ett{background:rgba(0,0,0,.035)}.etmins{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:12px;margin:4px 0 6px}.etmins label{display:flex;align-items:center;gap:6px}.etmins input.et{width:76px}.sumq{font-size:12.5px;margin:2px 0 8px;line-height:1.5}.etblk{margin-top:10px}.etblk+.etblk{margin-top:16px}.etab td.etb{background:rgba(59,130,246,.06)}.etab th.etb{color:#2563EB}.etab .etx{color:#2563EB}
+.etab .etr{background:rgba(59,130,246,.07)}.etab .ets{text-align:right;font-weight:700;padding:3px 6px;white-space:nowrap}.etab .etf{background:rgba(255,208,0,.15)}.etab .ett{background:rgba(0,0,0,.035)}.etab th.ets2{color:#15803D}.etab td.ets2 input.et{background:rgba(22,163,74,.06)}.etmins{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:12px;margin:4px 0 6px}.etmins label{display:flex;align-items:center;gap:6px}.etmins input.et{width:76px}.sumq{font-size:12.5px;margin:2px 0 8px;line-height:1.5}.etblk{margin-top:10px}.etblk+.etblk{margin-top:16px}.etab td.etb{background:rgba(59,130,246,.06)}.etab th.etb{color:#2563EB}.etab .etx{color:#2563EB}
 .acard{background:var(--solid);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
 .acard .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
 .acard .top input[type=text]{flex:1;min-width:180px}
@@ -525,10 +532,12 @@ button,input,select{font:inherit;color:inherit}
 @media (max-width:700px){.bar{padding:8px 12px}.brand small{display:none}.deck{padding:14px 10px 60px;gap:14px}.hide-m{display:none}}
 @media print{.bar,.note,.toast{display:none!important}.deck{padding:0;gap:0;max-width:none}.slide{border-radius:0;box-shadow:none;break-after:page}body{background:#fff}}
 </style>
+<script>(function(){try{if(new URLSearchParams(location.search).has('view'))document.documentElement.classList.add('viewonly')}catch(e){}})()</script>
+<style>html.viewonly #dashBtn,html.viewonly #period,html.viewonly #adminBtn,html.viewonly #shareBtn,html.viewonly #editBtn,html.viewonly #textBtn,html.viewonly #printBtn{display:none!important}</style>
 </head>
 <body>
 <header class="bar">
-  <a class="btn" href="/">← Dashboard</a>
+  <a class="btn" id="dashBtn" href="/">← Dashboard</a>
   <div class="brand"><img src="mark.png" alt=""><div><small>GlobalXtreme · Best Employee</small><b>Helpdesk Performance Report</b></div></div>
   <select class="sel" id="period" aria-label="Periode"></select>
   <div class="lang" id="langSw" role="group" aria-label="Language"><button data-lang="id">ID</button><button data-lang="en">EN</button></div>
@@ -536,6 +545,7 @@ button,input,select{font:inherit;color:inherit}
   <button class="btn hidden" id="adminBtn" title="Masuk sebagai admin untuk mengedit">🔒 Admin</button>
   <button class="btn hidden" id="shareBtn" title="Salin link khusus lihat (tanpa tombol edit)">🔗 Link viewer</button>
   <button class="btn hidden" id="editBtn">Edit data</button>
+  <button class="btn hidden" id="textBtn" title="Klik teks di slide untuk mengubahnya">✎ Edit text</button>
   <button class="btn hide-m" id="printBtn">Print / PDF</button>
   <button class="btn pri" id="presentBtn">▶ Present</button>
 </header>
@@ -585,16 +595,16 @@ const SEED = {
     { name: 'Kadek Arisita Dhyana Putri', div: 'HD', csMonM: [669, 677, 648], csHandledM: [225, 231, 234], vipTotalM: [0, 26, 16], vipSolvedM: [0, 25, 16], ticketsM: [226, 259, 254], rrM: [100, 96.15, 100], chat: [90, 95, 95], att: { workDays: 78, sick: 8, personal: 4, alpha: 0, lateMin: 35, workMin: 37440 } },
   ] },
   /* Q3 2026 — Jul & Agu dari Monitoring_Customer_Support_2026_Responses.xlsx (sheet July / August), Sep dari Tickets-2026-09-01_2026-09-30.xlsx.
-     VIP Handled Jul & Agu belum ada di file → isi lewat Edit data. Attendance dari Attendance Recap (screenshot Jul–Sep). Observation Q3 belum ada. */
+     VIP Jul & Agu dari Monitoring_VIP.xlsx (Handled By). Attendance dari Attendance Recap (screenshot Jul–Sep). Observation Q3 belum ada. */
   '2026-Q3': { attNote: 'Attendance Recap Juli–September (siklus 26–25)', attMins: [12480, 12480, 12480], agents: [
-    { name: 'Devin Bagaskara', div: 'AM', csMonM: [586, 2, 22], csHandledM: [221, 2, 14], vipTotalM: [null, null, 272], rrM: [99.1, 100.0, 99.65], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 23, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 2, alpha: 0, late: 0, lateDays: 0 }] },
-    { name: 'Ni Kadek Desi Mirayani', div: 'AM', csMonM: [201, 133, 56], csHandledM: [64, 49, 19], vipTotalM: [null, null, 307], rrM: [98.44, 100.0, 100.0], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 2, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }] },
-    { name: 'Aulia Sevi Diana', div: 'AM', csMonM: [147, 65, 19], csHandledM: [56, 27, 11], vipTotalM: [null, null, 324], rrM: [100.0, 100.0, 100.0], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 2, alpha: 0, late: 11, lateDays: 0 }, { pl: 0, sick: 3, alpha: 0, late: 1, lateDays: 1 }, { pl: 0, sick: 2, alpha: 1, late: 30, lateDays: 3 }] },
-    { name: 'Kadek Arisita Dhyana Putri', div: 'HD', csMonM: [801, 642, 539], csHandledM: [297, 259, 194], vipTotalM: [null, null, 8], rrM: [97.98, 99.61, 96.53], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 2, alpha: 0, late: 12, lateDays: 5 }, { pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 3, alpha: 0, late: 13, lateDays: 2 }] },
-    { name: 'Gede Dimas Pery Narendra', div: 'HD', csMonM: [407, 487, 444], csHandledM: [114, 167, 144], vipTotalM: [null, null, 0], rrM: [100.0, 100.0, 97.22], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 0, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 0, alpha: 2, late: 0, lateDays: 0 }, { pl: 0, sick: 0, alpha: 0, late: 34, lateDays: 1 }] },
-    { name: 'Bayu Sukma Ramadhan', div: 'HD', csMonM: [301, 517, 375], csHandledM: [75, 159, 142], vipTotalM: [null, null, 0], rrM: [100.0, 99.37, 97.18], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 0, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 0, alpha: 1, late: 24, lateDays: 3 }, { pl: 0, sick: 1, alpha: 0, late: 5, lateDays: 1 }] },
-    { name: 'A.A Ngurah Kiyana Adhisa Oka Pertama', div: 'HD', csMonM: [15, 447, 453], csHandledM: [3, 147, 142], vipTotalM: [null, null, 0], rrM: [100.0, 100.0, 100.0], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 0, alpha: 0, late: 56, lateDays: 1 }, { pl: 0, sick: 5, alpha: 0, late: 136, lateDays: 7 }, { pl: 0, sick: 1, alpha: 4, late: 175, lateDays: 14 }] },
-    { name: 'Nilma Syahrani', div: 'HD', csMonM: [0, 315, 386], csHandledM: [0, 112, 165], vipTotalM: [null, null, 0], rrM: [null, 100.0, 96.97], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 1, alpha: 0, late: 6, lateDays: 0 }, { pl: 0, sick: 4, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 9, lateDays: 3 }] },
+    { name: 'Devin Bagaskara', div: 'AM', csMonM: [586, 2, 22], csHandledM: [221, 2, 14], vipTotalM: [52, 41, 272], csSolvedM: [219, 2, 13], vipSolvedM: [52, 41, 272], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 23, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 2, alpha: 0, late: 0, lateDays: 0 }] },
+    { name: 'Ni Kadek Desi Mirayani', div: 'AM', csMonM: [201, 133, 56], csHandledM: [64, 49, 19], vipTotalM: [666, 484, 307], csSolvedM: [63, 49, 19], vipSolvedM: [665, 484, 307], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 2, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }] },
+    { name: 'Aulia Sevi Diana', div: 'AM', csMonM: [147, 65, 19], csHandledM: [56, 27, 11], vipTotalM: [587, 421, 324], csSolvedM: [56, 27, 11], vipSolvedM: [587, 421, 324], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 2, alpha: 0, late: 11, lateDays: 0 }, { pl: 0, sick: 3, alpha: 0, late: 1, lateDays: 1 }, { pl: 0, sick: 2, alpha: 1, late: 30, lateDays: 3 }] },
+    { name: 'Kadek Arisita Dhyana Putri', div: 'HD', csMonM: [801, 642, 539], csHandledM: [297, 259, 194], vipTotalM: [25, 28, 8], csSolvedM: [291, 258, 187], vipSolvedM: [25, 28, 8], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 2, alpha: 0, late: 12, lateDays: 5 }, { pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 3, alpha: 0, late: 13, lateDays: 2 }] },
+    { name: 'Gede Dimas Pery Narendra', div: 'HD', csMonM: [407, 487, 444], csHandledM: [114, 167, 144], vipTotalM: [0, 0, 0], csSolvedM: [114, 167, 140], vipSolvedM: [0, 0, 0], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 0, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 0, alpha: 2, late: 0, lateDays: 0 }, { pl: 0, sick: 0, alpha: 0, late: 34, lateDays: 1 }] },
+    { name: 'Bayu Sukma Ramadhan', div: 'HD', csMonM: [301, 517, 375], csHandledM: [75, 159, 142], vipTotalM: [0, 0, 0], csSolvedM: [75, 158, 138], vipSolvedM: [0, 0, 0], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 0, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 0, alpha: 1, late: 24, lateDays: 3 }, { pl: 0, sick: 1, alpha: 0, late: 5, lateDays: 1 }] },
+    { name: 'A.A Ngurah Kiyana Adhisa Oka Pertama', div: 'HD', csMonM: [15, 447, 453], csHandledM: [3, 147, 142], vipTotalM: [0, 0, 0], csSolvedM: [3, 147, 142], vipSolvedM: [0, 0, 0], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 0, alpha: 0, late: 56, lateDays: 1 }, { pl: 0, sick: 5, alpha: 0, late: 136, lateDays: 7 }, { pl: 0, sick: 1, alpha: 4, late: 175, lateDays: 14 }] },
+    { name: 'Nilma Syahrani', div: 'HD', csMonM: [0, 315, 386], csHandledM: [0, 112, 165], vipTotalM: [0, 0, 0], csSolvedM: [0, 112, 160], vipSolvedM: [0, 0, 0], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 1, alpha: 0, late: 6, lateDays: 0 }, { pl: 0, sick: 4, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 9, lateDays: 3 }] },
   ] },
 };
 
@@ -708,7 +718,8 @@ const TX = {
     crossL: 'back-up → final', crossNote: 'Back-up bonus (max +2.5 on the Final Score): Helpdesk handling VIP or AM handling CS is valued on the other division’s scale and compared with the biggest back-up in the team.',
     mdT: 'Monthly Productivity Data', mdSub: ms => `Input per month (${ms}) and the resulting productivity score.`, vipDone: 'VIP Done', divL: 'Div.',
     mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Done excludes admin hold · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS solved ÷ CS handled · AM: VIP done ÷ VIP total. Shown as information only — not part of the score. Click a row for the monthly detail.',
-    lateL: 'Late (min)', attPctL: '% Attendance per month', attPctD: '(working days − PL − sick − alpha) ÷ working days − late minutes ÷ working minutes', attQD: 'Quarter score = average of the monthly % (attendance cycle 26th – 25th).', attEx: 'Example: 26 working days, 2 sick days, 11 late minutes → 92.31% − 0.09% = 92.22%.',
+    critClick: 'Click for details', critTBA: 'Details will be added (TBA).', critEditHint: 'Write the details for this criterion — shown to everyone after saving.',
+    lateDL: 'Late (days)', monNote: 'Monthly % from the Attendance Recap (cycle 26th–25th)', lateL: 'Late (min)', attPctL: '% Attendance per month', attPctD: '(working days − PL − sick − alpha) ÷ working days − late minutes ÷ working minutes', attQD: 'Quarter score = average of the monthly % (attendance cycle 26th – 25th).', attEx: 'Example: 26 working days, 2 sick days, 11 late minutes → 92.31% − 0.09% = 92.22%.',
     tixL: 'Tickets Created', mon: 'CS Monitoring', hand: 'CS Handled Volume', vipR: 'VIP Resolution Rate', vipH: 'VIP Handled Volume', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs peer max', avg: 'avg', of: 'of', vipHandled: 'VIP handled', rateW: 'rate',
   },
@@ -761,7 +772,8 @@ const TX = {
     crossL: 'back-up → skor akhir', crossNote: 'Bonus back-up (maks +2,5 di Skor Akhir): Helpdesk yang pegang VIP atau AM yang pegang CS dinilai pakai skala divisi lain, lalu dibandingkan dengan back-up terbesar di tim.',
     mdT: 'Data Produktivitas Bulanan', mdSub: ms => `Input per bulan (${ms}) dan skor produktivitas yang dihasilkan.`, vipDone: 'VIP Selesai', divL: 'Div.',
     mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Selesai tanpa hold admin · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS selesai ÷ CS handled · AM: VIP selesai ÷ total VIP. Hanya info — tidak masuk skor. Klik baris untuk detail per bulan.',
-    lateL: 'Telat (mnt)', attPctL: '% Attendance per bulan', attPctD: '(hari kerja − PL − sakit − alpha) ÷ hari kerja − menit telat ÷ menit kerja', attQD: 'Skor kuartal = rata-rata % bulanan (siklus absensi tgl 26 – 25).', attEx: 'Contoh: 26 hari kerja, sakit 2 hari, telat 11 menit → 92,31% − 0,09% = 92,22%.',
+    critClick: 'Klik untuk detail', critTBA: 'Detail akan ditambahkan (TBA).', critEditHint: 'Tulis detail kriteria ini — tampil untuk semua orang setelah disimpan.',
+    lateDL: 'Telat (hari)', monNote: '% per bulan dari Attendance Recap (siklus tgl 26–25)', lateL: 'Telat (mnt)', attPctL: '% Attendance per bulan', attPctD: '(hari kerja − PL − sakit − alpha) ÷ hari kerja − menit telat ÷ menit kerja', attQD: 'Skor kuartal = rata-rata % bulanan (siklus absensi tgl 26 – 25).', attEx: 'Contoh: 26 hari kerja, sakit 2 hari, telat 11 menit → 92,31% − 0,09% = 92,22%.',
     tixL: 'Tiket Dibuat', mon: 'CS Monitoring', hand: 'Volume CS Handled', vipR: 'VIP Resolution Rate', vipH: 'Volume VIP Handled', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs tertinggi', avg: 'rata²', of: 'dari', vipHandled: 'VIP ditangani', rateW: 'rate',
   },
@@ -802,7 +814,9 @@ const ATT_MIN_DAY = 480, ATT_MINS_DEF = 12480;
 function attMonth(o, mins) { if (!o) return null; const M = n(mins) || ATT_MINS_DEF, wd = M / ATT_MIN_DAY; const off = n(o.pl) + n(o.sick) + n(o.alpha);
   const pct = Math.max(0, (wd - off) / wd * 100 - n(o.late) / M * 100); return { pct, ded: 100 - pct, wd, M }; }
 /* resolution rate per bulan (info): isian manual bila ada, kalau kosong dihitung — HD: CS solved ÷ CS handled · AM: VIP solved ÷ VIP total */
-function rrAuto(a, k) { return a.div === 'HD' ? (a.csSolvedM[k] != null && a.csHandledM[k] ? a.csSolvedM[k] / a.csHandledM[k] * 100 : null) : (a.vipTotalM[k] ? (a.vipSolvedM[k] || 0) / a.vipTotalM[k] * 100 : null); }
+function rrAuto(a, k) {
+  if (!legacyRules() && (a.csSolvedM[k] != null || a.vipSolvedM[k] != null)) { const h = (a.csHandledM[k] || 0) + (a.vipTotalM[k] || 0); return h ? ((a.csSolvedM[k] || 0) + (a.vipSolvedM[k] || 0)) / h * 100 : null; }
+  return a.div === 'HD' ? (a.csSolvedM[k] != null && a.csHandledM[k] ? a.csSolvedM[k] / a.csHandledM[k] * 100 : null) : (a.vipTotalM[k] ? (a.vipSolvedM[k] || 0) / a.vipTotalM[k] * 100 : null); }
 function rrOf(a, k) { return a.rrM && a.rrM[k] != null ? a.rrM[k] : rrAuto(a, k); }
 function rrQavg(a) { const v = [0, 1, 2].map(k => rrOf(a, k)).filter(x => x != null); return v.length ? sum(v) / v.length : null; }
 function compute(data) {
@@ -975,7 +989,7 @@ function slides(p, data) {
   {
     const avgP = N ? sum(C.A.map(a => a.prod)) / N : 0, lh = C.hd[0], la = C.am[0];
     const tile = (lab, val, sub, cls = '') => `<div class="kt ${cls}"><span>${lab}</span><b class="num">${val}</b><small>${sub}</small></div>`;
-    const raw = a => (legacyRules() ? (a.div === 'HD' ? `${fInt(a.csMon)} ${T('monitored')} · ${fInt(a.tickets)} tickets` : `VIP ${f2(a.lrate)}% · ${fInt(a.tickets)} tickets`) : a.div === 'HD' ? `${fInt(a.csMon)} ${T('monitored')} · ${fInt(a.csHandled)} ${T('handled')}` : `${fInt(a.vipTotal)} VIP ${T('handled')}`) + (a.crossF > 0 ? ` · <span class="xb">+${f2(a.crossF)} ${T('crossL').toLowerCase()}</span>` : '') + (a.pen > 0 ? ` · <span class="xp">−${f2(a.pen)} ${T('penL')} ${f2(a.rrQ)}%</span>` : '');
+    const raw = a => (legacyRules() ? (a.div === 'HD' ? `${fInt(a.csMon)} ${T('monitored')} · ${fInt(a.tickets)} tickets` : `VIP ${f2(a.lrate)}% · ${fInt(a.tickets)} tickets`) : a.div === 'HD' ? `${fInt(a.csMon)} ${T('monitored')} · ${fInt(a.csHandled)} ${T('handled')}${a.csSolved != null ? ` · ${fInt(a.csSolved)} ${T('csSolvedL')}` : ''}` : `${fInt(a.vipTotal)} VIP ${T('handled')}${a.vipSolved ? ` · ${fInt(a.vipSolved)} ${T('csSolvedL')}` : ''}`) + (a.crossF > 0 ? ` · <span class="xb">+${f2(a.crossF)} ${T('crossL').toLowerCase()}</span>` : '') + (a.pen > 0 ? ` · <span class="xp">−${f2(a.pen)} ${T('penL')} ${f2(a.rrQ)}%</span>` : '');
     const row = (a, i) => `<div class="pr ${i ? '' : 'lead'} clk" data-ag="${esc(a.name)}" role="button" tabindex="0" title="${T('clickDetail')}"><div class="prn">${av(a)}<div><b>${esc(a.name)}</b><small>${raw(a)}</small></div></div>
         <div class="stk">${(() => { let left = a.prod; const seg = v => { const w = Math.max(0, Math.min(v, left)); left -= w; return w; };
           return a.parts.map((p, k) => { const w = seg(p.v); return `<i class="s${k}" style="--w:${w}%">${w >= 7 ? `<em>${f2(w).replace(/\.00$/, '')}</em>` : ''}</i>`; }).join('') + `<i class="sb" style="--w:${seg(a.bonus)}%"></i>` + (a.pen ? `<i class="sp" style="--w:${a.pen}%"></i>` : ''); })()}</div>
@@ -1004,11 +1018,11 @@ function slides(p, data) {
     let no = 0;
     const tb = `<table class="rt"><thead><tr><th>${NEW ? 'No.' : '#'}</th><th>${T('agent')}</th><th>${T('avgS')}</th><th>${T('trend')}</th></tr></thead><tbody>
       ${groups.map(([gn, gl]) => (gn ? `<tr class="grp"><td colspan="4">${gn}</td></tr>` : '') + gl.map((a, i) => { const f = a.chat.find(v => v != null), l = [...a.chat].reverse().find(v => v != null), d = (l ?? 0) - (f ?? 0); no++;
-        return `<tr class="${NEW || i ? '' : 'lead'}"><td>${NEW ? no : C.byChat.findIndex(x => x.chatAvg === a.chatAvg) + 1}</td><td>${av(a)}<span>${esc(a.name)}</span></td><td class="num"><b>${f2(a.chatAvg)}</b></td><td class="tr ${d > 0 ? 'up' : d < 0 ? 'dn' : ''}">${d > 0 ? '▲ +' + d : d < 0 ? '▼ ' + d : '—'}</td></tr>`; }).join('')).join('')}</tbody></table>`;
+        return `<tr class="${NEW || i ? '' : 'lead'}"><td>${NEW ? no : C.byChat.findIndex(x => x.chatAvg === a.chatAvg) + 1}</td><td><div class="rtn">${av(a)}<span>${esc(a.name)}</span></div></td><td class="num"><b>${f2(a.chatAvg)}</b></td><td class="tr ${d > 0 ? 'up' : d < 0 ? 'dn' : ''}">${d > 0 ? '▲ +' + d : d < 0 ? '▼ ' + d : '—'}</td></tr>`; }).join('')).join('')}</tbody></table>`;
     out.push(`<section class="slide v4 ${N > 5 ? 'many' : ''}"><div class="s-in">
       ${head(`${T('pillar')} 02`, T('chatT2'), T('chatTake2')(N ? Math.floor(Math.min(...C.A.map(a => a.chatAvg)) / 5) * 5 : 0), 'b', T('weight')(30))}
       <div class="v4g"><div class="cbox"><div class="cap">${T('monthlyScores')}</div>${chart}</div><div class="cbox"><div class="cap">${T('ranking')}</div>${tb}</div></div>
-      <div class="crit2"><span class="cap">${T('criteriaT')}</span>${(LANG === 'id' ? CRITERIA_ID : CRITERIA).map((c, i) => `<span><i>${i + 1}</i>${c}</span>`).join('')}</div>
+      <div class="crit2"><span class="cap">${T('criteriaT')}</span>${(LANG === 'id' ? CRITERIA_ID : CRITERIA).map((c, i) => `<span class="crc" data-crit="${i}" role="button" tabindex="0" title="${T('critClick')}"><i>${i + 1}</i><em>${c}</em></span>`).join('')}</div>
     </div>${foot}</section>`);
   }
 
@@ -1017,13 +1031,13 @@ function slides(p, data) {
     const list = C.byAtt, lo = Math.min(90, Math.floor(Math.min(100, ...list.map(a => a.attS)) / 5) * 5), X = v => Math.max(0, (v - lo) / (100 - lo) * 100);
     const cell = v => n(v) ? `<b>${n(v)}</b>` : '<span class="z">–</span>';
     const MON = list.some(a => a.attX && a.attX.monthly);
-    const tb = `<table class="at"><thead><tr><th>${T('agent')}</th><th>${T('sick')}</th><th>${T('pl')}</th><th>Alpha</th>${MON ? `<th>${T('lateL')}</th>` : ''}<th class="w">${T('scoreScale')(lo)}</th><th>${T('score')}</th></tr></thead><tbody>
-      ${list.map((a, i) => `<tr class="${i ? '' : 'lead'}"><td>${av(a)}<span>${esc(a.name)}</span></td><td>${cell(a.att.sick)}</td><td>${cell(a.att.personal)}</td><td>${cell(a.att.alpha)}</td>${MON ? `<td>${cell(a.att.lateMin)}${n(a.att.lateDays) ? `<small class="ld">${n(a.att.lateDays)}×</small>` : ''}</td>` : ''}
-        <td class="w"><div class="ab"><i style="--w:${X(a.attS)}%"></i></div></td><td class="num"><b>${f2(a.attS)}</b>${a.attS >= 100 ? ' <span class="pf">★</span>' : ''}</td></tr>`).join('')}</tbody></table>`;
+    const tb = `<table class="at ${MON ? 'atmo' : ''}"><thead><tr><th>${T('agent')}</th><th>${T('sick')}</th><th>${T('pl')}</th><th>Alpha</th>${MON ? `<th>${T('lateL')}</th><th>${T('lateDL')}</th>${m.map(mi => `<th class="mo">${monthShort(mi)}</th>`).join('')}` : `<th class="w">${T('scoreScale')(lo)}</th>`}<th>${T('score')}</th></tr></thead><tbody>
+      ${list.map((a, i) => `<tr class="${i ? '' : 'lead'}"><td>${av(a)}<span>${esc(a.name)}</span></td><td>${cell(a.att.sick)}</td><td>${cell(a.att.personal)}</td><td>${cell(a.att.alpha)}</td>${MON ? `<td>${cell(a.att.lateMin)}</td><td>${cell(a.att.lateDays)}</td>` : ''}
+        ${MON ? m.map((mi, k) => { const x = a.attMo && a.attMo[k]; return `<td class="mo ${x ? (x.pct >= 95 ? 'g' : x.pct >= 85 ? 'y' : 'r') : ''}">${x ? f2(x.pct) : '–'}</td>`; }).join('') : `<td class="w"><div class="ab"><i style="--w:${X(a.attS)}%"></i></div></td>`}<td class="num"><b>${f2(a.attS)}</b>${a.attS >= 100 ? ' <span class="pf">★</span>' : ''}</td></tr>`).join('')}</tbody></table>`;
     const top = list[0];
     out.push(`<section class="slide v5 ${N > 5 ? 'many' : ''}"><div class="s-in">
       ${head(`${T('pillar')} 03`, T('attT2'), top ? (top.attS >= 100 ? T('attPerfect')(esc(top.name)) : T('attTop')(esc(top.name), f2(top.attS))) : '', 'g', T('weight')(20))}
-      <div class="v5g"><div class="cbox">${tb}<div class="tnote">${T('daysNote')}${data.attNote ? ' · ' + esc(data.attNote) : ''}</div></div>
+      <div class="v5g"><div class="cbox">${tb}<div class="tnote">${MON ? T('monNote') + ' · ' : ''}${T('daysNote')}${data.attNote ? ' · ' + esc(data.attNote) : ''}</div></div>
         ${MON ? `<div class="cbox side"><div class="cap">${T('calc')}</div>
           <p class="fx"><b>${T('attPctL')}</b> = ${T('attPctD')}</p><p class="fx">${T('attQD')}</p>
           <div class="cap" style="margin-top:1.4cqw">${T('leave')}</div>
@@ -1125,7 +1139,7 @@ function render() {
   const deck = $('#deck'), p = ST.period;
   let note = '';
   if (ST.source === 'locked') note = `<div class="note">Data <b>${pLabel(p)}</b> dikunci sesuai file <b>${LOCKED[p]}</b> (hasil final yang sudah diumumkan) — tidak bisa diedit.</div>`;
-  else if (ST.source === 'seed' && p === '2026-Q3') note = `<div class="note">Data <b>${pLabel(p)}</b>: Juli & Agustus dari <b>Monitoring Customer Support</b>, September dari <b>export Tickets</b>. Attendance dari <b>Attendance Recap</b>. Belum ada: <b>VIP Handled Juli & Agustus</b> dan <b>Observation</b> Q3 — isi di <b>Edit data</b> lalu <b>Simpan online</b>.</div>`;
+  else if (ST.source === 'seed' && p === '2026-Q3') note = `<div class="note">Data <b>${pLabel(p)}</b>: CS Juli & Agustus dari <b>Monitoring Customer Support</b>, VIP Juli & Agustus dari <b>Monitoring VIP</b>, September dari <b>export Tickets</b>, attendance dari <b>Attendance Recap</b>. Belum ada: <b>Observation</b> Q3 — isi di <b>Edit data</b> lalu <b>Simpan online</b>.</div>`;
   else if (ST.source === 'seed') note = `<div class="note">Data <b>${pLabel(p)}</b> ini diambil dari slide Q2 Report Helpdesk (Figma). Buka <b>Edit data</b> → <b>Simpan online</b> supaya tersimpan untuk semua orang.</div>`;
   else if (ST.online === 'err' && ST.err && ST.err.error === 'schema-missing') note = `<div class="note">Tabel <b>perf_reports</b> belum ada di Supabase. Jalankan file <b>perf-schema.sql</b> di Supabase → SQL Editor → Run, lalu muat ulang halaman ini.</div>`;
   else if (ST.online === 'err' && ST.err && ST.err.error === 'storage-not-configured') note = `<div class="note">Env <b>SUPABASE_URL</b> / <b>SUPABASE_SERVICE_ROLE_KEY</b> belum diisi di Vercel, jadi data belum bisa disimpan online.</div>`;
@@ -1137,6 +1151,7 @@ function render() {
   } else {
     ST.slides = slides(p, ST.data);
     deck.innerHTML = note + ST.slides.join('');
+    gtDeck();
     if (IO) IO.disconnect();
     animateDeck();
   }
@@ -1145,6 +1160,45 @@ function render() {
   applyMode();
 }
 
+
+
+/* ===== teks slide bisa diedit (semua teks; angka data tidak) — override disimpan per "slide|teks asli" ===== */
+const GT_SKIP = 'input,textarea,select,option,button,script,style,svg,[data-edit],.num,.ed-only,.dmy,.seg,.mseg,.tools,.idsel,.stw';
+function gtLeaves(root) {
+  return [...root.querySelectorAll('*')].filter(el => {
+    if ([...el.children].some(c => c.tagName !== 'BR')) return false;
+    if (el.closest(GT_SKIP)) return false;
+    const t = (el.dataset.gto != null ? el.dataset.gto : el.textContent).trim();
+    return t.length >= 2 && !/^[\d.,%\s−+\-:/×#()|·~≥≤▲▼]+[a-z%]{0,3}$/i.test(t);
+  });
+}
+function gtApply(root, key, store, editing, onSave) {
+  gtLeaves(root).forEach(el => {
+    if (el.dataset.gto == null) { el.dataset.gto = el.textContent.trim(); el.dataset.gth = el.innerHTML; }
+    const k = key + '|' + el.dataset.gto, v = store && store[k];
+    if (v != null && el.textContent !== v) el.textContent = v;
+    if (editing) { el.contentEditable = 'true'; el.spellcheck = false; el.classList.add('gt-ed');
+      el.onblur = () => { const t = el.textContent.replace(/ /g, ' ').trim(); if (!t || t === el.dataset.gto) { if (store) delete store[k]; el.innerHTML = el.dataset.gth; } else if (store) store[k] = t; onSave && onSave(); };
+      el.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); el.blur(); } }; }
+    else if (el.classList.contains('gt-ed')) { el.removeAttribute('contenteditable'); el.classList.remove('gt-ed'); el.onblur = null; el.onkeydown = null; }
+  });
+}
+
+const slideKey = sl => [...sl.classList].filter(c => !/^(slide|dark|many|play|light)$/.test(c)).join('.') || 'x';
+let TEXTING = false;
+const gtStoreP = () => { if (!ST.data) return null; ST.data.texts = ST.data.texts || {}; return ST.data.texts; };
+function gtDeck() { $$('#deck .slide').forEach(sl => gtApply(sl, slideKey(sl), gtStoreP(), TEXTING, () => { ST.textDirty = true; })); }
+async function persistData(okMsg) {
+  const clean = ST.data;
+  try {
+    const r = await api('?period=' + encodeURIComponent(ST.period), { method: 'POST', body: JSON.stringify({ data: clean, revision: ST.revision }) });
+    if (r.status === 200 && r.j.ok) { ST.revision = r.j.revision; ST.source = 'online'; ST.online = true; ls.set(CACHE + ST.period, JSON.stringify({ data: clean, revision: ST.revision })); syncStatus(); toast(okMsg); return true; }
+    if (r.status === 409) { toast('Ada perubahan lebih baru dari perangkat lain — muat ulang lalu ulangi.'); return false; }
+    if (r.status === 401) { toast('Password publish salah / belum diisi.'); return false; }
+    if (!r.json) { ls.set(CACHE + ST.period, JSON.stringify({ data: clean, revision: ST.revision })); toast('Server tidak terjangkau — tersimpan di browser ini saja.'); return true; }
+    toast('Gagal menyimpan: ' + (r.j.detail || r.j.error || ('HTTP ' + r.status))); return false;
+  } catch (e) { ls.set(CACHE + ST.period, JSON.stringify({ data: clean, revision: ST.revision })); toast('Server tidak terjangkau — tersimpan di browser ini saja.'); return true; }
+}
 
 /* =================== animasi =================== */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1189,7 +1243,7 @@ function present(start = 0) {
   PV = document.createElement('div'); PV.className = 'present';
   PV.innerHTML = `<div class="holder"></div><div class="nav"><button aria-label="Sebelumnya">‹</button><div class="dotsn"></div><button aria-label="Berikutnya">›</button></div><button class="btn x">✕ Esc</button>`;
   document.body.appendChild(PV);
-  const show = () => { const h = PV.querySelector('.holder'); h.innerHTML = ST.slides[i]; const sl = h.querySelector('.slide'); prep(sl); requestAnimationFrame(() => requestAnimationFrame(() => play(sl))); PV.querySelector('.dotsn').innerHTML = ST.slides.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join(''); };
+  const show = () => { const h = PV.querySelector('.holder'); h.innerHTML = ST.slides[i]; const sl = h.querySelector('.slide'); gtApply(sl, slideKey(sl), gtStoreP(), false); prep(sl); requestAnimationFrame(() => requestAnimationFrame(() => play(sl))); PV.querySelector('.dotsn').innerHTML = ST.slides.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join(''); };
   const go = d => { i = Math.max(0, Math.min(ST.slides.length - 1, i + d)); show(); };
   const close = () => { document.removeEventListener('keydown', key); PV.remove(); PV = null; if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); };
   const key = e => { if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); go(1); } else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); go(-1); } else if (e.key === 'Escape') close(); else if (e.key === 'Home') { i = 0; show(); } else if (e.key === 'End') { i = ST.slides.length - 1; show(); } };
@@ -1255,30 +1309,30 @@ function edTable(m, live) {
   const inp = (path, v, cls = '') => `<td class="${cls}"><input class="inp et" type="number" step="any" min="0" data-p="${path}" value="${esc(v ?? '')}"></td>`;
   /* Helpdesk: CS Monitoring, CS Handled (skor) + VIP Handled (bonus back-up) · AM: VIP Handled (skor) + CS Monitoring, CS Handled (bonus back-up) · Res. % per bulan (info) */
   const COLS = {
-    HD: [['csMonM', 'CS Mon.'], ['csHandledM', 'CS Hand.'], ['vipTotalM', 'VIP Hand.', 'etb']],
-    AM: [['vipTotalM', 'VIP Hand.'], ['csMonM', 'CS Mon.', 'etb'], ['csHandledM', 'CS Hand.', 'etb']] };
+    HD: [['csMonM', 'CS Mon.'], ['csHandledM', 'CS Hand.'], ['csSolvedM', 'CS Solved', 'ets2'], ['vipTotalM', 'VIP Hand.', 'etb'], ['vipSolvedM', 'VIP Solved', 'etb ets2']],
+    AM: [['vipTotalM', 'VIP Hand.'], ['vipSolvedM', 'VIP Solved', 'ets2'], ['csMonM', 'CS Mon.', 'etb'], ['csHandledM', 'CS Hand.', 'etb'], ['csSolvedM', 'CS Solved', 'etb ets2']] };
   const table = div => {
     const list = ED.agents.map((a, i) => [a, i]).filter(([a]) => (a.div === 'AM' ? 'AM' : 'HD') === div);
     const cols = COLS[div], w = cols.length + 1;
     const rows = list.map(([a, i]) => { const L = live.get((a.name || '').trim());
       return `<tr data-i="${i}"><td class="etn">${esc(a.name || '(tanpa nama)')}</td>
         ${m.map((mi, k) => cols.map(([f, , c], j) => inp(`${f}.${k}`, a[f] && a[f][k], `${c || ''} ${j ? '' : 'etg'}`)).join('')
-          + `<td class="etr"><input class="inp et" type="number" step="any" min="0" max="100" data-p="rrM.${k}" value="${esc(a.rrM && a.rrM[k] != null ? a.rrM[k] : '')}" placeholder="%"></td>`).join('')}
-        <td class="ets etg ett" data-o="tcsMon">${L ? fInt(L.csMon) : '–'}</td><td class="ets ett" data-o="tcsHand">${L ? fInt(L.csHandled) : '–'}</td><td class="ets ett" data-o="tvip">${L ? fInt(L.vipTotal) : '–'}</td>
+          + `<td class="etr"><input class="inp et" type="number" step="any" min="0" max="100" data-p="rrM.${k}" value="${esc(a.rrM && a.rrM[k] != null ? a.rrM[k] : '')}" placeholder="${L && rrAuto(L, k) != null ? f2(rrAuto(L, k)) : '%'}"></td>`).join('')}
+        <td class="ets etg ett" data-o="tcsMon">${L ? fInt(L.csMon) : '–'}</td><td class="ets ett" data-o="tcsHand">${L ? fInt(L.csHandled) : '–'}</td><td class="ets ett" data-o="tcsSol">${L && L.csSolved != null ? fInt(L.csSolved) : '–'}</td><td class="ets ett" data-o="tvip">${L ? fInt(L.vipTotal) : '–'}</td><td class="ets ett" data-o="tvipSol">${L && L.vipSolved != null ? fInt(L.vipSolved) : '–'}</td>
         <td class="ets etg" data-o="core">${L ? f2(L.core) : '–'}</td><td class="ets" data-o="bonus">${L ? f2(L.bonus) : '–'}</td><td class="ets etx" data-o="cross" title="${L ? esc(L.crossVol) : ''}">${L ? '+' + f2(L.crossF) : '–'}</td><td class="ets xp" data-o="pen">${L && L.pen ? '−' + f2(L.pen) : '0'}</td><td class="ets etf" data-o="prod">${L ? f2(L.prod) : '–'}</td><td class="ets" data-o="rrq">${L && rrQavg(L) != null ? f2(rrQavg(L)) + '%' : '–'}</td></tr>`; }).join('');
     const name = div === 'HD' ? 'Helpdesk' : 'Account Manager';
     const how = div === 'HD' ? 'Skor: CS Monitoring 38% + CS Handled 57% + assist bonus 5 · <span class="etx">VIP Hand. = bonus back-up</span>' : 'Skor: VIP Handled 95% + assist bonus 5 · <span class="etx">CS Mon. & CS Hand. = bonus back-up</span>';
     return `<div class="etblk"><div class="eth"><b>${name}</b><span>${how}</span></div>${list.length ? `<div class="ets-scroll"><table class="etab"><thead>
-      <tr><th rowspan="2" class="etn">Nama</th>${m.map(mi => `<th colspan="${w}" class="etm etg">${MONTHS[mi].toUpperCase()} ${y}</th>`).join('')}<th colspan="3" class="etm etg">TOTAL ${q}</th><th rowspan="2" class="ets etg">Core</th><th rowspan="2" class="ets">Bonus</th><th rowspan="2" class="ets etx">Back-up<br>→ Final</th><th rowspan="2" class="ets xp">Penalti<br>Res.</th><th rowspan="2" class="ets etf">Final<br>Prod.</th><th rowspan="2" class="ets">Res. %<br>${q} avg</th></tr>
-      <tr>${m.map(() => cols.map(([, t, c], j) => `<th class="${c || ''} ${j ? '' : 'etg'}">${t}</th>`).join('') + '<th class="etr">Res. %</th>').join('')}<th class="etg">CS Mon.</th><th>CS Hand.</th><th>VIP</th></tr></thead><tbody>${rows}</tbody></table></div>` : `<div class="help">Belum ada agent ${name}. Atur divisi di kartu agent di bawah.</div>`}</div>`; };
-  return `<div class="acard etw"><div class="eth"><b>Productivity — data bulanan · ${q} ${y}</b><span>Res. % = resolution rate semua case agent per bulan · target Helpdesk ${RR_TARGET.HD}% · AM ${RR_TARGET.AM}% (rata-rata kuartal) · di bawah target −${RR_PEN_PER} poin per 1% (maks −${RR_PEN_MAX})</span></div>
+      <tr><th rowspan="2" class="etn">Nama</th>${m.map(mi => `<th colspan="${w}" class="etm etg">${MONTHS[mi].toUpperCase()} ${y}</th>`).join('')}<th colspan="5" class="etm etg">TOTAL ${q}</th><th rowspan="2" class="ets etg">Core</th><th rowspan="2" class="ets">Bonus</th><th rowspan="2" class="ets etx">Back-up<br>→ Final</th><th rowspan="2" class="ets xp">Penalti<br>Res.</th><th rowspan="2" class="ets etf">Final<br>Prod.</th><th rowspan="2" class="ets">Res. %<br>${q} avg</th></tr>
+      <tr>${m.map(() => cols.map(([, t, c], j) => `<th class="${c || ''} ${j ? '' : 'etg'}">${t}</th>`).join('') + '<th class="etr">Res. %</th>').join('')}<th class="etg">CS Mon.</th><th>CS Hand.</th><th>CS Solved</th><th>VIP</th><th>VIP Solved</th></tr></thead><tbody>${rows}</tbody></table></div>` : `<div class="help">Belum ada agent ${name}. Atur divisi di kartu agent di bawah.</div>`}</div>`; };
+  return `<div class="acard etw"><div class="eth"><b>Productivity — data bulanan · ${q} ${y}</b><span>Res. % = (CS Solved + VIP Solved) ÷ (CS Hand. + VIP Hand.) per bulan, otomatis — boleh diisi manual · target Helpdesk ${RR_TARGET.HD}% · AM ${RR_TARGET.AM}% (rata-rata kuartal) · di bawah target −${RR_PEN_PER} poin per 1% (maks −${RR_PEN_MAX})</span></div>
     ${table('HD')}${table('AM')}
     <div class="help" style="margin:8px 0 0"><b class="etx">Back-up</b> (maks +2,5, ditambahkan ke <b>Final Score</b>, bukan productivity) = kerja di divisi lain (kolom biru) dinilai pakai skala divisi itu, dibandingkan dengan back-up terbesar di tim. Productivity = Core + Bonus (maks 100) − Penalti Res.</div></div>`;
 }
 function prodSum(L) { if (!L) return '<span class="mut">Isi nama agent dulu.</span>';
-  return `Total kuartal (otomatis): <b>${fInt(L.csMon)}</b> CS Mon. · <b>${fInt(L.csHandled)}</b> CS Hand. · <b>${fInt(L.vipTotal)}</b> VIP${rrQavg(L) != null ? ` · Res. <b>${f2(rrQavg(L))}%</b>` : ''} → Productivity <b>${f2(L.prod)}</b>${L.pen ? ` <span class="xp">(−${f2(L.pen)} res.)</span>` : ''}${L.crossF ? ` · back-up <b class="etx">+${f2(L.crossF)}</b>` : ''} · Final <b>${f2(L.final)}</b>`; }
+  return `Total kuartal (otomatis): <b>${fInt(L.csMon)}</b> CS Mon. · <b>${fInt(L.csHandled)}</b> CS Hand.${L.csSolved != null ? ` (<b>${fInt(L.csSolved)}</b> solved)` : ''} · <b>${fInt(L.vipTotal)}</b> VIP${L.vipSolved ? ` (<b>${fInt(L.vipSolved)}</b> solved)` : ''}${rrQavg(L) != null ? ` · Res. <b>${f2(rrQavg(L))}%</b>` : ''} → Productivity <b>${f2(L.prod)}</b>${L.pen ? ` <span class="xp">(−${f2(L.pen)} res.)</span>` : ''}${L.crossF ? ` · back-up <b class="etx">+${f2(L.crossF)}</b>` : ''} · Final <b>${f2(L.final)}</b>`; }
 function attSum(L) { if (!L) return ''; if (!L.attX || !L.attX.monthly) return '<span class="mut">Isi di tabel <b>Attendance — data bulanan</b> di atas.</span>';
-  return `Total kuartal (otomatis): sakit <b>${fInt(L.att.sick)}</b> · PL <b>${fInt(L.att.personal)}</b> · alpha <b>${fInt(L.att.alpha)}</b> · telat <b>${fInt(L.att.lateMin)}</b> mnt (${fInt(L.att.lateDays)}×) → Attendance <b>${f2(L.attS)}</b>`; }
+  return `Total kuartal (otomatis): sakit <b>${fInt(L.att.sick)}</b> · PL <b>${fInt(L.att.personal)}</b> · alpha <b>${fInt(L.att.alpha)}</b> · telat <b>${fInt(L.att.lateMin)}</b> menit · terlambat <b>${fInt(L.att.lateDays)}</b> hari → Attendance <b>${f2(L.attS)}</b>`; }
 /* tabel attendance bulanan (format Attendance Recap): PL, sakit, alpha, telat (menit), terlambat (hari) → % attendance per bulan */
 function edAttTable(m, live) {
   const y = ST.period.slice(0, 4), q = ST.period.slice(5), mins = [0, 1, 2].map(k => (ED.attMins && has(ED.attMins[k])) ? ED.attMins[k] : '');
@@ -1300,7 +1354,7 @@ function edLive() {
   const C = compute(ED), live = new Map(C.A.map(a => [a.name, a]));
   $$('#edBody .acard[data-i]').forEach(card => { const L = live.get((ED.agents[+card.dataset.i].name || '').trim()); const ps = card.querySelector('[data-sum="prod"]'), as = card.querySelector('[data-sum="att"]'); if (ps) ps.innerHTML = prodSum(L); if (as) as.innerHTML = attSum(L); const s = card.querySelector('.live'); if (s) s.innerHTML = L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · OBS ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''; });
   $$('#edBody tr[data-i]').forEach(tr => { const a = ED.agents[+tr.dataset.i], L = live.get((a.name || '').trim()), set = (o, v) => { const c = tr.querySelector(`[data-o="${o}"]`); if (c) c.textContent = v; };
-    set('tcsMon', L ? fInt(L.csMon) : '–'); set('tcsHand', L ? fInt(L.csHandled) : '–'); set('tvip', L ? fInt(L.vipTotal) : '–');
+    set('tcsMon', L ? fInt(L.csMon) : '–'); set('tcsHand', L ? fInt(L.csHandled) : '–'); set('tvip', L ? fInt(L.vipTotal) : '–'); set('tcsSol', L && L.csSolved != null ? fInt(L.csSolved) : '–'); set('tvipSol', L && L.vipSolved != null ? fInt(L.vipSolved) : '–');
     [0, 1, 2].forEach(k => set('att' + k, L && L.attMo && L.attMo[k] ? f2(L.attMo[k].pct) + '%' : '–')); set('attq', L && L.attX && L.attX.monthly ? f2(L.attS) : '–');
         set('core', L ? f2(L.core) : '–'); set('bonus', L ? f2(L.bonus) : '–'); set('cross', L ? '+' + f2(L.crossF) : '–'); set('pen', L && L.pen ? '−' + f2(L.pen) : '0'); set('prod', L ? f2(L.prod) : '–'); const q = L ? rrQavg(L) : null; set('rrq', q != null ? f2(q) + '%' : '–');
     if (L) tr.querySelectorAll('[data-p^="rrM."]').forEach(inp => { const k = +inp.dataset.p.slice(4), au = rrAuto(L, k); inp.placeholder = au != null ? f2(au) : '%'; }); });
@@ -1376,8 +1430,11 @@ function openProdDetail(name) {
   const rrM = k => rrOf(a, k);
   const rrQ = rrQavg(a) ?? (a.div === 'HD' ? a.csRate : (a.vipTotal ? a.vip : null));
   const rrCell = v => `<td class="rr">${v == null ? '—' : f2(v) + '%'}</td>`;
-  const rawM = (r, k) => a.div === 'HD' ? `${fInt(a.csMonM[k] || 0)} / ${fInt(a.csHandledM[k] || 0)}${a.csSolvedM[k] != null ? ` · ${fInt(a.csSolvedM[k])} ${T('csSolvedL')}` : ''}` : `${fInt(a.vipTotalM[k] || 0)} VIP · ${fInt(a.vipSolvedM[k] || 0)} ${T('csSolvedL')}`;
-  const rawQ = a.div === 'HD' ? `${fInt(a.csMon)} / ${fInt(a.csHandled)}${a.csSolved != null ? ` · ${fInt(a.csSolved)} ${T('csSolvedL')}` : ''}` : `${fInt(a.vipTotal)} VIP · ${fInt(a.vipSolved)} ${T('csSolvedL')}`;
+  const rawM0 = (r, k) => a.div === 'HD' ? `${fInt(a.csMonM[k] || 0)} / ${fInt(a.csHandledM[k] || 0)}${a.csSolvedM[k] != null ? ` · ${fInt(a.csSolvedM[k])} ${T('csSolvedL')}` : ''}` : `${fInt(a.vipTotalM[k] || 0)} VIP · ${fInt(a.vipSolvedM[k] || 0)} ${T('csSolvedL')}`;
+  const sv2 = (x, y) => x != null ? ` (${fInt(x)} ${T('csSolvedL')})` : '';
+  const rawM = (r, k) => legacyRules() ? rawM0(r, k) : (a.div === 'HD' ? `CS ${fInt(a.csMonM[k] || 0)} / ${fInt(a.csHandledM[k] || 0)}${sv2(a.csSolvedM[k])}${a.vipTotalM[k] ? ` · VIP ${fInt(a.vipTotalM[k])}${sv2(a.vipSolvedM[k])}` : ''}` : `VIP ${fInt(a.vipTotalM[k] || 0)}${sv2(a.vipSolvedM[k])}${a.csHandledM[k] ? ` · CS ${fInt(a.csHandledM[k])}${sv2(a.csSolvedM[k])}` : ''}`);
+  const rawQ0 = a.div === 'HD' ? `${fInt(a.csMon)} / ${fInt(a.csHandled)}${a.csSolved != null ? ` · ${fInt(a.csSolved)} ${T('csSolvedL')}` : ''}` : `${fInt(a.vipTotal)} VIP · ${fInt(a.vipSolved)} ${T('csSolvedL')}`;
+  const rawQ = legacyRules() ? rawQ0 : (a.div === 'HD' ? `CS ${fInt(a.csMon)} / ${fInt(a.csHandled)}${a.csSolved != null ? ` (${fInt(a.csSolved)} ${T('csSolvedL')})` : ''}${a.vipTotal ? ` · VIP ${fInt(a.vipTotal)}${a.vipSolved ? ` (${fInt(a.vipSolved)} ${T('csSolvedL')})` : ''}` : ''}` : `VIP ${fInt(a.vipTotal)}${a.vipSolved ? ` (${fInt(a.vipSolved)} ${T('csSolvedL')})` : ''}${a.csHandled ? ` · CS ${fInt(a.csHandled)}${a.csSolved != null ? ` (${fInt(a.csSolved)} ${T('csSolvedL')})` : ''}` : ''}`);
   const col = (r, k) => r ? `<div class="col"><div class="v">${f2(r.prod)}</div><div class="stk2" data-h="${r.prod}">${r.parts.map((p, j) => `<i style="height:${p.v / r.prod * 100}%;background:${colors[j]}"></i>`).join('')}<i style="height:${r.bonus / r.prod * 100}%;background:${colors[2]}"></i></div></div>`
     : `<div class="col"><div class="na">—</div></div>`;
   const el = document.createElement('div'); el.className = 'md';
@@ -1402,7 +1459,7 @@ function openProdDetail(name) {
   requestAnimationFrame(() => requestAnimationFrame(() => el.querySelectorAll('.stk2').forEach(b => { b.style.height = (n(b.dataset.h) / 100 * 120) + 'px'; })));
   el.querySelector('.x').focus();
 }
-document.addEventListener('click', e => { const r = e.target.closest('.pr.clk[data-ag],tr.clk[data-ag]'); if (r) { e.stopPropagation(); openProdDetail(r.dataset.ag); } }, true);
+document.addEventListener('click', e => { if (typeof TEXTING !== 'undefined' && TEXTING) return; const r = e.target.closest('.pr.clk[data-ag],tr.clk[data-ag]'); if (r) { e.stopPropagation(); openProdDetail(r.dataset.ag); } }, true);
 document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.pr.clk[data-ag],tr.clk[data-ag]')) { e.preventDefault(); e.stopPropagation(); openProdDetail(e.target.dataset.ag); } }, true);
 
 /* =================== mode viewer / admin =================== */
@@ -1410,6 +1467,7 @@ const VIEW = new URLSearchParams(location.search).has('view');
 const canEdit = () => !VIEW && (ST.open || ST.authed);
 function applyMode() {
   $('#editBtn').classList.toggle('hidden', !canEdit() || !!LOCKED[ST.period]);
+  $('#textBtn').classList.toggle('hidden', !canEdit() || !!LOCKED[ST.period] || !ST.slides || !ST.slides.length);
   $('#shareBtn').classList.toggle('hidden', !canEdit());
   $('#adminBtn').classList.toggle('hidden', VIEW || ST.open || !!ST.authed || ST.online !== true);
   const e = $('#emptyEdit'); if (e) e.classList.toggle('hidden', !canEdit());
@@ -1431,6 +1489,26 @@ applyLangUI();
 /* =================== init =================== */
 $('#period').onchange = e => loadPeriod(e.target.value);
 $('#editBtn').onclick = () => { if (canEdit() && !LOCKED[ST.period]) openEditor(); };
+/* poin observation bisa diklik → detail (TBA, bisa diisi admin) */
+function openCrit(i) {
+  const list = LANG === 'id' ? CRITERIA_ID : CRITERIA, k = slideKey({ classList: ['v4'] }), store = (ST.data && ST.data.texts) || {};
+  const title = store['v4|' + list[i]] || list[i], notes = (ST.data && ST.data.critNotes) || {}, txt = notes[i] || '';
+  const can = canEdit() && !LOCKED[ST.period];
+  const el = document.createElement('div'); el.className = 'md'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
+  el.innerHTML = `<div class="mdb" style="max-width:560px"><div class="mdh"><div><small>${T('criteriaT')}</small><h3>${i + 1}. ${esc(title)}</h3></div><button class="btn x">Close</button></div>
+    <div class="crb">${txt ? esc(txt).replace(/\n/g, '<br>') : `<span class="mut">${T('critTBA')}</span>`}</div>
+    ${can ? `<div class="cre"><textarea class="inp" rows="5" placeholder="${T('critEditHint')}">${esc(txt)}</textarea><button class="btn y sv">Simpan</button></div>` : ''}</div>`;
+  document.body.appendChild(el);
+  const close = () => el.remove(); el.querySelector('.x').onclick = close; el.addEventListener('click', e => { if (e.target === el) close(); });
+  const sv = el.querySelector('.sv'); if (sv) sv.onclick = async () => { ST.data.critNotes = ST.data.critNotes || {}; const v = el.querySelector('textarea').value.trim(); if (v) ST.data.critNotes[i] = v; else delete ST.data.critNotes[i]; await persistData('Detail kriteria tersimpan ✓'); close(); };
+}
+document.addEventListener('click', e => { if (TEXTING) return; const c = e.target.closest('[data-crit]'); if (c) { e.preventDefault(); openCrit(+c.dataset.crit); } });
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('[data-crit]')) { e.preventDefault(); openCrit(+e.target.dataset.crit); } });
+$('#textBtn').onclick = async () => { if (!canEdit() || LOCKED[ST.period]) return;
+  if (!TEXTING) { TEXTING = true; ST.textDirty = false; document.body.classList.add('texting'); $('#textBtn').textContent = '✓ Selesai edit text'; gtDeck(); toast('Klik teks di slide untuk mengubah · kosongkan untuk kembali ke teks asli'); return; }
+  document.activeElement && document.activeElement.blur && document.activeElement.blur();
+  TEXTING = false; document.body.classList.remove('texting'); $('#textBtn').textContent = '✎ Edit text'; gtDeck();
+  if (ST.textDirty) { ST.textDirty = false; await persistData('Teks slide tersimpan ✓'); } };
 $('#presentBtn').onclick = () => present(0);
 $('#printBtn').onclick = () => window.print();
 (async () => {

@@ -983,7 +983,7 @@ function prodHL(C, m) {
     const bk = C.A.filter(a => a.crossF > 0).sort((x, y) => y.crossF - x.crossF);
     if (bk.length) L.push((ID ? 'Bonus back-up untuk yang membantu divisi lain (ditambahkan ke Skor Akhir, maks +2.5): ' : 'Back-up bonus for covering the other division (added to the Final Score, max +2.5): ') + bk.slice(0, 4).map(a => `${a.name} +${f2(a.crossF)}`).join(' · ') + '.');
   }
-  return `<div class="phl"><div class="phl-h">✦ ${T('khl')}<span>👆 ${T('clickHint')}</span></div><ul>${L.slice(0, 5).map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>`;
+  return `<div class="phl"><div class="phl-h">${T('khl')}<span>${T('clickHint')}</span></div><ul>${L.slice(0, 5).map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>`;
 }
 /* 4 kartu key highlights attendance (positif, dihitung dari data) */
 function attHL(list, m, nick) {
@@ -993,7 +993,7 @@ function attHL(list, m, nick) {
   const zero = list.filter(a => a.attMo && !n(a.att.lateMin));
   const up = list.filter(a => a.attMo && a.attMo.every(Boolean) && a.attMo[0].pct < a.attMo[1].pct && a.attMo[1].pct < a.attMo[2].pct);
   const byA = new Map(); perf.forEach(e => { byA.set(e.a, [...(byA.get(e.a) || []), monthShort(m[e.k])]); });
-  const card = (cls, ico, val, lab, sub) => `<div class="ahc ${cls}"><i>${ico}</i><b class="num">${val}</b><span>${lab}</span><small>${sub || '—'}</small></div>`;
+  const card = (cls, ico, val, lab, sub) => `<div class="ahc ${cls}"><b class="num">${val}</b><span>${lab}</span><small>${sub || '—'}</small></div>`;
   return `<div class="ahl">${card('t', '🏆', f2(top.attS), T('hlTop'), nm(tops))}
     ${card('p', '✨', perf.length, T('hlPerf'), [...byA].map(([a, ms]) => `${nick(a)} (${ms.join(', ')})`).join(', '))}
     ${card('z', '⏱', zero.length, T('hlZero'), nm(zero))}
@@ -1105,7 +1105,7 @@ function slides(p, data) {
     const top = list[0];
     out.push(`<section class="slide v5 ${N > 5 ? 'many' : ''}"><div class="s-in">
       ${head(`${T('pillar')} 03`, T('attT2'), top ? (top.attS >= 100 ? T('attPerfect')(esc(top.name)) : (() => { const tie = list.filter(a => a.attS === top.attS); return tie.length > 1 ? T('attTie')(tie.map(a => esc(nick(a))).join(LANG === 'id' ? ' dan ' : ' and '), f2(top.attS)) : T('attTop')(esc(top.name), f2(top.attS)); })()) : '', 'g', T('weight')(20))}
-      <div class="v5g"><div class="cbox">${tb}<div class="tnote">${MON ? `<b class="ahint">👆 ${T('clickAtt')}</b> ` + T('monNote') + ' ' : ''}${T('daysNote')}${data.attNote && !(MON && /^Attendance Recap/i.test(data.attNote)) ? ' · ' + esc(data.attNote) : ''}</div>${MON ? attHL(list, m, nick) : ''}</div>
+      <div class="v5g"><div class="cbox">${tb}<div class="tnote">${MON ? `<b class="ahint">${T('clickAtt')}</b> ` + T('monNote') + ' ' : ''}${T('daysNote')}${data.attNote && !(MON && /^Attendance Recap/i.test(data.attNote)) ? ' · ' + esc(data.attNote) : ''}</div>${MON ? attHL(list, m, nick) : ''}</div>
         ${MON ? (() => { const wd = [0, 1, 2].map(k => n((data.attMins || [])[k]) || ATT_MINS_DEF).map(M => M / ATT_MIN_DAY);
             return `<div class="cbox side afp"><div class="cap afh">${T('calc')}<span class="a20">${T('att20')}</span></div>
           <div class="fc g"><div class="fch"><b>70%</b><span><em>①</em>${T('barR2')}</span></div><p>${T('rateF2')}</p></div>
@@ -1307,14 +1307,15 @@ function prep(sl) {
   sl.querySelectorAll('.num').forEach(el => { if (el.dataset.t == null) el.dataset.t = el.textContent; });
 }
 function countUp(sl) {
+  const WIN = sl.classList.contains('win');   // angka bergerak hanya di slide Best Employee
   sl.querySelectorAll('.num').forEach(el => {
     const t = el.dataset.t, m = /^([^\d]*)([\d,]+(?:\.(\d+))?)(.*)$/.exec(t || '');
-    if (!m || RM) { if (t != null) el.textContent = t; return; }
+    if (!m || RM || !WIN) { if (t != null) el.textContent = t; return; }
     const to = parseFloat(m[2].replace(/,/g, '')), dec = m[3] ? m[3].length : 0, comma = m[2].includes(',');
-    const card = el.closest('[data-k]'), delay = 300 + (card ? +card.style.getPropertyValue('--k') || 0 : 0) * 120, dur = 1700;
+    const card = el.closest('[data-k]'), delay = 450 + (card ? +card.style.getPropertyValue('--k') || 0 : 0) * 150, dur = 2400;
     const fmt = v => { const x = v.toFixed(dec); return comma || to >= 1000 ? Number(x).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) : x; };
     const t0 = performance.now() + delay; el.textContent = m[1] + fmt(0) + m[4];
-    const step = now => { const p = Math.min(1, Math.max(0, (now - t0) / dur)), e = 1 - Math.pow(1 - p, 5);
+    const step = now => { const p = Math.min(1, Math.max(0, (now - t0) / dur)), e = p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;   // ease-in-out halus
       el.textContent = m[1] + fmt(to * e) + m[4]; if (p < 1 && el.isConnected) requestAnimationFrame(step); else el.textContent = t; };
     requestAnimationFrame(step);
   });

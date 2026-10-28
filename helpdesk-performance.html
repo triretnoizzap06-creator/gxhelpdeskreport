@@ -344,7 +344,7 @@ button,input,select{font:inherit;color:inherit}
 .stk i{display:flex;align-items:center;justify-content:center;height:100%;width:0;overflow:hidden;transition:width 1.6s cubic-bezier(.22,1,.36,1);transition-delay:calc(.2s + var(--k,0)*.12s)}
 .slide.play .stk i{width:var(--w)}
 .xb{color:#2563EB;font-weight:700}.stk em{font-style:normal;font-size:.9cqw;font-weight:800;white-space:nowrap}
-.stk .s0{background:#27272A;color:#fff}.stk .s1{background:#A1A1AA;color:#111}.stk .sb{background:var(--y);color:#111}.stk .sx{background:#3B82F6}.lgd i.sx{background:#3B82F6}
+.stk .s0{background:#27272A;color:#fff}.stk .s1{background:#A1A1AA;color:#111}.stk .sb{background:var(--y);color:#111}.stk .sx{background:#3B82F6}.ec.x em{color:#2563EB}.stk .sp{background:repeating-linear-gradient(45deg,#FCA5A5 0 .35cqw,#FEE2E2 .35cqw .7cqw)}.lgd i.sp{background:#FCA5A5}.xp{color:#DC2626;font-weight:700}.lgd i.sx{background:#3B82F6}
 .prv{text-align:right;font-family:var(--disp);font-size:1.8cqw;font-weight:800}
 .pr.lead .prv{color:#111}.pr:not(.lead) .prv{color:#3F3F46}
 .rinfo{font-size:.95cqw;color:#71717A;margin:-1.6cqw 0 2.2cqw}
@@ -559,7 +559,11 @@ button,input,select{font:inherit;color:inherit}
 'use strict';
 /* =================== konstanta =================== */
 const START_YEAR = 2026, START_Q = 2;
-const CROSS_MAX = 5;   // bonus back-up lintas divisi maks +5 poin (produktivitas tetap maks 100)                      // periode pertama: 2026 Q2
+const CROSS_MAX = 5;
+const RR_TARGET = { HD: 90, AM: 95 }, RR_PEN_PER = 1, RR_PEN_MAX = 5;   // resolution rate di bawah target → −1 poin per 1% (maks −5, seimbang dengan bonus) dari productivity
+const CROSS_FINAL = 0.5;
+const RULES_FROM = '2026-Q3';   // penalti res. rate & bonus back-up berlaku mulai Q3 2026 (Q2 tetap sesuai hasil yang sudah diumumkan)
+const newRules = () => { try { return (ST.period || '') >= RULES_FROM; } catch (e) { return false; } };   // bonus back-up masuk ke Final Score dengan bobot sama seperti productivity (maks +2.5)   // bonus back-up lintas divisi maks +5 poin (produktivitas tetap maks 100)                      // periode pertama: 2026 Q2
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MSHORT = MONTHS.map(m => m.slice(0, 3));
 const API = '/api/perf', KEY_PUB = 'gxcs-pub-key', CACHE = 'gx-perf-cache-';
@@ -567,13 +571,13 @@ const COLORS = ['#FFD000', '#111111', '#8A8A8A', '#D4D4D8', '#F59E0B', '#2563EB'
 const CRITERIA = ['Opening & Greeting Protocol', 'Customer Identification', 'Issue Understanding', 'Empathy & Tone', 'Accuracy of Solution',
   'Communication Clarity', 'Response Speed', 'Grammar & Language', 'Product / SOP Knowledge', 'Closing & Follow-Up'];
 
-/* Data Q2 2026 (dari slide Figma Q2 Report Helpdesk) — dipakai sampai data online disimpan */
+/* Data Q2 2026 (dari slide Figma Q2 Report Helpdesk + sheet bulanan Q2; Res. % Q2 = VIP done ÷ VIP, bulan tanpa VIP = 100%) — dipakai sampai data online disimpan */
 const SEED = {
   '2026-Q2': { attNote: 'April note — Desi: Sick 1d + PL 1d · Kadek: Sick 2d + PL 4d', agents: [
-    { name: 'Devin Bagaskara', div: 'HD', csMon: 2261, csHandled: 732, chat: [95, 95, 95], att: { manual: 100 } },
-    { name: 'Ni Kadek Desi Mirayani', div: 'AM', vipTotal: 1364, vipSolved: 1350, vipRate: 98.76, chat: [95, 95, 95], att: { sick: 1, personal: 1, manual: 98.88 } },
-    { name: 'Aulia Sevi Diana', div: 'AM', vipTotal: 1224, vipSolved: 1204, vipRate: 98.23, chat: [90, 95, 95], att: { manual: 97.91 } },
-    { name: 'Kadek Arisita D.P.', div: 'HD', csMon: 1994, csHandled: 690, chat: [90, 95, 95], att: { sick: 2, personal: 4, manual: 96.38 } },
+    { name: 'Devin Bagaskara', div: 'HD', csMon: 2261, csHandled: 732, csMonM: [750, 788, 723], csHandledM: [201, 216, 315], vipTotalM: [10, 55, 81], vipSolvedM: [9, 54, 80], rrM: [90.00, 98.18, 98.77], chat: [95, 95, 95], att: { manual: 100 } },
+    { name: 'Ni Kadek Desi Mirayani', div: 'AM', vipTotal: 1364, vipSolved: 1350, vipRate: 98.76, csMonM: [107, 99, 255], csHandledM: [37, 36, 99], vipTotalM: [332, 536, 496], vipSolvedM: [323, 535, 492], rrM: [97.29, 99.81, 99.19], chat: [95, 95, 95], att: { sick: 1, personal: 1, manual: 98.88 } },
+    { name: 'Aulia Sevi Diana', div: 'AM', vipTotal: 1224, vipSolved: 1204, vipRate: 98.23, csMonM: [175, 98, 79], csHandledM: [59, 36, 37], vipTotalM: [380, 473, 371], vipSolvedM: [377, 472, 355], rrM: [99.21, 99.79, 95.69], chat: [90, 95, 95], att: { manual: 97.91 } },
+    { name: 'Kadek Arisita D.P.', div: 'HD', csMon: 1994, csHandled: 690, csMonM: [669, 677, 648], csHandledM: [225, 231, 234], vipTotalM: [0, 26, 16], vipSolvedM: [0, 25, 16], rrM: [100, 96.15, 100], chat: [90, 95, 95], att: { sick: 2, personal: 4, manual: 96.38 } },
   ] },
 };
 
@@ -620,7 +624,7 @@ function monthlyProd(data) {
   const out = {};
   for (let k = 0; k < 3; k++) {
     const agents = (data.agents || []).map(normAgent).filter(a => a.name.trim()).filter(a => a.div === 'HD' ? (a.csMonM[k] != null || a.csHandledM[k] != null) : a.vipTotalM[k] != null)
-      .map(a => ({ name: a.name, div: a.div, csMon: a.csMonM[k] || 0, csHandled: a.csHandledM[k] || 0, vipTotal: a.vipTotalM[k] || 0, vipSolved: a.vipSolvedM[k] || 0, chat: [], att: { manual: 0 } }));
+      .map(a => ({ name: a.name, div: a.div, csMon: a.csMonM[k] || 0, csHandled: a.csHandledM[k] || 0, vipTotal: a.vipTotalM[k] || 0, vipSolved: a.vipSolvedM[k] || 0, rrM: [rrOf(a, k), null, null], chat: [], att: { manual: 0 } }));
     if (!agents.length) continue;
     compute({ agents }).A.forEach(r => { (out[r.name] = out[r.name] || [null, null, null])[k] = r; });
   }
@@ -639,7 +643,8 @@ const CRITERIA_ID = ['Salam Pembuka & Protokol', 'Identifikasi Pelanggan', 'Pema
 const DIV_ID = { HD: 'Helpdesk', AM: 'Account Manager' };
 const TX = {
   en: {
-    rrInfo: 'Resolution rate (CS & VIP) is shown as information only and is not part of the score — it also depends on the customer side. Click an agent to see it per month.', resRate: 'Resolution rate', infoOnly: 'info only', csSolvedL: 'solved',
+    rrInfoOld: 'Resolution rate (CS & VIP) is shown as information only and is not part of the score — it also depends on the customer side. Click an agent to see it per month.',
+    rrInfo: 'Resolution rate target: Helpdesk 90% · Account Manager 95% (quarter average). Below target = −1 point per 1% from productivity (max −5). Click an agent to see it per month.', penL: 'res. rate', resRate: 'Resolution rate', infoOnly: 'target HD 90% · AM 95%', infoOld: 'info only', csSolvedL: 'solved',
     clickHint: 'Click an agent for monthly detail', clickDetail: 'Click for monthly detail', monthlyAvg: 'Monthly average', quarterScore: 'Quarter score', bestMonth: 'Best month', noMonthly: 'Monthly data has not been entered for this agent yet. Fill the monthly fields in Edit data to see the breakdown per month.', mdNote: 'Each month is scored with the same formula, compared with agents of the same division in that month. Quarter score uses the quarter totals.', month: 'Month', close: 'Close', totalQ: 'Quarter',
     example: 'Worked example', points: 'points', monitored: 'monitored', handled: 'handled', vipSolvedR: 'VIP resolved',
     prodTake2: 'Score = how close each agent is to the best result in their own division, per metric.', topIn: 'Top in', teamAvg: 'Team average', agents: 'agents',
@@ -661,9 +666,9 @@ const TX = {
     attNote2: 'Sick days count 75%, personal leave 50%, absence 0%. Late minutes lower the score. Scale starts at 85.',
     cso: 'CSO DIVISION', erp: '★ Employee Recognition Program', awards: 'PERFORMANCE AWARDS', lede: t => `Recognizing consistency, excellence,<br>and dedication across ${t}.`,
     hdDiv: 'HELPDESK DIVISION', bestHd: 'BEST HELPDESK', chatQ: 'OBSERVATION', prod: 'PRODUCTIVITY', att: 'ATTENDANCE',
-    kpi: 'KPI Framework', pillarsT: 'THREE PILLARS.<br>ONE SCORE.', formula: 'Final Score = (Chat × 0.30) + (Attendance × 0.20) + (Productivity × 0.50)',
+    kpi: 'KPI Framework', pillarsT: 'THREE PILLARS.<br>ONE SCORE.', formula: 'Final Score = (Chat × 0.30) + (Attendance × 0.20) + (Productivity × 0.50) + Back-up bonus (≤ 2.5)',
     pillar: 'Pillar', p1sub: 'Highest impact KPI — division-scoped', p2sub: 'Consistency of service', p3sub: 'Reliability &amp; punctuality',
-    p1: ['AM: VIP Handled 95%', 'HD: CS Monitoring 38% + CS Handled 57%', 'Each metric normalized within own division', 'Core Score max 95 + Bonus max +5 = 100', 'Assist Bonus: top KPI metric vs peer max', 'Back-up Bonus ≤ +5: cross-division support'],
+    p1: ['AM: VIP Handled 95%', 'HD: CS Monitoring 38% + CS Handled 57%', 'Each metric normalized within own division', 'Core Score max 95 + Bonus max +5 = 100', 'Assist Bonus: top KPI metric vs peer max', 'Res. rate target HD 90% · AM 95%: −1 pt per 1% below (max −5)', 'Back-up bonus ≤ +2.5 on Final Score'],
     p2: ms => ['2 cases observed per month', 'Scored via Google Form', '10 criteria, max 100 pts', `Average across ${ms.join(', ').replace(/, ([^,]*)$/, ' and $1')}`],
     p2all: (n, s) => `All ${n} agents scored ${s}+`,
     p3: ['Attendance Rate × 0.70', 'Punctuality × 0.30', 'Late mins vs total work mins', 'Sick 75% credit · Personal Leave 50% credit · Alpha 0% credit', 'Perfect score = 100.00'],
@@ -682,14 +687,15 @@ const TX = {
     best: t => `🏅 Best Employee · ${t}`, division: d => `${d} DIVISION`, outOf: g => `out of 100 · ${g}`, wt: w => `${w}% weight`, rib: t => `★ BEST EMPLOYEE ${t}`,
     finalRank: t => `🏆 Final Rankings · ${t}`, sbT: 'The Final<span>Score Board</span>', final: 'FINAL',
     g: ['A — Excellent', 'B — Good', 'C — Fair', 'D — Needs improvement'],
-    crossL: 'Back-up bonus', crossNote: 'Back-up bonus (max +5): Helpdesk handling VIP or AM handling CS is valued on the other division’s scale and compared with the biggest back-up in the team.',
+    crossL: 'back-up → final', crossNote: 'Back-up bonus (max +2.5 on the Final Score): Helpdesk handling VIP or AM handling CS is valued on the other division’s scale and compared with the biggest back-up in the team.',
     mdT: 'Monthly Productivity Data', mdSub: ms => `Input per month (${ms}) and the resulting productivity score.`, vipDone: 'VIP Done', divL: 'Div.',
     mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Done excludes admin hold · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS solved ÷ CS handled · AM: VIP done ÷ VIP total. Shown as information only — not part of the score. Click a row for the monthly detail.',
     mon: 'CS Monitoring', hand: 'CS Handled Volume', vipR: 'VIP Resolution Rate', vipH: 'VIP Handled Volume', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs peer max', avg: 'avg', of: 'of', vipHandled: 'VIP handled', rateW: 'rate',
   },
   id: {
-    rrInfo: 'Resolution rate (CS & VIP) hanya ditampilkan sebagai info dan tidak masuk skor — karena juga dipengaruhi sisi customer. Klik agent untuk lihat per bulan.', resRate: 'Resolution rate', infoOnly: 'info, tidak masuk skor', csSolvedL: 'selesai',
+    rrInfoOld: 'Resolution rate (CS & VIP) hanya ditampilkan sebagai info dan tidak masuk skor — karena juga dipengaruhi sisi customer. Klik agent untuk lihat per bulan.',
+    rrInfo: 'Target resolution rate: Helpdesk 90% · Account Manager 95% (rata-rata kuartal). Di bawah target = −1 poin per 1% dari productivity (maks −5). Klik agent untuk lihat per bulan.', penL: 'res. rate', resRate: 'Resolution rate', infoOnly: 'target HD 90% · AM 95%', infoOld: 'info, tidak masuk skor', csSolvedL: 'selesai',
     clickHint: 'Klik agent untuk detail per bulan', clickDetail: 'Klik untuk detail per bulan', monthlyAvg: 'Rata-rata bulanan', quarterScore: 'Skor kuartal', bestMonth: 'Bulan terbaik', noMonthly: 'Data bulanan agent ini belum diisi. Isi kolom per bulan di Edit data untuk melihat rinciannya.', mdNote: 'Tiap bulan dihitung dengan rumus yang sama, dibandingkan dengan agent satu divisi di bulan itu. Skor kuartal memakai total kuartal.', month: 'Bulan', close: 'Tutup', totalQ: 'Kuartal',
     example: 'Contoh perhitungan', points: 'poin', monitored: 'monitoring', handled: 'ditangani', vipSolvedR: 'VIP selesai',
     prodTake2: 'Skor = seberapa dekat tiap agent dengan hasil terbaik di divisinya, per metrik.', topIn: 'Teratas di', teamAvg: 'Rata-rata tim', agents: 'agent',
@@ -711,9 +717,9 @@ const TX = {
     attNote2: 'Sakit dihitung 75%, cuti pribadi 50%, alpha 0%. Menit telat menurunkan skor. Skala mulai dari 85.',
     cso: 'DIVISI CSO', erp: '★ Program Apresiasi Karyawan', awards: 'PERFORMANCE AWARDS', lede: t => `Apresiasi untuk konsistensi, keunggulan,<br>dan dedikasi sepanjang ${t}.`,
     hdDiv: 'DIVISI HELPDESK', bestHd: 'HELPDESK TERBAIK', chatQ: 'OBSERVASI', prod: 'PRODUKTIVITAS', att: 'KEHADIRAN',
-    kpi: 'Kerangka KPI', pillarsT: 'TIGA PILAR.<br>SATU SKOR.', formula: 'Skor Akhir = (Chat × 0,30) + (Kehadiran × 0,20) + (Produktivitas × 0,50)',
+    kpi: 'Kerangka KPI', pillarsT: 'TIGA PILAR.<br>SATU SKOR.', formula: 'Skor Akhir = (Chat × 0,30) + (Kehadiran × 0,20) + (Produktivitas × 0,50) + Bonus back-up (≤ 2,5)',
     pillar: 'Pilar', p1sub: 'KPI paling berpengaruh — per divisi', p2sub: 'Konsistensi pelayanan', p3sub: 'Keandalan &amp; ketepatan waktu',
-    p1: ['AM: VIP Handled 95%', 'HD: CS Monitoring 38% + CS Handled 57%', 'Setiap metrik dinormalisasi dalam divisinya sendiri', 'Core Score maks 95 + Bonus maks +5 = 100', 'Assist Bonus: metrik KPI utama vs nilai tertinggi divisi', 'Bonus Back-up ≤ +5: bantu divisi lain'],
+    p1: ['AM: VIP Handled 95%', 'HD: CS Monitoring 38% + CS Handled 57%', 'Setiap metrik dinormalisasi dalam divisinya sendiri', 'Core Score maks 95 + Bonus maks +5 = 100', 'Assist Bonus: metrik KPI utama vs nilai tertinggi divisi', 'Target res. rate HD 90% · AM 95%: −1 poin per 1% di bawah (maks −5)', 'Bonus back-up ≤ +2,5 di Skor Akhir'],
     p2: ms => ['2 kasus diobservasi per bulan', 'Dinilai lewat Google Form', '10 kriteria, maks 100 poin', `Rata-rata ${ms.join(', ').replace(/, ([^,]*)$/, ' dan $1')}`],
     p2all: (n, s) => `Semua ${n} agent mendapat skor ${s}+`,
     p3: ['Tingkat Kehadiran × 0,70', 'Ketepatan Waktu × 0,30', 'Menit telat dibanding total menit kerja', 'Sakit kredit 75% · Cuti Pribadi 50% · Alpha 0%', 'Skor sempurna = 100,00'],
@@ -732,7 +738,7 @@ const TX = {
     best: t => `🏅 Karyawan Terbaik · ${t}`, division: d => `DIVISI ${d}`, outOf: g => `dari 100 · ${g}`, wt: w => `bobot ${w}%`, rib: t => `★ KARYAWAN TERBAIK ${t}`,
     finalRank: t => `🏆 Peringkat Akhir · ${t}`, sbT: 'Papan Skor<span>Akhir</span>', final: 'AKHIR',
     g: ['A — Sangat Baik', 'B — Baik', 'C — Cukup', 'D — Perlu Ditingkatkan'],
-    crossL: 'Bonus back-up', crossNote: 'Bonus back-up (maks +5): Helpdesk yang pegang VIP atau AM yang pegang CS dinilai pakai skala divisi lain, lalu dibandingkan dengan back-up terbesar di tim.',
+    crossL: 'back-up → skor akhir', crossNote: 'Bonus back-up (maks +2,5 di Skor Akhir): Helpdesk yang pegang VIP atau AM yang pegang CS dinilai pakai skala divisi lain, lalu dibandingkan dengan back-up terbesar di tim.',
     mdT: 'Data Produktivitas Bulanan', mdSub: ms => `Input per bulan (${ms}) dan skor produktivitas yang dihasilkan.`, vipDone: 'VIP Selesai', divL: 'Div.',
     mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Selesai tanpa hold admin · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS selesai ÷ CS handled · AM: VIP selesai ÷ total VIP. Hanya info — tidak masuk skor. Klik baris untuk detail per bulan.',
     mon: 'CS Monitoring', hand: 'Volume CS Handled', vipR: 'VIP Resolution Rate', vipH: 'Volume VIP Handled', total: 'total',
@@ -771,7 +777,7 @@ function attScore(t) {
   return { score: rate * 0.7 + punct * 0.3, rate, punct };
 }
 /* resolution rate per bulan (info): isian manual bila ada, kalau kosong dihitung — HD: CS solved ÷ CS handled · AM: VIP solved ÷ VIP total */
-function rrAuto(a, k) { return a.div === 'HD' ? (a.csSolvedM[k] != null && a.csHandledM[k] ? a.csSolvedM[k] / a.csHandledM[k] * 100 : (a.vipTotalM[k] ? (a.vipSolvedM[k] || 0) / a.vipTotalM[k] * 100 : null)) : (a.vipTotalM[k] ? (a.vipSolvedM[k] || 0) / a.vipTotalM[k] * 100 : null); }
+function rrAuto(a, k) { return a.div === 'HD' ? (a.csSolvedM[k] != null && a.csHandledM[k] ? a.csSolvedM[k] / a.csHandledM[k] * 100 : null) : (a.vipTotalM[k] ? (a.vipSolvedM[k] || 0) / a.vipTotalM[k] * 100 : null); }
 function rrOf(a, k) { return a.rrM && a.rrM[k] != null ? a.rrM[k] : rrAuto(a, k); }
 function rrQavg(a) { const v = [0, 1, 2].map(k => rrOf(a, k)).filter(x => x != null); return v.length ? sum(v) / v.length : null; }
 function compute(data) {
@@ -828,8 +834,13 @@ function compute(data) {
   const mxC = Math.max(0, ...A.map(a => a.crossPts));
   A.forEach(a => {
     a.cross = mxC > 0 ? r2(a.crossPts / mxC * CROSS_MAX) : 0;
-    a.prod = r2(Math.min(100, a.core + a.bonus + a.cross));
-    a.final = r2(a.prod * 0.5 + a.chatAvg * 0.3 + a.attS * 0.2);
+    a.rrQ = rrQavg(a);
+    const tg = RR_TARGET[a.div];
+    a.pen = newRules() && a.rrQ != null && a.rrQ < tg ? r2(Math.min(RR_PEN_MAX, (tg - a.rrQ) * RR_PEN_PER)) : 0;
+    a.prod = r2(Math.max(0, Math.min(100, a.core + a.bonus) - a.pen));
+    if (!newRules()) a.cross = 0;
+    a.crossF = r2(a.cross * CROSS_FINAL);
+    a.final = r2(Math.min(100, a.prod * 0.5 + a.chatAvg * 0.3 + a.attS * 0.2 + a.crossF));
   });
   const rankBy = f => A.slice().sort((x, y) => f(y) - f(x));
   return { A, hd: rankBy(a => a.prod).filter(a => a.div === 'HD'), am: rankBy(a => a.prod).filter(a => a.div === 'AM'),
@@ -878,7 +889,7 @@ function slides(p, data) {
     const ex = W ? `<div class="exm"><div class="exh"><span class="cap">${T('example')}</span><b>${esc(W.name)}</b></div>
         <div class="exq"><span class="ec p"><em>${T('prodT')}</em><span><b class="num">${f2(W.prod)}</b> × 50% = <strong class="num">${f2(W.prod * .5)}</strong></span></span><i>+</i>
         <span class="ec c"><em>${T('chatT2')}</em><span><b class="num">${f2(W.chatAvg)}</b> × 30% = <strong class="num">${f2(W.chatAvg * .3)}</strong></span></span><i>+</i>
-        <span class="ec a"><em>${T('attT2')}</em><span><b class="num">${f2(W.attS)}</b> × 20% = <strong class="num">${f2(W.attS * .2)}</strong></span></span><i>=</i>
+        <span class="ec a"><em>${T('attT2')}</em><span><b class="num">${f2(W.attS)}</b> × 20% = <strong class="num">${f2(W.attS * .2)}</strong></span></span>${W.crossF ? `<i>+</i><span class="ec x"><em>Back-up</em><span><strong class="num">${f2(W.crossF)}</strong></span></span>` : ''}<i>=</i>
         <span class="ef"><em>${T('finalScore')}</em><b class="num">${f2(W.final)}</b></span></div></div>` : '';
     out.push(`<section class="slide v2"><div class="s-in">
       ${head(`${T('kpi')} · ${tag}`, T('howT'), T('howSub'))}
@@ -898,18 +909,19 @@ function slides(p, data) {
   {
     const avgP = N ? sum(C.A.map(a => a.prod)) / N : 0, lh = C.hd[0], la = C.am[0];
     const tile = (lab, val, sub, cls = '') => `<div class="kt ${cls}"><span>${lab}</span><b class="num">${val}</b><small>${sub}</small></div>`;
-    const raw = a => (a.div === 'HD' ? `${fInt(a.csMon)} ${T('monitored')} · ${fInt(a.csHandled)} ${T('handled')}` : `${fInt(a.vipTotal)} VIP ${T('handled')}`) + (a.cross > 0 ? ` · <span class="xb">+${f2(a.cross)} ${T('crossL').toLowerCase()}</span>` : '');
+    const raw = a => (a.div === 'HD' ? `${fInt(a.csMon)} ${T('monitored')} · ${fInt(a.csHandled)} ${T('handled')}` : `${fInt(a.vipTotal)} VIP ${T('handled')}`) + (a.crossF > 0 ? ` · <span class="xb">+${f2(a.crossF)} ${T('crossL').toLowerCase()}</span>` : '') + (a.pen > 0 ? ` · <span class="xp">−${f2(a.pen)} ${T('penL')} ${f2(a.rrQ)}%</span>` : '');
     const row = (a, i) => `<div class="pr ${i ? '' : 'lead'} clk" data-ag="${esc(a.name)}" role="button" tabindex="0" title="${T('clickDetail')}"><div class="prn">${av(a)}<div><b>${esc(a.name)}</b><small>${raw(a)}</small></div></div>
-        <div class="stk">${a.parts.map((p, k) => `<i class="s${k}" style="--w:${p.v}%">${p.v >= 7 ? `<em>${f2(p.v).replace(/\.00$/, '')}</em>` : ''}</i>`).join('')}<i class="sb" style="--w:${Math.max(0, Math.min(a.bonus, 100 - a.core))}%"></i><i class="sx" style="--w:${Math.max(0, Math.min(a.cross, 100 - a.core - a.bonus))}%"></i></div>
+        <div class="stk">${(() => { let left = a.prod; const seg = v => { const w = Math.max(0, Math.min(v, left)); left -= w; return w; };
+          return a.parts.map((p, k) => { const w = seg(p.v); return `<i class="s${k}" style="--w:${w}%">${w >= 7 ? `<em>${f2(w).replace(/\.00$/, '')}</em>` : ''}</i>`; }).join('') + `<i class="sb" style="--w:${seg(a.bonus)}%"></i>` + (a.pen ? `<i class="sp" style="--w:${a.pen}%"></i>` : ''); })()}</div>
         <div class="prv num">${f2(a.prod)}</div></div>`;
-    const panel = (list, name, l0, l1) => list.length ? `<div class="ppan"><div class="pph"><b>${name}</b><span class="lgd"><i class="s0"></i>${l0}${l1 ? `<i class="s1"></i>${l1}` : ''}<i class="sb"></i>${T('bonus')} ≤5<i class="sx"></i>${T('crossL')} ≤${CROSS_MAX}</span></div>
+    const panel = (list, name, l0, l1) => list.length ? `<div class="ppan"><div class="pph"><b>${name}</b><span class="lgd"><i class="s0"></i>${l0}${l1 ? `<i class="s1"></i>${l1}` : ''}<i class="sb"></i>${T('bonus')} ≤5${list.some(x => x.pen) ? `<i class="sp"></i>−${T('penL')}` : ''}</span></div>
         <div class="pscale"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>${list.map(row).join('')}</div>` : '';
     out.push(`<section class="slide v3 ${N > 5 ? 'many' : ''}"><div class="s-in">
       ${head(`${T('pillar')} 01`, T('prodT'), T('prodTake2'), 'y', T('weight')(50))}
       <div class="kts">${lh ? tile(`${T('topIn')} Helpdesk`, f2(lh.prod), esc(lh.name), 'y') : ''}${la ? tile(`${T('topIn')} Account Manager`, f2(la.prod), esc(la.name), 'y') : ''}${tile(T('teamAvg'), f2(avgP), `${N} ${T('agents')}`)}</div>
       <div class="ppans">${panel(C.hd, 'Helpdesk', 'CS Monitoring 38', 'CS Handled 57')}${panel(C.am, 'Account Manager', 'VIP Handled 95', '')}</div>
       <div class="how"><span class="tap">👆 ${T('clickHint')}</span><span><b>1</b>${T('how1')}</span><span><b>2</b>${T('how2')}</span><span><b>3</b>${T('how3')}</span></div>
-      <div class="rinfo">ⓘ ${T('rrInfo')}${C.A.some(x => x.cross > 0) ? '<br>⇄ ' + T('crossNote') : ''}</div>
+      <div class="rinfo">ⓘ ${T(newRules() ? 'rrInfo' : 'rrInfoOld')}${C.A.some(x => x.cross > 0) ? '<br>⇄ ' + T('crossNote') : ''}</div>
     </div>${foot}</section>`);
   }
 
@@ -976,7 +988,7 @@ function slides(p, data) {
     <div class="hd"><div><div class="kick">${T('finalRank')(tag)}</div><h2>${T('sbT')}</h2></div>${LOGO_W}</div>
     <div class="rows">${C.byFinal.map((a, i) => `<div class="srow ${i ? '' : 'first'}">${rk(i)}<div class="nm"><span class="av">${photoOf(a) ? `<img src="${esc(photoOf(a))}" alt="">` : esc(initials(a.name))}</span><b>${esc(a.name)}</b><small>${DIV[a.div].toUpperCase()}</small></div>
       <div class="k"><small>PRD</small><b class="cP num">${f2(a.prod)}</b></div><div class="k"><small>OBS</small><b class="cC num">${f2(a.chatAvg)}</b></div><div class="k"><small>ATD</small><b class="cA num">${f2(a.attS)}</b></div>
-      <div class="sp"></div><div class="f"><small>${T('final')}</small><b class="num">${f2(a.final)}</b></div></div>`).join('')}</div>
+      <div class="sp"></div><div class="f"><small>${T('final')}${a.crossF ? ` · +${f2(a.crossF)} B-UP` : ''}</small><b class="num">${f2(a.final)}</b></div></div>`).join('')}</div>
   </div>${foot}</section>`);
   return out;
 }
@@ -1174,21 +1186,21 @@ function edTable(m, live) {
       return `<tr data-i="${i}"><td class="etn">${esc(a.name || '(tanpa nama)')}</td>
         ${m.map((mi, k) => cols.map(([f, , c], j) => inp(`${f}.${k}`, a[f] && a[f][k], `${c || ''} ${j ? '' : 'etg'}`)).join('')
           + `<td class="etr"><input class="inp et" type="number" step="any" min="0" max="100" data-p="rrM.${k}" value="${esc(a.rrM && a.rrM[k] != null ? a.rrM[k] : '')}" placeholder="%"></td>`).join('')}
-        <td class="ets etg" data-o="core">${L ? f2(L.core) : '–'}</td><td class="ets" data-o="bonus">${L ? f2(L.bonus) : '–'}</td><td class="ets etx" data-o="cross" title="${L ? esc(L.crossVol) : ''}">${L ? f2(L.cross) : '–'}</td><td class="ets etf" data-o="prod">${L ? f2(L.prod) : '–'}</td><td class="ets" data-o="rrq">${L && rrQavg(L) != null ? f2(rrQavg(L)) + '%' : '–'}</td></tr>`; }).join('');
+        <td class="ets etg" data-o="core">${L ? f2(L.core) : '–'}</td><td class="ets" data-o="bonus">${L ? f2(L.bonus) : '–'}</td><td class="ets etx" data-o="cross" title="${L ? esc(L.crossVol) : ''}">${L ? '+' + f2(L.crossF) : '–'}</td><td class="ets xp" data-o="pen">${L && L.pen ? '−' + f2(L.pen) : '0'}</td><td class="ets etf" data-o="prod">${L ? f2(L.prod) : '–'}</td><td class="ets" data-o="rrq">${L && rrQavg(L) != null ? f2(rrQavg(L)) + '%' : '–'}</td></tr>`; }).join('');
     const name = div === 'HD' ? 'Helpdesk' : 'Account Manager';
     const how = div === 'HD' ? 'Skor: CS Monitoring 38% + CS Handled 57% + assist bonus 5 · <span class="etx">VIP Hand. = bonus back-up</span>' : 'Skor: VIP Handled 95% + assist bonus 5 · <span class="etx">CS Mon. & CS Hand. = bonus back-up</span>';
     return `<div class="etblk"><div class="eth"><b>${name}</b><span>${how}</span></div>${list.length ? `<div class="ets-scroll"><table class="etab"><thead>
-      <tr><th rowspan="2" class="etn">Nama</th>${m.map(mi => `<th colspan="${w}" class="etm etg">${MONTHS[mi].toUpperCase()} ${y}</th>`).join('')}<th rowspan="2" class="ets etg">Core</th><th rowspan="2" class="ets">Bonus</th><th rowspan="2" class="ets etx">Back-up</th><th rowspan="2" class="ets etf">Final<br>Prod.</th><th rowspan="2" class="ets">Res. %<br>${q} avg</th></tr>
+      <tr><th rowspan="2" class="etn">Nama</th>${m.map(mi => `<th colspan="${w}" class="etm etg">${MONTHS[mi].toUpperCase()} ${y}</th>`).join('')}<th rowspan="2" class="ets etg">Core</th><th rowspan="2" class="ets">Bonus</th><th rowspan="2" class="ets etx">Back-up<br>→ Final</th><th rowspan="2" class="ets xp">Penalti<br>Res.</th><th rowspan="2" class="ets etf">Final<br>Prod.</th><th rowspan="2" class="ets">Res. %<br>${q} avg</th></tr>
       <tr>${m.map(() => cols.map(([, t, c], j) => `<th class="${c || ''} ${j ? '' : 'etg'}">${t}</th>`).join('') + '<th class="etr">Res. %</th>').join('')}</tr></thead><tbody>${rows}</tbody></table></div>` : `<div class="help">Belum ada agent ${name}. Atur divisi di kartu agent di bawah.</div>`}</div>`; };
-  return `<div class="acard etw"><div class="eth"><b>Productivity — data bulanan · ${q} ${y}</b><span>Res. % = resolution rate semua case agent per bulan (info, tidak masuk skor)</span></div>
+  return `<div class="acard etw"><div class="eth"><b>Productivity — data bulanan · ${q} ${y}</b><span>Res. % = resolution rate semua case agent per bulan · target Helpdesk ${RR_TARGET.HD}% · AM ${RR_TARGET.AM}% (rata-rata kuartal) · di bawah target −${RR_PEN_PER} poin per 1% (maks −${RR_PEN_MAX})</span></div>
     ${table('HD')}${table('AM')}
-    <div class="help" style="margin:8px 0 0"><b class="etx">Back-up</b> (maks +5) = kerja di divisi lain (kolom biru) dinilai pakai skala divisi itu, dibandingkan dengan back-up terbesar di tim. Produktivitas tetap maks 100.</div></div>`;
+    <div class="help" style="margin:8px 0 0"><b class="etx">Back-up</b> (maks +2,5, ditambahkan ke <b>Final Score</b>, bukan productivity) = kerja di divisi lain (kolom biru) dinilai pakai skala divisi itu, dibandingkan dengan back-up terbesar di tim. Productivity = Core + Bonus (maks 100) − Penalti Res.</div></div>`;
 }
 function edLive() {
   const C = compute(ED), live = new Map(C.A.map(a => [a.name, a]));
   $$('#edBody .acard[data-i]').forEach(card => { const L = live.get((ED.agents[+card.dataset.i].name || '').trim()); const s = card.querySelector('.live'); if (s) s.innerHTML = L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · OBS ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''; });
   $$('#edBody tr[data-i]').forEach(tr => { const a = ED.agents[+tr.dataset.i], L = live.get((a.name || '').trim()), set = (o, v) => { const c = tr.querySelector(`[data-o="${o}"]`); if (c) c.textContent = v; };
-    set('core', L ? f2(L.core) : '–'); set('bonus', L ? f2(L.bonus) : '–'); set('cross', L ? f2(L.cross) : '–'); set('prod', L ? f2(L.prod) : '–'); const q = L ? rrQavg(L) : null; set('rrq', q != null ? f2(q) + '%' : '–');
+    set('core', L ? f2(L.core) : '–'); set('bonus', L ? f2(L.bonus) : '–'); set('cross', L ? '+' + f2(L.crossF) : '–'); set('pen', L && L.pen ? '−' + f2(L.pen) : '0'); set('prod', L ? f2(L.prod) : '–'); const q = L ? rrQavg(L) : null; set('rrq', q != null ? f2(q) + '%' : '–');
     if (L) tr.querySelectorAll('[data-p^="rrM."]').forEach(inp => { const k = +inp.dataset.p.slice(4), au = rrAuto(L, k); inp.placeholder = au != null ? f2(au) : '%'; }); });
 }
 function setPath(o, path, v) { const k = path.split('.'); let t = o; for (let i = 0; i < k.length - 1; i++) { t[k[i]] = t[k[i]] || (/^\d+$/.test(k[i + 1]) ? [] : {}); t = t[k[i]]; } t[k[k.length - 1]] = v; }
@@ -1264,13 +1276,13 @@ function openProdDetail(name) {
     <div class="mdk"><div><span>${T('quarterScore')}</span><b>${f2(a.prod)}</b></div><div><span>${T('monthlyAvg')}</span><b>${avg == null ? '—' : f2(avg)}</b></div><div><span>${T('bestMonth')}</span><b>${best ? monthName(mm[bestK]) : '—'}</b></div></div>
     ${have.length ? `<div class="mdc">${M.map(col).join('')}</div><div class="mdx">${mm.map(i => `<span>${monthName(i)}</span>`).join('')}</div>
       <div class="mdlg">${lbl.map((l, j) => `<span><i style="background:${colors[j]}"></i>${l}</span>`).join('')}<span><i style="background:${colors[2]}"></i>${T('bonus')}</span></div>
-      <table class="mdt"><thead><tr><th>${T('month')}</th>${lbl.map(l => `<th>${l}</th>`).join('')}<th>${T('bonus')}</th><th>${T('prodT')}</th><th class="rr">${T('resRate')}<small>${T('infoOnly')}</small></th></tr></thead><tbody>
-        ${M.map((r, k) => r ? `<tr><td>${monthName(mm[k])}<small>${rawM(r, k)}</small></td>${r.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(r.bonus)}${r.cross ? `<small>+${f2(r.cross)} back-up</small>` : ''}</td><td><b>${f2(r.prod)}</b></td>${rrCell(rrM(k))}</tr>` : `<tr><td>${monthName(mm[k])}</td><td colspan="${lbl.length + 3}" style="color:var(--muted)">—</td></tr>`).join('')}
-        <tr class="tot"><td>${T('totalQ')}<small>${rawQ}</small></td>${a.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(a.bonus)}${a.cross ? `<small>+${f2(a.cross)} back-up</small>` : ''}</td><td>${f2(a.prod)}</td>${rrCell(rrQ)}</tr></tbody></table>
-      <div class="mdn">${T('mdNote')} ${T('rrInfo').split(' — ')[0]}.</div>`
+      <table class="mdt"><thead><tr><th>${T('month')}</th>${lbl.map(l => `<th>${l}</th>`).join('')}<th>${T('bonus')}</th><th>${T('prodT')}</th><th class="rr">${T('resRate')}<small>${newRules() ? T('infoOnly') : T('infoOld')}</small></th></tr></thead><tbody>
+        ${M.map((r, k) => r ? `<tr><td>${monthName(mm[k])}<small>${rawM(r, k)}</small></td>${r.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(r.bonus)}</td><td><b>${f2(r.prod)}</b>${r.pen ? `<small class="xp">−${f2(r.pen)} res.</small>` : ''}</td>${rrCell(rrM(k))}</tr>` : `<tr><td>${monthName(mm[k])}</td><td colspan="${lbl.length + 3}" style="color:var(--muted)">—</td></tr>`).join('')}
+        <tr class="tot"><td>${T('totalQ')}<small>${rawQ}</small></td>${a.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(a.bonus)}</td><td>${f2(a.prod)}${a.pen ? `<small class="xp">−${f2(a.pen)} res.</small>` : ''}</td>${rrCell(rrQ)}</tr></tbody></table>
+      <div class="mdn">${T('mdNote')} ${T(newRules() ? 'rrInfo' : 'rrInfoOld').split(' — ')[0]}.</div>`
     : `<div class="mdn" style="font-size:14px">${T('noMonthly')}</div>
-      <table class="mdt"><thead><tr><th></th>${lbl.map(l => `<th>${l}</th>`).join('')}<th>${T('bonus')}</th><th>${T('prodT')}</th><th class="rr">${T('resRate')}<small>${T('infoOnly')}</small></th></tr></thead><tbody>
-        <tr class="tot"><td>${T('totalQ')}<small>${rawQ}</small></td>${a.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(a.bonus)}${a.cross ? `<small>+${f2(a.cross)} back-up</small>` : ''}</td><td>${f2(a.prod)}</td>${rrCell(rrQ)}</tr></tbody></table>`}
+      <table class="mdt"><thead><tr><th></th>${lbl.map(l => `<th>${l}</th>`).join('')}<th>${T('bonus')}</th><th>${T('prodT')}</th><th class="rr">${T('resRate')}<small>${newRules() ? T('infoOnly') : T('infoOld')}</small></th></tr></thead><tbody>
+        <tr class="tot"><td>${T('totalQ')}<small>${rawQ}</small></td>${a.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(a.bonus)}</td><td>${f2(a.prod)}${a.pen ? `<small class="xp">−${f2(a.pen)} res.</small>` : ''}</td>${rrCell(rrQ)}</tr></tbody></table>`}
   </div>`;
   const close = () => { el.remove(); document.removeEventListener('keydown', esc1, true); };
   const esc1 = e => { if (e.key === 'Escape') { e.stopPropagation(); close(); } };

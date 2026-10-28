@@ -343,8 +343,8 @@ button,input,select{font:inherit;color:inherit}
 .stk{display:flex;height:2.5cqw;border-radius:.4cqw;background:#ECECEF;overflow:hidden}
 .stk i{display:flex;align-items:center;justify-content:center;height:100%;width:0;overflow:hidden;transition:width 1.6s cubic-bezier(.22,1,.36,1);transition-delay:calc(.2s + var(--k,0)*.12s)}
 .slide.play .stk i{width:var(--w)}
-.stk em{font-style:normal;font-size:.9cqw;font-weight:800;white-space:nowrap}
-.stk .s0{background:#27272A;color:#fff}.stk .s1{background:#A1A1AA;color:#111}.stk .sb{background:var(--y);color:#111}
+.xb{color:#2563EB;font-weight:700}.stk em{font-style:normal;font-size:.9cqw;font-weight:800;white-space:nowrap}
+.stk .s0{background:#27272A;color:#fff}.stk .s1{background:#A1A1AA;color:#111}.stk .sb{background:var(--y);color:#111}.stk .sx{background:#3B82F6}.lgd i.sx{background:#3B82F6}
 .prv{text-align:right;font-family:var(--disp);font-size:1.8cqw;font-weight:800}
 .pr.lead .prv{color:#111}.pr:not(.lead) .prv{color:#3F3F46}
 .rinfo{font-size:.95cqw;color:#71717A;margin:-1.6cqw 0 2.2cqw}
@@ -457,6 +457,13 @@ button,input,select{font:inherit;color:inherit}
 .dh h3{margin:0 auto 0 0;font-size:16px}
 .db{flex:1;overflow:auto;padding:16px 18px 40px}
 .help{font-size:12.5px;color:var(--muted);margin:0 0 14px;line-height:1.5}
+.etw{padding:12px}.eth{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:8px}.eth b{font-size:14px}.eth span{font-size:12px;color:var(--mut,#71717A)}
+.ets-scroll{overflow-x:auto}.etab{border-collapse:collapse;font-size:12px;min-width:100%;font-variant-numeric:tabular-nums}
+.etab th{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:#71717A;padding:4px 3px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+.etab th.etm{border-bottom:2px solid #FFD000;color:inherit}.etab td{padding:3px 2px;border-bottom:1px solid var(--line)}
+.etab .etn{text-align:left;white-space:nowrap;max-width:170px;overflow:hidden;text-overflow:ellipsis;font-weight:700;padding-right:8px}.etab .etd{color:#71717A;text-align:center}
+.etab input.et{width:58px;padding:5px 5px;font-size:12px;text-align:right}.etab .etr input.et{width:62px}.etab .etg{border-left:1px solid var(--line)}
+.etab .etr{background:rgba(59,130,246,.07)}.etab .ets{text-align:right;font-weight:700;padding:3px 6px;white-space:nowrap}.etab .etf{background:rgba(255,208,0,.15)}.etblk{margin-top:10px}.etblk+.etblk{margin-top:16px}.etab td.etb{background:rgba(59,130,246,.06)}.etab th.etb{color:#2563EB}.etab .etx{color:#2563EB}
 .acard{background:var(--solid);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
 .acard .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
 .acard .top input[type=text]{flex:1;min-width:180px}
@@ -551,7 +558,8 @@ button,input,select{font:inherit;color:inherit}
 <script>
 'use strict';
 /* =================== konstanta =================== */
-const START_YEAR = 2026, START_Q = 2;                      // periode pertama: 2026 Q2
+const START_YEAR = 2026, START_Q = 2;
+const CROSS_MAX = 5;   // bonus back-up lintas divisi maks +5 poin (produktivitas tetap maks 100)                      // periode pertama: 2026 Q2
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MSHORT = MONTHS.map(m => m.slice(0, 3));
 const API = '/api/perf', KEY_PUB = 'gxcs-pub-key', CACHE = 'gx-perf-cache-';
@@ -592,6 +600,7 @@ const ROSTER = {
 
 /* =================== util =================== */
 const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const n = v => { const x = Number(v); return isFinite(x) ? x : 0; };
 const has = v => v !== null && v !== undefined && v !== '' && isFinite(Number(v));
@@ -654,7 +663,7 @@ const TX = {
     hdDiv: 'HELPDESK DIVISION', bestHd: 'BEST HELPDESK', chatQ: 'OBSERVATION', prod: 'PRODUCTIVITY', att: 'ATTENDANCE',
     kpi: 'KPI Framework', pillarsT: 'THREE PILLARS.<br>ONE SCORE.', formula: 'Final Score = (Chat × 0.30) + (Attendance × 0.20) + (Productivity × 0.50)',
     pillar: 'Pillar', p1sub: 'Highest impact KPI — division-scoped', p2sub: 'Consistency of service', p3sub: 'Reliability &amp; punctuality',
-    p1: ['AM: VIP Handled 95%', 'HD: CS Monitoring 38% + CS Handled 57%', 'Each metric normalized within own division', 'Core Score max 95 + Bonus max +5 = 100', 'Assist Bonus: top KPI metric vs peer max'],
+    p1: ['AM: VIP Handled 95%', 'HD: CS Monitoring 38% + CS Handled 57%', 'Each metric normalized within own division', 'Core Score max 95 + Bonus max +5 = 100', 'Assist Bonus: top KPI metric vs peer max', 'Back-up Bonus ≤ +5: cross-division support'],
     p2: ms => ['2 cases observed per month', 'Scored via Google Form', '10 criteria, max 100 pts', `Average across ${ms.join(', ').replace(/, ([^,]*)$/, ' and $1')}`],
     p2all: (n, s) => `All ${n} agents scored ${s}+`,
     p3: ['Attendance Rate × 0.70', 'Punctuality × 0.30', 'Late mins vs total work mins', 'Sick 75% credit · Personal Leave 50% credit · Alpha 0% credit', 'Perfect score = 100.00'],
@@ -673,6 +682,9 @@ const TX = {
     best: t => `🏅 Best Employee · ${t}`, division: d => `${d} DIVISION`, outOf: g => `out of 100 · ${g}`, wt: w => `${w}% weight`, rib: t => `★ BEST EMPLOYEE ${t}`,
     finalRank: t => `🏆 Final Rankings · ${t}`, sbT: 'The Final<span>Score Board</span>', final: 'FINAL',
     g: ['A — Excellent', 'B — Good', 'C — Fair', 'D — Needs improvement'],
+    crossL: 'Back-up bonus', crossNote: 'Back-up bonus (max +5): Helpdesk handling VIP or AM handling CS is valued on the other division’s scale and compared with the biggest back-up in the team.',
+    mdT: 'Monthly Productivity Data', mdSub: ms => `Input per month (${ms}) and the resulting productivity score.`, vipDone: 'VIP Done', divL: 'Div.',
+    mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Done excludes admin hold · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS solved ÷ CS handled · AM: VIP done ÷ VIP total. Shown as information only — not part of the score. Click a row for the monthly detail.',
     mon: 'CS Monitoring', hand: 'CS Handled Volume', vipR: 'VIP Resolution Rate', vipH: 'VIP Handled Volume', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs peer max', avg: 'avg', of: 'of', vipHandled: 'VIP handled', rateW: 'rate',
   },
@@ -701,7 +713,7 @@ const TX = {
     hdDiv: 'DIVISI HELPDESK', bestHd: 'HELPDESK TERBAIK', chatQ: 'OBSERVASI', prod: 'PRODUKTIVITAS', att: 'KEHADIRAN',
     kpi: 'Kerangka KPI', pillarsT: 'TIGA PILAR.<br>SATU SKOR.', formula: 'Skor Akhir = (Chat × 0,30) + (Kehadiran × 0,20) + (Produktivitas × 0,50)',
     pillar: 'Pilar', p1sub: 'KPI paling berpengaruh — per divisi', p2sub: 'Konsistensi pelayanan', p3sub: 'Keandalan &amp; ketepatan waktu',
-    p1: ['AM: VIP Handled 95%', 'HD: CS Monitoring 38% + CS Handled 57%', 'Setiap metrik dinormalisasi dalam divisinya sendiri', 'Core Score maks 95 + Bonus maks +5 = 100', 'Assist Bonus: metrik KPI utama vs nilai tertinggi divisi'],
+    p1: ['AM: VIP Handled 95%', 'HD: CS Monitoring 38% + CS Handled 57%', 'Setiap metrik dinormalisasi dalam divisinya sendiri', 'Core Score maks 95 + Bonus maks +5 = 100', 'Assist Bonus: metrik KPI utama vs nilai tertinggi divisi', 'Bonus Back-up ≤ +5: bantu divisi lain'],
     p2: ms => ['2 kasus diobservasi per bulan', 'Dinilai lewat Google Form', '10 kriteria, maks 100 poin', `Rata-rata ${ms.join(', ').replace(/, ([^,]*)$/, ' dan $1')}`],
     p2all: (n, s) => `Semua ${n} agent mendapat skor ${s}+`,
     p3: ['Tingkat Kehadiran × 0,70', 'Ketepatan Waktu × 0,30', 'Menit telat dibanding total menit kerja', 'Sakit kredit 75% · Cuti Pribadi 50% · Alpha 0%', 'Skor sempurna = 100,00'],
@@ -720,6 +732,9 @@ const TX = {
     best: t => `🏅 Karyawan Terbaik · ${t}`, division: d => `DIVISI ${d}`, outOf: g => `dari 100 · ${g}`, wt: w => `bobot ${w}%`, rib: t => `★ KARYAWAN TERBAIK ${t}`,
     finalRank: t => `🏆 Peringkat Akhir · ${t}`, sbT: 'Papan Skor<span>Akhir</span>', final: 'AKHIR',
     g: ['A — Sangat Baik', 'B — Baik', 'C — Cukup', 'D — Perlu Ditingkatkan'],
+    crossL: 'Bonus back-up', crossNote: 'Bonus back-up (maks +5): Helpdesk yang pegang VIP atau AM yang pegang CS dinilai pakai skala divisi lain, lalu dibandingkan dengan back-up terbesar di tim.',
+    mdT: 'Data Produktivitas Bulanan', mdSub: ms => `Input per bulan (${ms}) dan skor produktivitas yang dihasilkan.`, vipDone: 'VIP Selesai', divL: 'Div.',
+    mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Selesai tanpa hold admin · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS selesai ÷ CS handled · AM: VIP selesai ÷ total VIP. Hanya info — tidak masuk skor. Klik baris untuk detail per bulan.',
     mon: 'CS Monitoring', hand: 'Volume CS Handled', vipR: 'VIP Resolution Rate', vipH: 'Volume VIP Handled', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs tertinggi', avg: 'rata²', of: 'dari', vipHandled: 'VIP ditangani', rateW: 'rate',
   },
@@ -743,7 +758,7 @@ function normAgent(a) {
   return { name: a.name || '', div: a.div === 'AM' ? 'AM' : 'HD', photo: a.photo || '',
     csMon: n(a.csMon), csHandled: n(a.csHandled), vipTotal: n(a.vipTotal), vipSolved: n(a.vipSolved), vipRate: has(a.vipRate) ? n(a.vipRate) : null,
     chat: [0, 1, 2].map(i => (a.chat && has(a.chat[i])) ? n(a.chat[i]) : null),
-    csMonM: m3(a.csMonM), csHandledM: m3(a.csHandledM), csSolvedM: m3(a.csSolvedM), csSolved: has(a.csSolved) ? n(a.csSolved) : null, vipTotalM: m3(a.vipTotalM), vipSolvedM: m3(a.vipSolvedM),
+    csMonM: m3(a.csMonM), csHandledM: m3(a.csHandledM), csSolvedM: m3(a.csSolvedM), csSolved: has(a.csSolved) ? n(a.csSolved) : null, vipTotalM: m3(a.vipTotalM), vipSolvedM: m3(a.vipSolvedM), rrM: m3(a.rrM),
     att: Object.assign({ workDays: null, sick: 0, personal: 0, alpha: 0, lateMin: 0, workMin: null, manual: null }, a.att || {}) };
 }
 function attScore(t) {
@@ -755,6 +770,10 @@ function attScore(t) {
   const punct = n(t.workMin) > 0 ? Math.max(0, (1 - n(t.lateMin) / n(t.workMin)) * 100) : 100;
   return { score: rate * 0.7 + punct * 0.3, rate, punct };
 }
+/* resolution rate per bulan (info): isian manual bila ada, kalau kosong dihitung — HD: CS solved ÷ CS handled · AM: VIP solved ÷ VIP total */
+function rrAuto(a, k) { return a.div === 'HD' ? (a.csSolvedM[k] != null && a.csHandledM[k] ? a.csSolvedM[k] / a.csHandledM[k] * 100 : (a.vipTotalM[k] ? (a.vipSolvedM[k] || 0) / a.vipTotalM[k] * 100 : null)) : (a.vipTotalM[k] ? (a.vipSolvedM[k] || 0) / a.vipTotalM[k] * 100 : null); }
+function rrOf(a, k) { return a.rrM && a.rrM[k] != null ? a.rrM[k] : rrAuto(a, k); }
+function rrQavg(a) { const v = [0, 1, 2].map(k => rrOf(a, k)).filter(x => x != null); return v.length ? sum(v) / v.length : null; }
 function compute(data) {
   const A = (data.agents || []).map(normAgent).filter(a => a.name.trim());
   A.forEach(a => {   // data bulanan diisi → total kuartal & VIP rate dihitung dari bulan
@@ -795,11 +814,21 @@ function compute(data) {
       a.bonusNote = `${fInt(a.vipTotal)} ${T('vsMax')} ${fInt(mx.vipH)}${a.vipTotal === mx.vipH ? ' (100%)' : ''}`;
     }
     a.core = r2(sum(a.parts.map(p => p.v)));
-    a.prod = r2(Math.min(100, a.core + a.bonus));
     const cs = a.chat.filter(v => v != null);
     a.chatAvg = cs.length ? r2(sum(cs) / cs.length) : 0;
     a.attX = attScore(a.att);
     a.attS = r2(a.attX.score);
+  });
+  /* bonus back-up lintas divisi (extra mile): HD yang pegang VIP / AM yang pegang CS.
+     Nilai kerjanya dihitung pakai skala divisi lain, lalu dibandingkan dengan back-up terbesar di tim → maks +5. */
+  A.forEach(a => {
+    a.crossPts = a.div === 'HD' ? (mx.vipH > 0 ? a.vipTotal / mx.vipH * 95 : 0) : (mx.mon > 0 ? a.csMon / mx.mon * 38 : 0) + (mx.hand > 0 ? a.csHandled / mx.hand * 57 : 0);
+    a.crossVol = a.div === 'HD' ? `${fInt(a.vipTotal)} VIP` : `${fInt(a.csMon)} CS mon · ${fInt(a.csHandled)} CS handled`;
+  });
+  const mxC = Math.max(0, ...A.map(a => a.crossPts));
+  A.forEach(a => {
+    a.cross = mxC > 0 ? r2(a.crossPts / mxC * CROSS_MAX) : 0;
+    a.prod = r2(Math.min(100, a.core + a.bonus + a.cross));
     a.final = r2(a.prod * 0.5 + a.chatAvg * 0.3 + a.attS * 0.2);
   });
   const rankBy = f => A.slice().sort((x, y) => f(y) - f(x));
@@ -869,18 +898,18 @@ function slides(p, data) {
   {
     const avgP = N ? sum(C.A.map(a => a.prod)) / N : 0, lh = C.hd[0], la = C.am[0];
     const tile = (lab, val, sub, cls = '') => `<div class="kt ${cls}"><span>${lab}</span><b class="num">${val}</b><small>${sub}</small></div>`;
-    const raw = a => a.div === 'HD' ? `${fInt(a.csMon)} ${T('monitored')} · ${fInt(a.csHandled)} ${T('handled')}` : `${fInt(a.vipTotal)} VIP ${T('handled')}`;
+    const raw = a => (a.div === 'HD' ? `${fInt(a.csMon)} ${T('monitored')} · ${fInt(a.csHandled)} ${T('handled')}` : `${fInt(a.vipTotal)} VIP ${T('handled')}`) + (a.cross > 0 ? ` · <span class="xb">+${f2(a.cross)} ${T('crossL').toLowerCase()}</span>` : '');
     const row = (a, i) => `<div class="pr ${i ? '' : 'lead'} clk" data-ag="${esc(a.name)}" role="button" tabindex="0" title="${T('clickDetail')}"><div class="prn">${av(a)}<div><b>${esc(a.name)}</b><small>${raw(a)}</small></div></div>
-        <div class="stk">${a.parts.map((p, k) => `<i class="s${k}" style="--w:${p.v}%">${p.v >= 7 ? `<em>${f2(p.v).replace(/\.00$/, '')}</em>` : ''}</i>`).join('')}<i class="sb" style="--w:${Math.max(0, Math.min(a.bonus, 100 - a.core))}%"></i></div>
+        <div class="stk">${a.parts.map((p, k) => `<i class="s${k}" style="--w:${p.v}%">${p.v >= 7 ? `<em>${f2(p.v).replace(/\.00$/, '')}</em>` : ''}</i>`).join('')}<i class="sb" style="--w:${Math.max(0, Math.min(a.bonus, 100 - a.core))}%"></i><i class="sx" style="--w:${Math.max(0, Math.min(a.cross, 100 - a.core - a.bonus))}%"></i></div>
         <div class="prv num">${f2(a.prod)}</div></div>`;
-    const panel = (list, name, l0, l1) => list.length ? `<div class="ppan"><div class="pph"><b>${name}</b><span class="lgd"><i class="s0"></i>${l0}${l1 ? `<i class="s1"></i>${l1}` : ''}<i class="sb"></i>${T('bonus')} ≤5</span></div>
+    const panel = (list, name, l0, l1) => list.length ? `<div class="ppan"><div class="pph"><b>${name}</b><span class="lgd"><i class="s0"></i>${l0}${l1 ? `<i class="s1"></i>${l1}` : ''}<i class="sb"></i>${T('bonus')} ≤5<i class="sx"></i>${T('crossL')} ≤${CROSS_MAX}</span></div>
         <div class="pscale"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>${list.map(row).join('')}</div>` : '';
     out.push(`<section class="slide v3 ${N > 5 ? 'many' : ''}"><div class="s-in">
       ${head(`${T('pillar')} 01`, T('prodT'), T('prodTake2'), 'y', T('weight')(50))}
       <div class="kts">${lh ? tile(`${T('topIn')} Helpdesk`, f2(lh.prod), esc(lh.name), 'y') : ''}${la ? tile(`${T('topIn')} Account Manager`, f2(la.prod), esc(la.name), 'y') : ''}${tile(T('teamAvg'), f2(avgP), `${N} ${T('agents')}`)}</div>
       <div class="ppans">${panel(C.hd, 'Helpdesk', 'CS Monitoring 38', 'CS Handled 57')}${panel(C.am, 'Account Manager', 'VIP Handled 95', '')}</div>
       <div class="how"><span class="tap">👆 ${T('clickHint')}</span><span><b>1</b>${T('how1')}</span><span><b>2</b>${T('how2')}</span><span><b>3</b>${T('how3')}</span></div>
-      <div class="rinfo">ⓘ ${T('rrInfo')}</div>
+      <div class="rinfo">ⓘ ${T('rrInfo')}${C.A.some(x => x.cross > 0) ? '<br>⇄ ' + T('crossNote') : ''}</div>
     </div>${foot}</section>`);
   }
 
@@ -1108,6 +1137,7 @@ function drawEditor() {
   $('#edBody').innerHTML = `<p class="help">Isi angka per agent. Productivity, Chat, Attendance, ranking dan Best Employee dihitung otomatis dengan rumus di slide. Kolom yang tidak relevan untuk divisinya boleh dikosongkan.
     Attendance: isi hari kerja, cuti & menit telat — atau langsung isi <b>Skor attendance (manual)</b> bila sudah dihitung di Excel.</p>
     ${!ST.open ? `<div class="acard"><div class="f"><label>Password publish (PUBLISH_KEY)</label><input class="inp" type="password" id="pubKey" value="${esc(ls.get(KEY_PUB) || '')}" autocomplete="current-password"></div></div>` : ''}
+    ${edTable(m, live)}
     ${ED.agents.map((a, i) => { const L = live.get((a.name || '').trim()); const isAM = a.div === 'AM';
       return `<div class="acard" data-i="${i}">
       <div class="top"><div class="eph">${photoOf(a) ? `<img src="${esc(photoOf(a))}" alt="">` : 'Foto'}</div>
@@ -1117,11 +1147,9 @@ function drawEditor() {
         <button class="btn mini danger" data-del>Hapus agent</button>
         <span class="live">${L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · OBS ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''}</span></div>
       <fieldset class="fs"><legend>Productivity</legend><div class="grid">
-        ${isAM ? m.map((mi, k) => fld(`VIP handled ${MSHORT[mi]}`, `vipTotalM.${k}`, a.vipTotalM && a.vipTotalM[k])).join('') + m.map((mi, k) => fld(`VIP solved ${MSHORT[mi]} (info)`, `vipSolvedM.${k}`, a.vipSolvedM && a.vipSolvedM[k])).join('')
-               : m.map((mi, k) => fld(`CS Monitoring ${MSHORT[mi]}`, `csMonM.${k}`, a.csMonM && a.csMonM[k])).join('') + m.map((mi, k) => fld(`CS Handled ${MSHORT[mi]}`, `csHandledM.${k}`, a.csHandledM && a.csHandledM[k])).join('') + m.map((mi, k) => fld(`CS Solved ${MSHORT[mi]} (info)`, `csSolvedM.${k}`, a.csSolvedM && a.csSolvedM[k])).join('')}
-      </div><div class="help" style="margin:8px 0 4px">Atau isi total kuartal saja (dipakai bila data per bulan kosong — detail per bulan tidak tersedia):</div><div class="grid">
+        <div class="help" style="grid-column:1/-1;margin:0">Data per bulan diisi di tabel <b>Productivity — data bulanan</b> di atas. Kolom di bawah hanya cadangan bila data per bulan kosong:</div>
         ${isAM ? fld('VIP handled (total)', 'vipTotal', a.vipTotal) + fld('VIP solved (total, info)', 'vipSolved', a.vipSolved) + fld('VIP rate % (info)', 'vipRate', a.vipRate, 'number', 'placeholder="otomatis: solved ÷ handled"')
-               : fld('CS Monitoring (total)', 'csMon', a.csMon) + fld('CS Handled (total)', 'csHandled', a.csHandled) + fld('CS Solved (total, info)', 'csSolved', a.csSolved)}
+               : fld('CS Monitoring (total)', 'csMon', a.csMon) + fld('CS Handled (total)', 'csHandled', a.csHandled)}
       </div></fieldset>
       <fieldset class="fs"><legend>Observation (0–100)</legend><div class="grid">${m.map((mi, k) => fld(`Observation ${MSHORT[mi]}`, `chat.${k}`, a.chat && a.chat[k])).join('')}</div></fieldset>
       <fieldset class="fs"><legend>Attendance (total 1 kuartal)</legend><div class="grid">
@@ -1130,6 +1158,38 @@ function drawEditor() {
       </div></fieldset></div>`; }).join('')}
     <button class="btn" id="addAgent">+ Tambah agent</button>
     <div class="acard" style="margin-top:14px"><div class="f"><label>Catatan attendance (tampil di slide Attendance)</label><input class="inp" type="text" data-p="attNote" data-root value="${esc(ED.attNote || '')}" placeholder="mis. April note — Desi: Sick 1d + PL 1d"></div></div>`;
+}
+/* tabel input bulanan ala sheet Q2: CS Mon · CS Handled · VIP · VIP Done · Resolution rate per bulan, lalu skor (otomatis) */
+function edTable(m, live) {
+  const y = ST.period.slice(0, 4), q = ST.period.slice(5);
+  const inp = (path, v, cls = '') => `<td class="${cls}"><input class="inp et" type="number" step="any" min="0" data-p="${path}" value="${esc(v ?? '')}"></td>`;
+  /* Helpdesk: CS Monitoring, CS Handled (skor) + VIP Handled (bonus back-up) · AM: VIP Handled (skor) + CS Monitoring, CS Handled (bonus back-up) · Res. % per bulan (info) */
+  const COLS = {
+    HD: [['csMonM', 'CS Mon.'], ['csHandledM', 'CS Hand.'], ['vipTotalM', 'VIP Hand.', 'etb']],
+    AM: [['vipTotalM', 'VIP Hand.'], ['csMonM', 'CS Mon.', 'etb'], ['csHandledM', 'CS Hand.', 'etb']] };
+  const table = div => {
+    const list = ED.agents.map((a, i) => [a, i]).filter(([a]) => (a.div === 'AM' ? 'AM' : 'HD') === div);
+    const cols = COLS[div], w = cols.length + 1;
+    const rows = list.map(([a, i]) => { const L = live.get((a.name || '').trim());
+      return `<tr data-i="${i}"><td class="etn">${esc(a.name || '(tanpa nama)')}</td>
+        ${m.map((mi, k) => cols.map(([f, , c], j) => inp(`${f}.${k}`, a[f] && a[f][k], `${c || ''} ${j ? '' : 'etg'}`)).join('')
+          + `<td class="etr"><input class="inp et" type="number" step="any" min="0" max="100" data-p="rrM.${k}" value="${esc(a.rrM && a.rrM[k] != null ? a.rrM[k] : '')}" placeholder="%"></td>`).join('')}
+        <td class="ets etg" data-o="core">${L ? f2(L.core) : '–'}</td><td class="ets" data-o="bonus">${L ? f2(L.bonus) : '–'}</td><td class="ets etx" data-o="cross" title="${L ? esc(L.crossVol) : ''}">${L ? f2(L.cross) : '–'}</td><td class="ets etf" data-o="prod">${L ? f2(L.prod) : '–'}</td><td class="ets" data-o="rrq">${L && rrQavg(L) != null ? f2(rrQavg(L)) + '%' : '–'}</td></tr>`; }).join('');
+    const name = div === 'HD' ? 'Helpdesk' : 'Account Manager';
+    const how = div === 'HD' ? 'Skor: CS Monitoring 38% + CS Handled 57% + assist bonus 5 · <span class="etx">VIP Hand. = bonus back-up</span>' : 'Skor: VIP Handled 95% + assist bonus 5 · <span class="etx">CS Mon. & CS Hand. = bonus back-up</span>';
+    return `<div class="etblk"><div class="eth"><b>${name}</b><span>${how}</span></div>${list.length ? `<div class="ets-scroll"><table class="etab"><thead>
+      <tr><th rowspan="2" class="etn">Nama</th>${m.map(mi => `<th colspan="${w}" class="etm etg">${MONTHS[mi].toUpperCase()} ${y}</th>`).join('')}<th rowspan="2" class="ets etg">Core</th><th rowspan="2" class="ets">Bonus</th><th rowspan="2" class="ets etx">Back-up</th><th rowspan="2" class="ets etf">Final<br>Prod.</th><th rowspan="2" class="ets">Res. %<br>${q} avg</th></tr>
+      <tr>${m.map(() => cols.map(([, t, c], j) => `<th class="${c || ''} ${j ? '' : 'etg'}">${t}</th>`).join('') + '<th class="etr">Res. %</th>').join('')}</tr></thead><tbody>${rows}</tbody></table></div>` : `<div class="help">Belum ada agent ${name}. Atur divisi di kartu agent di bawah.</div>`}</div>`; };
+  return `<div class="acard etw"><div class="eth"><b>Productivity — data bulanan · ${q} ${y}</b><span>Res. % = resolution rate semua case agent per bulan (info, tidak masuk skor)</span></div>
+    ${table('HD')}${table('AM')}
+    <div class="help" style="margin:8px 0 0"><b class="etx">Back-up</b> (maks +5) = kerja di divisi lain (kolom biru) dinilai pakai skala divisi itu, dibandingkan dengan back-up terbesar di tim. Produktivitas tetap maks 100.</div></div>`;
+}
+function edLive() {
+  const C = compute(ED), live = new Map(C.A.map(a => [a.name, a]));
+  $$('#edBody .acard[data-i]').forEach(card => { const L = live.get((ED.agents[+card.dataset.i].name || '').trim()); const s = card.querySelector('.live'); if (s) s.innerHTML = L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · OBS ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''; });
+  $$('#edBody tr[data-i]').forEach(tr => { const a = ED.agents[+tr.dataset.i], L = live.get((a.name || '').trim()), set = (o, v) => { const c = tr.querySelector(`[data-o="${o}"]`); if (c) c.textContent = v; };
+    set('core', L ? f2(L.core) : '–'); set('bonus', L ? f2(L.bonus) : '–'); set('cross', L ? f2(L.cross) : '–'); set('prod', L ? f2(L.prod) : '–'); const q = L ? rrQavg(L) : null; set('rrq', q != null ? f2(q) + '%' : '–');
+    if (L) tr.querySelectorAll('[data-p^="rrM."]').forEach(inp => { const k = +inp.dataset.p.slice(4), au = rrAuto(L, k); inp.placeholder = au != null ? f2(au) : '%'; }); });
 }
 function setPath(o, path, v) { const k = path.split('.'); let t = o; for (let i = 0; i < k.length - 1; i++) { t[k[i]] = t[k[i]] || (/^\d+$/.test(k[i + 1]) ? [] : {}); t = t[k[i]]; } t[k[k.length - 1]] = v; }
 function resizePhoto(file) {
@@ -1145,8 +1205,8 @@ $('#edBody').addEventListener('input', e => {
   if (!card) return;
   setPath(ED.agents[+card.dataset.i], el.dataset.p, v);
   if (el.dataset.p === 'div') { drawEditor(); return; }
-  const C = compute(ED), L = C.A.find(a => a.name === (ED.agents[+card.dataset.i].name || '').trim());
-  card.querySelector('.live').innerHTML = L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · OBS ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : '';
+  if (el.dataset.p === 'name') { const r = $(`#edBody tr[data-i="${card.dataset.i}"] .etn`); if (r) r.textContent = v || '(tanpa nama)'; }
+  edLive();
 });
 $('#edBody').addEventListener('change', async e => {
   const el = e.target;
@@ -1191,8 +1251,8 @@ function openProdDetail(name) {
   const best = have.length ? have.reduce((b, r) => r.prod > b.prod ? r : b) : null, bestK = best ? M.indexOf(best) : -1;
   const colors = ['#27272A', '#A1A1AA', 'var(--y)'];
   const lbl = a.parts.map(p => p.k);
-  const rrM = k => a.div === 'HD' ? (a.csSolvedM[k] != null && a.csHandledM[k] ? a.csSolvedM[k] / a.csHandledM[k] * 100 : null) : (a.vipTotalM[k] ? (a.vipSolvedM[k] || 0) / a.vipTotalM[k] * 100 : null);
-  const rrQ = a.div === 'HD' ? a.csRate : (a.vipTotal ? a.vip : null);
+  const rrM = k => rrOf(a, k);
+  const rrQ = rrQavg(a) ?? (a.div === 'HD' ? a.csRate : (a.vipTotal ? a.vip : null));
   const rrCell = v => `<td class="rr">${v == null ? '—' : f2(v) + '%'}</td>`;
   const rawM = (r, k) => a.div === 'HD' ? `${fInt(a.csMonM[k] || 0)} / ${fInt(a.csHandledM[k] || 0)}${a.csSolvedM[k] != null ? ` · ${fInt(a.csSolvedM[k])} ${T('csSolvedL')}` : ''}` : `${fInt(a.vipTotalM[k] || 0)} VIP · ${fInt(a.vipSolvedM[k] || 0)} ${T('csSolvedL')}`;
   const rawQ = a.div === 'HD' ? `${fInt(a.csMon)} / ${fInt(a.csHandled)}${a.csSolved != null ? ` · ${fInt(a.csSolved)} ${T('csSolvedL')}` : ''}` : `${fInt(a.vipTotal)} VIP · ${fInt(a.vipSolved)} ${T('csSolvedL')}`;
@@ -1205,12 +1265,12 @@ function openProdDetail(name) {
     ${have.length ? `<div class="mdc">${M.map(col).join('')}</div><div class="mdx">${mm.map(i => `<span>${monthName(i)}</span>`).join('')}</div>
       <div class="mdlg">${lbl.map((l, j) => `<span><i style="background:${colors[j]}"></i>${l}</span>`).join('')}<span><i style="background:${colors[2]}"></i>${T('bonus')}</span></div>
       <table class="mdt"><thead><tr><th>${T('month')}</th>${lbl.map(l => `<th>${l}</th>`).join('')}<th>${T('bonus')}</th><th>${T('prodT')}</th><th class="rr">${T('resRate')}<small>${T('infoOnly')}</small></th></tr></thead><tbody>
-        ${M.map((r, k) => r ? `<tr><td>${monthName(mm[k])}<small>${rawM(r, k)}</small></td>${r.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(r.bonus)}</td><td><b>${f2(r.prod)}</b></td>${rrCell(rrM(k))}</tr>` : `<tr><td>${monthName(mm[k])}</td><td colspan="${lbl.length + 3}" style="color:var(--muted)">—</td></tr>`).join('')}
-        <tr class="tot"><td>${T('totalQ')}<small>${rawQ}</small></td>${a.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(a.bonus)}</td><td>${f2(a.prod)}</td>${rrCell(rrQ)}</tr></tbody></table>
+        ${M.map((r, k) => r ? `<tr><td>${monthName(mm[k])}<small>${rawM(r, k)}</small></td>${r.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(r.bonus)}${r.cross ? `<small>+${f2(r.cross)} back-up</small>` : ''}</td><td><b>${f2(r.prod)}</b></td>${rrCell(rrM(k))}</tr>` : `<tr><td>${monthName(mm[k])}</td><td colspan="${lbl.length + 3}" style="color:var(--muted)">—</td></tr>`).join('')}
+        <tr class="tot"><td>${T('totalQ')}<small>${rawQ}</small></td>${a.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(a.bonus)}${a.cross ? `<small>+${f2(a.cross)} back-up</small>` : ''}</td><td>${f2(a.prod)}</td>${rrCell(rrQ)}</tr></tbody></table>
       <div class="mdn">${T('mdNote')} ${T('rrInfo').split(' — ')[0]}.</div>`
     : `<div class="mdn" style="font-size:14px">${T('noMonthly')}</div>
       <table class="mdt"><thead><tr><th></th>${lbl.map(l => `<th>${l}</th>`).join('')}<th>${T('bonus')}</th><th>${T('prodT')}</th><th class="rr">${T('resRate')}<small>${T('infoOnly')}</small></th></tr></thead><tbody>
-        <tr class="tot"><td>${T('totalQ')}<small>${rawQ}</small></td>${a.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(a.bonus)}</td><td>${f2(a.prod)}</td>${rrCell(rrQ)}</tr></tbody></table>`}
+        <tr class="tot"><td>${T('totalQ')}<small>${rawQ}</small></td>${a.parts.map(p => `<td>${f2(p.v)}</td>`).join('')}<td>+${f2(a.bonus)}${a.cross ? `<small>+${f2(a.cross)} back-up</small>` : ''}</td><td>${f2(a.prod)}</td>${rrCell(rrQ)}</tr></tbody></table>`}
   </div>`;
   const close = () => { el.remove(); document.removeEventListener('keydown', esc1, true); };
   const esc1 = e => { if (e.key === 'Escape') { e.stopPropagation(); close(); } };
@@ -1220,8 +1280,8 @@ function openProdDetail(name) {
   requestAnimationFrame(() => requestAnimationFrame(() => el.querySelectorAll('.stk2').forEach(b => { b.style.height = (n(b.dataset.h) / 100 * 120) + 'px'; })));
   el.querySelector('.x').focus();
 }
-document.addEventListener('click', e => { const r = e.target.closest('.pr.clk[data-ag]'); if (r) { e.stopPropagation(); openProdDetail(r.dataset.ag); } }, true);
-document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.pr.clk[data-ag]')) { e.preventDefault(); e.stopPropagation(); openProdDetail(e.target.dataset.ag); } }, true);
+document.addEventListener('click', e => { const r = e.target.closest('.pr.clk[data-ag],tr.clk[data-ag]'); if (r) { e.stopPropagation(); openProdDetail(r.dataset.ag); } }, true);
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.pr.clk[data-ag],tr.clk[data-ag]')) { e.preventDefault(); e.stopPropagation(); openProdDetail(e.target.dataset.ag); } }, true);
 
 /* =================== mode viewer / admin =================== */
 const VIEW = new URLSearchParams(location.search).has('view');

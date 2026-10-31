@@ -365,6 +365,11 @@ button,input,select{font:inherit;color:inherit}
 .cplot{position:relative;flex:1;display:flex;border-bottom:1px solid #D4D4D8}
 .cplot>s{position:absolute;left:0;right:0;border-top:1px dashed #E4E4E7}
 .cg{position:relative;flex:1;display:flex;flex-direction:column;align-items:center}
+.cg.clk{cursor:pointer;border-radius:.4cqw}.cg.clk:hover{background:rgba(37,99,235,.06)}.cg.clk:focus-visible{outline:2px solid #2563EB}
+.rt tr.clk{cursor:pointer}.rt tr.clk:hover td{background:#EFF6FF}.rt tr.clk:focus-visible{outline:2px solid #2563EB;outline-offset:-2px}
+.obhint{margin-top:.6cqw;font-size:.9cqw;font-weight:700;color:#1D4ED8}
+.obnote{margin-left:auto;font-size:.9cqw;color:#52525B}.oblink{color:#1D4ED8;font-weight:700;text-decoration:underline}
+.obt{flex-wrap:wrap}
 .cbars{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:.25cqw}
 .cbars i{position:relative;width:1.3cqw;height:0;background:var(--c);border-radius:.2cqw .2cqw 0 0;transition:height 1.5s cubic-bezier(.22,1,.36,1);transition-delay:calc(.2s + var(--k,0)*.1s)}
 .slide.play .cbars i{height:var(--h)}
@@ -413,7 +418,16 @@ button,input,select{font:inherit;color:inherit}
 .fbar .r{background:#16A34A}.fbar .pu{background:#2563EB}
 .fx{font-size:1cqw;color:#3F3F46;margin:.6cqw 0 0;line-height:1.4}
 .lc{display:flex;flex-direction:column;gap:.5cqw}
-.mut2{color:#71717A}.axh{margin-top:.7cqw;font-size:.95cqw;color:#52525B}
+.mut2{color:#71717A}
+.afp{display:flex;flex-direction:column;gap:.7cqw}.afp .afh{margin-bottom:0}
+.fc{border-radius:.8cqw;padding:.8cqw 1cqw;color:#fff;flex:1;display:flex;flex-direction:column;justify-content:center}.fc.g{background:#16A34A}.fc.b{background:#2563EB}.fc.k{background:#18181B}
+.fch{display:flex;align-items:baseline;gap:.8cqw}.fch b{font-family:var(--disp);font-size:2.3cqw;font-weight:900;line-height:1}.fc.k .fch b{color:#FFD000}
+.fch span{font-size:1.15cqw;font-weight:800}.fch em{font-style:normal;margin-right:.35cqw;opacity:.85}
+.fc p{margin:.45cqw 0 0;font-size:1.02cqw;font-weight:600;line-height:1.35}.fc small{display:block;margin-top:.3cqw;font-size:.82cqw;opacity:.85}
+.ahl{display:grid;grid-template-columns:repeat(4,1fr);gap:.7cqw;margin-top:.8cqw}
+.ahc{border-radius:.7cqw;padding:.6cqw .8cqw;background:#F4F4F5;border:1px solid #E4E4E7;display:flex;flex-direction:column;min-width:0}
+.ahc i{font-style:normal;font-size:1.1cqw}.ahc b{font-family:var(--disp);font-size:1.7cqw;font-weight:900;line-height:1.1}.ahc span{font-size:.82cqw;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#52525B}
+.ahc small{font-size:.78cqw;color:#71717A;margin-top:.15cqw;line-height:1.3}.ahc.t{background:#FEFCE8;border-color:#FDE68A}.ahc.p{background:#F0FDF4;border-color:#BBF7D0}.ahc.z{background:#EFF6FF;border-color:#BFDBFE}.ahc.u{background:#FAF5FF;border-color:#E9D5FF}.axh{margin-top:.7cqw;font-size:.95cqw;color:#52525B}
 .axt{width:100%;border-collapse:collapse;margin-top:.35cqw;font-size:.85cqw;font-variant-numeric:tabular-nums}.axt th{font-size:.72cqw;color:#71717A;font-weight:700;text-align:right;padding:.2cqw .3cqw;border-bottom:1px solid #E4E4E7}.axt td{text-align:right;padding:.25cqw .3cqw;border-bottom:1px solid #F4F4F5}.axt th:first-child,.axt td:first-child{text-align:left;font-weight:700}
 .axf{background:#F4F4F5;border-radius:.5cqw;padding:.45cqw .7cqw;margin-top:.5cqw!important}
 .at tr.clk{cursor:pointer}.at tr.clk:hover td{background:#F0FDF4}.at tr.clk:focus-visible{outline:2px solid #16A34A;outline-offset:-2px}.ahint{color:#15803D;font-weight:700}
@@ -422,20 +436,6 @@ button,input,select{font:inherit;color:inherit}
 .adh{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#71717A;margin-top:16px}
 .adf{margin-top:12px;background:#F4F4F5;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.7;color:#3F3F46}.adf b{color:#18181B}
 .afh{display:flex;justify-content:space-between;align-items:center}.a20{background:#DCFCE7;color:#15803D;border-radius:99px;padding:.15cqw .7cqw;font-size:.85cqw;letter-spacing:0;text-transform:none}
-.calcx{background:linear-gradient(160deg,#F0FDF4 0%,#fff 55%);border:1.5px solid #86EFAC!important;box-shadow:0 .6cqw 1.8cqw rgba(22,163,74,.14)}
-.calcx .cap{color:#15803D}
-.calcx .a20{background:#16A34A;color:#fff;font-weight:800}
-.cstep{display:flex;gap:.7cqw;align-items:flex-start;margin-top:.55cqw;padding:.5cqw .7cqw;border-radius:.7cqw;background:#fff;border:1px solid #E4E4E7;border-left:.35cqw solid var(--sc);font-size:.95cqw;line-height:1.35;color:#3F3F46}
-.cstep .no{flex:0 0 2cqw;height:2cqw;border-radius:50%;background:var(--sc);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.05cqw}
-.cstep b{display:block;color:#18181B;font-size:1cqw}
-.cstep code{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.82cqw;color:var(--sc);font-weight:700;margin-top:.15cqw}
-.cstep small{display:block;color:#71717A;font-size:.78cqw}
-.axt .sc2{display:inline-block;min-width:3.4cqw;text-align:center;padding:.1cqw .4cqw;border-radius:99px;background:#16A34A;color:#fff;font-weight:800}
-.axt tr.hol td:first-child small{display:block;font-weight:600;color:#DC2626;font-size:.62cqw}
-.cres{margin-top:.7cqw;border-radius:.8cqw;background:#111;color:#fff;padding:.7cqw .9cqw}
-.cres .ln{font-size:.88cqw;color:#D4D4D8;line-height:1.5}.cres .ln b{color:#FFD000}
-.cres .big{display:flex;align-items:baseline;gap:.5cqw;margin-top:.3cqw}.cres .big b{font-size:2.6cqw;line-height:1;color:#FFD000;font-weight:900}.cres .big span{font-size:1.1cqw;color:#A1A1AA;font-weight:700}
-.cres .pb{height:.7cqw;background:#3F3F46;border-radius:99px;overflow:hidden;margin-top:.45cqw}.cres .pb i{display:block;height:100%;width:var(--w);background:linear-gradient(90deg,#16A34A,#FFD000);border-radius:99px}
 .afx{list-style:none;margin:.7cqw 0 0;padding:0;font-size:.98cqw;color:#3F3F46;line-height:1.4}.afx li{margin-bottom:.35cqw}.afx em{margin-right:.3cqw}.afx em{font-style:normal;font-weight:800;color:#16A34A}
 .lc1{display:flex;flex-wrap:wrap;align-items:center;gap:.4cqw .9cqw;margin-top:.6cqw;font-size:.98cqw;font-weight:600}.lc1 .cap{width:100%}.lc1 span{display:flex;align-items:center;gap:.35cqw}
 .lc1 .k{font-style:normal;padding:.15cqw .4cqw;border-radius:.35cqw;color:#fff;font-size:.85cqw;font-weight:800}
@@ -630,7 +630,7 @@ const SEED = {
   ] },
   /* Q3 2026 — Jul & Agu dari Monitoring_Customer_Support_2026_Responses.xlsx (sheet July / August), Sep dari Tickets-2026-09-01_2026-09-30.xlsx.
      VIP Jul & Agu dari Monitoring_VIP.xlsx (Handled By). Attendance dari Attendance Recap (screenshot Jul–Sep). Observation Q3 belum ada. */
-  '2026-Q3': { attNote: 'Attendance Recap Juli–September (siklus 26–25)', attMins: [12480, 12000, 12960],   /* hari kerja × 480 mnt: Jul 26 (30−4) · Agu 25 (31−4−2, libur 17 & 25 Agu) · Sep 27 (31−4) */ agents: [
+  '2026-Q3': { attNote: 'Attendance Recap Juli–September (siklus 26–25)', attMins: [12480, 12000, 12960], attMinsV: 2, agents: [
     { name: 'Devin Bagaskara', div: 'AM', csMonM: [586, 2, 22], csHandledM: [221, 2, 14], vipTotalM: [52, 41, 272], csSolvedM: [219, 2, 13], vipSolvedM: [52, 41, 272], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 23, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 2, alpha: 0, late: 0, lateDays: 0 }] },
     { name: 'Ni Kadek Desi Mirayani', div: 'AM', csMonM: [201, 133, 56], csHandledM: [64, 49, 19], vipTotalM: [666, 484, 307], csSolvedM: [63, 49, 19], vipSolvedM: [665, 484, 307], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 2, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 0, lateDays: 0 }] },
     { name: 'Aulia Sevi Diana', div: 'AM', csMonM: [147, 65, 19], csHandledM: [56, 27, 11], vipTotalM: [587, 421, 324], csSolvedM: [56, 27, 11], vipSolvedM: [587, 421, 324], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 2, alpha: 0, late: 11, lateDays: 0 }, { pl: 0, sick: 3, alpha: 0, late: 1, lateDays: 1 }, { pl: 0, sick: 2, alpha: 1, late: 30, lateDays: 3 }] },
@@ -641,6 +641,14 @@ const SEED = {
     { name: 'Nilma Syahrani', div: 'HD', csMonM: [0, 315, 386], csHandledM: [0, 112, 165], vipTotalM: [0, 0, 0], csSolvedM: [0, 112, 160], vipSolvedM: [0, 0, 0], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 1, alpha: 0, late: 6, lateDays: 0 }, { pl: 0, sick: 4, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 9, lateDays: 3 }] },
   ] },
 };
+/* Observation Q3 2026 — 2 kasus per bulan (Juli · Agustus · September), dari rekap observation */
+const OBS_Q3 = { 'aa ngurah kiyana adhisa oka pertama': [[100, 100], [60, 80], [80, 80]], 'aulia sevi diana': [[90, 90], [100, 90], [100, 100]],
+  'bayu sukma ramadhan': [[100, 100], [90, 90], [90, 100]], 'devin bagaskara': [[90, 90], [100, 100], [100, 90]],
+  'gede dimas pery narendra': [[90, 70], [80, 90], [100, 60]], 'kadek arisita dhyana putri': [[100, 100], [100, 100], [100, 90]],
+  'ni kadek desi mirayani': [[80, 90], [100, 90], [90, 100]], 'nilma syahrani': [[100, 100], [40, 80], [80, 90]] };
+const okey = x => String(x || '').toLowerCase().replace(/[^a-z ]/g, '').replace(/\s+/g, ' ').trim();
+SEED['2026-Q3'].agents.forEach(a => { const o = OBS_Q3[okey(a.name)]; if (o) a.chatC = o.map(r => r.slice()); });
+
 
 /* Foto agent (file photo-*.jpg). Nama lain/singkatan diarahkan lewat ALIAS. */
 const PHOTOS = {
@@ -754,7 +762,7 @@ const TX = {
     mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Done excludes admin hold · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS solved ÷ CS handled · AM: VIP done ÷ VIP total. Shown as information only — not part of the score. Click a row for the monthly detail.',
     obsTypes: 'Observation types', obs10: '10 points', obsPh: 'Point',
     critClick: 'Click for details', critTBA: 'Details will be added (TBA).', critEditHint: 'Write the details for this criterion — shown to everyone after saving.',
-    attRate70: 'Attendance Rate (70%)', punct30: 'Punctuality (30%)', attW20: 'Attendance Weight (20%)', rateF: '(Working Days − Sick Leave − PL − Alpha) ÷ Working Days × 100%', punctF: '(Total Working Minutes − Late Minutes) ÷ Total Working Minutes × 100%', minsF: 'Total Working Minutes = Working Days × 480', wF: q => `${q} Attendance Score × 20% — contribution to the Best Employee total score`, wdS: 'Days', lateS: 'Late', q3Score: q => `${q} Attendance Score`, contribL2: 'Final contribution', avgRate: 'Avg. attendance rate', avgPunct: 'Avg. punctuality', monthlyBD: 'Monthly breakdown', recapQ: q => `${q} recap`, wdL: 'Working days', minS: 'min', lateMinL: 'Late minutes', lateX: 'late', monthScore: 'Monthly score', avgL: 'average', clickAtt: 'Click an agent for the attendance detail.', lateDL: 'Late (days)', rateD3: '(Working days − Sick − PL − Alpha) ÷ Working days × 100%', punctD3: '(1 − Late minutes ÷ Total working minutes) × 100%, where total working minutes = working days × 480', monNote: 'Monthly scores from the Attendance Recap (cycle: 26th–25th). Small text = times late · minutes late.', lateL: 'Late (min)', barR: 'Attendance rate', barP: 'Punctuality', att20: '20% of the Final Score', attScoreL: 'Attendance score', contribL: 'Final Score contribution', contribD: 'Attendance score × 20% (max 20 points)', of20: 'of 20 points', exIn: (wd, s, pl, al, l) => `${wd} working days · ${s} sick · ${pl} PL · ${al} alpha · ${l} late minutes`, attPctL: '% Attendance per month', attPctD: '(working days − PL − sick − alpha) ÷ working days − late minutes ÷ working minutes', attQD: 'Attendance rate × 70% + Punctuality × 30%. Quarter score = average of the 3 months.', attEx: 'Example: 26 working days, 2 sick days, 11 late minutes → 92.31% − 0.09% = 92.22%.',
+    attRate70: 'Attendance Rate (70%)', punct30: 'Punctuality (30%)', attW20: 'Attendance Weight (20%)', rateF: '(Working Days − Sick Leave − PL − Alpha) ÷ Working Days × 100%', punctF: '(Total Working Minutes − Late Minutes) ÷ Total Working Minutes × 100%', minsF: 'Total Working Minutes = Working Days × 480', wF: q => `${q} Attendance Score × 20% — contribution to the Best Employee total score`, wdS: 'Days', lateS: 'Late', q3Score: q => `${q} Attendance Score`, contribL2: 'Final contribution', avgRate: 'Avg. attendance rate', avgPunct: 'Avg. punctuality', monthlyBD: 'Monthly breakdown', recapQ: q => `${q} recap`, wdL: 'Working days', minS: 'min', lateMinL: 'Late minutes', lateX: 'late', monthScore: 'Monthly score', avgL: 'average', clickAtt: 'Click an agent for the attendance detail.', barR2: 'Attendance rate', rateF2: '(Working days − Sick − PL − Alpha) ÷ Working days', punctF2: '(Working minutes − Late minutes) ÷ Working minutes', minsF2: 'Working minutes = days × 480', daysW: 'days', q3F: 'Monthly score = ① × 70% + ② × 30% · Q3 = average of the 3 months', max20: '× 20% = contribution to the Final Score (max 20 points)', hlTop: 'Highest score', hlPerf: 'Perfect 100.00 months', hlZero: 'Zero late minutes', hlUp: 'Improved every month', obsClick: 'Click a bar or an agent to see the monthly scores.', obsNote: 'Observation details can be checked at', obsQ: q => `${q} Observation score`, obsW: 'Contribution (× 30%)', case: i => `Case ${i}`, lateDL: 'Late (days)', rateD3: '(Working days − Sick − PL − Alpha) ÷ Working days × 100%', punctD3: '(1 − Late minutes ÷ Total working minutes) × 100%, where total working minutes = working days × 480', monNote: 'Monthly scores from the Attendance Recap (cycle: 26th–25th). Small text = times late · minutes late.', lateL: 'Late (min)', barR: 'Attendance rate', barP: 'Punctuality', att20: '20% of the Final Score', attScoreL: 'Attendance score', contribL: 'Final Score contribution', contribD: 'Attendance score × 20% (max 20 points)', of20: 'of 20 points', exIn: (wd, s, pl, al, l) => `${wd} working days · ${s} sick · ${pl} PL · ${al} alpha · ${l} late minutes`, attPctL: '% Attendance per month', attPctD: '(working days − PL − sick − alpha) ÷ working days − late minutes ÷ working minutes', attQD: 'Attendance rate × 70% + Punctuality × 30%. Quarter score = average of the 3 months.', attEx: 'Example: 26 working days, 2 sick days, 11 late minutes → 92.31% − 0.09% = 92.22%.',
     tixL: 'Tickets Created', mon: 'CS Monitoring', hand: 'CS Handled', vipR: 'VIP Resolution Rate', vipH: 'VIP Handled', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs peer max', avg: 'avg', of: 'of', vipHandled: 'VIP handled', rateW: 'rate',
   },
@@ -809,7 +817,7 @@ const TX = {
     mdNote2: 'CS Mon. = CS Monitoring · CS Hand. = CS Handled · VIP Selesai tanpa hold admin · HD = Helpdesk · AM = Account Manager. Res. Rate = HD: CS selesai ÷ CS handled · AM: VIP selesai ÷ total VIP. Hanya info — tidak masuk skor. Klik baris untuk detail per bulan.',
     obsTypes: 'Tipe observasi', obs10: '10 poin', obsPh: 'Poin',
     critClick: 'Klik untuk detail', critTBA: 'Detail akan ditambahkan (TBA).', critEditHint: 'Tulis detail kriteria ini — tampil untuk semua orang setelah disimpan.',
-    attRate70: 'Tingkat Kehadiran (70%)', punct30: 'Ketepatan Waktu (30%)', attW20: 'Bobot Kehadiran (20%)', rateF: '(Hari Kerja − Sakit − PL − Alpha) ÷ Hari Kerja × 100%', punctF: '(Total Menit Kerja − Menit Telat) ÷ Total Menit Kerja × 100%', minsF: 'Total Menit Kerja = Hari Kerja × 480', wF: q => `Skor Kehadiran ${q} × 20% — kontribusi ke total nilai Best Employee`, wdS: 'Hari', lateS: 'Telat', q3Score: q => `Skor Kehadiran ${q}`, contribL2: 'Kontribusi akhir', avgRate: 'Rata-rata tingkat kehadiran', avgPunct: 'Rata-rata ketepatan waktu', monthlyBD: 'Rincian per bulan', recapQ: q => `Rekap ${q}`, wdL: 'Hari kerja', minS: 'mnt', lateMinL: 'Menit telat', lateX: 'telat', monthScore: 'Skor bulanan', avgL: 'rata-rata', clickAtt: 'Klik agent untuk detail kehadiran.', lateDL: 'Telat (hari)', rateD3: '(Hari kerja − Sakit − PL − Alpha) ÷ Hari kerja × 100%', punctD3: '(1 − Menit telat ÷ Total menit kerja) × 100%, dengan total menit kerja = hari kerja × 480', monNote: 'Skor bulanan dari Attendance Recap (siklus tgl 26–25). Teks kecil = jumlah telat · menit telat.', lateL: 'Telat (mnt)', barR: 'Kehadiran', barP: 'Ketepatan', att20: '20% dari Skor Akhir', attScoreL: 'Skor kehadiran', contribL: 'Kontribusi ke Skor Akhir', contribD: 'Skor kehadiran × 20% (maks 20 poin)', of20: 'dari 20 poin', exIn: (wd, s, pl, al, l) => `${wd} hari kerja · sakit ${s} · PL ${pl} · alpha ${al} · telat ${l} menit`, attPctL: '% Attendance per bulan', attPctD: '(hari kerja − PL − sakit − alpha) ÷ hari kerja − menit telat ÷ menit kerja', attQD: 'Tingkat kehadiran × 70% + Ketepatan waktu × 30%. Skor kuartal = rata-rata 3 bulan.', attEx: 'Contoh: 26 hari kerja, sakit 2 hari, telat 11 menit → 92,31% − 0,09% = 92,22%.',
+    attRate70: 'Tingkat Kehadiran (70%)', punct30: 'Ketepatan Waktu (30%)', attW20: 'Bobot Kehadiran (20%)', rateF: '(Hari Kerja − Sakit − PL − Alpha) ÷ Hari Kerja × 100%', punctF: '(Total Menit Kerja − Menit Telat) ÷ Total Menit Kerja × 100%', minsF: 'Total Menit Kerja = Hari Kerja × 480', wF: q => `Skor Kehadiran ${q} × 20% — kontribusi ke total nilai Best Employee`, wdS: 'Hari', lateS: 'Telat', q3Score: q => `Skor Kehadiran ${q}`, contribL2: 'Kontribusi akhir', avgRate: 'Rata-rata tingkat kehadiran', avgPunct: 'Rata-rata ketepatan waktu', monthlyBD: 'Rincian per bulan', recapQ: q => `Rekap ${q}`, wdL: 'Hari kerja', minS: 'mnt', lateMinL: 'Menit telat', lateX: 'telat', monthScore: 'Skor bulanan', avgL: 'rata-rata', clickAtt: 'Klik agent untuk detail kehadiran.', barR2: 'Tingkat kehadiran', rateF2: '(Hari kerja − Sakit − PL − Alpha) ÷ Hari kerja', punctF2: '(Menit kerja − Menit telat) ÷ Menit kerja', minsF2: 'Menit kerja = hari × 480', daysW: 'hari', q3F: 'Skor bulanan = ① × 70% + ② × 30% · Q3 = rata-rata 3 bulan', max20: '× 20% = kontribusi ke Skor Akhir (maks 20 poin)', hlTop: 'Skor tertinggi', hlPerf: 'Bulan sempurna 100.00', hlZero: 'Nol menit telat', hlUp: 'Naik tiap bulan', obsClick: 'Klik grafik atau nama agent untuk melihat nilai per bulan.', obsNote: 'Detail observasi bisa dicek di', obsQ: q => `Skor Observasi ${q}`, obsW: 'Kontribusi (× 30%)', case: i => `Kasus ${i}`, lateDL: 'Telat (hari)', rateD3: '(Hari kerja − Sakit − PL − Alpha) ÷ Hari kerja × 100%', punctD3: '(1 − Menit telat ÷ Total menit kerja) × 100%, dengan total menit kerja = hari kerja × 480', monNote: 'Skor bulanan dari Attendance Recap (siklus tgl 26–25). Teks kecil = jumlah telat · menit telat.', lateL: 'Telat (mnt)', barR: 'Kehadiran', barP: 'Ketepatan', att20: '20% dari Skor Akhir', attScoreL: 'Skor kehadiran', contribL: 'Kontribusi ke Skor Akhir', contribD: 'Skor kehadiran × 20% (maks 20 poin)', of20: 'dari 20 poin', exIn: (wd, s, pl, al, l) => `${wd} hari kerja · sakit ${s} · PL ${pl} · alpha ${al} · telat ${l} menit`, attPctL: '% Attendance per bulan', attPctD: '(hari kerja − PL − sakit − alpha) ÷ hari kerja − menit telat ÷ menit kerja', attQD: 'Tingkat kehadiran × 70% + Ketepatan waktu × 30%. Skor kuartal = rata-rata 3 bulan.', attEx: 'Contoh: 26 hari kerja, sakit 2 hari, telat 11 menit → 92,31% − 0,09% = 92,22%.',
     tixL: 'Tiket Dibuat', mon: 'CS Monitoring', hand: 'CS Handled', vipR: 'VIP Resolution Rate', vipH: 'VIP Handled', total: 'total',
     bonusHD: 'Assist bonus — CS Monitoring', bonusAM: 'Assist bonus — VIP handled', vsMax: 'vs tertinggi', avg: 'rata²', of: 'dari', vipHandled: 'VIP ditangani', rateW: 'rate',
   },
@@ -832,10 +840,14 @@ const anyM = x => x.some(v => v != null);
 function normAgent(a) {
   return { name: a.name || '', div: a.div === 'AM' ? 'AM' : 'HD', photo: a.photo || '',
     csMon: n(a.csMon), csHandled: n(a.csHandled), vipTotal: n(a.vipTotal), vipSolved: n(a.vipSolved), vipRate: has(a.vipRate) ? n(a.vipRate) : null,
-    chat: [0, 1, 2].map(i => (a.chat && has(a.chat[i])) ? n(a.chat[i]) : null),
+    chat: [0, 1, 2].map(i => obsMonth(a, i)), chatC: [0, 1, 2].map(i => [0, 1].map(j => a.chatC && a.chatC[i] && has(a.chatC[i][j]) ? n(a.chatC[i][j]) : null)),
     csMonM: m3(a.csMonM), csHandledM: m3(a.csHandledM), csSolvedM: m3(a.csSolvedM), csSolved: has(a.csSolved) ? n(a.csSolved) : null, vipTotalM: m3(a.vipTotalM), vipSolvedM: m3(a.vipSolvedM), rrM: m3(a.rrM), ticketsM: m3(a.ticketsM), attM: [0, 1, 2].map(i => { const o = a.attM && a.attM[i]; if (!o) return null; const f = k => has(o[k]) ? n(o[k]) : null; const r = { pl: f('pl'), sick: f('sick'), alpha: f('alpha'), late: f('late'), lateDays: f('lateDays') }; return Object.values(r).some(v => v != null) ? r : null; }),
     att: Object.assign({ workDays: null, sick: 0, personal: 0, alpha: 0, lateMin: 0, workMin: null, manual: null }, a.att || {}) };
 }
+/* observation: 2 kasus per bulan → skor bulan = rata-rata kasus yang terisi (data lama 1 angka per bulan tetap terbaca) */
+function obsMonth(a, i) { const c = a.chatC && a.chatC[i];
+  if (c && c.some(has)) { const v = c.filter(has).map(n); return sum(v) / v.length; }
+  return (!c || !c.length) && a.chat && has(a.chat[i]) ? n(a.chat[i]) : null; }
 function attScore(t) {
   if (has(t.manual)) return { score: n(t.manual), rate: null, punct: null, manual: true };
   const wd = n(t.workDays);
@@ -931,6 +943,7 @@ function compute(data) {
     const cs = a.chat.filter(v => v != null);
     a.chatAvg = cs.length ? r2(sum(cs) / cs.length) : 0;
     const am = a.attM.map((o, k) => attMonth(o, (data.attMins || [])[k]));
+    a.attAuto = am.some(Boolean) ? r2(sum(am.filter(Boolean).map(x => x.pct)) / am.filter(Boolean).length) : null;
     if (am.some(Boolean) && !has(a.att.manual)) {
       const v = am.filter(Boolean); a.attMo = am;
       a.att = { ...a.att, sick: sum(a.attM.map(o => o ? n(o.sick) : 0)), personal: sum(a.attM.map(o => o ? n(o.pl) : 0)), alpha: sum(a.attM.map(o => o ? n(o.alpha) : 0)), lateMin: sum(a.attM.map(o => o ? n(o.late) : 0)), lateDays: sum(a.attM.map(o => o ? n(o.lateDays) : 0)) };
@@ -988,7 +1001,21 @@ function prodHL(C, m) {
     const bk = C.A.filter(a => a.crossF > 0).sort((x, y) => y.crossF - x.crossF);
     if (bk.length) L.push((ID ? 'Bonus back-up untuk yang membantu divisi lain (ditambahkan ke Skor Akhir, maks +2.5): ' : 'Back-up bonus for covering the other division (added to the Final Score, max +2.5): ') + bk.slice(0, 4).map(a => `${a.name} +${f2(a.crossF)}`).join(' · ') + '.');
   }
-  return `<div class="phl"><div class="phl-h">✦ ${T('khl')}<span>👆 ${T('clickHint')}</span></div><ul>${L.slice(0, 5).map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>`;
+  return `<div class="phl"><div class="phl-h">${T('khl')}<span>${T('clickHint')}</span></div><ul>${L.slice(0, 5).map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>`;
+}
+/* 4 kartu key highlights attendance (positif, dihitung dari data) */
+function attHL(list, m, nick) {
+  const top = list[0]; if (!top) return '';
+  const tops = list.filter(a => a.attS === top.attS), nm = arr => arr.map(nick).join(', ');
+  const perf = list.flatMap(a => (a.attMo || []).map((x, k) => x && r2(x.pct) >= 100 ? { a, k } : null).filter(Boolean));
+  const zero = list.filter(a => a.attMo && !n(a.att.lateMin));
+  const up = list.filter(a => a.attMo && a.attMo.every(Boolean) && a.attMo[0].pct < a.attMo[1].pct && a.attMo[1].pct < a.attMo[2].pct);
+  const byA = new Map(); perf.forEach(e => { byA.set(e.a, [...(byA.get(e.a) || []), monthShort(m[e.k])]); });
+  const card = (cls, ico, val, lab, sub) => `<div class="ahc ${cls}"><b class="num">${val}</b><span>${lab}</span><small>${sub || '—'}</small></div>`;
+  return `<div class="ahl">${card('t', '🏆', f2(top.attS), T('hlTop'), nm(tops))}
+    ${card('p', '✨', perf.length, T('hlPerf'), [...byA].map(([a, ms]) => `${nick(a)} (${ms.join(', ')})`).join(', '))}
+    ${card('z', '⏱', zero.length, T('hlZero'), nm(zero))}
+    ${card('u', '📈', up.length, T('hlUp'), up.map(a => `${nick(a)} ${a.attMo.map(x => f2(x.pct)).join('→')}`).join(', '))}</div>`;
 }
 function rk(i, cls = '') { return `<span class="rk ${cls}">${i + 1}</span>`; }
 
@@ -1066,22 +1093,23 @@ function slides(p, data) {
 
   // ---------- 4: chat ----------
   {
-    const list = legacyRules() ? C.byChat : [...C.byChat.filter(x => x.div === 'HD'), ...C.byChat.filter(x => x.div === 'AM')], lo = Math.min(80, Math.floor(Math.min(100, ...C.A.flatMap(a => a.chat.filter(v => v != null))) / 5) * 5), Y = v => Math.max(0, (v - lo) / (100 - lo) * 100);
+    const list = legacyRules() ? C.byChat : [...C.byChat.filter(x => x.div === 'HD'), ...C.byChat.filter(x => x.div === 'AM')], lo = Math.max(0, Math.min(80, Math.floor((Math.min(100, ...C.A.flatMap(a => a.chat.filter(v => v != null))) - 5) / 5) * 5)), Y = v => Math.max(0, (v - lo) / (100 - lo) * 100);
     const ticks = []; for (let v = lo; v <= 100; v += 5) ticks.push(v);
     const MC = ['#BFDBFE', '#60A5FA', '#1D4ED8'];
     const chart = `<div class="cch"><div class="cyax">${ticks.map(t => `<span style="bottom:${Y(t)}%">${t}</span>`).join('')}</div>
       <div class="cplot">${ticks.map(t => `<s style="bottom:${Y(t)}%"></s>`).join('')}
-        ${list.map((a, i) => `<div class="cg"><div class="cbars">${a.chat.map((v, k) => `<i style="--h:${v == null ? 0 : Y(v)}%;--c:${MC[k]};--k:${i * .4 + k * .15}"><em>${v == null ? '' : fInt(v)}</em></i>`).join('')}</div><span class="cx">${esc(nick(a))}</span></div>`).join('')}</div></div>
-      <div class="clg">${m.map((mi, k) => `<span><i style="background:${MC[k]}"></i>${monthName(mi)}</span>`).join('')}<span class="mut">${T('axisFrom')(lo)}</span></div>`;
+        ${list.map((a, i) => `<div class="cg clk" data-ob="${esc(a.name)}" role="button" tabindex="0" title="${T('obsClick')}"><div class="cbars">${a.chat.map((v, k) => `<i style="--h:${v == null ? 0 : Y(v)}%;--c:${MC[k]};--k:${i * .4 + k * .15}"><em>${v == null ? '' : fInt(v)}</em></i>`).join('')}</div><span class="cx">${esc(nick(a))}</span></div>`).join('')}</div></div>
+      <div class="clg">${m.map((mi, k) => `<span><i style="background:${MC[k]}"></i>${monthName(mi)}</span>`).join('')}<span class="mut">${T('axisFrom')(lo)}</span></div>
+      <div class="obhint">${T('obsClick')}</div>`;
     const NEW = !legacyRules(), groups = NEW ? [['HD', 'Helpdesk'], ['AM', 'Account Manager']].map(([d, nm]) => [nm, list.filter(x => x.div === d)]).filter(g => g[1].length) : [['', list]];
     let no = 0;
-    const tb = `<table class="rt"><thead><tr><th>${NEW ? 'No.' : '#'}</th><th>${T('agent')}</th><th>${T('avgS')}</th><th>${T('trend')}</th></tr></thead><tbody>
-      ${groups.map(([gn, gl]) => (gn ? `<tr class="grp"><td colspan="4">${gn}</td></tr>` : '') + gl.map((a, i) => { const f = a.chat.find(v => v != null), l = [...a.chat].reverse().find(v => v != null), d = (l ?? 0) - (f ?? 0); no++;
-        return `<tr class="${NEW || i ? '' : 'lead'}"><td>${NEW ? no : C.byChat.findIndex(x => x.chatAvg === a.chatAvg) + 1}</td><td><div class="rtn">${av(a)}<span>${esc(a.name)}</span></div></td><td class="num"><b>${f2(a.chatAvg)}</b></td><td class="tr ${d > 0 ? 'up' : d < 0 ? 'dn' : ''}">${d > 0 ? '▲ +' + d : d < 0 ? '▼ ' + d : '—'}</td></tr>`; }).join('')).join('')}</tbody></table>`;
+    const tb = `<table class="rt"><thead><tr><th>${NEW ? 'No.' : '#'}</th><th>${T('agent')}</th><th>${T('avgS')}</th></tr></thead><tbody>
+      ${groups.map(([gn, gl]) => (gn ? `<tr class="grp"><td colspan="3">${gn}</td></tr>` : '') + gl.map((a, i) => { no++;
+        return `<tr class="${NEW || i ? '' : 'lead'} clk" data-ob="${esc(a.name)}" role="button" tabindex="0" title="${T('obsClick')}"><td>${NEW ? no : C.byChat.findIndex(x => x.chatAvg === a.chatAvg) + 1}</td><td><div class="rtn">${av(a)}<span>${esc(a.name)}</span></div></td><td class="num"><b>${f2(a.chatAvg)}</b></td></tr>`; }).join('')).join('')}</tbody></table>`;
     out.push(`<section class="slide v4 ${N > 5 ? 'many' : ''}"><div class="s-in">
       ${head(`${T('pillar')} 02`, T('chatT2'), (C.A.some(a => a.chat.some(v => v != null)) ? T('chatTake2')(Math.floor(Math.min(...C.A.filter(a => a.chat.some(v => v != null)).map(a => a.chatAvg)) / 5) * 5) : T('obsNone')), 'b', T('weight')(30))}
       <div class="v4g"><div class="cbox"><div class="cap">${T('monthlyScores')}</div>${chart}</div><div class="cbox"><div class="cap">${T('ranking')}</div>${tb}</div></div>
-      <div class="crit2 obt"><span class="cap">${T('obsTypes')}</span>${[['HD', 'Helpdesk'], ['AM', 'Account Manager']].map(([d, nm]) => `<span class="crc obc" data-obs="${d}" role="button" tabindex="0" title="${T('critClick')}"><i>${d}</i><em>${T('obsOf')(nm)}</em><b class="obn">${T('obs10')}</b></span>`).join('')}</div>
+      <div class="crit2 obt"><span class="cap">${T('obsTypes')}</span>${[['HD', 'Helpdesk'], ['AM', 'Account Manager']].map(([d, nm]) => `<span class="crc obc" data-obs="${d}" role="button" tabindex="0" title="${T('critClick')}"><i>${d}</i><em>${T('obsOf')(nm)}</em><b class="obn">${T('obs10')}</b></span>`).join('')}<span class="obnote">${T('obsNote')} <a class="oblink" href="https://cso-workspace.vercel.app" target="_blank" rel="noopener">cso-workspace.vercel.app</a></span></div>
     </div>${foot}</section>`);
   }
 
@@ -1096,22 +1124,12 @@ function slides(p, data) {
     const top = list[0];
     out.push(`<section class="slide v5 ${N > 5 ? 'many' : ''}"><div class="s-in">
       ${head(`${T('pillar')} 03`, T('attT2'), top ? (top.attS >= 100 ? T('attPerfect')(esc(top.name)) : (() => { const tie = list.filter(a => a.attS === top.attS); return tie.length > 1 ? T('attTie')(tie.map(a => esc(nick(a))).join(LANG === 'id' ? ' dan ' : ' and '), f2(top.attS)) : T('attTop')(esc(top.name), f2(top.attS)); })()) : '', 'g', T('weight')(20))}
-      <div class="v5g"><div class="cbox">${tb}<div class="tnote">${MON ? `<b class="ahint">👆 ${T('clickAtt')}</b> ` + T('monNote') + ' ' : ''}${T('daysNote')}${data.attNote && !(MON && /^Attendance Recap/i.test(data.attNote)) ? ' · ' + esc(data.attNote) : ''}</div></div>
-        ${MON ? (() => { const ex = list.find(a => /^gede dimas/i.test(a.name) && a.attMo) || list.find(a => a.attMo); if (!ex) return '';
-            const mo = ex.attMo.map((x, k) => x && { x, o: ex.attM[k] || {}, k }).filter(Boolean), sc = mo.map(e => f2(e.x.pct));
-            const hol = [0, 1, 2].map(k => (k === 1 && ST.period === '2026-Q3') ? (LANG === 'id' ? 'libur 17 & 25 Agu' : 'holidays 17 & 25 Aug') : '');
-          return `<div class="cbox side calcx"><div class="cap afh">⚡ ${T('calc')}<span class="a20">${T('att20')}</span></div>
-          <div class="fbar" style="margin-top:.6cqw"><i class="r" style="--w:70%">70% ${T('barR')}</i><i class="pu" style="--w:30%">30% ${T('barP')}</i></div>
-          <div class="cstep" style="--sc:#16A34A"><span class="no">1</span><div><b>${T('attRate70')}</b><code>${T('rateF')}</code></div></div>
-          <div class="cstep" style="--sc:#2563EB"><span class="no">2</span><div><b>${T('punct30')}</b><code>${T('punctF')}</code><small>${T('minsF')}</small></div></div>
-          <div class="cstep" style="--sc:#CA8A04"><span class="no">3</span><div><b>${T('attW20')}</b><code>${LANG === 'id' ? 'Skor Q3 × 20%' : 'Q3 score × 20%'}</code><small>${T('wF')(Q)}</small></div></div>
-          <div class="axh">🧮 ${T('example')}: <b>${esc(ex.name)}</b></div>
-          <table class="axt"><thead><tr><th></th><th>${T('wdS')}</th><th>S/PL/A</th><th>${T('lateS')}</th><th>① 70%</th><th>② 30%</th><th>${T('score')}</th></tr></thead><tbody>
-            ${mo.map(e => `<tr class="${hol[e.k] ? 'hol' : ''}"><td>${monthShort(m[e.k])}${hol[e.k] ? `<small>${hol[e.k]}</small>` : ''}</td><td>${fInt(e.x.wd)}</td><td>${fInt(n(e.o.sick))}/${fInt(n(e.o.pl))}/${fInt(n(e.o.alpha))}</td><td>${fInt(n(e.o.late))}</td><td>${f2(e.x.rate)}%</td><td>${f2(e.x.punct)}%</td><td><span class="sc2">${f2(e.x.pct)}</span></td></tr>`).join('')}</tbody></table>
-          <div class="cres"><div class="ln">${T('q3Score')(Q)} = (${sc.join(' + ')}) ÷ ${sc.length} = <b>${f2(ex.attS)}</b></div>
-            <div class="ln">③ ${f2(ex.attS)} × 20%</div>
-            <div class="big"><b>${f2(ex.attS * .2)}</b><span>/ 20 ${LANG === 'id' ? 'poin' : 'points'}</span></div>
-            <div class="pb"><i style="--w:${Math.min(100, ex.attS)}%"></i></div></div></div>`; })() : `<div class="cbox side"><div class="cap">${T('calc')}</div>
+      <div class="v5g"><div class="cbox">${tb}<div class="tnote">${MON ? `<b class="ahint">${T('clickAtt')}</b> ` + T('monNote') + ' ' : ''}${T('daysNote')}${data.attNote && !(MON && /^Attendance Recap/i.test(data.attNote)) ? ' · ' + esc(data.attNote) : ''}</div>${MON ? attHL(list, m, nick) : ''}</div>
+        ${MON ? (() => { const wd = [0, 1, 2].map(k => n((data.attMins || [])[k]) || ATT_MINS_DEF).map(M => M / ATT_MIN_DAY);
+            return `<div class="cbox side afp"><div class="cap afh">${T('calc')}<span class="a20">${T('att20')}</span></div>
+          <div class="fc g"><div class="fch"><b>70%</b><span><em>①</em>${T('barR2')}</span></div><p>${T('rateF2')}</p></div>
+          <div class="fc b"><div class="fch"><b>30%</b><span><em>②</em>${T('punctS')}</span></div><p>${T('punctF2')}</p><small>${T('minsF2')} · ${m.map((mi, k) => `${monthShort(mi)} ${fInt(wd[k])}`).join(' · ')} ${T('daysW')}</small></div>
+          <div class="fc k"><div class="fch"><b>× 20%</b><span><em>③</em>${T('q3Score')(Q)}</span></div><p>${T('q3F')}</p><small>${T('max20')}</small></div></div>`; })() : `<div class="cbox side"><div class="cap">${T('calc')}</div>
           <div class="fbar"><i class="r" style="--w:70%">70% ${T('rateS')}</i><i class="pu" style="--w:30%">30% ${T('punctS')}</i></div>
           <p class="fx">${T('rateD2')}</p><p class="fx">${T('punctD2')}</p>
           <div class="cap" style="margin-top:1.4cqw">${T('leave')}</div>
@@ -1195,9 +1213,13 @@ async function loadPeriod(p, quiet) {
     if (c) { const o = JSON.parse(c); ST.data = o.data; ST.revision = o.revision; ST.source = 'cache'; }
     else { ST.data = SEED[p] ? clone(SEED[p]) : null; ST.revision = null; ST.source = SEED[p] ? 'seed' : 'none'; }
   }
+  const fx = LOCKED[p] ? 0 : fixWorkDays(p, ST.data); if (fx && ST.source === 'online') ST.merged = (ST.merged || 0) + fx;
   render(); syncStatus();
   if (ST.merged && ST.source === 'online') setTimeout(async () => { if (canEdit() && ST.merged) { ST.merged = 0; await persistData('Data dari file otomatis disimpan online ✓'); render(); } }, 1500);
 }
+/* hari kerja resmi per bulan (menimpa data lama yang masih 26 hari semua): Q3 = Jul 26 (30−4) · Agu 25 (31−4−2, libur 17 & 25 Agu) · Sep 27 (31−4) */
+const WORKDAYS_FIX = { '2026-Q3': [12480, 12000, 12960] };
+function fixWorkDays(p, d) { if (!d || !WORKDAYS_FIX[p] || d.attMinsV >= 2) return 0; d.attMins = WORKDAYS_FIX[p].slice(); d.attMinsV = 2; return 1; }
 /* data dari file (SEED) diisikan ke data online yang kolomnya masih kosong — angka yang sudah diisi manual tidak ditimpa */
 function mergeSeed(data, seed) {
   if (!data || !seed) return 0; let n = 0;
@@ -1211,6 +1233,7 @@ function mergeSeed(data, seed) {
     if (!hadSolved && (sa.csSolvedM || sa.vipSolvedM) && a.rrM) { delete a.rrM; n++; }   // Res. % lama (dari versi file sebelumnya) → sekarang otomatis dari solved
     ['csMonM', 'csHandledM', 'csSolvedM', 'vipTotalM', 'vipSolvedM'].forEach(f => { if (!sa[f]) return; a[f] = a[f] || [null, null, null];
       sa[f].forEach((v, k) => { if (empty(a[f][k]) && !empty(v)) { a[f][k] = v; n++; } }); });
+    if (sa.chatC && !(a.chatC || []).some(r => (r || []).some(v => !empty(v)))) { a.chatC = sa.chatC.map(r => r.slice()); if (!(a.chat || []).some(v => !empty(v))) a.chat = sa.chatC.map(r => r.reduce((t, v) => t + v, 0) / r.length); n++; }
     if (sa.attM) { a.attM = a.attM || [null, null, null]; sa.attM.forEach((o, k) => { const cur = a.attM[k]; if (o && (!cur || !Object.values(cur).some(v => !empty(v)))) { a.attM[k] = { ...o }; n++; } }); }
   });
   return n;
@@ -1304,14 +1327,15 @@ function prep(sl) {
   sl.querySelectorAll('.num').forEach(el => { if (el.dataset.t == null) el.dataset.t = el.textContent; });
 }
 function countUp(sl) {
+  const WIN = sl.classList.contains('win');   // angka bergerak hanya di slide Best Employee
   sl.querySelectorAll('.num').forEach(el => {
     const t = el.dataset.t, m = /^([^\d]*)([\d,]+(?:\.(\d+))?)(.*)$/.exec(t || '');
-    if (!m || RM) { if (t != null) el.textContent = t; return; }
+    if (!m || RM || !WIN) { if (t != null) el.textContent = t; return; }
     const to = parseFloat(m[2].replace(/,/g, '')), dec = m[3] ? m[3].length : 0, comma = m[2].includes(',');
-    const card = el.closest('[data-k]'), delay = 300 + (card ? +card.style.getPropertyValue('--k') || 0 : 0) * 120, dur = 1700;
+    const card = el.closest('[data-k]'), delay = 450 + (card ? +card.style.getPropertyValue('--k') || 0 : 0) * 150, dur = 2400;
     const fmt = v => { const x = v.toFixed(dec); return comma || to >= 1000 ? Number(x).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) : x; };
     const t0 = performance.now() + delay; el.textContent = m[1] + fmt(0) + m[4];
-    const step = now => { const p = Math.min(1, Math.max(0, (now - t0) / dur)), e = 1 - Math.pow(1 - p, 5);
+    const step = now => { const p = Math.min(1, Math.max(0, (now - t0) / dur)), e = p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;   // ease-in-out halus
       el.textContent = m[1] + fmt(to * e) + m[4]; if (p < 1 && el.isConnected) requestAnimationFrame(step); else el.textContent = t; };
     requestAnimationFrame(step);
   });
@@ -1358,6 +1382,7 @@ function openEditor() {
     for (let k = idx - 1; k >= 0 && !base; k--) { const c = ls.get(CACHE + all[k]); if (c) base = JSON.parse(c).data; else if (SEED[all[k]]) base = SEED[all[k]]; }
     ED = { attNote: '', agents: base ? base.agents.map(a => blankAgent(a)) : [blankAgent(), blankAgent()] };
   }
+  ED.agents.forEach(a => { if (!a.chatC) a.chatC = [0, 1, 2].map(k => [a.chat && has(a.chat[k]) ? a.chat[k] : '', '']); });
   ST.editing = true; drawEditor(); $('#editor').classList.remove('hidden');
 }
 function closeEditor() { ST.editing = false; $('#editor').classList.add('hidden'); ED = null; }
@@ -1367,7 +1392,7 @@ function drawEditor() {
   const C = compute(ED), live = new Map(C.A.map(a => [a.name, a]));
   $('#edTitle').textContent = `Edit data · ${pLabel(p)}`;
   $('#edBody').innerHTML = `<p class="help">Isi angka per agent. Productivity, Chat, Attendance, ranking dan Best Employee dihitung otomatis dengan rumus di slide. Kolom yang tidak relevan untuk divisinya boleh dikosongkan.
-    Attendance: isi hari kerja, cuti & menit telat — atau langsung isi <b>Skor attendance (manual)</b> bila sudah dihitung di Excel.</p>
+    Attendance: isi tabel <b>Attendance — data bulanan</b>; <b>Skor attendance</b> di tiap agent terisi otomatis. Ubah angkanya hanya bila perlu override — tombol <b>Pakai otomatis</b> mengembalikannya.</p>
     ${!ST.open ? `<div class="acard"><div class="f"><label>Password publish (PUBLISH_KEY)</label><input class="inp" type="password" id="pubKey" value="${esc(ls.get(KEY_PUB) || '')}" autocomplete="current-password"></div></div>` : ''}
     ${edTable(m, live)}
     ${legacyRules() ? '' : edAttTable(m, live)}
@@ -1384,8 +1409,8 @@ function drawEditor() {
         ${isAM ? fld('VIP handled (total)', 'vipTotal', a.vipTotal) + fld('VIP solved (total, info)', 'vipSolved', a.vipSolved) + fld('VIP rate % (info)', 'vipRate', a.vipRate, 'number', 'placeholder="otomatis: solved ÷ handled"')
                : fld('CS Monitoring (total)', 'csMon', a.csMon) + fld('CS Handled (total)', 'csHandled', a.csHandled)}
       </div>`}</fieldset>
-      <fieldset class="fs"><legend>Observation (0–100)</legend><div class="grid">${m.map((mi, k) => fld(`Observation ${MSHORT[mi]}`, `chat.${k}`, a.chat && a.chat[k])).join('')}</div></fieldset>
-      ${!legacyRules() ? `<fieldset class="fs"><legend>Attendance</legend><div class="sumq" data-sum="att">${attSum(L)}</div><div class="grid">${fld('Skor attendance (manual, opsional)', 'att.manual', a.att && a.att.manual, 'number', 'placeholder="kosong = dari tabel bulanan"')}</div></fieldset>` : `<fieldset class="fs"><legend>Attendance (total 1 kuartal)</legend><div class="grid">
+      <fieldset class="fs"><legend>Observation (0–100) · 2 kasus per bulan</legend><div class="sumq" data-sum="obs">${obsSum(L, m)}</div><div class="grid">${m.map((mi, k) => [0, 1].map(j => fld(`${MSHORT[mi]} · kasus ${j + 1}`, `chatC.${k}.${j}`, a.chatC && a.chatC[k] && a.chatC[k][j])).join('')).join('')}</div></fieldset>
+      ${!legacyRules() ? `<fieldset class="fs"><legend>Attendance</legend><div class="sumq" data-sum="att">${attSum(L)}</div><div class="grid">${attManFld(a, L)}</div></fieldset>` : `<fieldset class="fs"><legend>Attendance (total 1 kuartal)</legend><div class="grid">
         ${fld('Hari kerja', 'att.workDays', a.att && a.att.workDays)}${fld('Sick (hari)', 'att.sick', a.att && a.att.sick)}${fld('Personal leave (hari)', 'att.personal', a.att && a.att.personal)}${fld('Alpha (hari)', 'att.alpha', a.att && a.att.alpha)}
         ${fld('Menit telat', 'att.lateMin', a.att && a.att.lateMin)}${fld('Total menit kerja', 'att.workMin', a.att && a.att.workMin)}${fld('Skor attendance (manual)', 'att.manual', a.att && a.att.manual, 'number', 'placeholder="opsional"')}
       </div></fieldset>`}</div>`; }).join('')}
@@ -1446,12 +1471,20 @@ const attC = L => L && L.attX && (L.attX.monthly || L.attX.manual) ? f2(L.attS *
 /* skor hasil hitungan ikut disimpan ke backend (snapshot) supaya konsisten dibaca di mana pun — sumber kebenaran tetap data absensi */
 function stampCalc(d) { if (!d || !d.agents) return d; const C = compute(d), by = new Map(C.A.map(a => [a.name, a]));
   d.agents.forEach(a => { const L = by.get((a.name || '').trim()); if (!L) { delete a.calc; return; }
+    if (a.chatC) a.chat = L.chat.map(v => v == null ? '' : r2(v));
     a.calc = { prod: L.prod, obs: L.chatAvg, att: L.attS, attTotal20: r2(L.attS * .2), final: L.final,
       attMonthly: L.attMo ? L.attMo.map(x => x ? { workDays: r2(x.wd), rate: r2(x.rate), punct: r2(x.punct), score: r2(x.pct) } : null) : null }; });
   d.calcAt = new Date().toISOString(); return d; }
+function obsSum(L, m) { if (!L) return ''; return 'Skor per bulan (rata-rata 2 kasus, otomatis): ' + m.map((mi, k) => `${MSHORT[mi]} <b>${L.chat[k] == null ? '–' : f2(L.chat[k])}</b>`).join(' · ') + ` → Observation ${ST.period.slice(5)} <b>${f2(L.chatAvg)}</b>`; }
+/* skor attendance per agent: terisi otomatis dari tabel bulanan · angka berbeda = override manual */
+function attManFld(a, L) { const man = a.att && has(a.att.manual), auto = L ? L.attAuto : null;
+  return `<div class="f" style="grid-column:1/-1"><label>Skor attendance ${man ? '<b class="xp">(manual override)</b>' : '(otomatis)'}</label><input class="inp" type="number" step="any" min="0" max="100" data-attman value="${esc(man ? a.att.manual : auto == null ? '' : f2(auto))}" placeholder="isi tabel bulanan" style="max-width:160px"><small class="mut" data-o3="attman">${attManNote(a, L)}</small></div>`; }
+function attManNote(a, L) { const auto = L ? L.attAuto : null, man = a.att && has(a.att.manual);
+  return (auto == null ? 'Belum ada data bulanan.' : `Otomatis: ${f2(auto)} → Total Score Attendance ${f2((man ? n(a.att.manual) : auto) * .2)} / 20`) + (man ? ' · <button type="button" class="btn mini" data-attauto>Pakai otomatis</button>' : ''); }
 function edLive() {
   const C = compute(ED), live = new Map(C.A.map(a => [a.name, a]));
-  $$('#edBody .acard[data-i]').forEach(card => { const L = live.get((ED.agents[+card.dataset.i].name || '').trim()); const ps = card.querySelector('[data-sum="prod"]'), as = card.querySelector('[data-sum="att"]'); if (ps) ps.innerHTML = prodSum(L); if (as) as.innerHTML = attSum(L); const s = card.querySelector('.live'); if (s) s.innerHTML = L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · OBS ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''; });
+  $$('#edBody .acard[data-i]').forEach(card => { const L = live.get((ED.agents[+card.dataset.i].name || '').trim()); const ps = card.querySelector('[data-sum="prod"]'), as = card.querySelector('[data-sum="att"]'), os = card.querySelector('[data-sum="obs"]'); if (ps) ps.innerHTML = prodSum(L); if (as) as.innerHTML = attSum(L); if (os) os.innerHTML = obsSum(L, qMonths(ST.period));
+    const ai = card.querySelector('[data-attman]'), a0 = ED.agents[+card.dataset.i]; if (ai) { if (document.activeElement !== ai && !(a0.att && has(a0.att.manual))) ai.value = L && L.attAuto != null ? f2(L.attAuto) : ''; const nt = card.querySelector('[data-o3="attman"]'); if (nt) nt.innerHTML = attManNote(a0, L); const lb = ai.parentElement.querySelector('label'); if (lb) lb.innerHTML = `Skor attendance ${a0.att && has(a0.att.manual) ? '<b class="xp">(manual override)</b>' : '(otomatis)'}`; } const s = card.querySelector('.live'); if (s) s.innerHTML = L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · OBS ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''; });
   $$('#edBody tr[data-i]').forEach(tr => { const a = ED.agents[+tr.dataset.i], L = live.get((a.name || '').trim()), set = (o, v) => { const c = tr.querySelector(`[data-o="${o}"]`); if (c) c.textContent = v; };
     set('tcsMon', L ? fInt(L.csMon) : '–'); set('tcsHand', L ? fInt(L.csHandled) : '–'); set('tvip', L ? fInt(L.vipTotal) : '–'); set('tcsSol', L && L.csSolved != null ? fInt(L.csSolved) : '–'); set('tvipSol', L && L.vipSolved != null ? fInt(L.vipSolved) : '–');
     [0, 1, 2].forEach(k => { const x = L && L.attMo && L.attMo[k]; set('atr' + k, x ? f2(x.rate) + '%' : '–'); set('atp' + k, x ? f2(x.punct) + '%' : '–'); set('att' + k, x ? f2(x.pct) : '–'); }); set('attq', attQ(L)); set('attc', attC(L));
@@ -1466,10 +1499,12 @@ function resizePhoto(file) {
     img.onerror = rej; img.src = url; });
 }
 $('#edBody').addEventListener('input', e => {
-  const el = e.target; if (!el.dataset.p) return;
+  const el = e.target; if (!el.dataset.p && !el.hasAttribute('data-wd') && !el.hasAttribute('data-attman')) return;
   const card = el.closest('[data-i]'); const v = el.type === 'number' ? (el.value === '' ? '' : Number(el.value)) : el.value;
   if (el.hasAttribute('data-root')) { ED.attNote = v; return; }
   if (el.hasAttribute('data-root2')) { setPath(ED, el.dataset.p, v); edLive(); return; }
+  if (el.hasAttribute('data-attman') && card) { const a = ED.agents[+card.dataset.i]; a.att = a.att || {}; const L = compute(ED).A.find(x => x.name === (a.name || '').trim()), auto = L ? L.attAuto : null;
+    if (v === '' || (auto != null && Math.abs(v - auto) < 0.005)) delete a.att.manual; else a.att.manual = v; edLive(); return; }
   if (el.hasAttribute('data-wd')) { const k = +el.dataset.wd; ED.attMins = ED.attMins || [null, null, null]; ED.attMins[k] = v === '' ? null : v * ATT_MIN_DAY; const t = $(`#edBody [data-o2="mins${k}"]`); if (t) t.textContent = `= ${fInt(n(ED.attMins[k]) || ATT_MINS_DEF)} menit`; edLive(); return; }
   if (!card) return;
   setPath(ED.agents[+card.dataset.i], el.dataset.p, v);
@@ -1490,6 +1525,7 @@ $('#edBody').addEventListener('click', e => {
   if (!card) return;
   const i = +card.dataset.i;
   if (e.target.hasAttribute('data-del')) { ED.agents.splice(i, 1); drawEditor(); }
+  if (e.target.hasAttribute('data-attauto')) { if (ED.agents[i].att) delete ED.agents[i].att.manual; edLive(); return; }
   if (e.target.hasAttribute('data-rmphoto')) { ED.agents[i].photo = ''; drawEditor(); }
 });
 $('#edCancel').onclick = closeEditor;
@@ -1502,7 +1538,7 @@ function localSave(clean) {
 }
 $('#edSave').onclick = async () => {
   const k = $('#pubKey'); if (k) ls.set(KEY_PUB, k.value);
-  const clean = stampCalc({ attNote: ED.attNote || '', attMins: ED.attMins || null, agents: ED.agents.filter(a => (a.name || '').trim()), obsPoints: (ST.data && ST.data.obsPoints) || ED.obsPoints });
+  const clean = stampCalc({ attNote: ED.attNote || '', attMins: ED.attMins || null, attMinsV: ED.attMinsV, agents: ED.agents.filter(a => (a.name || '').trim()), obsPoints: (ST.data && ST.data.obsPoints) || ED.obsPoints });
   const btn = $('#edSave'); btn.disabled = true; btn.textContent = 'Menyimpan…';
   try {
     const r = await api('?period=' + encodeURIComponent(ST.period), { method: 'POST', body: JSON.stringify({ data: clean, revision: ST.revision }) });
@@ -1598,6 +1634,32 @@ function openAttDetail(name) {
 }
 document.addEventListener('click', e => { if (typeof TEXTING !== 'undefined' && TEXTING) return; const r = e.target.closest('tr.clk[data-at]'); if (r) { e.stopPropagation(); openAttDetail(r.dataset.at); } }, true);
 document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('tr.clk[data-at]')) { e.preventDefault(); e.stopPropagation(); openAttDetail(e.target.dataset.at); } }, true);
+
+/* =================== detail observation per agent (klik grafik / ranking) =================== */
+function openObsDetail(name) {
+  if (!ST.data) return;
+  const C = compute(ST.data), a = C.A.find(x => x.name === name); if (!a) return;
+  const mm = qMonths(ST.period), q = ST.period.slice(5), cc = k => (a.chatC && a.chatC[k]) || [null, null];
+  const cell = v => v == null ? '<td>—</td>' : `<td>${f2(v)}</td>`;
+  const have = a.chat.filter(v => v != null);
+  const el = document.createElement('div'); el.className = 'md';
+  el.innerHTML = `<div class="mdb" role="dialog" aria-modal="true" aria-label="${esc(name)}" style="max-width:640px">
+    <div class="mdh"><span class="rav">${photoOf(a) ? `<img src="${esc(photoOf(a))}" alt="">` : esc(initials(a.name))}</span><div><h3>${esc(a.name)}</h3><small>${DIV[a.div]} · ${T('chatT2')} · ${pLabel(ST.period)}</small></div><button class="btn x" type="button">${T('close')}</button></div>
+    <div class="mdk"><div><span>${T('obsQ')(q)}</span><b>${f2(a.chatAvg)}</b></div><div><span>${T('bestMonth')}</span><b>${have.length ? monthName(mm[a.chat.indexOf(Math.max(...have))]) : '—'}</b></div><div><span>${T('obsW')}</span><b>${f2(a.chatAvg * .3)} <small style="font-size:12px;color:#71717A">/ 30</small></b></div></div>
+    <div class="adw"><table class="adt"><thead><tr><th>${T('month')}</th><th>${T('case')(1)}</th><th>${T('case')(2)}</th><th>${T('monthScore')}</th></tr></thead><tbody>
+      ${mm.map((mi, k) => `<tr><td>${monthName(mi)}</td>${cell(cc(k)[0])}${cell(cc(k)[1])}<td><b>${a.chat[k] == null ? '—' : f2(a.chat[k])}</b>${cc(k).filter(v => v != null).length > 1 ? `<small>(${cc(k).filter(v => v != null).map(v => fInt(v)).join(' + ')}) ÷ 2</small>` : ''}</td></tr>`).join('')}
+      <tr class="sc"><td>${T('obsQ')(q)}</td><td></td><td></td><td>${f2(a.chatAvg)}<small>${have.length ? `(${have.map(v => f2(v)).join(' + ')}) ÷ ${have.length}` : ''}</small></td></tr>
+    </tbody></table></div>
+    <div class="adf">${T('obsNote')} <a class="oblink" href="https://cso-workspace.vercel.app" target="_blank" rel="noopener">cso-workspace.vercel.app</a></div>
+  </div>`;
+  const close = () => { el.remove(); document.removeEventListener('keydown', esc1, true); };
+  const esc1 = e => { if (e.key === 'Escape') { e.stopPropagation(); close(); } };
+  el.addEventListener('click', e => { if (e.target === el || e.target.closest('.x')) close(); });
+  document.addEventListener('keydown', esc1, true);
+  document.body.appendChild(el); el.querySelector('.x').focus();
+}
+document.addEventListener('click', e => { if (typeof TEXTING !== 'undefined' && TEXTING) return; if (e.target.closest('a.oblink')) { e.stopPropagation(); return; } const r = e.target.closest('[data-ob]'); if (r) { e.stopPropagation(); openObsDetail(r.dataset.ob); } }, true);
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('[data-ob]')) { e.preventDefault(); e.stopPropagation(); openObsDetail(e.target.dataset.ob); } }, true);
 
 /* =================== mode viewer / admin =================== */
 const VIEW = new URLSearchParams(location.search).has('view');

@@ -636,6 +636,14 @@ const SEED = {
     { name: 'Nilma Syahrani', div: 'HD', csMonM: [0, 315, 386], csHandledM: [0, 112, 165], vipTotalM: [0, 0, 0], csSolvedM: [0, 112, 160], vipSolvedM: [0, 0, 0], chat: ['', '', ''], att: {}, attM: [{ pl: 0, sick: 1, alpha: 0, late: 6, lateDays: 0 }, { pl: 0, sick: 4, alpha: 0, late: 0, lateDays: 0 }, { pl: 0, sick: 1, alpha: 0, late: 9, lateDays: 3 }] },
   ] },
 };
+/* Observation Q3 2026 — 2 kasus per bulan (Juli · Agustus · September), dari rekap observation */
+const OBS_Q3 = { 'aa ngurah kiyana adhisa oka pertama': [[100, 100], [60, 80], [80, 80]], 'aulia sevi diana': [[90, 90], [100, 90], [100, 100]],
+  'bayu sukma ramadhan': [[100, 100], [90, 90], [90, 100]], 'devin bagaskara': [[90, 90], [100, 100], [100, 90]],
+  'gede dimas pery narendra': [[90, 70], [80, 90], [100, 60]], 'kadek arisita dhyana putri': [[100, 100], [100, 100], [100, 90]],
+  'ni kadek desi mirayani': [[80, 90], [100, 90], [90, 100]], 'nilma syahrani': [[100, 100], [40, 80], [80, 90]] };
+const okey = x => String(x || '').toLowerCase().replace(/[^a-z ]/g, '').replace(/\s+/g, ' ').trim();
+SEED['2026-Q3'].agents.forEach(a => { const o = OBS_Q3[okey(a.name)]; if (o) a.chatC = o.map(r => r.slice()); });
+
 
 /* Foto agent (file photo-*.jpg). Nama lain/singkatan diarahkan lewat ALIAS. */
 const PHOTOS = {
@@ -827,10 +835,14 @@ const anyM = x => x.some(v => v != null);
 function normAgent(a) {
   return { name: a.name || '', div: a.div === 'AM' ? 'AM' : 'HD', photo: a.photo || '',
     csMon: n(a.csMon), csHandled: n(a.csHandled), vipTotal: n(a.vipTotal), vipSolved: n(a.vipSolved), vipRate: has(a.vipRate) ? n(a.vipRate) : null,
-    chat: [0, 1, 2].map(i => (a.chat && has(a.chat[i])) ? n(a.chat[i]) : null),
+    chat: [0, 1, 2].map(i => obsMonth(a, i)), chatC: [0, 1, 2].map(i => [0, 1].map(j => a.chatC && a.chatC[i] && has(a.chatC[i][j]) ? n(a.chatC[i][j]) : null)),
     csMonM: m3(a.csMonM), csHandledM: m3(a.csHandledM), csSolvedM: m3(a.csSolvedM), csSolved: has(a.csSolved) ? n(a.csSolved) : null, vipTotalM: m3(a.vipTotalM), vipSolvedM: m3(a.vipSolvedM), rrM: m3(a.rrM), ticketsM: m3(a.ticketsM), attM: [0, 1, 2].map(i => { const o = a.attM && a.attM[i]; if (!o) return null; const f = k => has(o[k]) ? n(o[k]) : null; const r = { pl: f('pl'), sick: f('sick'), alpha: f('alpha'), late: f('late'), lateDays: f('lateDays') }; return Object.values(r).some(v => v != null) ? r : null; }),
     att: Object.assign({ workDays: null, sick: 0, personal: 0, alpha: 0, lateMin: 0, workMin: null, manual: null }, a.att || {}) };
 }
+/* observation: 2 kasus per bulan → skor bulan = rata-rata kasus yang terisi (data lama 1 angka per bulan tetap terbaca) */
+function obsMonth(a, i) { const c = a.chatC && a.chatC[i];
+  if (c && c.some(has)) { const v = c.filter(has).map(n); return sum(v) / v.length; }
+  return (!c || !c.length) && a.chat && has(a.chat[i]) ? n(a.chat[i]) : null; }
 function attScore(t) {
   if (has(t.manual)) return { score: n(t.manual), rate: null, punct: null, manual: true };
   const wd = n(t.workDays);
@@ -926,6 +938,7 @@ function compute(data) {
     const cs = a.chat.filter(v => v != null);
     a.chatAvg = cs.length ? r2(sum(cs) / cs.length) : 0;
     const am = a.attM.map((o, k) => attMonth(o, (data.attMins || [])[k]));
+    a.attAuto = am.some(Boolean) ? r2(sum(am.filter(Boolean).map(x => x.pct)) / am.filter(Boolean).length) : null;
     if (am.some(Boolean) && !has(a.att.manual)) {
       const v = am.filter(Boolean); a.attMo = am;
       a.att = { ...a.att, sick: sum(a.attM.map(o => o ? n(o.sick) : 0)), personal: sum(a.attM.map(o => o ? n(o.pl) : 0)), alpha: sum(a.attM.map(o => o ? n(o.alpha) : 0)), lateMin: sum(a.attM.map(o => o ? n(o.late) : 0)), lateDays: sum(a.attM.map(o => o ? n(o.lateDays) : 0)) };
@@ -1075,7 +1088,7 @@ function slides(p, data) {
 
   // ---------- 4: chat ----------
   {
-    const list = legacyRules() ? C.byChat : [...C.byChat.filter(x => x.div === 'HD'), ...C.byChat.filter(x => x.div === 'AM')], lo = Math.min(80, Math.floor(Math.min(100, ...C.A.flatMap(a => a.chat.filter(v => v != null))) / 5) * 5), Y = v => Math.max(0, (v - lo) / (100 - lo) * 100);
+    const list = legacyRules() ? C.byChat : [...C.byChat.filter(x => x.div === 'HD'), ...C.byChat.filter(x => x.div === 'AM')], lo = Math.max(0, Math.min(80, Math.floor((Math.min(100, ...C.A.flatMap(a => a.chat.filter(v => v != null))) - 5) / 5) * 5)), Y = v => Math.max(0, (v - lo) / (100 - lo) * 100);
     const ticks = []; for (let v = lo; v <= 100; v += 5) ticks.push(v);
     const MC = ['#BFDBFE', '#60A5FA', '#1D4ED8'];
     const chart = `<div class="cch"><div class="cyax">${ticks.map(t => `<span style="bottom:${Y(t)}%">${t}</span>`).join('')}</div>
@@ -1214,6 +1227,7 @@ function mergeSeed(data, seed) {
     if (!hadSolved && (sa.csSolvedM || sa.vipSolvedM) && a.rrM) { delete a.rrM; n++; }   // Res. % lama (dari versi file sebelumnya) → sekarang otomatis dari solved
     ['csMonM', 'csHandledM', 'csSolvedM', 'vipTotalM', 'vipSolvedM'].forEach(f => { if (!sa[f]) return; a[f] = a[f] || [null, null, null];
       sa[f].forEach((v, k) => { if (empty(a[f][k]) && !empty(v)) { a[f][k] = v; n++; } }); });
+    if (sa.chatC && !(a.chatC || []).some(r => (r || []).some(v => !empty(v)))) { a.chatC = sa.chatC.map(r => r.slice()); if (!(a.chat || []).some(v => !empty(v))) a.chat = sa.chatC.map(r => r.reduce((t, v) => t + v, 0) / r.length); n++; }
     if (sa.attM) { a.attM = a.attM || [null, null, null]; sa.attM.forEach((o, k) => { const cur = a.attM[k]; if (o && (!cur || !Object.values(cur).some(v => !empty(v)))) { a.attM[k] = { ...o }; n++; } }); }
   });
   return n;
@@ -1362,6 +1376,7 @@ function openEditor() {
     for (let k = idx - 1; k >= 0 && !base; k--) { const c = ls.get(CACHE + all[k]); if (c) base = JSON.parse(c).data; else if (SEED[all[k]]) base = SEED[all[k]]; }
     ED = { attNote: '', agents: base ? base.agents.map(a => blankAgent(a)) : [blankAgent(), blankAgent()] };
   }
+  ED.agents.forEach(a => { if (!a.chatC) a.chatC = [0, 1, 2].map(k => [a.chat && has(a.chat[k]) ? a.chat[k] : '', '']); });
   ST.editing = true; drawEditor(); $('#editor').classList.remove('hidden');
 }
 function closeEditor() { ST.editing = false; $('#editor').classList.add('hidden'); ED = null; }
@@ -1371,7 +1386,7 @@ function drawEditor() {
   const C = compute(ED), live = new Map(C.A.map(a => [a.name, a]));
   $('#edTitle').textContent = `Edit data · ${pLabel(p)}`;
   $('#edBody').innerHTML = `<p class="help">Isi angka per agent. Productivity, Chat, Attendance, ranking dan Best Employee dihitung otomatis dengan rumus di slide. Kolom yang tidak relevan untuk divisinya boleh dikosongkan.
-    Attendance: isi hari kerja, cuti & menit telat — atau langsung isi <b>Skor attendance (manual)</b> bila sudah dihitung di Excel.</p>
+    Attendance: isi tabel <b>Attendance — data bulanan</b>; <b>Skor attendance</b> di tiap agent terisi otomatis. Ubah angkanya hanya bila perlu override — tombol <b>Pakai otomatis</b> mengembalikannya.</p>
     ${!ST.open ? `<div class="acard"><div class="f"><label>Password publish (PUBLISH_KEY)</label><input class="inp" type="password" id="pubKey" value="${esc(ls.get(KEY_PUB) || '')}" autocomplete="current-password"></div></div>` : ''}
     ${edTable(m, live)}
     ${legacyRules() ? '' : edAttTable(m, live)}
@@ -1388,8 +1403,8 @@ function drawEditor() {
         ${isAM ? fld('VIP handled (total)', 'vipTotal', a.vipTotal) + fld('VIP solved (total, info)', 'vipSolved', a.vipSolved) + fld('VIP rate % (info)', 'vipRate', a.vipRate, 'number', 'placeholder="otomatis: solved ÷ handled"')
                : fld('CS Monitoring (total)', 'csMon', a.csMon) + fld('CS Handled (total)', 'csHandled', a.csHandled)}
       </div>`}</fieldset>
-      <fieldset class="fs"><legend>Observation (0–100)</legend><div class="grid">${m.map((mi, k) => fld(`Observation ${MSHORT[mi]}`, `chat.${k}`, a.chat && a.chat[k])).join('')}</div></fieldset>
-      ${!legacyRules() ? `<fieldset class="fs"><legend>Attendance</legend><div class="sumq" data-sum="att">${attSum(L)}</div><div class="grid">${fld('Skor attendance (manual, opsional)', 'att.manual', a.att && a.att.manual, 'number', 'placeholder="kosong = dari tabel bulanan"')}</div></fieldset>` : `<fieldset class="fs"><legend>Attendance (total 1 kuartal)</legend><div class="grid">
+      <fieldset class="fs"><legend>Observation (0–100) · 2 kasus per bulan</legend><div class="sumq" data-sum="obs">${obsSum(L, m)}</div><div class="grid">${m.map((mi, k) => [0, 1].map(j => fld(`${MSHORT[mi]} · kasus ${j + 1}`, `chatC.${k}.${j}`, a.chatC && a.chatC[k] && a.chatC[k][j])).join('')).join('')}</div></fieldset>
+      ${!legacyRules() ? `<fieldset class="fs"><legend>Attendance</legend><div class="sumq" data-sum="att">${attSum(L)}</div><div class="grid">${attManFld(a, L)}</div></fieldset>` : `<fieldset class="fs"><legend>Attendance (total 1 kuartal)</legend><div class="grid">
         ${fld('Hari kerja', 'att.workDays', a.att && a.att.workDays)}${fld('Sick (hari)', 'att.sick', a.att && a.att.sick)}${fld('Personal leave (hari)', 'att.personal', a.att && a.att.personal)}${fld('Alpha (hari)', 'att.alpha', a.att && a.att.alpha)}
         ${fld('Menit telat', 'att.lateMin', a.att && a.att.lateMin)}${fld('Total menit kerja', 'att.workMin', a.att && a.att.workMin)}${fld('Skor attendance (manual)', 'att.manual', a.att && a.att.manual, 'number', 'placeholder="opsional"')}
       </div></fieldset>`}</div>`; }).join('')}
@@ -1450,12 +1465,20 @@ const attC = L => L && L.attX && (L.attX.monthly || L.attX.manual) ? f2(L.attS *
 /* skor hasil hitungan ikut disimpan ke backend (snapshot) supaya konsisten dibaca di mana pun — sumber kebenaran tetap data absensi */
 function stampCalc(d) { if (!d || !d.agents) return d; const C = compute(d), by = new Map(C.A.map(a => [a.name, a]));
   d.agents.forEach(a => { const L = by.get((a.name || '').trim()); if (!L) { delete a.calc; return; }
+    if (a.chatC) a.chat = L.chat.map(v => v == null ? '' : r2(v));
     a.calc = { prod: L.prod, obs: L.chatAvg, att: L.attS, attTotal20: r2(L.attS * .2), final: L.final,
       attMonthly: L.attMo ? L.attMo.map(x => x ? { workDays: r2(x.wd), rate: r2(x.rate), punct: r2(x.punct), score: r2(x.pct) } : null) : null }; });
   d.calcAt = new Date().toISOString(); return d; }
+function obsSum(L, m) { if (!L) return ''; return 'Skor per bulan (rata-rata 2 kasus, otomatis): ' + m.map((mi, k) => `${MSHORT[mi]} <b>${L.chat[k] == null ? '–' : f2(L.chat[k])}</b>`).join(' · ') + ` → Observation ${ST.period.slice(5)} <b>${f2(L.chatAvg)}</b>`; }
+/* skor attendance per agent: terisi otomatis dari tabel bulanan · angka berbeda = override manual */
+function attManFld(a, L) { const man = a.att && has(a.att.manual), auto = L ? L.attAuto : null;
+  return `<div class="f" style="grid-column:1/-1"><label>Skor attendance ${man ? '<b class="xp">(manual override)</b>' : '(otomatis)'}</label><input class="inp" type="number" step="any" min="0" max="100" data-attman value="${esc(man ? a.att.manual : auto == null ? '' : f2(auto))}" placeholder="isi tabel bulanan" style="max-width:160px"><small class="mut" data-o3="attman">${attManNote(a, L)}</small></div>`; }
+function attManNote(a, L) { const auto = L ? L.attAuto : null, man = a.att && has(a.att.manual);
+  return (auto == null ? 'Belum ada data bulanan.' : `Otomatis: ${f2(auto)} → Total Score Attendance ${f2((man ? n(a.att.manual) : auto) * .2)} / 20`) + (man ? ' · <button type="button" class="btn mini" data-attauto>Pakai otomatis</button>' : ''); }
 function edLive() {
   const C = compute(ED), live = new Map(C.A.map(a => [a.name, a]));
-  $$('#edBody .acard[data-i]').forEach(card => { const L = live.get((ED.agents[+card.dataset.i].name || '').trim()); const ps = card.querySelector('[data-sum="prod"]'), as = card.querySelector('[data-sum="att"]'); if (ps) ps.innerHTML = prodSum(L); if (as) as.innerHTML = attSum(L); const s = card.querySelector('.live'); if (s) s.innerHTML = L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · OBS ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''; });
+  $$('#edBody .acard[data-i]').forEach(card => { const L = live.get((ED.agents[+card.dataset.i].name || '').trim()); const ps = card.querySelector('[data-sum="prod"]'), as = card.querySelector('[data-sum="att"]'), os = card.querySelector('[data-sum="obs"]'); if (ps) ps.innerHTML = prodSum(L); if (as) as.innerHTML = attSum(L); if (os) os.innerHTML = obsSum(L, qMonths(ST.period));
+    const ai = card.querySelector('[data-attman]'), a0 = ED.agents[+card.dataset.i]; if (ai) { if (document.activeElement !== ai && !(a0.att && has(a0.att.manual))) ai.value = L && L.attAuto != null ? f2(L.attAuto) : ''; const nt = card.querySelector('[data-o3="attman"]'); if (nt) nt.innerHTML = attManNote(a0, L); const lb = ai.parentElement.querySelector('label'); if (lb) lb.innerHTML = `Skor attendance ${a0.att && has(a0.att.manual) ? '<b class="xp">(manual override)</b>' : '(otomatis)'}`; } const s = card.querySelector('.live'); if (s) s.innerHTML = L ? `Final <b>${f2(L.final)}</b> · PRD ${f2(L.prod)} · OBS ${f2(L.chatAvg)} · ATD ${f2(L.attS)}` : ''; });
   $$('#edBody tr[data-i]').forEach(tr => { const a = ED.agents[+tr.dataset.i], L = live.get((a.name || '').trim()), set = (o, v) => { const c = tr.querySelector(`[data-o="${o}"]`); if (c) c.textContent = v; };
     set('tcsMon', L ? fInt(L.csMon) : '–'); set('tcsHand', L ? fInt(L.csHandled) : '–'); set('tvip', L ? fInt(L.vipTotal) : '–'); set('tcsSol', L && L.csSolved != null ? fInt(L.csSolved) : '–'); set('tvipSol', L && L.vipSolved != null ? fInt(L.vipSolved) : '–');
     [0, 1, 2].forEach(k => { const x = L && L.attMo && L.attMo[k]; set('atr' + k, x ? f2(x.rate) + '%' : '–'); set('atp' + k, x ? f2(x.punct) + '%' : '–'); set('att' + k, x ? f2(x.pct) : '–'); }); set('attq', attQ(L)); set('attc', attC(L));
@@ -1470,10 +1493,12 @@ function resizePhoto(file) {
     img.onerror = rej; img.src = url; });
 }
 $('#edBody').addEventListener('input', e => {
-  const el = e.target; if (!el.dataset.p) return;
+  const el = e.target; if (!el.dataset.p && !el.hasAttribute('data-wd') && !el.hasAttribute('data-attman')) return;
   const card = el.closest('[data-i]'); const v = el.type === 'number' ? (el.value === '' ? '' : Number(el.value)) : el.value;
   if (el.hasAttribute('data-root')) { ED.attNote = v; return; }
   if (el.hasAttribute('data-root2')) { setPath(ED, el.dataset.p, v); edLive(); return; }
+  if (el.hasAttribute('data-attman') && card) { const a = ED.agents[+card.dataset.i]; a.att = a.att || {}; const L = compute(ED).A.find(x => x.name === (a.name || '').trim()), auto = L ? L.attAuto : null;
+    if (v === '' || (auto != null && Math.abs(v - auto) < 0.005)) delete a.att.manual; else a.att.manual = v; edLive(); return; }
   if (el.hasAttribute('data-wd')) { const k = +el.dataset.wd; ED.attMins = ED.attMins || [null, null, null]; ED.attMins[k] = v === '' ? null : v * ATT_MIN_DAY; const t = $(`#edBody [data-o2="mins${k}"]`); if (t) t.textContent = `= ${fInt(n(ED.attMins[k]) || ATT_MINS_DEF)} menit`; edLive(); return; }
   if (!card) return;
   setPath(ED.agents[+card.dataset.i], el.dataset.p, v);
@@ -1494,6 +1519,7 @@ $('#edBody').addEventListener('click', e => {
   if (!card) return;
   const i = +card.dataset.i;
   if (e.target.hasAttribute('data-del')) { ED.agents.splice(i, 1); drawEditor(); }
+  if (e.target.hasAttribute('data-attauto')) { if (ED.agents[i].att) delete ED.agents[i].att.manual; edLive(); return; }
   if (e.target.hasAttribute('data-rmphoto')) { ED.agents[i].photo = ''; drawEditor(); }
 });
 $('#edCancel').onclick = closeEditor;

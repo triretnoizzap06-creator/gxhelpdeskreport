@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Knowledge Base · GX CS</title>
+<link rel="icon" href="mark.png">
+<script>(function(){try{var m=localStorage.getItem("gx-theme");if(m==="dark"||m==="light")document.documentElement.setAttribute("data-theme",m)}catch(e){}})()</script>
+<style>
+:root{--bg:#F5F5F7;--card:#FFFFFF;--ink:#1D1D1F;--muted:#6E6E73;--line:#E5E5EA;--line-h:#F5C518;--chip:#FFF6D1;--chip-ink:#7A5B00;--soft:#FAFAFA;--hd:#0E7490;--hdbg:#CFFAFE;--am:#7C3AED;--ambg:#EDE9FE;
+  --font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B0B0D;--card:#161618;--ink:#F5F5F7;--muted:#98989D;--line:#2C2C2E;--chip:#3A3115;--chip-ink:#FFD866;--soft:#1C1C1F;--hdbg:#083344;--hd:#67E8F9;--ambg:#2E1065;--am:#C4B5FD;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B0B0D;--card:#161618;--ink:#F5F5F7;--muted:#98989D;--line:#2C2C2E;--chip:#3A3115;--chip-ink:#FFD866;--soft:#1C1C1F;--hdbg:#083344;--hd:#67E8F9;--ambg:#2E1065;--am:#C4B5FD;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+.top{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:10px;padding:10px 20px;background:var(--card);border-bottom:1px solid var(--line)}
+.logo{height:24px;display:block}.logo.dk{display:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .logo.lt{display:none}:root:not([data-theme="light"]) .logo.dk{display:block}}
+:root[data-theme="dark"] .logo.lt{display:none}:root[data-theme="dark"] .logo.dk{display:block}
+.top .sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:9px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;color:var(--ink);white-space:nowrap}
+.btn.pri{background:var(--ink);color:var(--bg);border-color:var(--ink)}.btn.danger{color:#DC2626}.btn.sm{padding:5px 9px;font-size:12px}
+main{max-width:1180px;margin:0 auto;padding:30px 20px 60px}
+.hero h1{margin:0 0 6px;font-size:24px;letter-spacing:-.01em}.hero p{margin:0 0 18px;color:var(--muted);font-size:14px}
+.search{width:100%;font-size:15px;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:12px 14px;outline:none}.search:focus{border-color:var(--line-h)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 6px}
+.chipf{font:600 13px var(--font);border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}.chipf[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.bar .sp{flex:1}
+.ksec{margin-top:26px}.ksec-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding-bottom:10px;margin-bottom:14px;border-bottom:2px solid var(--line-h)}
+.ksec-h h2{margin:0;font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.ksec-h span{font-size:12.5px;color:var(--muted)}.ksec-h .sp{flex:1}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.art{position:relative;display:flex;flex-direction:column;gap:8px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--hd);border-radius:12px;padding:14px 16px;text-decoration:none;color:inherit}
+.art.AM{border-left-color:var(--am)}a.art:hover{border-color:var(--line-h);border-left-color:var(--line-h)}
+.art b{font-size:15px;line-height:1.35}.art p{margin:0;font-size:13px;color:var(--muted);line-height:1.5;white-space:pre-line}
+.art .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}.tag{font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px;background:var(--chip);color:var(--chip-ink)}
+.art .src{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:5px}.art .src svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.2}
+.art .ed{position:absolute;top:10px;right:10px;display:none;gap:4px}.editing .art .ed{display:flex}
+mark{background:#FDE68A;color:inherit;border-radius:3px;padding:0 1px}
+.empty{color:var(--muted);font-size:14px;padding:16px 0}
+.banner{border-radius:12px;padding:10px 14px;font-size:13px;margin:0 0 14px;background:#FEF3C7;color:#92400E}
+.md{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.mdb{width:100%;max-width:560px;background:var(--card);border-radius:16px;padding:20px 22px;box-shadow:0 30px 80px rgba(0,0,0,.3)}.mdb h3{margin:0 0 14px}
+.f{margin-bottom:12px}.f label{display:block;font-size:11.5px;font-weight:700;color:var(--muted);margin-bottom:5px}.f input,.f textarea,.f select{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 10px;font-size:13.5px}
+.mfoot{display:flex;gap:8px;align-items:center;margin-top:6px}.mfoot .sp{flex:1}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1D1D1F;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:80;opacity:0;transition:opacity .2s}.toast.on{opacity:1}
+@media (max-width:600px){.top{padding:10px 12px}.top .hide-sm{display:none}main{padding:20px 14px 50px}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a href="/"><img class="logo lt" src="wordmark.png" alt="GlobalXtreme"><img class="logo dk" src="wordmark-white.png" alt="GlobalXtreme"></a>
+  <div class="sp"></div>
+  <a class="btn hide-sm" href="/dashboard-helpdesk">Dashboard Helpdesk</a><a class="btn hide-sm" href="/dashboard-am">Dashboard AM</a><a class="btn" href="/">Beranda</a>
+</header>
+<main>
+  <div class="hero"><h1>Knowledge Base</h1><p>SOP, flow, template & referensi kerja — Helpdesk Customer Support dan Account Manager VIP.</p></div>
+  <div id="banner"></div>
+  <input class="search" id="q" type="search" placeholder="Cari SOP, template, flow… (mis. Qiscus, VIP, kategori)" aria-label="Cari knowledge base">
+  <div class="bar"><div id="chips" style="display:flex;gap:8px;flex-wrap:wrap"></div><span class="sp"></span><button class="btn hidden" id="edBtn" style="display:none">✎ Edit knowledge base</button><span id="saveState" style="font-size:12px;color:var(--muted)"></span></div>
+  <div id="list"></div>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+/* Knowledge Base — 1 halaman, 2 bagian terpisah (Helpdesk / Account Manager), bisa dicari.
+   Dibaca tim tanpa login; tombol edit hanya muncul untuk SPV yang sudah login dashboard. */
+const DOC = 'knowledge-base';
+const SECT = [['HD', 'Helpdesk Knowledge Base', 'Helpdesk Customer Support'], ['AM', 'Account Manager Knowledge Base', 'Account Manager VIP']];
+const A = (title, desc, url, source, tags) => ({ title, desc, url, source, tags });
+const KB_DEFAULT = {
+  HD: [
+    A('SOP Flow Handling Helpdesk', 'Alur penanganan Customer Support. Sudah direvisi mengikuti alur kerja baru di Omnichannel Qiscus (per 25 Mei 2026).', 'https://melon-lime-e28.notion.site/SOP-Flow-Handling-Helpdesk-1d69b0fbceac80b98317da1a66743b16', 'Notion', ['SOP', 'Qiscus']),
+    A('Scope Penanganan Helpdesk Customer Support', 'Materi Weekly Meeting Helpdesk — kategori & scope penanganan.', 'https://www.figma.com/make/Q14wKSakut2DPzwoZqt7qf/Scope-Penanganan-Helpdesk-Customer-Support', 'Figma', ['Kategori', 'Weekly Meeting']),
+    A('Flow Helpdesk', 'Materi Weekly Meeting SOP Helpdesk.', 'https://www.figma.com/make/4dlhK0WIMX8zgXY3xvseCn/Flow-Helpdesk', 'Figma', ['SOP', 'Weekly Meeting']),
+    A('Monitoring Customer Support — Tracking sheet', 'Sheet monitoring group & tracking Customer Support.', 'https://docs.google.com/spreadsheets/d/1tTr6PTJpeNfgpxzwMov6vmDJgQxnl_hFqhjLvyx2AJ4/edit?gid=452219871#gid=452219871', 'Google Sheets', ['Monitoring']),
+    A('GX CS Connect', 'Portal GX Connect Customer Support.', 'https://gxcsconnect.globalxtreme-solutions.net/', 'Web', ['Tools']),
+    A('CSO Workspace', 'Detail observation & AFR (Operations / Helpdesk).', 'https://cso-workspace.vercel.app', 'Web', ['Observation', 'AFR']),
+  ],
+  AM: [
+    A('Flow Account Manager', 'Alur handling VIP Group oleh Account Manager.', 'https://app.notion.com/p/Flow-Account-Manager-2fe9b0fbceac808ba433d9149a7d0a4f', 'Notion', ['SOP', 'VIP']),
+    A('Template VIP — Account Manager', 'Template Account Manager (AM) untuk handling VIP Group.', 'https://docs.google.com/document/d/1PMfOf0d9nQtInjhPHSVTWc8u26ZWL8BReIJczwF7SEc/edit', 'Google Docs', ['Template', 'VIP']),
+    A('Masterlist VIP Group', 'Data list group VIP GX (update data VIP & Intracity).', 'https://docs.google.com/spreadsheets/d/1LRCBD_d1KjX1HQ4cIyAakXVlkPwQTg8mBv7E5QoMBkU/edit?gid=0#gid=0', 'Google Sheets', ['Data VIP']),
+    A('Monitoring VIP Group — Tracking sheet', 'Sheet monitoring group & tracking VIP.', 'https://docs.google.com/spreadsheets/d/1nfn0cazlhz0Vck7vz5WikBnIV9LFTBWZXLfk8Q34xuk/edit?gid=480098290#gid=480098290', 'Google Sheets', ['Monitoring', 'VIP']),
+    A('PPT VIP & Intracity Group', 'Presentasi daftar group VIP & Intracity.', 'https://throb-invert-82417920.figma.site/', 'Figma', ['VIP', 'Intracity']),
+  ],
+};
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const safeUrl = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : '';
+const LSVG = '<svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2400); }
+const KB = { data: JSON.parse(JSON.stringify(KB_DEFAULT)), rev: null, canEdit: false, online: false, edit: false, filter: { '#hd': 'HD', '#am': 'AM' }[location.hash] || '*' };
+
+async function load() {
+  try {
+    const r = await fetch('/api/todo?doc=' + DOC, { cache: 'no-store', credentials: 'same-origin' }); const j = await r.json();
+    KB.online = true; KB.canEdit = !!j.canEdit;
+    if (r.status === 200 && j.data && j.data.HD) { KB.data = j.data; KB.rev = j.revision; }
+  } catch (e) { KB.online = false; KB.canEdit = true; $('#banner').innerHTML = '<div class="banner"><b>Mode preview</b> — server belum tersambung; perubahan tidak tersimpan.</div>'; }
+  $('#edBtn').style.display = KB.canEdit ? '' : 'none';
+  render();
+}
+function hl(s, q) { const e = esc(s); if (!q) return e; const i = e.toLowerCase().indexOf(esc(q).toLowerCase()); return i < 0 ? e : e.slice(0, i) + '<mark>' + e.slice(i, i + esc(q).length) + '</mark>' + e.slice(i + esc(q).length); }
+function render() {
+  const q = $('#q').value.trim(), ql = q.toLowerCase();
+  $('#chips').innerHTML = [['*', 'Semua'], ['HD', 'Helpdesk'], ['AM', 'Account Manager']].map(([k, l]) => `<button class="chipf" data-f="${k}" aria-pressed="${k === KB.filter}">${l}</button>`).join('');
+  document.body.classList.toggle('editing', KB.edit);
+  $('#edBtn').textContent = KB.edit ? '✓ Selesai edit' : '✎ Edit knowledge base';
+  let any = false;
+  $('#list').innerHTML = SECT.filter(([k]) => KB.filter === '*' || KB.filter === k).map(([k, title, sub]) => {
+    const items = (KB.data[k] || []).map((a, i) => ({ a, i })).filter(({ a }) => !ql || [a.title, a.desc, a.source, ...(a.tags || [])].join(' ').toLowerCase().includes(ql));
+    if (items.length) any = true;
+    return `<section class="ksec" id="sec-${k}"><div class="ksec-h"><h2>${title}</h2><span>${sub} · ${(KB.data[k] || []).length} artikel</span><span class="sp"></span>${KB.edit ? `<button class="btn sm" data-add="${k}">+ Artikel</button>` : ''}</div>
+      ${items.length ? `<div class="grid">${items.map(({ a, i }) => { const u = safeUrl(a.url), tag = u && !KB.edit ? 'a' : 'div';
+        return `<${tag} class="art ${k}"${tag === 'a' ? ` href="${esc(u)}" target="_blank" rel="noopener"` : ''}><span class="ed"><button class="btn sm" data-edit="${k}.${i}">Edit</button></span>
+          <b>${hl(a.title, q)}</b>${a.desc ? `<p>${hl(a.desc, q)}</p>` : ''}${a.source || u ? `<span class="src">${LSVG}${esc(a.source || new URL(u).hostname)}</span>` : ''}
+          ${(a.tags || []).length ? `<div class="tags">${a.tags.map(t => `<span class="tag">${hl(t, q)}</span>`).join('')}</div>` : ''}</${tag}>`; }).join('')}</div>` : `<div class="empty">${q ? 'Tidak ada yang cocok dengan "' + esc(q) + '".' : 'Belum ada artikel.'}</div>`}</section>`;
+  }).join('');
+}
+let saveT = null;
+function save() {
+  if (!KB.online) { toast('Mode preview — tidak tersimpan'); return; }
+  clearTimeout(saveT); $('#saveState').textContent = 'Menyimpan…';
+  saveT = setTimeout(async () => {
+    let r, j = {}; try { r = await fetch('/api/todo', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ doc: DOC, data: KB.data, revision: KB.rev }) }); j = await r.json(); } catch (e) {}
+    if (r && r.status === 200) { KB.rev = j.revision; $('#saveState').textContent = 'Tersimpan ✓'; }
+    else if (r && r.status === 401) { $('#saveState').textContent = ''; toast('Sesi login habis — login lagi di Personal To-Do List'); }
+    else if (r && r.status === 409) { $('#saveState').textContent = ''; toast('Diubah di perangkat lain — muat ulang halaman'); }
+    else { $('#saveState').textContent = ''; toast('Gagal menyimpan'); }
+  }, 400);
+}
+function modal(k, i) {
+  const isNew = i == null, a = isNew ? { title: '', desc: '', url: '', source: '', tags: [] } : KB.data[k][i];
+  const el = document.createElement('div'); el.className = 'md';
+  el.innerHTML = `<div class="mdb"><h3>${isNew ? 'Tambah artikel' : 'Edit artikel'}</h3>
+    <div class="f"><label>Bagian</label><select data-f="k">${SECT.map(([x, t]) => `<option value="${x}" ${x === k ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
+    <div class="f"><label>Judul</label><input data-f="title" value="${esc(a.title)}"></div>
+    <div class="f"><label>Deskripsi</label><textarea data-f="desc" rows="3">${esc(a.desc)}</textarea></div>
+    <div class="f"><label>Link (URL lengkap)</label><input data-f="url" value="${esc(a.url)}" placeholder="https://…"></div>
+    <div class="f"><label>Sumber</label><input data-f="source" value="${esc(a.source)}" placeholder="Notion / Google Docs / Figma"></div>
+    <div class="f"><label>Tag (pisahkan dengan koma)</label><input data-f="tags" value="${esc((a.tags || []).join(', '))}"></div>
+    <div class="mfoot">${isNew ? '' : '<button class="btn danger" data-act="del">Hapus</button>'}<span class="sp"></span><button class="btn" data-act="x">Batal</button><button class="btn pri" data-act="ok">Simpan</button></div></div>`;
+  document.body.appendChild(el);
+  el.addEventListener('click', e => {
+    const b = e.target.closest('[data-act]'); if (e.target === el) return el.remove(); if (!b) return;
+    if (b.dataset.act === 'x') return el.remove();
+    if (b.dataset.act === 'del') { if (confirm('Hapus artikel ini?')) { KB.data[k].splice(i, 1); el.remove(); render(); save(); } return; }
+    const g = f => el.querySelector(`[data-f="${f}"]`).value.trim();
+    if (!g('title')) return alert('Judul wajib diisi.');
+    if (g('url') && !safeUrl(g('url'))) return alert('Link harus diawali https://');
+    const nx = { title: g('title'), desc: el.querySelector('[data-f="desc"]').value.trim(), url: g('url'), source: g('source'), tags: g('tags').split(',').map(t => t.trim()).filter(Boolean) };
+    const nk = g('k');
+    if (!isNew) KB.data[k].splice(i, 1);
+    (KB.data[nk] = KB.data[nk] || []).splice(isNew || nk !== k ? KB.data[nk].length : i, 0, nx);
+    el.remove(); render(); save();
+  });
+}
+$('#q').addEventListener('input', render);
+$('#chips').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (b) { KB.filter = b.dataset.f; history.replaceState(null, '', b.dataset.f === '*' ? location.pathname : '#' + b.dataset.f.toLowerCase()); render(); } });
+$('#edBtn').onclick = () => { KB.edit = !KB.edit; render(); };
+$('#list').addEventListener('click', e => {
+  const ed = e.target.closest('[data-edit]'); if (ed) { e.preventDefault(); const [k, i] = ed.dataset.edit.split('.'); return modal(k, +i); }
+  const ad = e.target.closest('[data-add]'); if (ad) return modal(ad.dataset.add, null);
+});
+load();
+</script>
+</body>
+</html>

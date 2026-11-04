@@ -13,12 +13,40 @@
       "use": "@vercel/node"
     },
     {
-      "src": "employees.js",
+      "src": "login.js",
       "use": "@vercel/node"
     },
     {
-      "src": "*.html",
+      "src": "todo.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "gate.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "helpdesk-report.html",
+          "helpdesk-performance.html",
+          "helpdesk-directory.html",
+          "spv.html"
+        ]
+      }
+    },
+    {
+      "src": "index.html",
       "use": "@vercel/static"
+    },
+    {
+      "src": "team.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "kb.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "employees.js",
+      "use": "@vercel/node"
     },
     {
       "src": "config.js",
@@ -43,6 +71,14 @@
       "continue": true
     },
     {
+      "src": "/api/login/?",
+      "dest": "/login.js"
+    },
+    {
+      "src": "/api/todo/?",
+      "dest": "/todo.js"
+    },
+    {
       "src": "/api/report/?",
       "dest": "/report.js"
     },
@@ -59,16 +95,32 @@
       "dest": "/employees.js"
     },
     {
-      "src": "/helpdesk-report/?",
-      "dest": "/helpdesk-report.html"
+      "src": "/helpdesk-report(\\.html)?/?",
+      "dest": "/gate.js?page=report"
     },
     {
-      "src": "/helpdesk-performance/?",
-      "dest": "/helpdesk-performance.html"
+      "src": "/helpdesk-performance(\\.html)?/?",
+      "dest": "/gate.js?page=performance"
     },
     {
-      "src": "/helpdesk-directory/?",
-      "dest": "/helpdesk-directory.html"
+      "src": "/helpdesk-directory(\\.html)?/?",
+      "dest": "/gate.js?page=directory"
+    },
+    {
+      "src": "/spv(\\.html)?/?",
+      "dest": "/gate.js?page=spv"
+    },
+    {
+      "src": "/dashboard-helpdesk/?",
+      "dest": "/team.html"
+    },
+    {
+      "src": "/dashboard-am/?",
+      "dest": "/team.html"
+    },
+    {
+      "src": "/knowledge-base/?",
+      "dest": "/kb.html"
     },
     {
       "src": "/",

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Dashboard Tim Helpdesk</title>
+<link rel="icon" href="mark.png">
+<style>
+:root{--bg:#F5F5F7;--card:#fff;--ink:#1D1D1F;--muted:#6E6E73;--line:#E5E5EA;--y:#F5C518;--g:#16A34A;--gbg:#DCFCE7;--o:#D97706;--obg:#FEF3C7;--r:#DC2626;--rbg:#FEE2E2;--bbg:#DBEAFE;--grbg:#F4F4F5;--acc:#0E7490;--accbg:#CFFAFE;
+  --font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+body.am{--acc:#7C3AED;--accbg:#EDE9FE}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+.top{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:12px;padding:10px 20px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .logo{height:24px;display:block}.top .sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;color:inherit;white-space:nowrap}
+.btn.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
+main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
+.hero{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.hero .ic{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#FFC93C,#F5A70A);font-size:24px}
+.hero h1{margin:0;font-size:24px;letter-spacing:-.01em}.hero p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+.who{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+.who select{border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:#fff}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}.kpi span{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.kpi b{font-size:24px;font-weight:800}
+.kpi.r b{color:var(--r)}.kpi.o b{color:var(--o)}.kpi.g b{color:var(--g)}
+.bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 13px;font-size:13px;font-weight:600;cursor:pointer}.chip[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.grp{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:20px 0 10px}
+.card{background:#fff;border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.card.done{border-left-color:var(--g);opacity:.85}
+.ch{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}.ch .ti{flex:1;min-width:220px;font-weight:700;font-size:14.5px;white-space:pre-line;line-height:1.4}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:12px}
+.tag{padding:3px 9px;border-radius:99px;font-weight:700;background:var(--grbg);color:#3F3F46}.tag.acc{background:var(--accbg);color:var(--acc)}.tag.High{background:var(--rbg);color:#B91C1C}.tag.Medium{background:var(--obg);color:#B45309}.tag.Low{background:var(--grbg)}.tag.late{background:var(--r);color:#fff}
+.rm{margin-top:8px;font-size:13px;color:#52525B;white-space:pre-line;line-height:1.5;background:#FAFAFA;border-radius:8px;padding:8px 10px}
+.lks{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.lk{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:4px 9px;border-radius:7px;background:#FFF6D1;color:#7A5B00;text-decoration:none;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lk svg{width:11px;height:11px;flex:none;stroke:currentColor;fill:none;stroke-width:2.2}
+.act{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;align-items:flex-start}
+.sb{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 11px;font-size:12.5px;font-weight:700;cursor:pointer}
+.sb[aria-pressed="true"].NOTSTARTED{background:var(--rbg);border-color:#FCA5A5;color:#B91C1C}.sb[aria-pressed="true"].INPROGRESS{background:var(--obg);border-color:#FCD34D;color:#B45309}.sb[aria-pressed="true"].DONE{background:var(--gbg);border-color:#86EFAC;color:#15803D}.sb[aria-pressed="true"].PLAN{background:var(--bbg);color:#1D4ED8}
+.note{flex:1;min-width:220px;display:flex;gap:6px}.note textarea{flex:1;border:1px solid #D2D2D7;border-radius:8px;padding:6px 9px;font-size:13px;resize:vertical;min-height:34px}
+.upd{font-size:11.5px;color:var(--muted);margin-top:6px}
+.empty{background:#fff;border:1px dashed var(--line);border-radius:12px;padding:26px;text-align:center;color:var(--muted);font-size:14px}
+.banner{border-radius:12px;padding:11px 14px;font-size:13px;margin-bottom:16px}.banner.e{background:var(--rbg);color:#991B1B}.banner.w{background:var(--obg);color:#92400E}
+.ql{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:8px}
+.qlc{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 13px;text-decoration:none;font-size:13px;font-weight:600;color:inherit}.qlc:hover{border-color:var(--y)}
+.qlc i{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--accbg);font-style:normal}.qlc small{display:block;font-weight:500;color:var(--muted);font-size:11.5px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1D1D1F;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:80;opacity:0;transition:opacity .2s}.toast.on{opacity:1}
+@media (max-width:640px){.top{padding:10px 12px;gap:6px}.top .logo{height:20px}.top .btn{padding:6px 8px;font-size:12px}.kpis{grid-template-columns:repeat(2,1fr)}.who{margin-left:0;width:100%}main{padding:18px 12px 50px}}
+</style>
+</head>
+<body>
+<header class="top"><a href="/"><img class="logo" src="wordmark.png" alt="GlobalXtreme"></a><div class="sp"></div><a class="btn" id="switch" href="/dashboard-am"></a><a class="btn" href="/">Beranda</a></header>
+<main>
+  <div class="hero"><div class="ic" id="heroIc">🎧</div><div><h1 id="title"></h1><p id="sub"></p></div>
+    <label class="who">Saya: <select id="me"></select></label></div>
+  <div id="banner"></div>
+  <div class="kpis" id="kpis"></div>
+  <div class="bar" id="filter"></div>
+  <div id="list"></div>
+  <div class="grp">Link penting</div>
+  <div class="ql" id="ql"></div>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+/* Dashboard tim — terbuka untuk tim (tanpa password). Hanya menampilkan task yang di-assign SPV ke tim ini.
+   Tim bisa mengubah status & menulis catatan; tidak bisa membuat, menghapus atau me-assign task. */
+const TEAM = /dashboard-am/i.test(location.pathname) || new URLSearchParams(location.search).get('t') === 'am' ? 'AM' : 'HD';
+const CFG = {
+  HD: { title: 'Dashboard Helpdesk', sub: 'To-Do List Helpdesk Customer Support · update status & catatan langsung di sini', icon: '🎧',
+        roster: [['Kadek Arisita Dhyana Putri', 'Sita'], ['Gede Dimas Pery Narendra', 'Dimas'], ['Bayu Sukma Ramadhan', 'Bayu'], ['A.A Ngurah Kiyana Adhisa Oka Pertama', 'Oka'], ['Nilma Syahrani', 'Rani']],
+        links: [['📘', 'SOP Flow Handling Helpdesk', 'Notion', 'https://melon-lime-e28.notion.site/SOP-Flow-Handling-Helpdesk-1d69b0fbceac80b98317da1a66743b16'],
+                ['📗', 'Monitoring Customer Support', 'Tracking sheet', 'https://docs.google.com/spreadsheets/d/1tTr6PTJpeNfgpxzwMov6vmDJgQxnl_hFqhjLvyx2AJ4/edit?gid=452219871#gid=452219871'],
+                ['💬', 'GX CS Connect', 'Customer Support', 'https://gxcsconnect.globalxtreme-solutions.net/'],
+                ['🗂', 'CSO Workspace', 'Detail observation', 'https://cso-workspace.vercel.app'], ['📚', 'Knowledge Base', 'Helpdesk', '/knowledge-base#hd']] },
+  AM: { title: 'Dashboard Account Manager', sub: 'To-Do List Account Manager VIP · update status & catatan langsung di sini', icon: '💼',
+        roster: [['Ni Kadek Desi Mirayani', 'Desi'], ['Aulia Sevi Diana', 'Sevia'], ['Devin Bagaskara', 'Bagas']],
+        links: [['📘', 'Flow Account Manager', 'Notion', 'https://app.notion.com/p/Flow-Account-Manager-2fe9b0fbceac808ba433d9149a7d0a4f'],
+                ['📗', 'Monitoring VIP Group', 'Tracking sheet', 'https://docs.google.com/spreadsheets/d/1nfn0cazlhz0Vck7vz5WikBnIV9LFTBWZXLfk8Q34xuk/edit?gid=480098290#gid=480098290'],
+                ['📒', 'Masterlist VIP Group', 'Data VIP', 'https://docs.google.com/spreadsheets/d/1LRCBD_d1KjX1HQ4cIyAakXVlkPwQTg8mBv7E5QoMBkU/edit?gid=0#gid=0'],
+                ['🗂', 'CSO Workspace', 'Detail observation', 'https://cso-workspace.vercel.app'], ['📚', 'Knowledge Base', 'Account Manager', '/knowledge-base#am']] },
+}[TEAM];
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const safeUrl = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : '';
+const nick = n => (CFG.roster.find(r => r[0] === n) || [, n])[1];
+const LINKSVG = '<svg viewBox="0 0 24 24"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
+function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2400); }
+document.title = CFG.title; document.body.classList.toggle('am', TEAM === 'AM');
+$('#title').textContent = CFG.title; $('#sub').textContent = CFG.sub; $('#heroIc').textContent = CFG.icon;
+$('#switch').textContent = TEAM === 'AM' ? '→ Dashboard Helpdesk' : '→ Dashboard AM'; $('#switch').href = TEAM === 'AM' ? '/dashboard-helpdesk' : '/dashboard-am';
+let ME = ''; try { ME = localStorage.getItem('gx-team-me-' + TEAM) || ''; } catch (e) {}
+$('#me').innerHTML = '<option value="">— pilih nama —</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${f === ME ? 'selected' : ''}>${esc(k)}</option>`).join('');
+$('#me').onchange = e => { ME = e.target.value; try { localStorage.setItem('gx-team-me-' + TEAM, ME); } catch (er) {} render(); };
+$('#ql').innerHTML = CFG.links.map(([i, n, s, h]) => `<a class="qlc" href="${esc(h)}"${/^https?:/.test(h) ? ' target="_blank" rel="noopener"' : ''}><i>${i}</i><span>${esc(n)}<small>${esc(s)}</small></span></a>`).join('');
+
+let TASKS = [], FILTER = 'mine', PREVIEW = false;
+const today = () => new Date().toISOString().slice(0, 10);
+const ymL = ym => { const [y, m] = String(ym || '').split('-'); return y ? new Date(+y, +m - 1, 1).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }) : ''; };
+async function load() {
+  let r, j = null;
+  try { r = await fetch('/api/todo?team=' + TEAM, { cache: 'no-store' }); j = await r.json(); } catch (e) {}
+  if (!r || !j) { PREVIEW = true; let all = []; try { all = JSON.parse(localStorage.getItem('gx-preview-tasks') || '[]'); } catch (e) {}
+    TASKS = (Array.isArray(all) ? all : []).filter(t => t.team === TEAM);
+    $('#banner').innerHTML = '<div class="banner w"><b>Mode preview</b> — server belum tersambung. Yang tampil di sini = task yang kamu assign di preview Dashboard SPV (tersimpan di browser ini saja).</div>'; }
+  else if (r.status !== 200) $('#banner').innerHTML = `<div class="banner e">Gagal memuat task: ${esc(j.detail || j.error || r.status)}</div>`;
+  else { $('#banner').innerHTML = ''; TASKS = j.tasks || []; }
+  render();
+}
+const mine = t => !t.assignee || t.assignee === ME;
+function render() {
+  const open = TASKS.filter(t => t.status !== 'DONE'), late = open.filter(t => t.due && t.due < today());
+  $('#kpis').innerHTML = `<div class="kpi"><span>Task aktif</span><b>${open.length}</b></div><div class="kpi o"><span>In progress</span><b>${open.filter(t => t.status === 'IN PROGRESS').length}</b></div>
+    <div class="kpi r"><span>Lewat due</span><b>${late.length}</b></div><div class="kpi g"><span>Selesai (60 hari)</span><b>${TASKS.length - open.length}</b></div>`;
+  const F = [['mine', ME ? 'Untuk saya' : 'Untuk saya (pilih nama)'], ['all', 'Semua task tim'], ...CFG.roster.map(([f, k]) => ['p:' + f, k])];
+  $('#filter').innerHTML = F.map(([k, l]) => `<button class="chip" data-f="${esc(k)}" aria-pressed="${k === FILTER}">${esc(l)}</button>`).join('');
+  const list = TASKS.filter(t => FILTER === 'all' ? true : FILTER === 'mine' ? (ME ? mine(t) : true) : t.assignee === FILTER.slice(2) || !t.assignee);
+  const o = list.filter(t => t.status !== 'DONE').sort((a, b) => (a.due || '9999').localeCompare(b.due || '9999')), d = list.filter(t => t.status === 'DONE');
+  $('#list').innerHTML = (o.length ? `<div class="grp">Belum selesai · ${o.length}</div>` + o.map(card).join('') : '<div class="empty">Tidak ada task aktif 🎉</div>')
+    + (d.length ? `<div class="grp">Selesai · ${d.length}</div>` + d.map(card).join('') : '');
+}
+function card(t) {
+  const late = t.due && t.due < today() && t.status !== 'DONE';
+  const links = (t.links || []).filter(l => safeUrl(l.url));
+  return `<div class="card ${t.status === 'DONE' ? 'done' : ''}" data-id="${esc(t.id)}"><div class="ch"><div class="ti">${esc(t.title)}</div></div>
+    <div class="meta"><span class="tag">${esc(ymL(t.month))}</span><span class="tag acc">${t.assignee ? esc(nick(t.assignee)) : 'Semua anggota tim'}</span><span class="tag ${esc(t.priority)}">${esc(t.priority)}</span>${t.due ? `<span class="tag ${late ? 'late' : ''}">Due ${new Date(t.due + 'T00:00').toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>` : ''}${t.category ? `<span class="tag">${esc(t.category)}</span>` : ''}</div>
+    ${t.remarks ? `<div class="rm">${esc(t.remarks)}</div>` : ''}
+    ${links.length ? `<div class="lks">${links.map(l => `<a class="lk" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener" title="${esc(l.url)}">${LINKSVG}${esc(l.label || new URL(l.url).hostname)}</a>`).join('')}</div>` : ''}
+    <div class="act">${[['NOT STARTED', 'Belum mulai'], ['IN PROGRESS', 'In progress'], ['DONE', 'Done']].map(([s, l]) => `<button class="sb ${s.replace(/\s/g, '')}" data-s="${s}" aria-pressed="${t.status === s}">${l}</button>`).join('')}
+      <div class="note"><textarea placeholder="Catatan / update untuk SPV…" maxlength="2000">${esc(t.team_note)}</textarea><button class="btn pri" data-save="1">Simpan</button></div></div>
+    ${t.team_by ? `<div class="upd">Update terakhir oleh ${esc(nick(t.team_by))} · ${new Date(t.updated_at).toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>` : ''}</div>`;
+}
+async function patch(t, upd) {
+  if (!ME) { toast('Pilih nama kamu dulu di kanan atas'); $('#me').focus(); return; }
+  if (PREVIEW) { let all = []; try { all = JSON.parse(localStorage.getItem('gx-preview-tasks') || '[]'); } catch (e) {}
+    const x = all.find(y => y.id === t.id); if (x) { if (upd.status) x.status = upd.status; if (upd.team_note != null) x.team_note = upd.team_note; x.team_by = ME; x.updated_at = new Date().toISOString(); try { localStorage.setItem('gx-preview-tasks', JSON.stringify(all)); } catch (e) {} Object.assign(t, x); }
+    render(); toast('Preview — tersimpan di browser ini saja'); return; }
+  let r, j = null;
+  try { r = await fetch(`/api/todo?team=${TEAM}&id=${encodeURIComponent(t.id)}`, { method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ status: upd.status || t.status, team_note: upd.team_note != null ? upd.team_note : t.team_note, team_by: ME }) }); j = await r.json(); } catch (e) {}
+  if (r && r.status === 200 && j.task) { Object.assign(t, j.task); render(); toast('Tersimpan ✓ — SPV bisa melihat update ini'); }
+  else toast('Gagal menyimpan' + (j && j.error ? ': ' + j.error : ''));
+}
+$('#filter').onclick = e => { const b = e.target.closest('[data-f]'); if (b) { FILTER = b.dataset.f; render(); } };
+$('#list').onclick = e => {
+  const c = e.target.closest('[data-id]'); if (!c) return; const t = TASKS.find(x => String(x.id) === c.dataset.id); if (!t) return;
+  const s = e.target.closest('[data-s]'); if (s) return patch(t, { status: s.dataset.s, team_note: c.querySelector('textarea').value });
+  if (e.target.closest('[data-save]')) return patch(t, { team_note: c.querySelector('textarea').value });
+};
+load(); setInterval(() => { if (!document.hidden && !document.activeElement.matches('textarea')) load(); }, 60000);
+</script>
+</body>
+</html>

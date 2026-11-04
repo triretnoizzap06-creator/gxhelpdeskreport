@@ -37,9 +37,13 @@ a.card:hover,a.card:focus-visible{border-color:var(--line-h);box-shadow:var(--sh
 .ic{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,var(--y1),var(--y2));box-shadow:0 4px 10px rgba(245,167,10,.35)}
 .ic svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .name{font-size:16px;font-weight:600;line-height:1.25}
+.sub{font-size:12.5px;color:var(--muted);line-height:1.35;margin-top:-6px}
+.msec{margin-bottom:34px}.msec-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding-bottom:10px;margin-bottom:16px;border-bottom:2px solid var(--line-h)}
+.msec-h h2{margin:0;font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.msec-h span{font-size:12.5px;color:var(--muted)}
 .tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 .tag{font-size:11px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;background:var(--chip);color:var(--chip-ink);border-radius:999px;padding:3px 9px}
 .card.soon{cursor:default;opacity:.7;padding-top:34px}
+.badge.lock{display:inline-flex;align-items:center;gap:4px;background:var(--chip);color:var(--chip-ink)}.badge.lock svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
 .card.soon .ic{filter:grayscale(.6)}
 .badge{position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;background:var(--soon);color:var(--muted);border-radius:999px;padding:3px 8px}
 .lang{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}.lang button{font:700 12px var(--font);background:transparent;color:var(--muted);border:0;padding:7px 11px;cursor:pointer}.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
@@ -72,7 +76,7 @@ footer b{color:#E0A800;font-weight:600}
     <div id="tagFilter" style="display:flex;gap:8px;flex-wrap:wrap"></div>
     <input class="search" id="q" type="search">
   </div>
-  <div class="grid" id="grid"></div>
+  <div id="grid"></div>
 </main>
 
 <footer>
@@ -86,18 +90,27 @@ footer b{color:#E0A800;font-weight:600}
    href   : halaman tujuan (kosongkan '' bila belum ada → tampil "Segera hadir")
    tags   : label kecil di bawah nama menu
    icon   : report | chart | users | headset | star | doc                        */
+const SECTIONS = [
+  { k: 'mgmt', id: 'Helpdesk Management', en: 'Helpdesk Management', d_id: 'Report & to-do SPV — terkunci password', d_en: 'Reports & SPV to-dos — password protected' },
+  { k: 'team', id: 'Team Dashboard', en: 'Team Dashboard', d_id: 'Untuk tim Helpdesk & Account Manager — terbuka', d_en: 'For the Helpdesk & Account Manager teams — open access' },
+];
 const MENUS = [
-  { name: 'Helpdesk Report',             tags: ['Aftersales'], href: '/helpdesk-report', icon: 'report' },
-  { name: 'Helpdesk Performance Report', tags: ['Best Employee'], href: '/helpdesk-performance', icon: 'star'   },
-  { name: 'Helpdesk Employee Directory', tags: ['Helpdesk'],      href: '/helpdesk-directory',   icon: 'users'  },
+  { section: 'mgmt', name: 'Helpdesk Report',             tags: ['Aftersales'],    href: '/helpdesk-report',      icon: 'report', lock: true },
+  { section: 'mgmt', name: 'Helpdesk Performance Report', tags: ['Best Employee'], href: '/helpdesk-performance', icon: 'star',   lock: true },
+  { section: 'mgmt', name: 'Helpdesk Employee Directory', tags: ['Helpdesk'],      href: '/helpdesk-directory',   icon: 'users',  lock: true },
+  { section: 'mgmt', name: 'Personal To-Do List',         tags: ['SPV'],           href: '/spv#todo',             icon: 'check',  lock: true },
+  { section: 'mgmt', name: 'Management Report',           tags: ['Reporting to Head'], href: '/spv#h1',           icon: 'chart',  lock: true },
+  { section: 'team', name: 'Dashboard Helpdesk',          sub: 'To-Do List Helpdesk Customer Support', tags: ['Helpdesk'], href: '/dashboard-helpdesk', icon: 'headset' },
+  { section: 'team', name: 'Dashboard Account Manager',   sub: 'To-Do List Account Manager VIP',       tags: ['AM'],       href: '/dashboard-am',       icon: 'brief' },
+  { section: 'team', name: 'Knowledge Base',              sub: 'Helpdesk & Account Manager',           tags: ['SOP'],      href: '/knowledge-base',     icon: 'book' },
 ];
 
 /* Teks dashboard dalam 2 bahasa */
 const TXT = {
   id: { light: 'Terang', dark: 'Gelap', title: 'All Report CS', lede: 'Pilih menu report di bawah. Semua data tersimpan online, jadi siapa pun yang membuka link melihat data yang sama.',
-        all: 'Semua', search: 'Cari menu…', soon: 'Segera hadir', empty: 'Menu tidak ditemukan.' },
+        all: 'Semua', search: 'Cari menu…', soon: 'Segera hadir', empty: 'Menu tidak ditemukan.', locked: 'Password' },
   en: { light: 'Light', dark: 'Dark', title: 'All CS Reports', lede: 'Choose a report below. All data is stored online, so everyone who opens the link sees the same data.',
-        all: 'All', search: 'Search menu…', soon: 'Coming soon', empty: 'No menu found.' },
+        all: 'All', search: 'Search menu…', soon: 'Coming soon', empty: 'No menu found.', locked: 'Password' },
 };
 let lang = 'id';
 try { const v = localStorage.getItem('gx-dash-lang'); if (v === 'en' || v === 'id') lang = v; } catch (e) {}
@@ -110,15 +123,18 @@ const ICONS = {
   headset: '<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/>',
   star:    '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
   doc:     '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/>',
+  check:   '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8l1.5 1.5L12 7M8 14l1.5 1.5L12 13M14 8h3M14 14h3"/>',
+  book:    '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M9 7h6M9 11h6"/>',
+  brief:   '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>',
 };
 
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let activeTag = '*';
 
 function renderFilters() {
-  const tags = ['*', ...new Set(MENUS.flatMap(m => m.tags || []))];
-  document.getElementById('tagFilter').innerHTML = tags.map(x =>
-    `<button class="tag-f" aria-pressed="${x === activeTag}" data-t="${esc(x)}">${esc(x === '*' ? t('all') : x)}</button>`).join('');
+  const opts = ['*', ...SECTIONS.map(x => x.k)];
+  document.getElementById('tagFilter').innerHTML = opts.map(x =>
+    `<button class="tag-f" aria-pressed="${x === activeTag}" data-t="${esc(x)}">${esc(x === '*' ? t('all') : SECTIONS.find(y => y.k === x)[lang])}</button>`).join('');
 }
 
 function isDark() { const a = document.documentElement.getAttribute('data-theme'); return a ? a === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; }
@@ -141,20 +157,22 @@ document.querySelector('.lang').addEventListener('click', e => {
   applyLang();
 });
 
+function card(m) {
+  const inner = `${m.href ? (m.lock ? `<span class="badge lock" title="${t('locked')}"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>${t('locked')}</span>` : '') : `<span class="badge">${t('soon')}</span>`}
+      <div class="ic"><svg viewBox="0 0 24 24">${ICONS[m.icon] || ICONS.doc}</svg></div>
+      <div class="name">${esc(m.name)}</div>${m.sub ? `<div class="sub">${esc(m.sub)}</div>` : ''}
+      <div class="tags">${(m.tags || []).map(x => `<span class="tag">${esc(x)}</span>`).join('')}</div>`;
+  return m.href
+    ? `<a class="card" href="${esc(m.href)}"${m.newTab ? ' target="_blank" rel="noopener"' : ''}>${inner}</a>`
+    : `<div class="card soon" aria-disabled="true" title="${t('soon')}">${inner}</div>`;
+}
 function render() {
   const q = document.getElementById('q').value.trim().toLowerCase();
-  const list = MENUS.filter(m =>
-    (activeTag === '*' || (m.tags || []).includes(activeTag)) &&
-    (!q || (m.name + ' ' + (m.tags || []).join(' ')).toLowerCase().includes(q)));
-  document.getElementById('grid').innerHTML = list.length ? list.map(m => {
-    const inner = `${m.href ? '' : `<span class="badge">${t('soon')}</span>`}
-      <div class="ic"><svg viewBox="0 0 24 24">${ICONS[m.icon] || ICONS.doc}</svg></div>
-      <div class="name">${esc(m.name)}</div>
-      <div class="tags">${(m.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>`;
-    return m.href
-      ? `<a class="card" href="${esc(m.href)}"${m.newTab ? ' target="_blank" rel="noopener"' : ''}>${inner}</a>`
-      : `<div class="card soon" aria-disabled="true" title="${t('soon')}">${inner}</div>`;
-  }).join('') : `<div class="empty">${t('empty')}</div>`;
+  const out = SECTIONS.filter(sc => activeTag === '*' || activeTag === sc.k).map(sc => {
+    const list = MENUS.filter(m => m.section === sc.k && (!q || (m.name + ' ' + (m.sub || '') + ' ' + (m.tags || []).join(' ') + ' ' + sc.en).toLowerCase().includes(q)));
+    return list.length ? `<section class="msec"><div class="msec-h"><h2>${esc(sc[lang])}</h2><span>${esc(lang === 'id' ? sc.d_id : sc.d_en)}</span></div><div class="grid">${list.map(card).join('')}</div></section>` : '';
+  }).join('');
+  document.getElementById('grid').innerHTML = out || `<div class="empty">${t('empty')}</div>`;
 }
 
 document.getElementById('tagFilter').addEventListener('click', e => {

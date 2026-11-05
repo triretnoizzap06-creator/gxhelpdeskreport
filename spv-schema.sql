@@ -1,4 +1,4 @@
--- Dashboard SPV Helpdesk — to-do list (bisa di-assign ke tim Helpdesk / AM) + dokumen editable (Report H1).
+-- Dashboard SPV Helpdesk — to-do list (bisa di-assign ke tim Helpdesk / AM) + dokumen editable + quiz Knowledge Base.
 -- Aman dijalankan ulang. Jalankan di Supabase → SQL Editor → Run (sekali saja).
 create extension if not exists pgcrypto;
 
@@ -61,5 +61,35 @@ begin
 end $$;
 revoke all on function public.gx_doc_save(text, jsonb, bigint) from public, anon, authenticated;
 grant execute on function public.gx_doc_save(text, jsonb, bigint) to service_role;
+
+-- ===== Quiz Knowledge Base (ala Kahoot): sesi quiz + hasil pemain (leaderboard) =====
+create table if not exists public.gx_quiz_sessions (
+  code       text primary key check (code ~ '^[A-Z0-9]{5,8}$'),
+  title      text not null default '',
+  set_key    text not null default '',
+  timer_s    integer not null default 20 check (timer_s between 5 and 120),
+  questions  jsonb not null default '[]'::jsonb,
+  status     text not null default 'open' check (status in ('open','closed')),
+  created_at timestamptz not null default now()
+);
+create table if not exists public.gx_quiz_results (
+  id          uuid primary key default gen_random_uuid(),
+  code        text not null references public.gx_quiz_sessions(code) on delete cascade,
+  player      text not null,
+  score       integer not null default 0,
+  correct     integer not null default 0,
+  total       integer not null default 0,
+  duration_ms integer not null default 0,
+  answers     jsonb not null default '[]'::jsonb,
+  created_at  timestamptz not null default now()
+);
+create unique index if not exists gx_quiz_results_player on public.gx_quiz_results (code, lower(player));
+create index if not exists gx_quiz_results_code on public.gx_quiz_results (code, score desc);
+alter table public.gx_quiz_sessions enable row level security;
+alter table public.gx_quiz_results enable row level security;
+revoke all on table public.gx_quiz_sessions from public, anon, authenticated;
+revoke all on table public.gx_quiz_results from public, anon, authenticated;
+grant select, insert, update, delete on table public.gx_quiz_sessions to service_role;
+grant select, insert, update, delete on table public.gx_quiz_results to service_role;
 
 notify pgrst, 'reload schema';

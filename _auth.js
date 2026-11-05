@@ -3,10 +3,11 @@
 // Setelah login, browser menyimpan cookie HttpOnly berisi HMAC dari password (berlaku 30 hari).
 // Ganti password di Vercel = semua sesi lama otomatis tidak berlaku.
 import { createHmac, timingSafeEqual } from 'node:crypto';
+import { envGet } from './_env.js';
 
 export const COOKIE = 'gx_dash';
 export const MAX_AGE = 60 * 60 * 24 * 30;
-const pw = () => process.env.GX_DASH_PASSWORD || '';
+const pw = () => envGet('GX_DASH_PASSWORD');
 export const authConfigured = () => !!pw();
 const token = () => createHmac('sha256', pw()).update('gx-dash-v1').digest('hex');
 const h = s => createHmac('sha256', 'gx-cmp').update(String(s)).digest();
@@ -32,3 +33,21 @@ export function sessionCookie() {
 export const clearCookie = () => `${COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
 /* hanya path lokal (cegah open redirect) */
 export function safeNext(n) { const s = String(n || '/'); return /^\/(?![\/\\])/.test(s) ? s : '/'; }
+
+/* ---------- Akses tim (Tools & Access di Dashboard Helpdesk / AM) ----------
+   Password tim TIDAK di kode: Vercel → Environment Variables → GX_TEAM_PASSWORD.
+   Dipakai hanya untuk membuka password tools yang disimpan SPV di Supabase. */
+export const TEAM_COOKIE = 'gx_team';
+const tpw = () => envGet('GX_TEAM_PASSWORD');
+export const teamConfigured = () => !!tpw();
+const ttoken = () => createHmac('sha256', tpw()).update('gx-team-v1').digest('hex');
+export function teamAuthed(req) {
+  if (!tpw()) return false;
+  const c = cookies(req)[TEAM_COOKIE];
+  return !!c && timingSafeEqual(h(c), h(ttoken()));
+}
+export function teamPassOk(given) {
+  if (!tpw() || !given) return false;
+  return timingSafeEqual(h(given), h(tpw()));
+}
+export const teamCookie = () => `${TEAM_COOKIE}=${ttoken()}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${MAX_AGE}`;

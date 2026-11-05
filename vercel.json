@@ -21,6 +21,10 @@
       "use": "@vercel/node"
     },
     {
+      "src": "quiz.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "gate.js",
       "use": "@vercel/node",
       "config": {
@@ -45,8 +49,28 @@
       "use": "@vercel/static"
     },
     {
+      "src": "quiz.html",
+      "use": "@vercel/static"
+    },
+    {
       "src": "employees.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "report-view.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "mreport.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "kb-data.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "qrcode.js",
+      "use": "@vercel/static"
     },
     {
       "src": "config.js",
@@ -77,6 +101,10 @@
     {
       "src": "/api/todo/?",
       "dest": "/todo.js"
+    },
+    {
+      "src": "/api/quiz/?",
+      "dest": "/quiz.js"
     },
     {
       "src": "/api/report/?",
@@ -121,6 +149,14 @@
     {
       "src": "/knowledge-base/?",
       "dest": "/kb.html"
+    },
+    {
+      "src": "/quiz/?",
+      "dest": "/quiz.html"
+    },
+    {
+      "src": "/management-report/?",
+      "dest": "/report-view.html"
     },
     {
       "src": "/",

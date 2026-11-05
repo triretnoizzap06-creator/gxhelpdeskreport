@@ -7,12 +7,35 @@ Halaman:
 - `/helpdesk-directory` → Helpdesk Employee Directory (tag Helpdesk) — ulang tahun & reminder kontrak
 Helpdesk Management (🔒):
 - `/spv#todo` → Personal To-Do List (task pribadi SPV + task yang di-assign ke tim, dipisah)
-- `/spv#h1` → Management Report (Reporting to Head) — Report H1 2026, editable
+- `/spv#h1` → Management Report (Reporting to Head) — riwayat: **H2 2026** (otomatis dari to-do Jul–Des) & H1 2026 (arsip, editable)
+- `/management-report?r=h2-2026` → link viewer report (tanpa login, read-only; `h1-2026` … `h2-2030`)
+- `/quiz` → Quiz Knowledge Base: latihan per kategori + live quiz ala Kahoot (PIN/QR, timer, leaderboard, review)
 
 Team Dashboard (terbuka):
 - `/dashboard-helpdesk` → To-Do List Helpdesk Customer Support
 - `/dashboard-am` → To-Do List Account Manager VIP
-- `/knowledge-base` → Knowledge Base Helpdesk & Account Manager (bisa dicari; edit hanya SPV yang login)
+- `/knowledge-base` → Knowledge Base: 50 materi (Info Helpdesk, Administrasi, Teknis, Handling & Kebijakan) + quiz per materi + link referensi (edit hanya SPV yang login)
+
+## Kalau halaman bilang "env belum diisi" padahal sudah diisi di Vercel
+1. Buka **/api/health** → bagian `env` menunjukkan env mana yang terbaca (true/false) di deployment yang sedang live. Nilai tidak pernah ditampilkan.
+2. Env baru **tidak berlaku untuk deployment lama** → Vercel → Deployments → deployment teratas → ⋯ → **Redeploy**.
+3. Pastikan env dicentang untuk **Production** dan namanya persis: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GX_DASH_PASSWORD`, `GX_TEAM_PASSWORD` (spasi/huruf kecil sekarang ditoleransi).
+4. Pastikan file ZIP di-upload di **root** repo (bukan di dalam folder), termasuk file baru `_env.js`.
+
+## Update: Quiz ala Kahoot, Tools & Access, Report 2026–2030 (Nov 2026 #2)
+1. GitHub → upload SEMUA file dari ZIP (file baru: `quiz.html`, `quiz.js`, `qrcode.js`; berubah: `kb.html`, `kb-data.js`, `team.html`, `spv.html`, `mreport.js`, `todo.js`, `login.js`, `_auth.js`, `index.html`, `vercel.json`, `spv-schema.sql`).
+2. Supabase → SQL Editor → jalankan ulang **`spv-schema.sql`** (menambah tabel quiz; aman dijalankan ulang).
+3. Vercel → Environment Variables → tambah **`GX_TEAM_PASSWORD`** = password untuk tim (beda dengan password dashboard SPV) → Redeploy.
+   Dipakai tim untuk membuka password tools di Dashboard Helpdesk / AM. Password tools diisi SPV lewat ✎ Edit tools — tersimpan di Supabase, tidak ada di kode/GitHub.
+4. Quiz: buka `/quiz` (login SPV dulu di `/spv`) → pilih set (mis. Administrasi), jumlah soal & timer → **Buat sesi** → tampilkan QR/PIN → tim scan dari HP → leaderboard live → tiap peserta bisa review jawaban.
+
+## Update: To-do Jul–Okt, INV VIP tgl 25, Report H2, Knowledge Base (Nov 2026)
+1. GitHub → upload SEMUA file dari ZIP → Commit (file baru: `kb-data.js`, `mreport.js`, `report-view.html`; berubah: `spv.html`, `kb.html`, `team.html`, `todo.js`, `vercel.json`).
+2. Tidak perlu SQL baru. Vercel otomatis redeploy setelah commit.
+3. Buka `/spv` → **Import Monthly Tracker (Jul, Agu, Sep 2026)** — hanya mengisi bulan yang masih kosong (Oktober yang sudah ada tidak disentuh).
+4. Pilih bulan November → **Salin task rutin dari bulan lalu** (bila belum) → **+ Task INV VIP tgl 25** (6 task tim, due tgl 25). Task tim ini ikut tersalin tiap bulan dan due date-nya otomatis geser ke bulan berikutnya.
+5. Buka tab **Management Report** sekali → link viewer H2 aktif (tombol *Salin link*). Data report ter-update setiap tab ini dibuka.
+6. Knowledge Base tidak menyimpan password. Isi materi ada di `kb-data.js`; SPV bisa edit/sembunyikan/tambah materi langsung dari halaman (tersimpan di Supabase).
 
 ## Update: Dashboard SPV + password (wajib sekali)
 1. GitHub → upload SEMUA file dari ZIP → Commit (file baru: `_auth.js`, `gate.js`, `login.js`, `todo.js`, `spv.html`, `team.html`, `kb.html`, `spv-schema.sql`, `vercel.json` berubah).

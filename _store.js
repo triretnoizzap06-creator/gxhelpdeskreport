@@ -1,14 +1,15 @@
 // Lapisan data Supabase untuk GX Helpdesk Report (dipakai oleh /api/*).
 import { createClient } from '@supabase/supabase-js';
+import { envGet } from './_env.js';
 import { gzipSync, gunzipSync } from 'node:zlib';
 import { createHash, timingSafeEqual } from 'node:crypto';
 
 export const MAX_BODY = 4.2 * 1024 * 1024; // batas body request Vercel Functions ±4.5 MB
 
 export const env = () => ({
-  url: process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  key: process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_KEY || '',
-  publishKey: process.env.PUBLISH_KEY || '',
+  url: envGet('SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_URL'),
+  key: envGet('SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SECRET_KEY', 'SUPABASE_SERVICE_KEY'),
+  publishKey: envGet('PUBLISH_KEY'),
 });
 export const configured = () => { const e = env(); return !!(e.url && e.key); };
 export const isOpen = () => !env().publishKey;

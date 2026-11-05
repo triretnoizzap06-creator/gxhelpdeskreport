@@ -1,24 +1,34 @@
 // /api/todo — To-do list SPV Helpdesk + dokumen (Report H1) di Supabase.
 // SPV (login dashboard):
 //   GET    /api/todo?month=2026-11          → { tasks, months }
+//   GET    /api/todo?from=2026-07&to=2026-12 → { tasks } (Management Report H2)
 //   POST   /api/todo        { task }        → simpan / tambah task          → { task }
 //   POST   /api/todo        { copy:{from,to} } → salin task rutin ke bulan baru
 //   POST   /api/todo        { import:[tasks] } → import awal (Monthly Tracker)
 //   DELETE /api/todo?id=…
 //   GET    /api/todo?doc=spv-h1-2026        → { data, revision }   ·   POST { doc, data, revision }
-//   GET    /api/todo?doc=knowledge-base     → dibaca tim tanpa login (Knowledge Base); POST tetap wajib login
+//   GET    /api/todo?doc=knowledge-base     → dibaca tim tanpa login (Knowledge Base, team-tools); POST tetap wajib login
+//   GET    /api/todo?secrets=HD             → password tools tim (SPV / cookie tim GX_TEAM_PASSWORD)
 // Tim (tanpa login, hanya task yang di-assign ke timnya):
 //   GET    /api/todo?team=HD|AM             → { tasks }
 //   PATCH  /api/todo?id=…&team=HD  { status, team_note, team_by }
 import { AppError, configured, db, dbError } from './_store.js';
-import { authed } from './_auth.js';
+import { authed, teamAuthed } from './_auth.js';
 
 const STATUS = ['NOT STARTED', 'PLAN', 'IN PROGRESS', 'DONE'];
 const PRIO = ['High', 'Medium', 'Low'];
 const SECTIONS = ['DAILY', 'WEEKLY', 'MONTHLY', 'FERRE', 'ONEOFF'];
 const RECURRING = ['DAILY', 'WEEKLY', 'MONTHLY', 'FERRE'];
 const TEAMS = ['HD', 'AM'];
-const PUBLIC_DOCS = ['knowledge-base'];
+const PUBLIC_DOCS = ['knowledge-base', 'team-tools'];
+/* Snapshot Management Report (mr-h2-2026, mr-h1-2026, …) dibaca lewat link viewer tanpa login */
+const isPublicDoc = k => PUBLIC_DOCS.includes(k) || (typeof k === 'string' && /^mr-[a-z0-9-]{3,30}$/.test(k));
+/* due date ikut bergeser 1 bulan saat task rutin disalin (tgl 31 → akhir bulan) */
+const shiftDue = (d, to) => {
+  if (typeof d !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(d)) return null;
+  const [y, m] = to.split('-').map(Number), last = new Date(Date.UTC(y, m, 0)).getUTCDate();
+  return `${to}-${String(Math.min(+d.slice(8, 10), last)).padStart(2, '0')}`;
+};
 const okMonth = m => typeof m === 'string' && /^\d{4}-(0[1-9]|1[0-2])$/.test(m);
 const okDoc = k => typeof k === 'string' && /^[a-z0-9-]{3,40}$/.test(k);
 const str = (v, n) => String(v == null ? '' : v).slice(0, n);
@@ -91,8 +101,16 @@ export default async function handler(req, res) {
       return json(res, { error: 'method' }, 405);
     }
 
+    /* ---------- Password tools tim: hanya SPV atau tim yang sudah memasukkan password tim ---------- */
+    if (req.method === 'GET' && q.get('secrets')) {
+      const team = q.get('secrets');
+      if (!TEAMS.includes(team)) return json(res, { error: 'bad-team' }, 400);
+      if (!authed(req) && !teamAuthed(req)) return json(res, { error: 'team-login-required' }, 401);
+      const row = must(await db().from('gx_docs').select('data').eq('key', 'team-secrets').maybeSingle());
+      return json(res, { secrets: (row && row.data && row.data[team]) || {} });
+    }
     /* ---------- Knowledge Base: boleh dibaca tim tanpa login (edit tetap wajib login SPV) ---------- */
-    if (req.method === 'GET' && PUBLIC_DOCS.includes(q.get('doc'))) {
+    if (req.method === 'GET' && isPublicDoc(q.get('doc'))) {
       const row = must(await db().from('gx_docs').select('data,revision,updated_at').eq('key', q.get('doc')).maybeSingle());
       return row ? json(res, { ...row, canEdit: authed(req) }) : json(res, { error: 'empty', canEdit: authed(req) }, 404);
     }
@@ -106,6 +124,12 @@ export default async function handler(req, res) {
         if (!okDoc(doc)) return json(res, { error: 'bad-doc' }, 400);
         const row = must(await db().from('gx_docs').select('data,revision,updated_at').eq('key', doc).maybeSingle());
         return row ? json(res, row) : json(res, { error: 'empty' }, 404);
+      }
+      const from = q.get('from'), to = q.get('to');
+      if (okMonth(from) && okMonth(to)) {
+        if (from > to) return json(res, { error: 'bad-month' }, 400);
+        const rows = must(await db().from('gx_tasks').select('*').gte('month', from).lte('month', to).order('month').order('section').order('sort').order('created_at').limit(3000));
+        return json(res, { tasks: rows || [] });
       }
       const month = q.get('month');
       const mrows = must(await db().from('gx_tasks').select('month').limit(5000));
@@ -133,7 +157,7 @@ export default async function handler(req, res) {
         const exist = must(await db().from('gx_tasks').select('id').eq('month', to).limit(1));
         if (exist && exist.length) return json(res, { error: 'target-not-empty', detail: 'Bulan tujuan sudah punya task.' }, 409);
         const src = must(await db().from('gx_tasks').select('*').eq('month', from).in('section', RECURRING));
-        const rows = (src || []).map(t => ({ ...clean({ ...t, month: to, status: 'NOT STARTED', due: null }), team_note: '', team_by: '' }));
+        const rows = (src || []).map(t => ({ ...clean({ ...t, month: to, status: 'NOT STARTED', due: shiftDue(t.due, to) }), team_note: '', team_by: '' }));
         if (rows.length) must(await db().from('gx_tasks').insert(rows));
         return json(res, { ok: true, copied: rows.length });
       }

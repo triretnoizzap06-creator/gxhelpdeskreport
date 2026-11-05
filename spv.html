@@ -68,16 +68,21 @@ main{max-width:1400px;margin:0 auto;padding:22px 20px 60px}
 .qlc:hover{border-color:var(--y)}.qlc i{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#FFC93C,#F5A70A);color:#fff;font-style:normal;font-size:14px}
 .qlc small{display:block;font-weight:500;color:var(--muted);font-size:11.5px}
 /* ---------- report H1 (replika Figma) ---------- */
+.mrh{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:16px}.mryr{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap}.mryr .btn[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mrc{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer;font:inherit;color:inherit}
+.mrc[aria-pressed="true"]{border-color:var(--y);box-shadow:0 0 0 2px var(--y) inset}.mrc b{font-size:15px}.mrc span{font-size:12.5px;color:var(--muted)}
+.mrc .tg{display:inline-block;align-self:flex-start;font-size:10.5px;font-weight:800;letter-spacing:.06em;border-radius:999px;padding:3px 9px;background:var(--y);color:#111}.mrc .tg.arc{background:var(--line);color:var(--muted)}
+.mrbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 12px}.mrbar .grow{flex:1}.mrbar code{font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 9px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .h1wrap{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .h1nav{display:flex;align-items:center;justify-content:center;gap:4px;padding:10px;background:#fff;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .h1nav button{border:0;background:transparent;padding:6px 11px;border-radius:8px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}.h1nav button[aria-pressed="true"]{background:var(--y);color:#111}
 .h1nav .ed{margin-left:14px}.h1nav .btn{border:1px solid var(--line);background:#fff;color:var(--ink);font-size:12px}.h1nav .btn.danger{color:var(--r)}
 .pg{padding:30px 34px 40px;min-height:520px}
-.cv{display:grid;grid-template-columns:1.3fr 1fr;gap:30px;align-items:center;min-height:520px;background:#0B0B0D;color:#fff;padding:44px 50px;position:relative;overflow:hidden}
-.cv .kick{font-size:12px;font-weight:800;letter-spacing:.16em;color:#A1A1AA}.cv .kick b{color:var(--y)}
-.cv h2{font-size:44px;line-height:1;margin:18px 0 6px;font-weight:900;letter-spacing:-.03em}.cv h2 span{display:block;color:var(--y)}
-.cv .months{margin-top:18px;font-size:13px;font-weight:800;letter-spacing:.12em;color:#A1A1AA}.cv .div{margin-top:8px;color:#D4D4D8;font-size:14px}
-.cv .by{border-left:3px solid var(--y);padding-left:18px}.cv .by small{display:block;font-size:11px;font-weight:800;letter-spacing:.14em;color:#71717A}.cv .by b{display:block;font-size:24px;margin-top:8px}.cv .by span{color:#A1A1AA;font-size:14px}
+.cv{display:grid;grid-template-columns:1.3fr 1fr;gap:30px;align-items:center;min-height:520px;background:#fff;color:var(--ink);padding:44px 50px;position:relative;overflow:hidden}
+.cv .kick{font-size:12px;font-weight:800;letter-spacing:.16em;color:#6E6E73}.cv .kick b{color:#D9A400}
+.cv h2{font-size:44px;line-height:1;margin:18px 0 6px;font-weight:900;letter-spacing:-.03em}.cv h2 span{display:block;color:#D9A400}
+.cv .months{margin-top:18px;font-size:13px;font-weight:800;letter-spacing:.12em;color:#6E6E73}.cv .div{margin-top:8px;color:#3F3F46;font-size:14px}
+.cv .by{border-left:3px solid var(--y);padding-left:18px}.cv .by small{display:block;font-size:11px;font-weight:800;letter-spacing:.14em;color:#71717A}.cv .by b{display:block;font-size:24px;margin-top:8px}.cv .by span{color:#6E6E73;font-size:14px}
 .cv .glow{position:absolute;right:-120px;top:-160px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(245,197,24,.25),transparent 65%)}
 .mh{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:22px}
 .mh .no{font-size:46px;font-weight:900;color:var(--y);letter-spacing:-.04em;line-height:1}.mh .mt b{display:block;font-size:20px}.mh .mt span{color:var(--muted);font-size:13px}.mh .sp{flex:1}
@@ -124,7 +129,8 @@ main{max-width:1400px;margin:0 auto;padding:22px 20px 60px}
       <select id="month" aria-label="Bulan"></select>
       <button class="btn pri" id="addBtn">+ Task</button>
       <button class="btn" id="copyBtn" title="Salin task Daily, Weekly, Monthly & Pak Ferre dari bulan sebelumnya (status direset)">Salin task rutin dari bulan lalu</button>
-      <button class="btn y hidden" id="importBtn">Import Monthly Tracker (Oct 2026)</button>
+      <button class="btn y hidden" id="importBtn">Import Monthly Tracker</button>
+      <button class="btn hidden" id="inv25Btn" title="Buat task bulanan tim: update INV VIP di Reminder Bill 25 sesuai pembagian per orang">+ Task INV VIP tgl 25</button>
       <span class="grow"></span>
       <select id="fAs" aria-label="Filter assign"><option value="">Personal + Team</option><option value="me">Personal saja</option><option value="HD">Team Helpdesk saja</option><option value="AM">Team AM saja</option></select>
       <select id="fSt" aria-label="Filter status"><option value="">Semua status</option><option>NOT STARTED</option><option>PLAN</option><option>IN PROGRESS</option><option>DONE</option><option value="OPEN">Belum selesai</option></select>
@@ -136,7 +142,11 @@ main{max-width:1400px;margin:0 auto;padding:22px 20px 60px}
 
   <!-- ================= REPORT H1 ================= -->
   <section id="tab-h1" class="hidden">
-    <div class="h1wrap" id="h1wrap">
+    <div class="h2t" style="margin-top:0">Riwayat Management Report</div>
+    <div class="mrh" id="mrHist"></div>
+    <div class="mrbar" id="mrBar"></div>
+    <div id="mrDeck"></div>
+    <div class="h1wrap hidden" id="h1wrap">
       <div class="h1nav" id="h1nav"></div>
       <div id="h1page"></div>
     </div>
@@ -154,6 +164,7 @@ main{max-width:1400px;margin:0 auto;padding:22px 20px 60px}
 </main>
 <div class="toast" id="toast"></div>
 
+<script src="mreport.js"></script>
 <script>
 /* ======================= konstanta ======================= */
 const API = '/api/todo';
@@ -219,6 +230,22 @@ const SEED_OCT = [
   ['ONEOFF', 'Pribadi', 'Report Expenses', [], 'Low', 'NOT STARTED', ''],
   ['ONEOFF', 'Pribadi', 'Journaling', [], 'Low', 'NOT STARTED', ''],
 ].map(([section, category, title, links, priority, status, remarks], i) => ({ month: '2026-10', section, category, title, links, priority, status, remarks, sort: i, assignee: '', team: null, due: null }));
+
+const SEED_H2 = {"2026-07":[["DAILY","General","Cashier + Setor + Email",[{"label":"Daily Cashier Report - DCR","url":"https://docs.google.com/spreadsheets/d/1WxFd4fhvzN5h9YtTlB13aBfgLphJul_2vGPCzLmtFNE/edit?gid=1323786029"}],"Medium","DONE","Email 3 - 7 August"],["DAILY","General","Top Up TV",[],"Medium","DONE","July full take over CC leader"],["DAILY","General","Review Bad Review Gmaps",[],"Medium","DONE","Google Review - Actions\nJuly full take over CC leader"],["DAILY","General","Audit AI",[],"Medium","DONE","REPORT AI\nJuly full take over CC leader"],["DAILY","General","Monitoring Group VIP",[],"Medium","DONE",""],["DAILY","General","Monitoring Customer Support",[],"Medium","DONE",""],["WEEKLY","General","TMRWLABS Recap Kendala",[{"label":"TMRW Labs – Current Flow.docx","url":"https://docs.google.com/document/d/1GpNmOTMslbl3hRos6OBg-Tw-HdbSdMyA/edit"}],"High","DONE",""],["WEEKLY","General","Update MoM Meeting Aftersales",[],"High","DONE",""],["WEEKLY","General","Report Weekly Meeting Aftersales",[{"label":"July 2026 Helpdesk AM Report.pptx","url":"https://drive.google.com/open?id=1mIUSkEmBy-0Qq1QzT7Z4XEonFwZtZyXa&usp=drive_copy"}],"High","DONE","Every Tuesday-Saturday\nMonthly Report Aftersales"],["MONTHLY","VIP","Email Reminder Outstanding Bills DIA Account",[{"label":"Outstanding Bills - DIA Package","url":"https://docs.google.com/spreadsheets/d/1ExYcFHKlltt91fRtwnYrG6G6_a__nnrIQ98Y19jw9gI/edit?gid=1789145925"}],"High","DONE","Monthly on the 10th.\nJuly"],["MONTHLY","VIP","Reminder Recap Account VIP",[{"label":"Reminder Bill - VIP.xlsx","url":"https://docs.google.com/spreadsheets/d/19mNgXyeEei_hIwdwS9gfphbzlbPVjdn-/edit?gid=138707526"}],"Medium","DONE","Monthly on the 25th."],["MONTHLY","VIP","Reminder Recap Account Intracity",[{"label":"Reminder Bill - VIP.xlsx","url":"https://docs.google.com/spreadsheets/d/19mNgXyeEei_hIwdwS9gfphbzlbPVjdn-/edit?gid=138707526"}],"Medium","DONE","Monthly on the 25th - 15th Next Month"],["MONTHLY","VIP","Recap Achievment Intracity",[{"label":"Link","url":"https://glow-point-48716998.figma.site/"}],"Medium","DONE",""],["MONTHLY","General","Monthly Report SPV Performance",[{"label":"H1 2026","url":"https://pulp-stove-83526355.figma.site/"}],"Medium","DONE",""],["MONTHLY","General","Monthly Report July 2026",[],"Medium","NOT STARTED",""],["MONTHLY","VIP","Q2 Helpdesk",[{"label":"Link","url":"https://blog-cheer-55153952.figma.site/"},{"label":"Q2-Best Employee Helpdesk.xlsx","url":"https://drive.google.com/open?id=1amn8_oSzmRx7OqjLfnBnTY4MN-PTmeTg&usp=drive_copy"}],"Medium","DONE",""],["MONTHLY","VIP","PPT Masterlist VIP",[{"label":"Masterlist VIP Group","url":"https://docs.google.com/spreadsheets/d/1LRCBD_d1KjX1HQ4cIyAakXVlkPwQTg8mBv7E5QoMBkU/edit?hl=id&gid=0"}],"Medium","IN PROGRESS",""],["MONTHLY","VIP","Update Data VIP + Intracity",[{"label":"Masterlist VIP Group","url":"https://docs.google.com/spreadsheets/d/1LRCBD_d1KjX1HQ4cIyAakXVlkPwQTg8mBv7E5QoMBkU/edit?hl=id&gid=0"}],"Medium","IN PROGRESS",""],["MONTHLY","General","Observasi CC June 2026",[{"label":"Observation Form - for Internal Audit (Responses)","url":"https://docs.google.com/spreadsheets/d/11BLvGCDQmU3lv9V0j1-TSZvZOqfxDtvQIxLyBMl7mYY/edit?gid=329841812"}],"High","DONE","Form Audit CC"],["MONTHLY","General","Observasi HD June 2026",[{"label":"Observation Audit Helpdesk (Responses)","url":"https://docs.google.com/spreadsheets/d/1QdHBsPjKp_2Ma_9ZmKvl_CIRajAccSKI923Ep9R3FAU/edit?gid=1289126939"}],"High","DONE","Form Audit HD"],["MONTHLY","General","Monthly Report PPT Performance Cust Support June 2026",[{"label":"June Monthly Report Helpdesk Customer Support.pptx","url":"https://docs.google.com/presentation/d/1BFPX_Kpq5yghvLsP14SlgKHaUvtSzIHL/edit?usp=sharing&ouid=108380198611650010019&rtpof=true&sd=true"}],"High","NOT STARTED",""],["MONTHLY","General","Monthly Report PPT Performance VIP June 2026",[{"label":"Monthly VIP Report June 2026.pptx","url":"https://docs.google.com/presentation/d/1ID7mHP5UQNAlDVbU0A4JfcIBulEeRd0h/edit?usp=sharing&ouid=108380198611650010019&rtpof=true&sd=true"}],"High","NOT STARTED",""],["FERRE","General","Voucher Tracking",[{"label":"Voucher Tracking & Status - Mr. Ferre","url":"https://docs.google.com/spreadsheets/d/1G4vmz3Ic_SCD6NKnzLVDOFaHLqzMg6wcj7m4OVst2Ec/edit?gid=1862052364"}],"Low","DONE",""],["FERRE","General","Recap Stock Opname",[{"label":"STOCK OPNAME PAK FERRE .xlsx","url":"https://docs.google.com/spreadsheets/d/1Brq63FiZW9er98YiZQorjMRjYtojwy6ofuqeC3TVdIg/edit?gid=0"}],"Low","NOT STARTED","Before\nMr Ferre's Equipment\nAfter"],["FERRE","General","Project Invoice Overview — Oxo The Bank",[{"label":"OXO The Bank INV Overview","url":"https://docs.google.com/spreadsheets/d/1GnqB8kf0klIIJQYxz9ya05F_gF_BlmVFu9VL1tiCaSc/edit?gid=767745875"}],"High","DONE",""],["FERRE","General","Project Invoice Overview — Workspace Sanur",[{"label":"Ferre Project Overview","url":"https://docs.google.com/spreadsheets/d/1kZod_oNU-eYa9vE6jXV2g0KvAJTbmPdCQyDM0cvFQdc/edit?gid=0"}],"High","NOT STARTED",""],["FERRE","VIP","Handling Complaints from Pak Ferre",[],"High","DONE","danielmohG34B - Gamas ketewel \nmicheleraG232A - New Installation"],["ONEOFF","General","Peer to peer 360",[{"label":"Link","url":"https://docs.google.com/forms/d/1gmdZDRa2if6KFDy0RSOBI5Lh3PVtzK_39i2hJp9B75U/edit?allow_large_form"}],"Low","DONE","PT 1\nPT 2\n\nAkan di reset"],["ONEOFF","Pribadi","Shift Correction WFA",[],"Medium","DONE",""],["ONEOFF","Pribadi","Recall Materi Notion Technichal",[],"Low","NOT STARTED",""],["ONEOFF","Pribadi","Tugas Kuliah",[],"High","DONE",""],["ONEOFF","Pribadi","Report Expenses",[],"Low","NOT STARTED",""],["ONEOFF","Pribadi","Journaling",[],"Low","NOT STARTED",""]],"2026-08":[["DAILY","General","Cashier + Setor + Email",[{"label":"Daily Cashier Report - DCR","url":"https://docs.google.com/spreadsheets/d/1WxFd4fhvzN5h9YtTlB13aBfgLphJul_2vGPCzLmtFNE/edit?gid=1323786029"}],"Medium","DONE",""],["DAILY","General","Monitoring & Audit VIP",[],"Medium","DONE",""],["DAILY","General","Monitoring & Audit  Customer Support",[],"Medium","DONE",""],["WEEKLY","General","TMRWLABS Recap Kendala",[{"label":"TMRW Labs – Current Flow.docx","url":"https://docs.google.com/document/d/1GpNmOTMslbl3hRos6OBg-Tw-HdbSdMyA/edit"}],"High","DONE",""],["WEEKLY","General","Tmrwlabs",[{"label":"Link","url":"https://sprout-forum-54408060.figma.site/"}],"High","DONE","Develop AM Team\nMeeting Onboarding"],["WEEKLY","General","Update MoM Meeting Aftersales",[{"label":"Teamhub","url":"https://app.teamhub.com/project/74b69676-bbff-4ab8-8431-296a940fcb4a/board"}],"High","DONE",""],["WEEKLY","VIP","GX CONNECT CUSTOMER SUPPORT",[{"label":"Link","url":"https://gxcsconnect.globalxtreme-solutions.net/"}],"High","DONE",""],["WEEKLY","General","GX ANNIV EVENT TEAM",[{"label":"GX’27th Anniversary","url":"https://app.notion.com/p/globalxtreme/GX-Anniversary-2026-8083785efdb483b386f481dcd39f470c"},{"label":"GX’27th Anniversary","url":"https://docs.google.com/presentation/d/1EKy1hea5QRIhLVC0BTpcf-qSSASYbzkcUqm0YhcWi4M/edit?slide=id.p41"}],"High","IN PROGRESS",""],["WEEKLY","General","Report Weekly Meeting Aftersales",[],"High","DONE","Every Tuesday-Saturday\nMonthly Report Aftersales August 2026\nSat 8/8/26\n1-6 August\n\nTue 11/8/26\n3-9 August\n\nSat 15/8/26\n7-13 August\n\nSat 22/8/26\n14-20 August \n\nSat 29/8/26\n20-27\n\nTue 1/9/26\n1-30"],["MONTHLY","VIP","Email Reminder Outstanding Bills DIA Account",[{"label":"Outstanding Bills - DIA Package","url":"https://docs.google.com/spreadsheets/d/1ExYcFHKlltt91fRtwnYrG6G6_a__nnrIQ98Y19jw9gI/edit?gid=1789145925"}],"High","DONE","Monthly on the 10th.\nJuly"],["MONTHLY","VIP","Reminder Recap Account VIP",[{"label":"Reminder Bill - VIP.xlsx","url":"https://docs.google.com/spreadsheets/d/19mNgXyeEei_hIwdwS9gfphbzlbPVjdn-/edit?gid=138707526"}],"Medium","DONE","Monthly on the 25th."],["MONTHLY","VIP","Reminder Recap Account Intracity",[{"label":"Reminder Bill - VIP.xlsx","url":"https://docs.google.com/spreadsheets/d/19mNgXyeEei_hIwdwS9gfphbzlbPVjdn-/edit?gid=138707526"}],"Medium","DONE","Monthly on the 25th - 15th Next Month"],["MONTHLY","VIP","Recap Achievment Intracity August 2026",[{"label":"Link","url":"https://glow-point-48716998.figma.site/"}],"Medium","DONE",""],["MONTHLY","General","Monthly Report After Sales July 2026",[{"label":"July 2026 Helpdesk AM Report.pptx","url":"https://docs.google.com/presentation/d/1mIUSkEmBy-0Qq1QzT7Z4XEonFwZtZyXa/edit?usp=sharing&ouid=108380198611650010019&rtpof=true&sd=true"}],"Medium","DONE",""],["MONTHLY","VIP","Update Masterlist VIP",[{"label":"PPT VIP & Intracity Group","url":"https://throb-invert-82417920.figma.site/"},{"label":"PPT VIP & Intracity Group","url":"https://docs.google.com/spreadsheets/d/1LRCBD_d1KjX1HQ4cIyAakXVlkPwQTg8mBv7E5QoMBkU/edit?hl=id&gid=0"}],"Medium","DONE","Masterlist VIP Group\nUntuk group list yang di take out, done take out 8/8/26\n\n- Villa Coco dan Fabricca - Offering manage service\n\n- Intracity perlu PKS di sistem"],["MONTHLY","General","Observasi CC July 2026",[{"label":"Observation Form - for Internal Audit (Responses)","url":"https://docs.google.com/spreadsheets/d/11BLvGCDQmU3lv9V0j1-TSZvZOqfxDtvQIxLyBMl7mYY/edit?gid=329841812"}],"High","DONE","Form Audit CC"],["MONTHLY","General","Observasi HD July 2026",[{"label":"Observation Audit Helpdesk (Responses)","url":"https://docs.google.com/spreadsheets/d/1QdHBsPjKp_2Ma_9ZmKvl_CIRajAccSKI923Ep9R3FAU/edit?gid=1289126939"}],"High","DONE","Form Audit HD"],["MONTHLY","General","Monthly Report PPT Performance Cust Support July 2026",[{"label":"Link","url":"https://docs.google.com/presentation/d/15pbhzAHYIiAZtiZu3M0DgUcoyn8OT9-Q/edit?usp=sharing&ouid=108380198611650010019&rtpof=true&sd=true"}],"High","DONE","August 1-31 2026 Helpdesk Monthly Report.pptx"],["MONTHLY","General","Monthly Report PPT Performance VIP July 2026",[],"High","DONE",""],["FERRE","General","Voucher Tracking",[{"label":"Voucher Tracking & Status - Mr. Ferre","url":"https://docs.google.com/spreadsheets/d/1G4vmz3Ic_SCD6NKnzLVDOFaHLqzMg6wcj7m4OVst2Ec/edit?gid=1862052364"}],"Low","DONE",""],["FERRE","General","Recap Stock Opname",[{"label":"STOCK OPNAME PAK FERRE .xlsx","url":"https://docs.google.com/spreadsheets/d/1Brq63FiZW9er98YiZQorjMRjYtojwy6ofuqeC3TVdIg/edit?gid=0"}],"Low","NOT STARTED","Before\nMr Ferre's Equipment\nAfter\nsibuk bgt blm sempet"],["FERRE","General","Project Invoice Overview — Oxo The Bank",[{"label":"OXO The Bank INV Overview","url":"https://docs.google.com/spreadsheets/d/1GnqB8kf0klIIJQYxz9ya05F_gF_BlmVFu9VL1tiCaSc/edit?gid=767745875"}],"High","DONE",""],["FERRE","General","Project Invoice Overview — Workspace Sanur",[{"label":"Ferre Project Overview","url":"https://docs.google.com/spreadsheets/d/1kZod_oNU-eYa9vE6jXV2g0KvAJTbmPdCQyDM0cvFQdc/edit?gid=0"}],"High","NOT STARTED","sibuk bgt blm sempet"],["FERRE","VIP","Handling Installation from Pak Ferre",[],"High","DONE","Pak Raj Kannan - - Pending Response\nBulldogs - Pending Response"],["FERRE","VIP","Handling Complaints from Pak Ferre",[],"High","DONE","matthewdonG45B - internet issue 4/8/26\nsudah installation penambahan AP 6/8/26\n\nPak Raj Kannan arrange survey installation foc sig 200\ndennislG33A - WD\nRight Reasons Charity Funding\narrange survey installation donated a SIG-500 \n\npascalbalG76A - WD\nOxo bank Villa 2,4,8\n\nChez Gado-Gado citraG77A - FOC during renovation"],["ONEOFF","General","Peer to peer 360",[{"label":"Link","url":"https://docs.google.com/forms/d/1gmdZDRa2if6KFDy0RSOBI5Lh3PVtzK_39i2hJp9B75U/edit?allow_large_form"}],"Low","DONE","PT 1\nPT 2\n\nAkan di reset"],["ONEOFF","Pribadi","Shift Correction WFA",[],"Medium","DONE",""],["ONEOFF","Pribadi","Recall Materi Notion Technichal",[],"Low","NOT STARTED",""],["ONEOFF","Pribadi","Tugas Kuliah",[],"High","DONE",""],["ONEOFF","Pribadi","Report Expenses",[],"Low","NOT STARTED",""],["ONEOFF","Pribadi","Journaling",[],"Low","NOT STARTED",""]],"2026-09":[["DAILY","General","Cashier + Setor + Email",[{"label":"Daily Cashier Report - DCR","url":"https://docs.google.com/spreadsheets/d/1WxFd4fhvzN5h9YtTlB13aBfgLphJul_2vGPCzLmtFNE/edit?gid=1323786029"}],"Medium","DONE","25-2 oct blm email"],["DAILY","General","Monitoring & Audit VIP",[],"Medium","IN PROGRESS",""],["DAILY","General","Monitoring & Audit  Customer Support",[],"Medium","IN PROGRESS",""],["WEEKLY","VIP","Running GX CS Connect per 1/9/26",[{"label":"Link","url":"https://docs.google.com/document/d/1r0zLIpkM9QEFPm3UIvLaG2wHVTNeh038/edit"}],"High","DONE","Develop change request and future improvement"],["WEEKLY","VIP","GX CONNECT CUSTOMER SUPPORT",[{"label":"Link","url":"https://gxcsconnect.globalxtreme-solutions.net/"}],"High","IN PROGRESS",""],["WEEKLY","VIP","Running TMRW Labs",[],"High","NOT STARTED",""],["WEEKLY","General","TMRW LABS",[{"label":"Link","url":"https://docs.google.com/document/d/1GpNmOTMslbl3hRos6OBg-Tw-HdbSdMyA/edit"}],"High","DONE","TMRWLABS Recap Kendala\nTMRW Labs – Current Flow.docx"],["WEEKLY","General","Update MoM Meeting Aftersales",[{"label":"Teamhub","url":"https://app.teamhub.com/project/74b69676-bbff-4ab8-8431-296a940fcb4a/board"}],"High","DONE",""],["WEEKLY","General","GX ANNIV EVENT TEAM",[{"label":"GX’27th Anniversary","url":"https://app.notion.com/p/globalxtreme/GX-Anniversary-2026-8083785efdb483b386f481dcd39f470c"},{"label":"GX’27th Anniversary","url":"https://docs.google.com/presentation/d/1EKy1hea5QRIhLVC0BTpcf-qSSASYbzkcUqm0YhcWi4M/edit?slide=id.p41"}],"High","DONE","Budgeting"],["WEEKLY","General","Report Weekly Meeting Aftersales",[],"High","DONE","Every Tuesday-Saturday\nMonthly Report Aftersales August 2026"],["MONTHLY","VIP","Email Reminder Outstanding Bills DIA Account",[{"label":"Outstanding Bills - DIA Package","url":"https://docs.google.com/spreadsheets/d/1ExYcFHKlltt91fRtwnYrG6G6_a__nnrIQ98Y19jw9gI/edit?gid=1789145925"}],"High","DONE","Monthly on the 10th."],["MONTHLY","VIP","Reminder Recap Account VIP",[{"label":"Reminder Bill - VIP.xlsx","url":"https://docs.google.com/spreadsheets/d/19mNgXyeEei_hIwdwS9gfphbzlbPVjdn-/edit?gid=138707526"}],"Medium","NOT STARTED","Monthly on the 25th."],["MONTHLY","VIP","Reminder Recap Account Intracity",[{"label":"Reminder Bill - VIP.xlsx","url":"https://docs.google.com/spreadsheets/d/19mNgXyeEei_hIwdwS9gfphbzlbPVjdn-/edit?gid=138707526"}],"Medium","NOT STARTED","Monthly on the 25th - 15th Next Month"],["MONTHLY","VIP","Recap Achievment Intracity",[{"label":"Link","url":"https://glow-point-48716998.figma.site/"}],"Medium","NOT STARTED",""],["MONTHLY","General","Monthly Report SPV Performance",[{"label":"Link","url":"https://pulp-stove-83526355.figma.site/"}],"Medium","DONE",""],["MONTHLY","General","Monthly Report After Sales August 2026",[{"label":"August 1-31 2026 Helpdesk Monthly Report.pptx","url":"https://docs.google.com/presentation/d/15pbhzAHYIiAZtiZu3M0DgUcoyn8OT9-Q/edit?usp=sharing&ouid=108380198611650010019&rtpof=true&sd=true"}],"Medium","DONE",""],["MONTHLY","VIP","On going Q3 Helpdesk",[{"label":"Link","url":"https://blog-cheer-55153952.figma.site/"},{"label":"Q3","url":"https://drive.google.com/open?id=1jm01mmHqI-PJYHnMXzHarvARPSHLH-_W&usp=drive_copy"}],"Medium","NOT STARTED","July - September 2026\n\n- Ticket created per pax"],["MONTHLY","VIP","Update Masterlist VIP",[{"label":"PPT VIP & Intracity Group","url":"https://throb-invert-82417920.figma.site/"},{"label":"PPT VIP & Intracity Group","url":"https://docs.google.com/spreadsheets/d/1LRCBD_d1KjX1HQ4cIyAakXVlkPwQTg8mBv7E5QoMBkU/edit?hl=id&gid=0"}],"Medium","DONE","Masterlist VIP Group\nUntuk group list yang di take out, done take out 8/8/26\n\n- Villa Coco dan Fabricca - Offering manage service\n\n- Intracity perlu PKS di sistem"],["MONTHLY","VIP","Update Data VIP + Intracity",[{"label":"Masterlist VIP Group","url":"https://docs.google.com/spreadsheets/d/1LRCBD_d1KjX1HQ4cIyAakXVlkPwQTg8mBv7E5QoMBkU/edit?hl=id&gid=0"}],"Medium","DONE",""],["MONTHLY","General","Observasi HD & AM July - September 2026",[{"label":"Observation Audit Helpdesk (Responses)","url":"https://docs.google.com/spreadsheets/d/1QdHBsPjKp_2Ma_9ZmKvl_CIRajAccSKI923Ep9R3FAU/edit?gid=1289126939"}],"High","IN PROGRESS","Form Audit HD"],["FERRE","General","Voucher Tracking",[{"label":"Voucher Tracking & Status - Mr. Ferre","url":"https://docs.google.com/spreadsheets/d/1G4vmz3Ic_SCD6NKnzLVDOFaHLqzMg6wcj7m4OVst2Ec/edit?gid=1862052364"}],"Low","NOT STARTED","ada Voucher baru"],["FERRE","General","Recap Stock Opname",[{"label":"STOCK OPNAME PAK FERRE .xlsx","url":"https://docs.google.com/spreadsheets/d/1Brq63FiZW9er98YiZQorjMRjYtojwy6ofuqeC3TVdIg/edit?gid=0"}],"Low","NOT STARTED","Before\nMr Ferre's Equipment\nAfter\nsibuk bgt blm sempet"],["FERRE","General","Project Invoice Overview — Oxo The Bank",[{"label":"OXO The Bank INV Overview","url":"https://docs.google.com/spreadsheets/d/1GnqB8kf0klIIJQYxz9ya05F_gF_BlmVFu9VL1tiCaSc/edit?gid=767745875"}],"High","NOT STARTED",""],["FERRE","General","Project Invoice Overview — Workspace Sanur",[{"label":"Ferre Project Overview","url":"https://docs.google.com/spreadsheets/d/1kZod_oNU-eYa9vE6jXV2g0KvAJTbmPdCQyDM0cvFQdc/edit?gid=0"}],"High","DONE",""],["FERRE","VIP","Handling Installation from Pak Ferre",[],"High","DONE",""],["FERRE","VIP","Handling Complaints from Pak Ferre",[],"High","DONE",""],["ONEOFF","General","Peer to peer 360",[{"label":"Link","url":"https://docs.google.com/forms/d/1gmdZDRa2if6KFDy0RSOBI5Lh3PVtzK_39i2hJp9B75U/edit?allow_large_form"}],"Low","DONE","PT 1\nPT 2\n\nAkan di reset"],["ONEOFF","Pribadi","Shift Correction WFA",[],"Medium","DONE",""],["ONEOFF","Pribadi","Recall Materi Notion Technichal",[],"Low","NOT STARTED",""],["ONEOFF","Pribadi","Tugas Kuliah",[],"High","DONE",""],["ONEOFF","Pribadi","Report Expenses",[],"Low","NOT STARTED",""],["ONEOFF","Pribadi","Journaling",[],"Low","NOT STARTED",""]]};
+const SEEDS = { ...Object.fromEntries(Object.entries(SEED_H2).map(([m, rows]) => [m, rows.map(([section, category, title, links, priority, status, remarks], i) => ({ month: m, section, category, title, links, priority, status, remarks, sort: i, assignee: '', team: null, due: null }))])), '2026-10': SEED_OCT };
+/* Task bulanan tim: update INV VIP di Reminder Bill 25 (pembagian dari Putri) */
+const INV25_NOTE = 'Guys ini aku bagi biar per tanggal 25 langsung update inv vip di link ini yaa, ada di desc group jugaa';
+const INV25 = [
+  ['AM', 'Devin Bagaskara', 'Gilangram Management, Betrand'],
+  ['AM', 'Ni Kadek Desi Mirayani', 'Balinest, Red Cubic'],
+  ['HD', 'Kadek Arisita Dhyana Putri', 'BnB Profits, Saridewi'],
+  ['AM', 'Aulia Sevi Diana', 'Canggu Property M, Taman Bali Surga/BVM, Padma'],
+  ['HD', 'A.A Ngurah Kiyana Adhisa Oka Pertama', 'Taufik Hidayat'],
+  ['HD', 'Nilma Syahrani', 'Mr. Arnaulth, Pepito - Crossfit'],
+];
+const inv25Title = groups => 'Update INV VIP tgl 25 — ' + groups;
+const inv25Tasks = ym => INV25.map(([team, assignee, groups], i) => ({ month: ym, section: 'MONTHLY', category: 'VIP', title: inv25Title(groups), links: [L('Reminder Bill 25 — VIP & Intracity', T_LINK.bill + '#gid=138707526')], priority: 'High', status: 'NOT STARTED', remarks: INV25_NOTE, sort: 900 + i, assignee, team, due: ym + '-25' }));
+const DIA_NEW = 'https://docs.google.com/spreadsheets/d/1p2rNp5duqp8zvWIqDWFznzCkv4TUBXY3E2WJEd_J5U0/edit?usp=sharing';
 
 /* ======================= Report H1 2026 (replika pulp-stove-83526355.figma.site) ======================= */
 const H = {
@@ -352,7 +379,7 @@ async function api(path, opt = {}) {
 }
 
 /* ======================= TO-DO ======================= */
-const prevSave = () => { try { localStorage.setItem('gx-preview-tasks', JSON.stringify(ST.local)); } catch (e) {} };
+const prevSave = () => { try { localStorage.setItem('gx-preview-tasks2', JSON.stringify(ST.local)); } catch (e) {} };
 const ST = { month: ymNow(), months: [], tasks: [], mode: 'online' };
 try { const m = localStorage.getItem('gx-spv-month'); if (/^\d{4}-\d{2}$/.test(m || '')) ST.month = m; } catch (e) {}
 function errText(r) {
@@ -366,16 +393,20 @@ async function loadMonth() {
   try { r = await api('?month=' + ST.month); } catch (e) { r = { status: 0, j: {}, json: false }; }
   if (r.status === 200) { ST.mode = 'online'; ST.tasks = r.j.tasks || []; ST.months = r.j.months || []; banner('', ''); }
   else if (!r.json) {   // server API tidak ada (preview statis)
-    ST.mode = 'preview'; ST.months = ['2026-10']; if (!ST.local) { try { ST.local = JSON.parse(localStorage.getItem('gx-preview-tasks') || 'null'); } catch (e) {} if (!Array.isArray(ST.local)) ST.local = SEED_OCT.map((x, i) => ({ ...clone(x), id: 'p' + i })); } ST.tasks = ST.month === '2026-10' ? ST.local : [];
+    ST.mode = 'preview'; if (!ST.local) { try { ST.local = JSON.parse(localStorage.getItem('gx-preview-tasks2') || 'null'); } catch (e) {} if (!Array.isArray(ST.local)) { ST.local = Object.values(SEEDS).flat().map((x, i) => ({ ...clone(x), id: 'p' + i, updated_at: new Date().toISOString() })); prevSave(); } } ST.months = [...new Set(ST.local.map(x => x.month))].sort(); ST.tasks = ST.local.filter(x => x.month === ST.month);
     banner('w', '<b>Mode preview</b> — server belum tersambung, perubahan tidak tersimpan. Setelah di-deploy ke Vercel + <b>spv-schema.sql</b> dijalankan, data tersimpan online.');
-  } else { ST.tasks = []; banner('e', errText(r)); }
+  } else { ST.tasks = []; ST.mode = 'error'; banner('e', errText(r)); }
   fillMonths(); renderTodo();
+  if (ST.mode !== 'error') fixDia();
 }
 function fillMonths() {
   const set = new Set([...ST.months, ymNow(), ST.month]);
   const list = [...set].sort().reverse();
   $('#month').innerHTML = list.map(m => `<option value="${m}" ${m === ST.month ? 'selected' : ''}>${ymLabel(m)}${ST.months.includes(m) ? '' : ' (kosong)'}</option>`).join('');
-  $('#importBtn').classList.toggle('hidden', !(ST.mode === 'online' && !ST.months.includes('2026-10')));
+  const miss = Object.keys(SEEDS).filter(m => !ST.months.includes(m));
+  $('#importBtn').classList.toggle('hidden', !(ST.mode === 'online' && miss.length));
+  $('#importBtn').textContent = 'Import Monthly Tracker (' + miss.map(m => ymLabel(m).replace(/ \d{4}$/, '').slice(0, 3)).join(', ') + ' 2026)';
+  $('#inv25Btn').classList.toggle('hidden', !(ST.month >= '2026-11' && ST.mode !== 'error' && inv25Missing().length));
   $('#copyBtn').classList.toggle('hidden', ST.tasks.length > 0);
 }
 const asKey = t => t.team ? (t.assignee ? `${t.team}:${t.assignee}` : `${t.team}:*`) : '';
@@ -410,13 +441,13 @@ function renderTodo() {
     <div class="kpi"><span>Team HD · aktif</span><b>${open('HD')}</b></div><div class="kpi"><span>Team AM · aktif</span><b>${open('AM')}</b></div>`;
   const list = filtered(), v = $('#fAs').value;
   let html = '';
-  if (!v || v === 'me') html += `<div class="blk-h"><h2>Personal To-Do List</h2><span>Task pribadi SPV — tidak terlihat oleh tim</span></div>` + SECTIONS.map(([k, name]) => {
+  if (!v || v === 'me') html += `<div class="blk-h"><h2>Personal To-Do List</h2></div>` + SECTIONS.map(([k, name]) => {
     const rows = list.filter(x => !x.team && x.section === k).sort(bySort), tot = mine.filter(x => x.section === k), dn = tot.filter(x => x.status === 'DONE').length;
     return `<div class="sec"><div class="sec-h"><h2>${name}</h2><span class="cnt">${dn}/${tot.length} done</span><span class="sp"></span><button class="btn sm" data-add="${k}">+ Task</button></div>
       ${rows.length ? rowsHtml(rows) : `<div class="empty">${tot.length ? 'Tidak ada task yang cocok dengan filter.' : 'Belum ada task.'}</div>`}</div>`;
   }).join('');
   const TB = [['HD', 'To-Do List Helpdesk Customer Support', '/dashboard-helpdesk'], ['AM', 'To-Do List Account Manager VIP', '/dashboard-am']].filter(([tm]) => !v || v === tm);
-  if (TB.length) html += `<div class="blk-h"><h2>Team To-Do List</h2><span>Task yang di-assign ke tim — tim update status & catatan dari dashboard masing-masing</span></div>` + TB.map(([tm, name, href]) => {
+  if (TB.length) html += `<div class="blk-h"><h2>Team To-Do List</h2></div>` + TB.map(([tm, name, href]) => {
     const rows = list.filter(x => x.team === tm).sort((a, b) => (a.status === 'DONE') - (b.status === 'DONE') || String(a.due || '9999').localeCompare(b.due || '9999')), tot = teamT.filter(x => x.team === tm), dn = tot.filter(x => x.status === 'DONE').length;
     return `<div class="sec team ${tm}"><div class="sec-h"><h2>${name}</h2><span class="cnt">${dn}/${tot.length} done</span><span class="sp"></span><a class="btn sm" href="${href}" target="_blank" rel="noopener">Buka dashboard tim ↗</a><button class="btn sm" data-addteam="${tm}">+ Task tim</button></div>
       ${rows.length ? rowsHtml(rows, true) : `<div class="empty">${tot.length ? 'Tidak ada task yang cocok dengan filter.' : 'Belum ada task untuk tim ini.'}</div>`}</div>`;
@@ -428,13 +459,13 @@ function linkChips(links) {
   return a.length ? `<div class="lks">${a.map(l => `<a class="lk" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener" title="${esc(l.url)}">${LINKSVG}${esc(l.label || new URL(l.url).hostname)}</a>`).join('')}</div>` : '';
 }
 async function saveTask(t) {
-  if (ST.mode === 'preview') { if (!t.id) { t.id = 'p' + Date.now(); ST.local.push(t); } else Object.assign(ST.local.find(x => x.id === t.id), t); ST.tasks = ST.local; prevSave(); renderTodo(); toast('Mode preview — tersimpan di browser ini saja'); return true; }
+  if (ST.mode === 'preview') { t.updated_at = new Date().toISOString(); if (!t.id) { t.id = 'p' + Date.now() + Math.random().toString(36).slice(2, 6); ST.local.push(t); } else Object.assign(ST.local.find(x => x.id === t.id), t); ST.tasks = ST.local.filter(x => x.month === ST.month); if (!ST.months.includes(ST.month)) ST.months.push(ST.month); prevSave(); fillMonths(); renderTodo(); toast('Mode preview — tersimpan di browser ini saja'); return true; }
   const r = await api('', { method: 'POST', body: JSON.stringify({ task: t }) });
   if (r.status === 200) { const i = ST.tasks.findIndex(x => x.id === r.j.task.id); if (i >= 0) ST.tasks[i] = r.j.task; else ST.tasks.push(r.j.task); if (!ST.months.includes(ST.month)) ST.months.push(ST.month); fillMonths(); renderTodo(); toast('Tersimpan ✓'); return true; }
   toast('Gagal menyimpan'); banner('e', errText(r)); return false;
 }
 async function delTask(id) {
-  if (ST.mode === 'preview') { ST.local = ST.local.filter(x => x.id !== id); ST.tasks = ST.local; prevSave(); renderTodo(); return true; }
+  if (ST.mode === 'preview') { ST.local = ST.local.filter(x => x.id !== id); ST.tasks = ST.local.filter(x => x.month === ST.month); prevSave(); renderTodo(); return true; }
   const r = await api('?id=' + encodeURIComponent(id), { method: 'DELETE' });
   if (r.status === 200) { ST.tasks = ST.tasks.filter(x => x.id !== id); renderTodo(); toast('Task dihapus'); return true; }
   banner('e', errText(r)); return false;
@@ -494,10 +525,28 @@ $('#copyBtn').onclick = async () => {
   if (r.status === 200) { toast(`${r.j.copied} task disalin ✓`); loadMonth(); } else banner('e', errText(r));
 };
 $('#importBtn').onclick = async () => {
-  if (!confirm(`Import ${SEED_OCT.length} task dari Monthly Tracker - Putri.xlsx (tab Oct 2026) ke bulan Oktober 2026?`)) return;
-  const r = await api('', { method: 'POST', body: JSON.stringify({ import: SEED_OCT }) });
-  if (r.status === 200) { toast(`${r.j.imported} task diimport ✓`); ST.month = '2026-10'; try { localStorage.setItem('gx-spv-month', ST.month); } catch (er) {} loadMonth(); } else banner('e', errText(r));
+  const miss = Object.keys(SEEDS).filter(m => !ST.months.includes(m)); if (!miss.length) return;
+  const n = miss.reduce((a, m) => a + SEEDS[m].length, 0);
+  if (!confirm(`Import ${n} task dari Monthly Tracker - Putri.xlsx (${miss.map(ymLabel).join(', ')})? Bulan yang sudah punya task tidak disentuh.`)) return;
+  let ok = 0, last = null;
+  for (const m of miss) { const r = await api('', { method: 'POST', body: JSON.stringify({ import: SEEDS[m] }) }); if (r.status === 200) ok += r.j.imported; else last = r; }
+  if (last) banner('e', errText(last)); else toast(`${ok} task diimport ✓`);
+  loadMonth();
 };
+function inv25Missing() { const have = new Set(ST.tasks.filter(t => t.team).map(t => t.team + '|' + t.assignee + '|' + t.title)); return inv25Tasks(ST.month).filter(t => !have.has(t.team + '|' + t.assignee + '|' + t.title)); }
+$('#inv25Btn').onclick = async () => {
+  const add = inv25Missing(); if (!add.length) return toast('Task INV VIP tgl 25 bulan ini sudah lengkap');
+  if (!confirm(`Buat ${add.length} task tim "Update INV VIP tgl 25" untuk ${ymLabel(ST.month)} (due ${ST.month}-25)?\n\n` + add.map(t => '• ' + t.assignee.split(' ').slice(-1)[0] + ' — ' + t.title.split('— ')[1]).join('\n'))) return;
+  for (const t of add) if (!(await saveTask(t))) return;
+  toast(`${add.length} task tim dibuat ✓`); fillMonths();
+};
+/* DIA: mulai Nov 2026 pakai sheet Outstanding Bills — Dedicated Package yang baru */
+async function fixDia() {
+  if (ST.month < '2026-11') return;
+  for (const t of ST.tasks.filter(x => /DIA/i.test(x.title) && (x.links || []).some(l => /1ExYcFHKlltt91fRtwnYrG6G6_a__nnrIQ98Y19jw9gI/.test(l.url)))) {
+    await saveTask({ ...t, links: t.links.map(l => /1ExYcFHKlltt91fRtwnYrG6G6_a__nnrIQ98Y19jw9gI/.test(l.url) ? { label: 'Outstanding Bills — Dedicated Package', url: DIA_NEW } : l) });
+  }
+}
 
 /* ======================= REPORT H1 ======================= */
 const DOC = 'spv-h1-2026';
@@ -515,7 +564,7 @@ function saveDoc() {
   clearTimeout(saveT); $('#saveState').textContent = 'Menyimpan…';
   saveT = setTimeout(async () => {
     const r = await api('', { method: 'POST', body: JSON.stringify({ doc: DOC, data: R.data, revision: R.rev }) });
-    if (r.status === 200) { R.rev = r.j.revision; $('#saveState').textContent = 'Report tersimpan ✓'; }
+    if (r.status === 200) { R.rev = r.j.revision; $('#saveState').textContent = 'Report tersimpan ✓'; publish('h1-2026', h1Snap()); }
     else if (r.status === 409) { $('#saveState').textContent = ''; banner('e', 'Report diubah di tab/perangkat lain. Muat ulang halaman lalu ulangi perubahan.'); }
     else { $('#saveState').textContent = ''; banner('e', errText(r)); }
   }, 500);
@@ -526,13 +575,13 @@ function renderH1() {
   const i = pages.findIndex(p => p[0] === R.page);
   $('#h1nav').innerHTML = `<button data-go="${pages[Math.max(0, i - 1)][0]}">←</button>${pages.map(([k, l]) => `<button data-go="${k}" aria-pressed="${k === R.page}">${l}</button>`).join('')}<button data-go="${pages[Math.min(pages.length - 1, i + 1)][0]}">→</button>
     <span style="font-size:12px;color:var(--muted);margin-left:8px">${i + 1} / ${pages.length}</span>
-    <button class="btn sm ed" id="edToggle">${R.edit ? '✓ Selesai edit' : '✎ Edit report'}</button>${R.edit ? '<button class="btn sm danger" id="edReset" title="Kembalikan ke isi asli dari Figma">Reset ke versi Figma</button>' : ''}
-    <a class="btn sm" href="https://pulp-stove-83526355.figma.site/" target="_blank" rel="noopener">Buka versi Figma ↗</a>`;
+    <button class="btn sm ed" id="edToggle">${R.edit ? '✓ Selesai edit' : '✎ Edit report'}</button>${R.edit ? '<button class="btn sm danger" id="edReset" title="Kembalikan ke isi awal report H1">Reset ke versi awal</button>' : ''}
+    <button class="btn sm" id="h1Slides">▶ Lihat sebagai slide</button>`;
   const wrap = $('#h1wrap'); wrap.classList.toggle('editing', R.edit);
   const P = $('#h1page'), C = D.cover;
   if (R.page === 'cover') {
     P.innerHTML = `<div class="cv"><div class="glow"></div><div style="position:relative"><div class="kick" data-edc="kicker"><b>${esc(C.kicker.split('|')[0])}</b>|${esc(C.kicker.split('|').slice(1).join('|'))}</div>
-      <h2><span data-edc="title1" style="color:#fff">${esc(C.title1)}</span><span data-edc="title2">${esc(C.title2)}</span></h2><div class="months" data-edc="months">${esc(C.months)}</div><div class="div" data-edc="division">${esc(C.division)}</div></div>
+      <h2><span data-edc="title1" style="color:var(--ink)">${esc(C.title1)}</span><span data-edc="title2">${esc(C.title2)}</span></h2><div class="months" data-edc="months">${esc(C.months)}</div><div class="div" data-edc="division">${esc(C.division)}</div></div>
       <div class="by" style="position:relative"><small>PREPARED BY</small><b data-edc="by">${esc(C.by)}</b><span data-edc="role">${esc(C.role)}</span></div></div>`;
     return;
   }
@@ -581,7 +630,8 @@ function textEdit(label, cur, multi) { const v = prompt(label, cur); return v ==
 $('#h1wrap').addEventListener('click', e => {
   const go = e.target.closest('[data-go]'); if (go) { R.page = go.dataset.go; renderH1(); window.scrollTo({ top: 0 }); return; }
   if (e.target.id === 'edToggle') { R.edit = !R.edit; renderH1(); return; }
-  if (e.target.id === 'edReset') { if (confirm('Kembalikan seluruh report H1 ke isi asli versi Figma? Semua edit akan hilang.')) { R.data = clone(H1_DEFAULT); renderH1(); saveDoc(); } return; }
+  if (e.target.id === 'h1Slides') { MR.h1edit = false; openReport('h1-2026'); return; }
+  if (e.target.id === 'edReset') { if (confirm('Kembalikan seluruh report H1 ke isi awal? Semua edit akan hilang.')) { R.data = clone(H1_DEFAULT); renderH1(); saveDoc(); } return; }
   if (!R.edit || e.target.closest('a')) return;
   const tk = e.target.closest('[data-tk]'); if (tk) { const [si, ti] = tk.dataset.tk.split('.').map(Number); return h1TaskModal(si, ti); }
   const at = e.target.closest('[data-addtk]'); if (at) return h1TaskModal(+at.dataset.addtk, null);
@@ -598,25 +648,87 @@ $('#h1wrap').addEventListener('click', e => {
   renderH1(); saveDoc();
 });
 
+
+/* ======================= MANAGEMENT REPORT (riwayat + deck) ======================= */
+const PREP = { by: 'Tri Retno Izza Pramusthi', role: 'Customer Service Supervisor', division: 'Customer Service Division' };
+const REPORTS = [];
+for (let y = 2026; y <= 2030; y++) {
+  REPORTS.push(y === 2026 ? { key: 'h1-2026', year: y, half: 1, title: 'Report H1 2026', period: 'Januari – Juni 2026', h1: true }
+    : { key: `h1-${y}`, year: y, half: 1, title: `Report H1 ${y}`, period: `Januari – Juni ${y}`, from: `${y}-01`, to: `${y}-06` });
+  REPORTS.push({ key: `h2-${y}`, year: y, half: 2, title: `Report H2 ${y}`, period: `Juli – Desember ${y}`, from: `${y}-07`, to: `${y}-12` });
+}
+const repState = r => { const now = ymNow(), from = r.from || '2026-01', to = r.to || '2026-06'; return now > to ? 'done' : now < from ? 'next' : 'now'; };
+const REP_TAG = { done: 'RIWAYAT', now: 'BERJALAN', next: 'AKAN DATANG' };
+const MR = { sel: (REPORTS.find(r => repState(r) === 'now') || REPORTS[1]).key, rev: {}, h1edit: false, snap: {}, year: null };
+try { const k = localStorage.getItem('gx-spv-mr'); if (REPORTS.some(r => r.key === k)) MR.sel = k; } catch (e) {}
+const viewerUrl = key => new URL('/management-report?r=' + key, location.href).href;
+function h1Snap() { const C = R.data.cover || {}; return MReport.fromH1(R.data, { key: 'h1-2026', title: 'Report H1 2026', kicker: (C.kicker || 'Management Report').replace(/\|/g, ' · '), title1: C.title1 || 'Report', title2: C.title2 || 'H1 2026', period: C.months || 'Januari – Juni 2026', division: C.division || PREP.division, by: C.by || PREP.by, role: C.role || PREP.role }); }
+async function autoSnap(def) {
+  let tasks = null;
+  if (ST.mode === 'preview') tasks = ST.local || [];
+  else { const r = await api(`?from=${def.from}&to=${def.to}`); if (r.status === 200) tasks = r.j.tasks || []; else if (!r.json) tasks = ST.local || []; else { banner('e', errText(r)); return null; } }
+  return MReport.fromTasks(tasks, { from: def.from, to: def.to, meta: { key: def.key, title: def.title, kicker: 'Management Report · Reporting to Head', title1: 'Management', title2: def.title, period: def.period, ...PREP } });
+}
+async function publish(key, snap) {
+  if (ST.mode === 'preview' || !R.online) { try { localStorage.setItem('gx-preview-mr-' + key, JSON.stringify(snap)); } catch (e) {} return true; }
+  const doc = 'mr-' + key;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (MR.rev[key] === undefined) { const g = await api('?doc=' + doc); MR.rev[key] = g.status === 200 ? g.j.revision : null; }
+    const r = await api('', { method: 'POST', body: JSON.stringify({ doc, data: snap, revision: MR.rev[key] }) });
+    if (r.status === 200) { MR.rev[key] = r.j.revision; return true; }
+    if (r.status === 409) { MR.rev[key] = undefined; continue; }
+    banner('e', errText(r)); return false;
+  }
+  return false;
+}
+function renderHist() {
+  const sel = REPORTS.find(r => r.key === MR.sel), yr = MR.year || sel.year;
+  $('#mrHist').innerHTML = `<div class="mryr">${[...new Set(REPORTS.map(r => r.year))].map(y => `<button class="btn sm" data-mr-year="${y}" aria-pressed="${y === yr}">${y}</button>`).join('')}</div>`
+    + REPORTS.filter(r => r.year === yr).map(r => { const st = repState(r); return `<button class="mrc" data-mr-open="${r.key}" aria-pressed="${r.key === MR.sel}"><span class="tg ${st === 'now' ? '' : 'arc'}">${REP_TAG[st]}</span><b>${esc(r.title)}</b><span>${esc(r.period)} · ${r.h1 ? 'Arsip · bisa diedit' : st === 'next' ? 'Terisi otomatis saat to-do bulan itu dibuat' : 'Otomatis dari Personal To-Do List'}</span></button>`; }).join('');
+}
+async function openReport(key) {
+  MR.sel = key; MR.year = REPORTS.find(r => r.key === key).year; try { localStorage.setItem('gx-spv-mr', key); } catch (e) {}
+  renderHist();
+  const def = REPORTS.find(r => r.key === key), url = viewerUrl(key);
+  $('#mrBar').innerHTML = `<b style="font-size:13px">Link viewer:</b><code title="${esc(url)}">${esc(url)}</code><button class="btn sm" data-mr-copy="${key}">Salin link</button><a class="btn sm" href="/management-report?r=${key}" target="_blank" rel="noopener">Buka viewer ↗</a><span class="grow"></span>
+    ${def.h1 ? `<button class="btn sm" data-mr-h1edit>${MR.h1edit ? '▶ Lihat sebagai slide' : '✎ Edit report H1'}</button>` : '<button class="btn sm" data-mr-refresh>↻ Perbarui dari to-do</button>'}<span id="mrPub" style="font-size:12px;color:var(--muted)"></span>`;
+  const editing = !!(def.h1 && MR.h1edit);
+  $('#h1wrap').classList.toggle('hidden', !editing); $('#mrDeck').classList.toggle('hidden', editing);
+  if (editing) { renderH1(); return; }
+  $('#mrDeck').innerHTML = '<div class="empty">Menyiapkan report…</div>';
+  const snap = def.h1 ? h1Snap() : await autoSnap(def); if (!snap) return;
+  MR.snap[key] = snap;
+  MReport.render($('#mrDeck'), snap);
+  const ok = await publish(key, snap);
+  const st = $('#mrPub'); if (st) st.textContent = ok ? (ST.mode === 'preview' ? 'Preview — viewer membaca data browser ini' : 'Viewer ter-update ✓') : '';
+}
+$('#tab-h1').addEventListener('click', async e => {
+  const yb = e.target.closest('[data-mr-year]'); if (yb) { MR.year = +yb.dataset.mrYear; const r = REPORTS.find(x => x.year === MR.year && repState(x) !== 'next') || REPORTS.find(x => x.year === MR.year); MR.h1edit = false; return openReport(r.key); }
+  const o = e.target.closest('[data-mr-open]'); if (o) { MR.h1edit = false; return openReport(o.dataset.mrOpen); }
+  const c = e.target.closest('[data-mr-copy]'); if (c) { const u = viewerUrl(c.dataset.mrCopy); try { await navigator.clipboard.writeText(u); toast('Link viewer disalin ✓'); } catch (er) { prompt('Salin link viewer:', u); } return; }
+  if (e.target.closest('[data-mr-refresh]')) return openReport(MR.sel);
+  if (e.target.closest('[data-mr-h1edit]')) { MR.h1edit = !MR.h1edit; return openReport('h1-2026'); }
+});
+
 /* ======================= LINKS ======================= */
 const QL = {
   tools: [['📊', 'Helpdesk Report', 'Aftersales', '/helpdesk-report'], ['⭐', 'Helpdesk Performance Report', 'Best Employee', '/helpdesk-performance'], ['👥', 'Helpdesk Employee Directory', 'Helpdesk', '/helpdesk-directory']],
-  team: [['🎧', 'Dashboard Helpdesk', 'To-Do List Helpdesk Customer Support', '/dashboard-helpdesk'], ['💼', 'Dashboard Account Manager', 'To-Do List Account Manager VIP', '/dashboard-am'], ['📚', 'Knowledge Base', 'Helpdesk & Account Manager', '/knowledge-base'], ['🏠', 'Dashboard utama', 'All Report CS', '/']],
+  team: [['📈', 'Management Report', 'Link viewer H2 2026 (tanpa login)', '/management-report?r=h2-2026'], ['🎧', 'Dashboard Helpdesk', 'To-Do List Helpdesk Customer Support', '/dashboard-helpdesk'], ['💼', 'Dashboard Account Manager', 'To-Do List Account Manager VIP', '/dashboard-am'], ['📚', 'Knowledge Base', 'Helpdesk & Account Manager', '/knowledge-base'], ['🏠', 'Dashboard utama', 'All Report CS', '/']],
   src: [['📗', 'Monthly Tracker - Putri.xlsx', 'Google Drive', 'https://docs.google.com/spreadsheets/d/1RcMydkdifDAad3iEy9eD-gv37rN-4VId/edit?gid=1379858779#gid=1379858779'],
-    ['🖼', 'Report H1 (Figma asli)', 'pulp-stove-83526355.figma.site', 'https://pulp-stove-83526355.figma.site/'], ['🗂', 'CSO Workspace', 'Detail observation', 'https://cso-workspace.vercel.app']],
+    ['🗂', 'CSO Workspace', 'Detail observation', 'https://cso-workspace.vercel.app']],
 };
 const qlc = ([i, n, s, h]) => `<a class="qlc" href="${esc(h)}"${/^https?:/.test(h) ? ' target="_blank" rel="noopener"' : ''}><i>${i}</i><span>${esc(n)}<small>${esc(s)}</small></span></a>`;
 $('#qlTools').innerHTML = QL.tools.map(qlc).join(''); $('#qlTeam').innerHTML = QL.team.map(qlc).join(''); $('#qlSrc').innerHTML = QL.src.map(qlc).join('');
 
 /* ======================= tabs ======================= */
 let HT_SYNC = false;
-function showTab(k) { if (HT_SYNC && location.hash !== '#' + k) history.replaceState(null, '', '#' + k); $$('.tabs [data-tab]').forEach(b => b.setAttribute('aria-pressed', b.dataset.tab === k)); ['todo', 'h1', 'links'].forEach(x => $('#tab-' + x).classList.toggle('hidden', x !== k)); try { localStorage.setItem('gx-spv-tab', k); } catch (e) {} }
+function showTab(k) { if (HT_SYNC && location.hash !== '#' + k) history.replaceState(null, '', '#' + k); $$('.tabs [data-tab]').forEach(b => b.setAttribute('aria-pressed', b.dataset.tab === k)); ['todo', 'h1', 'links'].forEach(x => $('#tab-' + x).classList.toggle('hidden', x !== k)); try { localStorage.setItem('gx-spv-tab', k); } catch (e) {} if (k === 'h1' && MR.ready) openReport(MR.sel); }
 $('.tabs').onclick = e => { const b = e.target.closest('[data-tab]'); if (b) showTab(b.dataset.tab); };
 const HT = { '#todo': 'todo', '#h1': 'h1', '#links': 'links' };
 if (HT[location.hash]) showTab(HT[location.hash]); else { try { const k = localStorage.getItem('gx-spv-tab'); if (k === 'h1' || k === 'links') showTab(k); } catch (e) {} }
 addEventListener('hashchange', () => { if (HT[location.hash]) showTab(HT[location.hash]); });
 HT_SYNC = true;
-loadMonth(); loadDoc();
+Promise.all([loadMonth(), loadDoc()]).then(() => { MR.ready = true; renderHist(); if (!$('#tab-h1').classList.contains('hidden')) openReport(MR.sel); });
 </script>
 </body>
 </html>

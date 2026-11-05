@@ -1,9 +1,14 @@
 // /api/health — quick setup check. Open it in a browser. Never prints keys.
 import { configured, db, dbError, env, isOpen } from './_store.js';
+import { authConfigured, teamConfigured } from './_auth.js';
 
 export default async function handler(req, res) {
   const e = env();
-  const out = { server: 'ok', node: process.version, supabaseUrl: !!e.url, supabaseServiceKey: !!e.key, publishKey: !!e.publishKey, openMode: isOpen(), database: 'not-tested' };
+  const out = { server: 'ok', node: process.version, deployment: { env: process.env.VERCEL_ENV || 'local', commit: (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7) || null },
+    env: { SUPABASE_URL: !!e.url, SUPABASE_SERVICE_ROLE_KEY: !!e.key, PUBLISH_KEY: !!e.publishKey, GX_DASH_PASSWORD: authConfigured(), GX_TEAM_PASSWORD: teamConfigured() },
+    supabaseUrl: !!e.url, supabaseServiceKey: !!e.key, publishKey: !!e.publishKey, openMode: isOpen(), database: 'not-tested' };
+  const miss = Object.entries(out.env).filter(([k, v]) => !v && k !== 'PUBLISH_KEY').map(([k]) => k);   // PUBLISH_KEY opsional
+  if (miss.length) out.envHint = `Env belum terbaca di deployment ini: ${miss.join(', ')}. Cek nama persis, centang environment "Production", lalu Deployments → ⋯ → Redeploy (env baru tidak berlaku untuk deployment lama).`;
   if (!configured()) {
     out.database = 'not-configured';
     out.hint = 'Isi SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY di Vercel → Settings → Environment Variables, lalu Redeploy.';
@@ -28,6 +33,10 @@ export default async function handler(req, res) {
       const em = await sb.from('hd_employees').select('id', { count: 'exact' }).limit(1);
       if (em.error) { out.directoryTable = 'missing'; out.directoryHint = 'Tabel Employee Directory belum ada: jalankan directory-schema.sql di Supabase → SQL Editor.'; }
       else out.directoryTable = 'ok · ' + (em.count ?? 0) + ' karyawan';
+      for (const [t, label] of [['gx_tasks', 'todoTable'], ['gx_docs', 'docsTable'], ['gx_quiz_sessions', 'quizTable']]) {
+        const r = await sb.from(t).select('*', { count: 'exact', head: true });
+        out[label] = r.error ? 'missing — jalankan spv-schema.sql' : 'ok';
+      }
       out.database = 'ok';
       out.latestReport = st.data && st.data.import_id ? { importId: st.data.import_id, revision: st.data.revision, savedAt: st.data.updated_at } : null;
       out.hint = out.latestReport ? 'Semua siap. Semua yang membuka web melihat report terbaru ini.' : 'Semua siap. Import data sekali di web; report langsung terlihat oleh semua orang.';

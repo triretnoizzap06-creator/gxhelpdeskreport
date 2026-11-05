@@ -1,7 +1,8 @@
 // POST /api/login  (form: password, next) → set cookie & redirect ke halaman tujuan
 // GET  /api/login?logout=1                → hapus cookie, kembali ke dashboard utama
-// GET  /api/login?check=1                 → { authed } (dipakai halaman untuk tombol Logout)
-import { passOk, sessionCookie, clearCookie, safeNext, authed, authConfigured } from './_auth.js';
+// GET  /api/login?check=1                 → { authed, team } (dipakai halaman untuk tombol Logout)
+// POST /api/login  JSON { team: 1, password } → akses tim (GX_TEAM_PASSWORD) untuk melihat password tools
+import { passOk, sessionCookie, clearCookie, safeNext, authed, authConfigured, teamPassOk, teamCookie, teamAuthed, teamConfigured } from './_auth.js';
 
 async function readBody(req) {
   if (req.body && typeof req.body === 'object' && !Buffer.isBuffer(req.body)) return req.body;
@@ -19,10 +20,17 @@ export default async function handler(req, res) {
   if (req.method === 'GET' && u.searchParams.has('logout')) return redirect(res, '/', clearCookie());
   if (req.method === 'GET') {
     res.setHeader('content-type', 'application/json'); res.setHeader('cache-control', 'no-store');
-    return res.end(JSON.stringify({ authed: authed(req), configured: authConfigured() }));
+    return res.end(JSON.stringify({ authed: authed(req), configured: authConfigured(), team: authed(req) || teamAuthed(req), teamConfigured: teamConfigured() }));
   }
   if (req.method !== 'POST') { res.statusCode = 405; return res.end(); }
   const b = await readBody(req);
+  if (b.team) {
+    res.setHeader('content-type', 'application/json'); res.setHeader('cache-control', 'no-store');
+    if (!teamConfigured()) { res.statusCode = 503; return res.end(JSON.stringify({ error: 'team-not-configured' })); }
+    if (teamPassOk(b.password)) { res.setHeader('set-cookie', teamCookie()); return res.end(JSON.stringify({ ok: true })); }
+    await new Promise(r => setTimeout(r, 600));
+    res.statusCode = 401; return res.end(JSON.stringify({ error: 'wrong-password' }));
+  }
   const next = safeNext(b.next);
   if (passOk(b.password)) return redirect(res, next, sessionCookie());
   await new Promise(r => setTimeout(r, 600));   // perlambat tebak-tebakan password

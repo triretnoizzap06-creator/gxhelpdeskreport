@@ -86,6 +86,25 @@ mark{background:#FDE68A;color:inherit;border-radius:3px;padding:0 1px}
 .f label.qo{display:flex;align-items:center;gap:8px;margin:0;font-weight:400;font-size:13.5px;color:var(--ink)}.qo input[type=radio]{flex:none;width:18px!important;height:18px;margin:0 0 6px;padding:0;accent-color:#16A34A}.qo input:not([type=radio]){flex:1}
 .f textarea.code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px}
 .hidden{display:none!important}
+/* link & embed di isi materi */
+.doc a.ilk{display:inline-flex;align-items:center;gap:4px;text-decoration:none;font-weight:600;border-bottom:2px solid var(--line-h);line-height:1.3}
+.doc a.ilk:hover{background:var(--chip)}
+.emb{margin:14px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--soft)}
+.emb .ef{position:relative;width:100%;aspect-ratio:16/9;background:var(--soft)}.emb.tall .ef{aspect-ratio:auto;height:560px}
+.emb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.emb .ec{display:flex;align-items:center;gap:8px;padding:8px 12px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);background:var(--card)}
+.emb .ec b{color:var(--ink);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.emb .ec .sp{flex:1}
+.emb .ec a{text-decoration:none;color:var(--ink);font-weight:600;white-space:nowrap}
+.lcard{display:flex!important;align-items:center;gap:12px;margin:12px 0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;text-decoration:none!important;color:inherit!important;background:var(--card)}
+.lcard:hover{border-color:var(--line-h)}.lcard .li{flex:none;width:34px;height:34px;border-radius:9px;background:var(--chip);color:var(--chip-ink);display:grid;place-items:center;font-size:16px}
+.lcard .lt{display:flex;flex-direction:column;min-width:0}.lcard .lt b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lcard .lt span{font-size:12px;color:var(--muted)}
+/* editor isi materi */
+.tb{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}.tb .btn{padding:4px 9px;font-size:12px}.tb .sep{width:1px;background:var(--line);margin:0 3px}
+.ins{display:none;gap:6px;align-items:center;flex-wrap:wrap;border:1px dashed var(--line-h);border-radius:9px;padding:8px;margin-bottom:6px;background:var(--chip)}.ins.on{display:flex}
+.ins input{flex:1 1 180px;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 9px;font-size:13px}
+.ins .hint{flex-basis:100%;font-size:11.5px;color:var(--chip-ink)}
+.pv{border:1px solid var(--line);border-radius:10px;padding:2px 14px 10px;max-height:420px;overflow:auto;background:var(--card)}
+.rhead{display:flex;gap:8px;align-items:flex-start}.rhead h1{flex:1}
 @media (max-width:600px){.doc{padding:4px 14px 14px}.quiz{padding:14px}.reader h1{font-size:21px}}
 </style>
 </head>
@@ -162,8 +181,33 @@ async function load() {
 }
 function hl(s, q) { const e = esc(s); if (!q) return e; const i = e.toLowerCase().indexOf(esc(q).toLowerCase()); return i < 0 ? e : e.slice(0, i) + '<mark>' + e.slice(i, i + esc(q).length) + '</mark>' + e.slice(i + esc(q).length); }
 function inline(t) {
+  const L = [];   // [teks](https://url) → link dengan teks sendiri
+  t = String(t).replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g, (m, a, u) => { L.push([a, u]); return '\u0000' + (L.length - 1) + '\u0000'; });
   let h = esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
-  return h.replace(/(https?:\/\/[^\s<)]+[^\s<).,;:])/g, u => `<a href="${u}" target="_blank" rel="noopener">${u.replace(/^https?:\/\//, '').slice(0, 70)}${u.length > 78 ? '…' : ''}</a>`);
+  h = h.replace(/(https?:\/\/[^\s<)]+[^\s<).,;:])/g, u => `<a href="${u}" target="_blank" rel="noopener">${u.replace(/^https?:\/\//, '').slice(0, 70)}${u.length > 78 ? '…' : ''}</a>`);
+  return h.replace(/\u0000(\d+)\u0000/g, (m, i) => `<a class="ilk" href="${esc(L[i][1])}" target="_blank" rel="noopener">${esc(L[i][0])} <span aria-hidden="true">↗</span></a>`);
+}
+/* @embed https://… | Judul → dokumen/video tampil langsung di materi (Google Docs/Sheets/Slides/Forms/Drive, YouTube, Loom, Figma, Canva).
+   Link lain tampil sebagai kartu link. */
+function embedSrc(u) {
+  let m;
+  if ((m = u.match(/^https:\/\/docs\.google\.com\/(document|spreadsheets|presentation)\/d\/([\w-]+)/))) return [`https://docs.google.com/${m[1]}/d/${m[2]}/${m[1] === 'presentation' ? 'embed' : 'preview'}`, m[1] === 'presentation' ? '' : 'tall', { document: 'Google Docs', spreadsheets: 'Google Sheets', presentation: 'Google Slides' }[m[1]]];
+  if ((m = u.match(/^https:\/\/docs\.google\.com\/forms\/d\/e\/([\w-]+)/))) return [`https://docs.google.com/forms/d/e/${m[1]}/viewform?embedded=true`, 'tall', 'Google Forms'];
+  if ((m = u.match(/^https:\/\/drive\.google\.com\/file\/d\/([\w-]+)/))) return [`https://drive.google.com/file/d/${m[1]}/preview`, 'tall', 'Google Drive'];
+  if ((m = u.match(/^https:\/\/(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{6,})/))) return [`https://www.youtube-nocookie.com/embed/${m[1]}`, '', 'YouTube'];
+  if ((m = u.match(/^https:\/\/(?:www\.)?loom\.com\/(?:share|embed)\/(\w+)/))) return [`https://www.loom.com/embed/${m[1]}`, '', 'Loom'];
+  if (/^https:\/\/(?:www\.)?figma\.com\/(?:file|design|proto|board|slides|make)\//.test(u)) return ['https://www.figma.com/embed?embed_host=share&url=' + encodeURIComponent(u), '', 'Figma'];
+  if (/^https:\/\/[\w-]+\.figma\.site\//.test(u)) return [u, 'tall', 'Figma Site'];
+  if ((m = u.match(/^https:\/\/(?:www\.)?canva\.com\/design\/([\w-]+)\/([\w-]+)\//))) return [`https://www.canva.com/design/${m[1]}/${m[2]}/view?embed`, '', 'Canva'];
+  return null;
+}
+function embedHtml(u, title) {
+  u = safeUrl(u); if (!u) return '';
+  let host = ''; try { host = new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return ''; }
+  const E = embedSrc(u), t = title || (E ? E[2] : host);
+  if (!E) return `<a class="lcard" href="${esc(u)}" target="_blank" rel="noopener"><span class="li">↗</span><span class="lt"><b>${esc(t)}</b><span>${esc(host)}</span></span></a>`;
+  return `<figure class="emb ${E[1]}"><div class="ef"><iframe src="${esc(E[0])}" loading="lazy" allow="fullscreen; clipboard-write" allowfullscreen title="${esc(t)}"></iframe></div>
+    <figcaption class="ec"><b>${esc(t)}</b><span>· ${esc(E[2])}</span><span class="sp"></span><a href="${esc(u)}" target="_blank" rel="noopener">Buka ↗</a></figcaption></figure>`;
 }
 function md(src) {
   const out = []; let list = null;
@@ -171,7 +215,8 @@ function md(src) {
   String(src || '').split('\n').forEach(raw => {
     const l = raw.trim(); if (!l) { close(); return; }
     let m;
-    if ((m = l.match(/^##\s+(.*)/))) { close(); out.push(`<h3>${inline(m[1])}</h3>`); }
+    if ((m = l.match(/^@embed\s+(\S+)(?:\s*\|\s*(.+))?$/i))) { close(); out.push(embedHtml(m[1], m[2] && m[2].trim())); }
+    else if ((m = l.match(/^##\s+(.*)/))) { close(); out.push(`<h3>${inline(m[1])}</h3>`); }
     else if ((m = l.match(/^>\s?(.*)/))) { close(); out.push(`<div class="note">${inline(m[1])}</div>`); }
     else if ((m = l.match(/^-\s+(.*)/))) { if (list !== 'ul') { close(); out.push('<ul>'); list = 'ul'; } out.push(`<li>${inline(m[1])}</li>`); }
     else if ((m = l.match(/^\d+\.\s+(.*)/))) { if (list !== 'ol') { close(); out.push('<ol>'); list = 'ol'; } out.push(`<li>${inline(m[1])}</li>`); }
@@ -179,7 +224,7 @@ function md(src) {
   });
   close(); return out.join('');
 }
-const plain = s => String(s || '').replace(/\*\*/g, '');
+const plain = s => String(s || '').replace(/^@embed\s+\S+\s*\|?\s*/gim, '').replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g, '$1').replace(/\*\*/g, '');
 function match(x, ql) { return !ql || [x.title, x.summary, plain(x.body), CATNAME[x.cat], ...(x.quiz || []).map(q => q.q)].join(' ').toLowerCase().includes(ql); }
 function snippet(x, q) {
   if (!q) return esc(x.summary || '');
@@ -235,7 +280,7 @@ function renderRead(id) {
   QZ = { id, ans: {}, done: false };
   const src = safeUrl(x.src);
   $('#read').innerHTML = `<div class="crumb"><button class="btn sm" data-back>← Semua materi</button><span class="pill c-${x.cat}">${esc(CATNAME[x.cat] || x.cat)}</span></div>
-    <h1>${esc(x.title)}</h1>${x.summary ? `<p class="lead">${esc(x.summary)}</p>` : ''}
+    <div class="rhead"><h1>${esc(x.title)}</h1>${KB.canEdit ? `<button class="btn sm" data-medit="${esc(x.id)}" style="margin-top:10px">✎ Edit materi</button>` : KB.online ? '<button class="btn sm" data-login style="margin-top:10px">🔒 Login SPV untuk edit</button>' : ''}</div>${x.summary ? `<p class="lead">${esc(x.summary)}</p>` : ''}
     <article class="doc">${md(x.body)}${src ? `<a class="srcl" href="${esc(src)}" target="_blank" rel="noopener">${LSVG}Sumber: Notion Customer Service Division</a>` : ''}</article>
     ${(x.quiz || []).length && CATNAME[x.cat] ? `<section class="quiz"><h2>Quiz ${esc(CATNAME[x.cat])}</h2><p class="qsub">Soal dari materi ini masuk ke quiz kategori <b>${esc(CATNAME[x.cat])}</b> — latihan sendiri pakai timer, atau ikut live quiz dari SPV.</p><a class="btn pri" href="/quiz?set=${esc(x.cat)}">Latihan quiz ${esc(CATNAME[x.cat])} →</a> <a class="btn" href="/quiz">Masukkan PIN live quiz</a></section>` : ''}
     <div class="nav2">${prev ? `<button class="btn" data-open="${esc(prev.id)}">← ${esc(prev.title)}</button>` : '<span></span>'}${next ? `<button class="btn" data-open="${esc(next.id)}">${esc(next.title)} →</button>` : ''}</div>`;
@@ -311,7 +356,13 @@ function materiModal(id, cat) {
     <div class="f"><label>Kategori</label><select data-f="cat">${CATS.map(c => `<option value="${c[0]}" ${c[0] === cur.cat ? 'selected' : ''}>${esc(c[1])}</option>`).join('')}</select></div>
     <div class="f"><label>Judul</label><input data-f="title" value="${esc(cur.title)}"></div>
     <div class="f"><label>Ringkasan</label><textarea data-f="summary" rows="2">${esc(cur.summary)}</textarea></div>
-    <div class="f"><label>Isi materi — baris "## " sub-judul, "- " poin, "1. " langkah, "> " catatan, **tebal**</label><textarea class="code" data-f="body" rows="12">${esc(cur.body)}</textarea></div>
+    <div class="f"><label>Isi materi</label>
+      <div class="tb"><button type="button" class="btn" data-fmt="h">Sub-judul</button><button type="button" class="btn" data-fmt="b"><b>B</b> Tebal</button><button type="button" class="btn" data-fmt="ul">• Poin</button><button type="button" class="btn" data-fmt="ol">1. Langkah</button><button type="button" class="btn" data-fmt="note">❗ Catatan</button><span class="sep"></span>
+        <button type="button" class="btn" data-ins-open="link">🔗 Link</button><button type="button" class="btn" data-ins-open="embed">▣ Embed</button><span class="sep"></span><button type="button" class="btn" data-pv>👁 Preview</button></div>
+      <div class="ins" data-ins-row><input data-ins="text" placeholder="Teks link (mis. Template VIP)"><input data-ins="url" placeholder="https://…"><button type="button" class="btn pri" data-ins-go>Sisipkan</button><button type="button" class="btn" data-ins-x>Batal</button><span class="hint" data-ins-hint></span></div>
+      <textarea class="code" data-f="body" rows="12">${esc(cur.body)}</textarea>
+      <div class="pv hidden" data-pvbox></div>
+      <div style="font-size:11.5px;color:var(--muted);margin-top:5px">Format: "## " sub-judul · "- " poin · "1. " langkah · "> " catatan · **tebal** · [teks](https://link) · baris "@embed https://link | Judul" untuk menampilkan dokumen/video langsung di materi.</div></div>
     <div class="f"><label>Link sumber (opsional)</label><input data-f="src" value="${esc(cur.src || '')}" placeholder="https://…"></div>
     <div class="f"><label>Soal quiz (<span id="qn">${quiz.length}</span>) — pilih bulatan di opsi yang benar</label><div id="qlist"></div><button class="btn sm" data-qadd>+ Tambah soal</button></div>
     <div class="mfoot">${id ? `<button class="btn danger" data-act="hide">Hapus materi</button>${isBase && M.over[id] ? '<button class="btn" data-act="reset">Kembalikan versi asli</button>' : ''}` : ''}<span class="sp"></span><button class="btn" data-act="x">Batal</button><button class="btn pri" data-act="ok">Simpan</button></div></div>`;
@@ -320,7 +371,42 @@ function materiModal(id, cat) {
   const drawQ = () => { el.querySelector('#qlist').innerHTML = quiz.map(qBlock).join(''); el.querySelector('#qn').textContent = quiz.length; };
   const sync = () => { quiz = readQ().map(x => ({ q: x.q, o: x.o4, a: x.a, e: x.e })); };
   drawQ();
+  /* toolbar isi materi */
+  const ta = el.querySelector('[data-f="body"]'), insRow = el.querySelector('[data-ins-row]'), pvBox = el.querySelector('[data-pvbox]');
+  let insMode = 'link';
+  const putAt = (txt, block) => {
+    const a = ta.selectionStart, b = ta.selectionEnd, v = ta.value;
+    let pre = v.slice(0, a), post = v.slice(b);
+    if (block) { if (pre && !pre.endsWith('\n')) txt = '\n' + txt; if (!post.startsWith('\n')) txt += '\n'; }
+    ta.value = pre + txt + post; ta.focus(); const c = (pre + txt).length; ta.setSelectionRange(c, c); refreshPv();
+  };
+  const lineFmt = pfx => {
+    const a = ta.selectionStart, b = ta.selectionEnd, v = ta.value, s0 = v.lastIndexOf('\n', a - 1) + 1, e0 = v.indexOf('\n', b) < 0 ? v.length : v.indexOf('\n', b);
+    const lines = v.slice(s0, e0).split('\n').map((l, i) => (typeof pfx === 'function' ? pfx(i) : pfx) + l.replace(/^(##\s+|-\s+|\d+\.\s+|>\s?)/, ''));
+    ta.value = v.slice(0, s0) + lines.join('\n') + v.slice(e0); ta.focus(); refreshPv();
+  };
+  const refreshPv = () => { if (!pvBox.classList.contains('hidden')) pvBox.innerHTML = `<div class="doc" style="border:0;padding:0">${md(ta.value)}</div>`; };
+  ta.addEventListener('input', refreshPv);
   el.addEventListener('click', e => {
+    const f = e.target.closest('[data-fmt]');
+    if (f) { const k = f.dataset.fmt;
+      if (k === 'b') { const a = ta.selectionStart, b = ta.selectionEnd, sel = ta.value.slice(a, b) || 'teks tebal'; putAt('**' + sel + '**'); }
+      else lineFmt({ h: '## ', ul: '- ', ol: i => (i + 1) + '. ', note: '> ' }[k]);
+      return; }
+    const io = e.target.closest('[data-ins-open]');
+    if (io) { insMode = io.dataset.insOpen; insRow.classList.add('on');
+      const sel = ta.value.slice(ta.selectionStart, ta.selectionEnd);
+      insRow.querySelector('[data-ins="text"]').value = sel; insRow.querySelector('[data-ins="text"]').placeholder = insMode === 'embed' ? 'Judul (opsional)' : 'Teks link (mis. Template VIP)';
+      insRow.querySelector('[data-ins-hint]').textContent = insMode === 'embed' ? 'Embed tampil langsung untuk Google Docs/Sheets/Slides/Forms/Drive, YouTube, Loom, Figma & Canva (pastikan akses share "Anyone with the link"). Link lain tampil sebagai kartu link.' : 'Teks akan tampil sebagai link yang bisa diklik.';
+      insRow.querySelector('[data-ins="url"]').focus(); return; }
+    if (e.target.closest('[data-ins-x]')) { insRow.classList.remove('on'); return; }
+    if (e.target.closest('[data-ins-go]')) {
+      const t = insRow.querySelector('[data-ins="text"]').value.trim().replace(/[\[\]|]/g, ''), u = safeUrl(insRow.querySelector('[data-ins="url"]').value);
+      if (!u) return alert('Link harus diawali https://');
+      if (insMode === 'embed') putAt('@embed ' + u + (t ? ' | ' + t : ''), true); else putAt(t ? `[${t}](${u})` : u);
+      insRow.classList.remove('on'); insRow.querySelectorAll('input').forEach(i => { i.value = ''; }); return; }
+    const pv = e.target.closest('[data-pv]');
+    if (pv) { const on = pvBox.classList.toggle('hidden'); pv.textContent = on ? '👁 Preview' : '✎ Tutup preview'; refreshPv(); return; }
     if (e.target.closest('[data-qadd]')) { sync(); quiz.push({ q: '', o: ['', '', '', ''], a: 0, e: '' }); drawQ(); el.querySelector('.qe:last-child textarea').focus(); return; }
     const qd = e.target.closest('[data-qdel]'); if (qd) { sync(); quiz.splice(+qd.closest('.qe').dataset.qi, 1); drawQ(); return; }
     const b = e.target.closest('[data-act]'); if (e.target === el) return el.remove(); if (!b) return;
@@ -344,7 +430,7 @@ function materiModal(id, cat) {
       else if (id) Object.assign(M.added.find(m => m.id === id), nx);
       else M.added.push({ id: 'c-' + Date.now().toString(36), ...nx });
     }
-    el.remove(); renderHome(); save();
+    el.remove(); route(); save();
   });
 }
 function loginModal() {
@@ -378,6 +464,7 @@ document.addEventListener('click', e => {
   const mr = e.target.closest('[data-mrestore]'); if (mr) { KB.data.materi.hidden = (KB.data.materi.hidden || []).filter(x => x !== mr.dataset.mrestore); renderHome(); save(); return; }
   const mp = e.target.closest('[data-mpurge]'); if (mp) { if (!confirm('Hapus permanen materi ini?')) return; KB.data.materi.added = KB.data.materi.added.filter(m => m.id !== mp.dataset.mpurge); KB.data.materi.hidden = KB.data.materi.hidden.filter(x => x !== mp.dataset.mpurge); renderHome(); save(); return; }
   const me = e.target.closest('[data-medit]'); if (me) { e.preventDefault(); e.stopPropagation(); return materiModal(me.dataset.medit); }
+  if (e.target.closest('[data-login]')) return loginModal();
   const ma = e.target.closest('[data-madd]'); if (ma) return materiModal(null, ma.dataset.madd);
   const ed = e.target.closest('[data-edit]'); if (ed) { e.preventDefault(); const [k, i] = ed.dataset.edit.split('.'); return linkModal(k, +i); }
   const ad = e.target.closest('[data-add]'); if (ad) return linkModal(ad.dataset.add, null);

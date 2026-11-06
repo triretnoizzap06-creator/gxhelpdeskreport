@@ -317,7 +317,7 @@ window.KB_MATERI.push(
   summary: 'Syarat & alur request administrasi pelanggan yang paling sering masuk.',
   body: `## Inactive Temporary
 - Biaya **Rp100.000/bulan** (Intracity free), durasi **1–3 bulan**.
-- Form **PandaDoc + KTP**; request diajukan tanggal **30/31** via ticket GX-One.
+- Form **GX Document + KTP**; request diajukan tanggal **30/31** via ticket GX-One.
 - ONU diambil; bila ONU tidak dikembalikan dikenakan kompensasi Rp333.000.
 ## Terminasi
 - Minimal berlangganan **1 tahun** dan seluruh tagihan lunas; jadwalkan **dismantle** terlebih dulu.
@@ -370,7 +370,7 @@ window.KB_MATERI.push(
 { id: 'faktur-pajak', cat: 'admin', title: 'Permintaan Faktur Pajak & PPh 23', src: N('30c9b0fbceac809299c2fb1215ba945b'),
   summary: 'Dokumen, alur internal, dan perhitungan PPh 23 2% / PPN 11% untuk request faktur pajak.',
   body: `## Persyaratan dokumen
-- Formulir Permintaan Faktur Pajak (**PandaDoc**) yang sudah ditandatangani.
+- Formulir Permintaan Faktur Pajak (**GX Document**) yang sudah ditandatangani.
 - Salinan **KTP** pemilik akun dan **NPWP aktif** (personal maupun perusahaan).
 - Dokumen belum lengkap → request tidak bisa diproses.
 ## Wajib ditanyakan CSO
@@ -392,7 +392,7 @@ window.KB_MATERI.push(
   quiz: [
     { q: 'PPh 23 dihitung dari…', o: ['Total setelah PPN', 'Harga dasar sebelum PPN', 'PPN saja', 'Total tahunan'], a: 1, e: 'PPh 23 = 2% dari harga dasar sebelum PPN.' },
     { q: 'Harga dasar Rp1.000.000, pelanggan memotong PPh 23. Total bayar…', o: ['Rp1.110.000', 'Rp1.090.000', 'Rp1.000.000', 'Rp980.000'], a: 1, e: '1.000.000 + 110.000 − 20.000 = Rp1.090.000.' },
-    { q: 'Dokumen yang TIDAK diperlukan untuk faktur pajak adalah…', o: ['Form PandaDoc', 'KTP', 'NPWP aktif', 'Foto ONU'], a: 3, e: 'Syaratnya form PandaDoc, KTP, dan NPWP aktif.' },
+    { q: 'Dokumen yang TIDAK diperlukan untuk faktur pajak adalah…', o: ['Form GX Document', 'KTP', 'NPWP aktif', 'Foto ONU'], a: 3, e: 'Syaratnya form GX Document, KTP, dan NPWP aktif.' },
   ] },
 { id: 'proforma-invoice', cat: 'admin', title: 'Proforma & Invoice', src: N('1d59b0fbceac80d3993ac473f3965ded'),
   summary: 'Beda proforma dan invoice, masa berlaku, dan alur ticket-nya.',
@@ -408,9 +408,9 @@ window.KB_MATERI.push(
     { q: 'Invoice jatuh tempo berapa hari setelah terbit?', o: ['3', '7', '14', '30'], a: 1, e: 'Invoice jatuh tempo 7 hari setelah terbit.' },
   ] },
 { id: 'changing-customer-data', cat: 'admin', title: 'Changing Customer Data', src: N('1d59b0fbceac80d3993ac473f3965ded'),
-  summary: 'Alur perubahan data pelanggan lewat PandaDoc + ticket ke Billing Helpdesk.',
+  summary: 'Alur perubahan data pelanggan lewat GX Document + ticket ke Billing Helpdesk.',
   body: `## Alur
-1. Pelanggan mengisi form **PandaDoc**.
+1. Pelanggan mengisi form **GX Document**.
 2. CSO membuat ticket GX-One, lampirkan dokumen, tulis deskripsi detail.
 3. **Send to Billing Helpdesk**. Status di Billing Helpdesk: In Progress → **Send to CSO** setelah selesai.
 4. Nomor ticket proforma (bila ada) dikirim ke group CSO.
@@ -418,7 +418,7 @@ window.KB_MATERI.push(
 ## Masih via email
 - Trial, refund, dan stop layanan TV.`,
   quiz: [
-    { q: 'Perubahan data pelanggan sekarang diajukan lewat…', o: ['Google Form', 'PandaDoc + ticket GX-One', 'Chat WA', 'Telepon'], a: 1, e: 'Google Form tidak dipakai lagi; gunakan PandaDoc + ticket.' },
+    { q: 'Perubahan data pelanggan sekarang diajukan lewat…', o: ['Google Form', 'GX Document + ticket GX-One', 'Chat WA', 'Telepon'], a: 1, e: 'Google Form tidak dipakai lagi; gunakan GX Document + ticket.' },
     { q: 'Request mana yang masih lewat email?', o: ['Change ownership', 'Trial, refund & stop TV', 'Upgrade paket', 'Ganti alamat'], a: 1, e: 'Trial, refund, dan stop TV masih diproses via email.' },
   ] },
 { id: 'upgrade-vip', cat: 'admin', title: 'Upgrade Package (Group VIP)', src: N('2e19b0fbceac80b08319e9127732ad6a'),
@@ -1140,3 +1140,310 @@ addQ('bod-dia-intracity', [
 addQ('reposisi-relokasi', [
   { q: 'Reposisi ONU yang memerlukan penyambungan (splice) fiber dikenakan biaya…', o: ['Gratis', 'Rp50.000 per titik', 'Rp100.000 per titik', 'Ditentukan Sales'], a: 1, e: 'Reposisi ONU gratis bila jalur mudah; perlu splice FO Rp50.000 per titik.' },
 ]);
+
+/* ===== Bank soal v2 (November 2026) — berbasis skenario kerja nyata, menggantikan soal hafalan versi awal.
+   Format: [pertanyaan, [opsi], indeks jawaban benar, penjelasan]. Soal yang sudah diedit SPV lewat KB tetap memakai versi editan. ===== */
+(() => {
+/* urutan opsi diacak deterministik (sama di setiap load) supaya posisi jawaban benar tidak berpola */
+const mix = (seed, n) => { let h = 2166136261; for (const c of seed) h = Math.imul(h ^ c.charCodeAt(0), 16777619); const p = [...Array(n).keys()]; for (let i = n - 1; i > 0; i--) { h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0; const j = h % (i + 1); [p[i], p[j]] = [p[j], p[i]]; } return p; };
+const S = (id, arr) => { const m = window.KB_MATERI.find(x => x.id === id); if (m) m.quiz = arr.map(([q, o, a, e]) => { const p = mix(id + q, o.length); return { q, o: p.map(i => o[i]), a: p.indexOf(a), e }; }); };
+
+/* ---------------- INFO HELPDESK ---------------- */
+S('sop-flow-helpdesk', [
+  ['Sales menginput komplain baru di GX Connect. Apa tindakan pertamamu sebelum menghubungi customer?', ['Langsung kirim broadcast BC 1', 'Klik Take & Start Monitoring supaya case tercatat In Progress atas namamu', 'Create ticket di GX One', 'Tunggu customer menghubungi CC'], 1, 'Take & Start Monitoring adalah langkah pertama: case resmi diambil Helpdesk dan statusnya berubah menjadi In Progress.'],
+  ['Saat cek Qiscus, ternyata customer sudah terhubung dengan CC untuk keluhan yang sama. Langkah yang tepat?', ['Broadcast ulang agar customer pindah ke Helpdesk', 'Biarkan CC melanjutkan; Helpdesk monitor, update GX Connect, lalu crosscheck tiket di GX One', 'Ambil alih chat dari CC', 'Tutup case di GX Connect sebagai Done'], 1, 'Untuk keluhan yang sama, CC tetap melanjutkan. Helpdesk cukup memonitor, meng-update GX Connect, dan crosscheck tiket di GX One.'],
+  ['Customer sudah pernah terhubung, tapi keluhannya sekarang berbeda dari case sebelumnya. Apa yang dilakukan?', ['Abaikan karena customer sudah terhubung', 'Broadcast ulang sesuai kendala terbaru, update GX Connect, crosscheck di GX One', 'Minta Sales yang menghubungi customer', 'Langsung buat WO teknisi'], 1, 'Keluhan berbeda berarti broadcast ulang sesuai kendala terbaru, lalu update GX Connect dan crosscheck GX One.'],
+  ['Kamu mengirim BC 1 ke customer yang tidak punya User ID. Template yang dipakai?', ['fu_helpdesk_ind_new', 'fu_bc2_helpdesk', 'fu_helpdesk_without_uid', 'template_gamas_general_1'], 2, 'Customer tanpa User ID memakai fu_helpdesk_without_uid.'],
+  ['Sudah 1 jam setelah BC 1 dan customer belum membalas. Status dan langkah berikutnya?', ['Done — case ditutup', 'No Resp BC 1 → kirim BC 2 (fu_bc2_helpdesk)', 'No Resp After Connected → Investigated H+1', 'Tetap In Progress tanpa tindakan'], 1, 'Tidak ada respons 1 jam setelah BC 1 = No Resp BC 1, lanjut BC 2 memakai fu_bc2_helpdesk.'],
+  ['Case kamu sudah 3 jam tanpa update karena customer belum merespons. Apa yang benar?', ['Tidak perlu update sampai customer membalas', 'Tetap update progress di GX Connect — maksimal setiap 3 jam walau customer belum merespons', 'Pindahkan case ke CC', 'Ubah status ke Done'], 1, 'Update GX Connect wajib maksimal setiap 3 jam, termasuk saat customer belum merespons.'],
+  ['Saat Investigated H+1, customer tetap tidak merespons tapi traffic internetnya sudah normal. Status akhirnya?', ['Unresolved', 'Done — Solved by Our Side', 'No Resp BC 2', 'In Progress'], 1, 'Traffic normal tanpa konfirmasi customer = Solved by Our Side, status menjadi Done.'],
+]);
+S('keyword-qiscus', [
+  ['Customer menanyakan tagihannya dan minta invoice dikirim ulang. Template Qiscus yang paling tepat?', ['resend_invoice_helpdesk', 'konfirmasi_tagihan_resend_invoice', 'detail_mygx_hd', 'fu_helpdesk_ind_new'], 1, 'konfirmasi_tagihan_resend_invoice dipakai untuk konfirmasi tagihan sekaligus kirim ulang invoice.'],
+  ['WO sudah terjadwal, tapi estimasi kedatangan teknisi masih tentative (besok/lusa). Template dan isi {{1}}?', ['arrival_estimasi_today — nama teknisi', 'arrival_estimasi_tentative — nomor WO/tiket', 'fu_survey_schedule — tanggal survey', 'hasil_kunjungan_teknisi_new — hasil kunjungan'], 1, 'arrival_estimasi_tentative dengan {{1}} = nomor WO/tiket.'],
+  ['Kamu perlu mengirim info login MyGX (CID, email, password) ke customer. Template yang dipakai?', ['detail_mygx_hd — khusus Helpdesk', 'fu_helpdesk_eng_new', 'back_normal', 'resend_invoice_helpdesk'], 0, 'detail_mygx_hd khusus Helpdesk: {{1}} CID/User ID, {{2}} email, {{3}} password.'],
+  ['Customer terdeteksi wiredown dan kamu ingin memintanya mengecek listrik & sambungan kabel. Template yang sesuai?', ['template_gamas_general_1', 'fu_terdeteksi_wd_new', 'back_normal', 'arrival_estimasi_today'], 1, 'fu_terdeteksi_wd_new untuk customer terdeteksi WD, berisi permintaan cek kelistrikan/sambungan kabel.'],
+]);
+S('sop-operational-rules', [
+  ['Sales minta dibuatkan WO internal yang tidak perlu konfirmasi ke customer. Apa yang kamu lakukan?', ['Broadcast ke customer dulu', 'Langsung handle (OT/WO) tanpa broadcast', 'Tolak, karena bukan scope Helpdesk', 'Arahkan Sales ke CC'], 1, 'Permintaan yang murni internal langsung di-handle tanpa broadcast ke customer.'],
+  ['Seorang CSO ingin mengalihkan chat customer ke Qiscus Helpdesk supaya Helpdesk yang lanjut. Apakah boleh?', ['Boleh, kapan saja', 'Tidak boleh — CSO/CC tidak boleh handover case ke Qiscus Helpdesk', 'Boleh bila disetujui Sales', 'Boleh di luar jam kerja'], 1, 'Aturan case handling: CSO/CC tidak boleh handover case ke Qiscus Helpdesk.'],
+  ['Shift Helpdesk sudah selesai tapi ada case broadcast yang masih perlu follow up personal. Siapa yang boleh self-assign?', ['CSO walk-in', 'CC Piket', 'Sales', 'Tidak ada, tunggu besok'], 1, 'Setelah shift Helpdesk selesai, CC Piket boleh self-assign untuk melanjutkan handling.'],
+  ['Saat cek WO vs realization, panjang kabel di WO berbeda dengan data realization. Apa tindakanmu?', ['Ikuti angka terbesar', 'Lapor ke SPV dan follow up ke teknisi terkait', 'Abaikan, invoice tetap jalan', 'Minta customer memilih'], 1, 'Mismatch WO vs realization harus dilaporkan ke SPV dan di-follow up ke teknisi terkait.'],
+]);
+S('scope-helpdesk', [
+  ['Sales meminta survey langsung untuk calon customer. Akun apa yang dipakai untuk open WO?', ['Akun pribadi CSO', 'Akun GlobalXtreme MNT globalxtremG39A', 'Akun Sales', 'Akun Dispatcher Bravo'], 1, 'Survey direct dari Sales di-open WO memakai akun GlobalXtreme MNT globalxtremG39A.'],
+  ['Sales minta jadwal LAN; customer sudah bayar dan detailnya lengkap. Apa yang TIDAK dilakukan Helpdesk?', ['Cek jadwal', 'Rekonfirmasi ke Sales', 'Follow up langsung ke customer', 'Update status ke Sales'], 2, 'Untuk penjadwalan LAN request Sales, Helpdesk tidak follow up ke customer.'],
+  ['Sales minta invoice customer dikirim ulang. Ke siapa Helpdesk mengirimnya?', ['Langsung ke customer', 'Ke tim Sales', 'Ke Billing Helpdesk', 'Ke Finance'], 1, 'Scope Helpdesk: Resend Invoice dikirim ke tim Sales untuk kebutuhan customer.'],
+]);
+S('pengawalan-tiket', [
+  ['Shift kamu selesai dan masih ada tiket In Progress. Apa yang wajib dilakukan sebelum pulang?', ['Tutup semua tiket', 'Update pengawalan di Sheet Monitoring untuk shift berikutnya', 'Chat pribadi rekan shift berikut saja', 'Tidak perlu apa-apa'], 1, 'Sebelum ganti shift, pengawalan wajib di-update di Sheet Monitoring.'],
+  ['Helpdesk terakhir hari itu sudah end shift. Ke siapa monitoring diserahkan?', ['Ke SPV', 'Ke CC Piket, beserta daftar UID In Progress', 'Ke Dispatcher', 'Dibiarkan sampai besok'], 1, 'Setelah Helpdesk end shift, monitoring wajib diserahkan ke CC Piket beserta daftar UID In Progress.'],
+  ['Kamu baru mulai shift dan menerima serah terima. Apa yang dilakukan pertama kali?', ['Langsung lanjut chat yang masuk', 'Cek Sheet Monitoring sebelum melanjutkan pengawalan', 'Tanya customer satu per satu', 'Tunggu instruksi SPV'], 1, 'Shift berikutnya wajib cek Sheet Monitoring dulu; setelah serah terima, pengawalan sepenuhnya tanggung jawabnya.'],
+]);
+S('flow-account-manager', [
+  ['Customer di Group VIP melaporkan koneksinya lambat. Langkah AM yang tepat?', ['Buat ticket sendiri dan tunggu', 'Tag CTSO VIP langsung di group', 'Arahkan customer ke Qiscus', 'Minta customer menelepon CC'], 1, 'Case teknis (koneksi, device, link) di Group VIP → tag CTSO VIP langsung di group.'],
+  ['Chat customer di Group VIP belum dibalas setelah 5 menit. Siapa yang boleh take over?', ['Hanya AM incharge', 'CC Piket atau AM', 'Sales', 'Dispatcher'], 1, 'Chat yang belum terbalas maksimal 5 menit boleh di-take over oleh CC Piket atau AM.'],
+  ['Customer VIP menghubungi PIC lewat personal chat. Bagaimana yang benar?', ['Lanjutkan di personal chat saja', 'Arahkan kembali ke Group VIP; bila harus PC, tulis summary di Group VIP', 'Blokir nomornya', 'Teruskan ke Sales'], 1, 'Pelanggan VIP diarahkan kembali ke group. Bila terpaksa PC, summary tetap ditulis di Group VIP.'],
+  ['Gaya bahasa yang diharapkan di Group VIP adalah…', ['Template kaku agar seragam', 'Casual, human, dan profesional — tanpa template kaku, tetap beretika', 'Formal penuh seperti surat resmi', 'Singkat tanpa salam'], 1, 'Di Group VIP bahasa lebih casual dan human, tetap profesional, tanpa template kaku.'],
+  ['Ada case VIP yang belum dikonfirmasi customer sejak kemarin. Sikap AM yang diharapkan?', ['Tunggu customer menghubungi lagi', 'Follow up ulang secara proaktif', 'Tutup case otomatis', 'Serahkan ke CTSO'], 1, 'AM wajib proaktif follow up case menggantung, bukan menunggu pelanggan.'],
+]);
+S('masterlist-vip', [
+  ['Kamu perlu mencari group VIP milik sales tertentu di area Badung. Tab Masterlist yang paling tepat?', ['General', 'Intracity', 'Sales Badung', 'Update 2'], 2, 'Tab Sales Badung berisi group VIP per sales.'],
+  ['Kamu perlu mengecek group finance partner Intracity. Di mana datanya?', ['Tab Intracity di Masterlist', 'Reminder Bill 25', 'Outstanding Bills DIA', 'GX Connect'], 0, 'Tab Intracity berisi group partner Intracity beserta group finance-nya.'],
+]);
+S('inv-vip-25', [
+  ['Hari ini tanggal 25. Apa tugas update INV VIP-mu?', ['Kirim invoice ke semua customer', 'Update INV VIP group yang dibagikan ke kamu di sheet Reminder Bill 25', 'Membuat proforma', 'Menunggu Billing Helpdesk'], 1, 'Setiap tanggal 25, masing-masing PIC meng-update INV VIP group miliknya di sheet Reminder Bill 25.'],
+  ['Siapa PIC update INV untuk group Canggu Property M, Taman Bali Surga/BVM, dan Padma?', ['Desi', 'Sevia', 'Bagas', 'Rani'], 1, 'Ketiga group tersebut dipegang Sevia.'],
+  ['Group BnB Profits dan Saridewi di-update oleh…', ['Sita', 'Oka', 'Desi', 'Bagas'], 0, 'BnB Profits dan Saridewi adalah bagian Sita (Helpdesk).'],
+]);
+S('tools-akses', [
+  ['Rekan baru menanyakan password Qiscus Helpdesk. Di mana ia sebaiknya mengeceknya?', ['Di Knowledge Base', 'Tools & Access di Dashboard Helpdesk/AM, atau tanya SPV', 'Di grup WhatsApp umum', 'Minta ke customer'], 1, 'Password tidak ditampilkan di KB (halaman publik). Buka Tools & Access di dashboard tim atau tanya SPV.'],
+]);
+S('observation-hd-am', [
+  ['Berapa bobot skor Observation pada penilaian Best Employee?', ['10%', '20%', '30%', '50%'], 2, 'Observation dinilai 2 kasus per bulan dan menyumbang 30% skor Best Employee.'],
+]);
+S('mygx-migration', [
+  ['Customer ingin live chat dengan Helpdesk lewat aplikasi, bukan WhatsApp. Ke mana kamu arahkan?', ['Link live chat Helpdesk Bali di MyGX Apps', 'Nomor pribadi CSO', 'Email cso@globalxtreme.net', 'Datang ke kantor'], 0, 'Setelah migrasi, live chat diarahkan ke MyGX Apps lewat link live chat masing-masing tim (Helpdesk Bali untuk Helpdesk).'],
+]);
+S('dispatcher-qiscus', [
+  ['Customer existing butuh penjadwalan ulang kunjungan teknisi. Dispatcher mana yang menangani?', ['Dispatcher Alpha', 'Dispatcher Bravo', 'Account Manager', 'Billing Helpdesk'], 1, 'Dispatcher Bravo menangani kunjungan pelanggan existing; Alpha untuk pelanggan baru.'],
+  ['Ada chat Unserved di Qiscus Dispatcher. Target response time-nya?', ['< 5 menit', '< 15 menit', '< 1 jam', 'Hari yang sama'], 0, 'Dispatcher mengecek chat Unserved berkala, meng-assign ke agent, dengan target respons < 5 menit.'],
+]);
+
+/* ---------------- ADMINISTRASI ---------------- */
+S('billing-payment', [
+  ['Customer monthly bertanya kapan tagihan bulan depan terbit dan kapan jatuh temponya. Jawaban yang benar?', ['Terbit tgl 1, jatuh tempo tgl 7', 'Terbit tgl 25, jatuh tempo tgl 1 bulan berikutnya', 'Terbit tgl 20, jatuh tempo tgl 25', 'Terbit tgl 1, jatuh tempo tgl 15'], 1, 'Tagihan monthly dikirim tanggal 25 dan jatuh tempo tanggal 1 bulan berikutnya (prepaid).'],
+  ['Customer DIA terlambat bayar 5 hari. Apakah layanannya diblokir otomatis?', ['Ya, mulai tanggal 2', 'Tidak — DIA dan Intracity tidak diblokir', 'Ya, setelah 3 hari', 'Hanya bandwidth diturunkan'], 1, 'Pemblokiran bertahap tanggal 2–15 tidak berlaku untuk DIA/Intracity.'],
+  ['Customer ingin hemat dan bertanya diskon periode. Penawaran yang benar?', ['Quarterly 10%, Annual 15%', 'Semester 10%, Annual 20%', 'Semester 5%, Annual 10%', 'Annual 25%'], 1, 'Diskon periode: Semester 10%, Annual 20%.'],
+]);
+S('panduan-pembayaran', [
+  ['Customer membayar via BNI ke VA Mandiri dan bertanya metode transfer. Saran yang benar?', ['BI-FAST karena lebih murah', 'Antarbank Realtime Online — jangan BI-FAST', 'SKN', 'RTGS'], 1, 'Dari BNI pilih Realtime Online; BI-FAST bisa gagal.'],
+  ['Customer luar negeri ingin membayar lewat Wise. Data bank tujuan yang diberikan?', ['BCA, SWIFT CENAIDJA', 'Mandiri (Rekening Virtual), SWIFT BMRIIDJA, nomor sesuai VA di invoice', 'Rekening pribadi CSO', 'BNI, SWIFT BNINIDJA'], 1, 'Wise: bank Mandiri (Rekening Virtual), SWIFT/BIC BMRIIDJA, nama & nomor rekening sesuai VA di invoice.'],
+  ['Customer sudah bayar tapi internet belum aktif. Arahan yang tepat?', ['Bayar ulang', 'Tunggu sinkronisasi atau kirim bukti bayar ke CS; simpan bukti sampai status Lunas di MyGX', 'Datang ke kantor', 'Buat akun baru'], 1, 'Simpan bukti bayar sampai status Lunas; bila belum aktif, tunggu sinkronisasi atau hubungi CS dengan bukti bayar.'],
+]);
+S('sop-grace', [
+  ['Customer minta perpanjangan sampai Jumat, tapi internetnya masih aktif. Apa yang kamu lakukan?', ['Booking grace sekarang', 'Jangan booking grace; kirim template edukasi dan tunggu sampai status Blocked', 'Minta approval SPV lalu booking', 'Ubah billing date'], 1, 'Grace tidak boleh dibooking saat internet masih aktif; pengaktifan hanya setelah akun tertangguhkan (bisa di hari yang sama).'],
+  ['Durasi standar grace / Billing Bypass untuk akun Blocked adalah…', ['24 jam', '2 x 24 jam (48 jam)', '3 x 24 jam', '7 hari'], 1, 'Durasi standar grace adalah 2 x 24 jam.'],
+  ['Customer membayar via Wise yang butuh 3–5 hari kerja. Bagaimana durasi grace-nya?', ['Tetap 48 jam tanpa pengecualian', 'Bisa disesuaikan dengan justifikasi metode bayar lambat', 'Ditolak karena Wise tidak diterima', 'Otomatis 14 hari'], 1, 'Metode lambat seperti Wise menjadi pengecualian: durasi grace bisa disesuaikan dengan justifikasi.'],
+  ['Customer yang sama minta grace untuk kedua kalinya bulan ini. Langkah yang benar?', ['Proses langsung', 'Wajib persetujuan SPV terlebih dulu', 'Tolak permanen', 'Arahkan ke Sales'], 1, 'Grace maksimal 1x per bulan; lebih dari itu wajib persetujuan SPV (sistem juga menolak pengajuan berulang berdekatan).'],
+]);
+S('kelengkapan-administrasi', [
+  ['Customer ingin Inactive Temporary 2 bulan. Dokumen dan waktu pengajuannya?', ['Email saja, kapan saja', 'Form GX Document + KTP, diajukan tanggal 30/31 via ticket GX-One', 'Google Form, tanggal 1', 'Telepon CC, tanggal 25'], 1, 'Inactive Temporary memakai form GX Document + KTP dan diajukan tanggal 30/31 via ticket GX-One.'],
+  ['Customer yang baru berlangganan 8 bulan ingin terminasi. Apa yang kamu sampaikan?', ['Bisa langsung diproses', 'Terminasi mensyaratkan minimal berlangganan 1 tahun dan semua tagihan lunas, lalu dijadwalkan dismantle', 'Cukup kembalikan ONU', 'Bayar denda Rp100.000'], 1, 'Syarat terminasi: minimal 1 tahun berlangganan, tagihan lunas, dan jadwalkan dismantle dulu.'],
+  ['Customer ingin downgrade paket pertengahan bulan. Jawaban yang tepat?', ['Bisa kapan saja secara prorata', 'Downgrade hanya bisa tanggal 1 atau saat renewal', 'Tidak bisa downgrade', 'Harus terminasi dulu'], 1, 'Upgrade bisa kapan saja (prorata); downgrade hanya tanggal 1 atau saat renewal.'],
+]);
+S('reactivation', [
+  ['Akun customer Blocked 3 minggu dan ia ingin aktif lagi. Bagaimana penanganannya?', ['Program Retention dengan penghapusan piutang', 'Wajib lunas penuh tanpa penghapusan piutang; aktif otomatis maks. 1x24 jam', 'Pasang baru lewat Sales', 'Bayar biaya inactive'], 1, 'Blocked < 1 bulan tidak terhitung reaktivasi: lunas penuh, tidak ada penghapusan piutang, aktif maks. 1x24 jam.'],
+  ['Akun customer Blocked 4 bulan. Opsi apa yang bisa kamu tawarkan?', ['Hanya pasang baru', 'Lunasi seluruh tunggakan, atau Program Retention bayar 3/6/12 bulan dengan penghapusan piutang internet', 'Bayar 1 bulan saja', 'Grace 48 jam'], 1, 'Blocked > 1 bulan: lunasi tunggakan, atau Program Retention (3/6/12 bulan) — piutang internet bisa dihapus, billing direset.'],
+  ['Sebelum mengajukan reaktivasi, status ONU customer ternyata Power Issue. Apa yang dilakukan?', ['Batalkan reaktivasi', 'Jadwalkan teknisi (free visit) sebelum/bersamaan pengajuan reaktivasi', 'Tagih biaya visit Rp100.000', 'Minta customer beli ONU baru'], 1, 'ONU WD/Power Off/Power Issue atau sudah dibongkar → jadwalkan teknisi dengan free visit.'],
+  ['Customer reaktivasi mengaku kesulitan finansial dan minta keringanan di luar kebijakan. Langkahmu?', ['Langsung beri diskon', 'Eskalasi ke SPV dengan data akun, detail kendala, langkah yang sudah dilakukan, dan saran solusi — tunggu approval', 'Tolak langsung', 'Arahkan ke Sales'], 1, 'Permintaan di luar kebijakan dieskalasi ke SPV lengkap dengan data & saran solusi; keputusan menunggu approval.'],
+]);
+S('faktur-pajak', [
+  ['Customer minta faktur pajak. Dokumen apa saja yang wajib lengkap?', ['KTP saja', 'Form permintaan faktur pajak (GX Document) bertanda tangan, KTP pemilik akun, dan NPWP aktif', 'NPWP dan foto ONU', 'Email permintaan saja'], 1, 'Syarat: form GX Document yang sudah ditandatangani, KTP pemilik akun, dan NPWP aktif.'],
+  ['Harga dasar paket Rp1.000.000 dan customer memotong PPh 23. Berapa yang ia bayar?', ['Rp1.110.000', 'Rp1.090.000', 'Rp1.000.000', 'Rp980.000'], 1, '1.000.000 + PPN 110.000 − PPh 23 (2% × harga dasar) 20.000 = Rp1.090.000.'],
+  ['Customer ingin dipotong PPh 23 tapi tidak butuh faktur pajak. Apa yang diperlukan?', ['Form GX Document + NPWP', 'Cukup ticket ke Billing Helpdesk + capture percakapan, tanpa form dan NPWP', 'Tidak bisa diproses', 'Email ke Finance'], 1, 'Pemotongan PPh 23 tanpa faktur cukup ticket ke Billing Helpdesk + capture percakapan.'],
+]);
+S('proforma-invoice', [
+  ['Customer menerima proforma hardware tapi baru ingin approve 10 hari kemudian. Apa yang perlu kamu sampaikan?', ['Proforma berlaku selamanya', 'Proforma hardware hanya berlaku 1 minggu — perlu proforma baru', 'Langsung terbit invoice', 'Bayar denda'], 1, 'Proforma hardware berlaku 1 minggu.'],
+  ['Invoice sudah terbit 7 hari dan belum dibayar. Apa konsekuensinya?', ['Tidak ada', 'Layanan auto-disconnect', 'Diberi grace otomatis', 'Invoice dibatalkan'], 1, 'Invoice jatuh tempo 7 hari setelah terbit; lewat itu layanan auto-disconnect.'],
+]);
+S('changing-customer-data', [
+  ['Customer ingin mengganti data pelanggan. Alur yang benar sekarang?', ['Isi Google Form', 'Customer isi form GX Document → CSO buat ticket GX-One + lampiran → Send to Billing Helpdesk', 'Chat WA ke Billing', 'Telepon Finance'], 1, 'Perubahan data via form GX Document + ticket GX-One ke Billing Helpdesk. Google Form sudah tidak dipakai.'],
+  ['Permintaan mana yang masih diproses via email, bukan form?', ['Ganti alamat email', 'Trial, refund, dan stop layanan TV', 'Ganti nama pemilik', 'Ganti nomor HP'], 1, 'Trial, refund, dan stop layanan TV masih diproses via email.'],
+]);
+S('upgrade-vip', [
+  ['Team Leader sebuah Group VIP ingin langsung memproses upgrade paket customer. Apakah boleh?', ['Boleh', 'Tidak — upgrade wajib dilempar ke chat CSO 0361-736811', 'Boleh bila customer setuju', 'Boleh bila sudah bayar'], 1, 'TL tidak boleh memproses langsung; upgrade dari Group VIP wajib dilempar ke chat CSO.'],
+  ['Chat upgrade VIP masuk ke CSO secara random. Siapa yang bertanggung jawab?', ['CSO yang menerima chat tersebut', 'SPV', 'AM incharge saja', 'Sales'], 0, 'Penanganan random: CSO yang menerima chat bertanggung jawab membantu proses upgrade.'],
+]);
+S('maintenance-fee', [
+  ['Customer minta teknisi setting router dedicated lengkap dengan VLAN dan load balance. Biayanya?', ['Rp300.000', 'Rp1.000.000 per node, exclude PPN', 'Rp150.000', 'Gratis'], 1, 'Dedicated Router Full Setup (QoS, hotspot, VPN, load balance, VLAN) Rp1.000.000, exclude PPN.'],
+  ['Customer membeli access point di GX dan minta disetting. Biayanya?', ['Rp150.000', 'Gratis karena alat dibeli di GX', 'Rp100.000', 'Rp300.000'], 1, 'Access Point Setting Rp150.000, gratis bila alat dibeli di GX.'],
+  ['Customer hotel minta Network Improvement Consulting lalu menyetujui penawaran. Bagaimana biaya survey Rp300.000-nya?', ['Tetap ditagih', 'Dikembalikan karena penawaran disetujui', 'Dipotong 50%', 'Jadi deposit'], 1, 'Biaya survey consulting dikembalikan bila penawaran disetujui.'],
+]);
+S('follow-up-blokir', [
+  ['Bulan ini November. Rentang umur blokir UID yang boleh kamu follow up?', ['Oktober saja', 'Agustus–Oktober (maks. 3 bulan ke belakang)', 'Semua bulan', 'Januari–Oktober'], 1, 'Kriteria: status BLOKIR, umur blokir maksimal 3 bulan ke belakang, dan belum di-follow up 7 hari terakhir.'],
+  ['UID blokir ini sudah di-follow up rekanmu 4 hari lalu. Apakah boleh kamu follow up hari ini?', ['Boleh', 'Tidak — pilih UID yang belum di-follow up dalam 7 hari terakhir', 'Boleh bila ganti template', 'Boleh bila beda shift'], 1, 'UID yang sudah di-follow up dalam 7 hari terakhir tidak memenuhi kriteria.'],
+  ['Target harian follow up user blokir per CSO adalah…', ['1 UID tanpa tiket', '2 UID per hari, masing-masing wajib dibuatkan tiket', '5 UID', '10 UID per minggu'], 1, 'Setiap CSO wajib follow up 2 UID per hari dan membuat tiket untuk setiap follow up.'],
+]);
+S('e-form', [
+  ['Kamu sudah mengisi data di GX Document. Tombol mana untuk mengirim dokumen ke customer agar bisa ditandatangani?', ['Send v1 for signature', 'Send for signing — copy link lalu kirim ke customer', 'Save as draft', 'Download PDF'], 1, '"Send v1 for signature" dipakai saat membuat dari template; pengiriman ke customer lewat "Send for signing".'],
+  ['Setting yang benar sebelum mengirim form?', ['Title bebas, Remind Every 1 Day, Expires 1 bulan', 'Title: Nama Form - Account ID, Remind Every: 3 Days, Expires On: 1 minggu sejak dibuat', 'Tanpa setting', 'Expires On: 3 hari'], 1, 'Title "Nama Form - Account ID", Remind Every 3 Days, Expires On 1 minggu, lalu Save settings.'],
+  ['Saat mengisi kode paket di GX Document, cara yang benar?', ['Ketik ulang manual', 'Copy-paste dari GXOne', 'Tanya customer', 'Kosongkan saja'], 1, 'Kode paket wajib copy-paste dari GXOne untuk menghindari typo.'],
+  ['Customer memberi email yang sudah tidak aktif. Mengapa ini masalah sejak update 2 November 2026?', ['Tidak masalah', 'Customer harus verifikasi OTP 6 digit dari email sebelum tanda tangan — email wajib valid & aktif', 'Email hanya untuk invoice', 'Dokumen otomatis ditolak Billing'], 1, 'Sejak update 2 November 2026, customer verifikasi OTP 6 digit lewat email, jadi email wajib valid & aktif.'],
+]);
+S('cashier-dcr', [
+  ['Kamu menyusun Daily Cashier Report ke SPV. Komponen mana yang harus dipisah?', ['Hanya total cash', 'GlobalXtreme, SBN, dan Pasang Baru (masing-masing Cash & Debet/CC) + daftar UID Promo Google Review', 'Per customer', 'Hanya debet'], 1, 'DCR memisahkan GlobalXtreme, SBN, Pasang Baru (Cash & Debet/CC) dan mencantumkan UID Promo Google Review.'],
+]);
+S('retention-program', [
+  ['Customer belum bayar bulan berjalan dan tagihan bulan berikutnya sudah terbit tanggal 25. Berapa yang harus dibayar agar aktif?', ['1 bulan', '2 bulan', '3 bulan', 'Tidak perlu bayar'], 1, 'Skenario 1: bayar setelah tagihan bulan berikutnya terbit → bayar 2 bulan.'],
+  ['Customer ingin piutang bulan berjalan dihapus. Syaratnya?', ['Tidak mungkin', 'Ubah ke kuartal/semester/tahunan dan bayar penuh periode berikutnya (paket sama atau lebih tinggi)', 'Bayar 50%', 'Ajukan inactive'], 1, 'Penghapusan piutang bulan berjalan: pindah ke kuartal/semester/tahunan dan bayar penuh periode berikutnya.'],
+  ['Customer minta piutang sewa perangkat ikut dihapus lewat program retention. Jawabanmu?', ['Bisa', 'Tidak bisa — penghapusan piutang hanya untuk tagihan internet', 'Bisa bila annual', 'Bisa dengan approval Sales'], 1, 'Penghapusan piutang hanya berlaku untuk tagihan internet, tidak untuk perangkat/jasa lain.'],
+]);
+
+/* ---------------- HANDLING & KEBIJAKAN ---------------- */
+S('flow-handling', [
+  ['Customer membuka chat: "Internet saya mati." Apa yang kamu lakukan pertama kali?', ['Minta reboot ONU', 'Salam & verifikasi — minta Service Location ID / nomor pelanggan', 'Jadwalkan teknisi', 'Kirim survei CSAT'], 1, 'Tahap 1 wajib: salam & verifikasi, minta Service Location ID / nomor pelanggan.'],
+  ['Saat probing keluhan internet, informasi mana yang paling relevan?', ['Merek HP customer', 'Sejak kapan, status lampu PON/LOS/Internet, tes 1 perangkat via LAN, speedtest', 'Alamat kantor customer', 'Nama Sales'], 1, 'Probing inti teknis: sejak kapan, status lampu PON/LOS/Internet, tes via LAN, dan speedtest.'],
+  ['Masalah ada di jaringan lokal customer dan customer ingin teknisi datang. Apa yang kamu sampaikan?', ['Kunjungan gratis', 'Pilihan self-repair dipandu technical support (gratis) atau kunjungan teknisi berbayar Rp100.000/visit', 'Tidak bisa dibantu', 'Harus upgrade paket'], 1, 'Local network: self-repair dipandu (gratis) atau kunjungan teknisi Rp100.000/visit.'],
+  ['Kamu sudah membuat tiket untuk customer. Apa yang wajib kamu sampaikan agar ekspektasinya jelas?', ['Nama teknisi', 'Nomor tiket dan kanal update', 'Nomor HP SPV', 'Tidak perlu apa-apa'], 1, 'Tahap 6 wajib: set ekspektasi & dokumentasi — sebutkan nomor tiket dan kanal update.'],
+  ['Case komplain sudah selesai dan kamu akan menutup chat. Closing promo apa yang wajib?', ['Tidak perlu promo', 'Diskon 10% (6 bulan) & 20% (12 bulan)', 'Gratis 1 bulan', 'Voucher Padel'], 1, 'Opsi C (Complaint): closing promo wajib — diskon 10% untuk 6 bulan dan 20% untuk 12 bulan.'],
+  ['Customer bertanya kenapa WiFi lemah di kamar yang jauh dari router. Edukasi singkat yang tepat?', ['Pakai 5 GHz di mana pun', '5 GHz untuk jarak dekat, 2.4 GHz untuk jangkauan lebih jauh', 'Matikan router malam hari', 'Ganti HP'], 1, 'Edukasi: 5 GHz untuk jarak dekat (lebih cepat), 2.4 GHz untuk jangkauan lebih luas.'],
+]);
+S('greeting-closing', [
+  ['Customer menunggu konfirmasi dan belum membalas. Kapan paling cepat chat boleh di-close?', ['Langsung', 'Minimal 1 jam setelah chat masuk / terakhir dibalas', '24 jam', 'Akhir bulan'], 1, 'Chat menunggu konfirmasi boleh di-close minimal 1 jam setelah chat masuk / terakhir dibalas.'],
+  ['Masih ada beberapa chat terbuka 15 menit sebelum shift berakhir. Apa yang benar?', ['Biarkan untuk shift berikutnya', 'Semua chat harus ter-close sebelum shift berakhir', 'Tutup hanya yang sudah selesai', 'Pindahkan ke SPV'], 1, 'Batas maksimal closing adalah akhir shift.'],
+  ['Cara mengirim closing CSAT yang benar sejak 15 Oktober 2026?', ['Dua bubble: terima kasih lalu link survei', 'Template closing CSAT resmi dalam 1 bubble chat', 'Kirim lewat email', 'Opsional'], 1, 'Closing CSAT adalah satu-satunya template closing dan dikirim dalam 1 bubble chat.'],
+  ['Customer menyapa tanpa menyebut User ID. Greeting yang tepat berisi…', ['Langsung menanyakan masalah teknis', 'Sapa nama, minta maaf atas ketidaknyamanan, minta Service Location ID / nomor pelanggan, tanda tangan "[Nama CSO] – GlobalXtreme"', 'Kirim link survei', 'Minta foto KTP'], 1, 'Greeting tanpa User ID: sapa, minta maaf, minta Service Location ID, tutup dengan nama CSO – GlobalXtreme.'],
+  ['Case customer sudah jelas selesai. Apakah harus menunggu 1 jam untuk close?', ['Ya, selalu', 'Tidak — case selesai boleh langsung di-close', 'Harus menunggu 24 jam', 'Harus izin SPV'], 1, 'Case yang sudah selesai boleh langsung di-close tanpa menunggu 1 jam.'],
+]);
+S('cs-language', [
+  ['Kalimat mana yang paling sesuai standar bahasa CS GlobalXtreme?', ['"Internet Bapak rusak."', '"Saat ini terdapat gangguan teknis pada layanan Bapak."', '"Ada kesalahan di sistem kami."', '"Akun Bapak diblokir."'], 1, 'Istilah CS: "kerusakan" → gangguan teknis; hindari kata negatif seperti rusak/blokir.'],
+  ['Customer menanyakan kenapa layanannya "diblokir". Istilah yang sebaiknya kamu pakai?', ['Diputus', 'Suspensi layanan (Suspension of Service)', 'Terminasi', 'Dihapus'], 1, 'Blokir → Suspensi (Suspension of Service).'],
+  ['Kamu mengeja UID "KM" lewat telepon. Ejaan NATO yang benar?', ['Kilo – Mike', 'King – Mary', 'Kilo – Mama', 'Kappa – Mike'], 0, 'K = Kilo, M = Mike.'],
+  ['Customer ingin "berhenti sementara". Istilah profesional yang dipakai?', ['Terminasi', 'Penangguhan Sementara', 'Pemutusan', 'Suspensi'], 1, 'Inaktif → Penangguhan Sementara.'],
+]);
+S('service-channels', [
+  ['Kamu bertugas Piket CC pos "Backup Helpdesk & AM". Apa tugas utamamu?', ['Handling walk-in', 'Login Maxchat Helpdesk dan bantu kebutuhan Helpdesk & AM', 'Monitoring outage malam', 'Input DCR'], 1, 'Pos Backup Helpdesk & AM: login Maxchat Helpdesk dan membantu kebutuhan Helpdesk & AM.'],
+  ['Kamu Shift 3 (malam). Tugas mana yang termasuk jobdesk-mu?', ['Walk-in customer', 'Mengawal List Wiredown & mengisi link penjadwalan Maintenance hari berikutnya', 'Membuat proforma', 'Rekap gaji'], 1, 'Shift 3 mengawal List Wiredown dan mengisi link penjadwalan Maintenance hari berikutnya.'],
+  ['Customer datang langsung ke kantor. Kanal ini ditangani oleh…', ['Contact Center', 'Customer Service (walk-in)', 'Dispatcher', 'Helpdesk'], 1, 'Walk-in ditangani Customer Service; CC menangani telepon & omnichannel.'],
+]);
+S('divisi-peran', [
+  ['Customer minta e-faktur dan aktivasi pelanggan baru. Tim internal mana yang memproses?', ['Contact Center', 'Billing Helpdesk', 'Dispatcher Alpha', 'CTSO'], 1, 'Billing Helpdesk menangani data administrasi & billing, e-faktur, inactive, proforma, dan aktivasi pelanggan baru.'],
+  ['Kabel FO customer putus di jalan. Tim teknis mana yang menangani?', ['FO Installation Lastmile', 'FO Maintenance / Wire-down', 'CMT', 'NA & NO'], 1, 'FO Maintenance / Wire-down menangani kabel putus, reposisi ONU/FO, dan perbaikan power ONU.'],
+  ['Router customer perlu diaktivasi dan jaringan lokalnya dirawat rutin. Tim yang tepat?', ['Customer Maintenance (CMT)', 'FO Backbone', 'Sales', 'GA'], 0, 'CMT menangani aktivasi router, maintenance jaringan lokal, dan dismantle.'],
+  ['Kamu butuh analisis link budget untuk aktivasi network pelanggan baru. Tim mana?', ['CTSO', 'NA & NO', 'Billing Helpdesk', 'FO Upgrading'], 1, 'NA & NO menangani infrastruktur jaringan, link budget, dan aktivasi network pelanggan baru.'],
+  ['Ada bug di aplikasi MyGX. Ke tim mana bug ini dilaporkan?', ['Marketing', 'Software Development', 'HC', 'Logistics'], 1, 'Software Development mengelola CRM, GX Employee, MyGX, dan GXOne.'],
+]);
+S('whatsapp-cost-saving', [
+  ['Customer menulis "Halo, internet saya mati." Balasan mana yang paling sesuai WhatsApp Cost Saving?', ['"Baik Kak." lalu pesan baru berisi pertanyaan', 'Satu pesan: empati + minta nama lengkap, UID, nomor terdaftar, dan sejak kapan kendala terjadi', 'Tiga pesan terpisah untuk tiap pertanyaan', '"Mohon ditunggu." saja'], 1, 'Kumpulkan pertanyaan sekaligus dalam satu pesan; hindari acknowledgement berdiri sendiri.'],
+  ['Kamu perlu menginfokan nominal tagihan. Pesan yang paling efisien berisi…', ['Nominal saja, jatuh tempo di pesan berikutnya', 'Nominal + jatuh tempo + instruksi kirim bukti bayar dalam satu pesan', 'Link invoice saja', 'Minta customer menelepon'], 1, 'Berikan info lengkap sejak awal: nominal, jatuh tempo, dan instruksi bukti bayar.'],
+  ['Pesanmu panjang dan sulit dibaca. Cara yang benar menurut guide?', ['Pecah jadi beberapa bubble', 'Gunakan line break di dalam satu pesan', 'Kirim lewat email', 'Pendekkan dengan singkatan'], 1, 'Line break untuk readability bukan pesan baru — tetap satu pesan.'],
+  ['Kapan pesan BOLEH dipisah?', ['Selalu, agar sopan', 'Konteks/aksi berbeda, terlalu panjang, kebutuhan template sistem, atau info baru tersedia setelah proses selesai', 'Setiap kalimat', 'Tidak pernah'], 1, 'Pesan boleh dipisah bila konteks berbeda, terlalu panjang, kebutuhan template, atau ada info baru setelah proses.'],
+  ['Urutan golden rule WhatsApp Cost Saving?', ['Send → Check → Combine', 'Think → Combine → Check → Send', 'Check → Send → Think', 'Combine → Send'], 1, 'Golden rule: Think → Combine → Check → Send.'],
+]);
+S('kpi-cso', [
+  ['Kamu berhasil reaktivasi customer ke Xtreme Lite 300 Annual Rp2.880.000. Berapa sisa baseline revenue-mu?', ['Rp12.000.000', 'Rp9.120.000', 'Rp14.880.000', 'Rp10.000.000'], 1, '12.000.000 − 2.880.000 = Rp9.120.000.'],
+  ['Revenue mana yang mengurangi baseline revenue CSO?', ['Pasang baru dari Sales', 'Reaktivasi dan upgrade', 'Pembayaran tagihan rutin', 'Penjualan router'], 1, 'Baseline Rp12.000.000 dicapai dari reaktivasi dan upgrade.'],
+  ['Bagaimana revenue dihitung terhadap baseline?', ['Termasuk PPN', 'Tanpa pajak', 'Termasuk PPN & PPh', 'Dikali 2'], 1, 'Revenue yang mengurangi baseline dihitung tanpa pajak.'],
+  ['Target CSAT CSO saat ini?', ['85%', '90%', '91%', '95%'], 2, 'Target CSAT naik menjadi 91% (sebelumnya 90%).'],
+]);
+S('promo-padel', [
+  ['Customer existing monthly membawa voucher Padel. Apa yang ia dapat?', ['Diskon 20%', 'Bayar 2 bulan di muka → free 1 bulan, tanpa ganti billing cycle', 'Gratis router', 'Harus pindah annual'], 1, 'Monthly: bayar 2 bulan di muka, gratis 1 bulan, billing cycle tetap.'],
+  ['Saat membuat ticket redeem voucher, kategori dan lampiran yang benar?', ['Complaint → Billing, tanpa lampiran', 'Info → Package → Promotion, wajib lampirkan foto voucher', 'Info → Billing → Proforma', 'Complaint → Package'], 1, 'Ticket Info → Package → Promotion dengan foto voucher wajib dilampirkan.'],
+  ['Customer Lite 200 Annual Rp3.196.800 redeem voucher di cycle yang sama. Berapa potongannya?', ['Rp3.196.800', 'Rp266.400 (1 bulan)', 'Rp532.800', 'Rp100.000'], 1, 'Potongan 1 bulan = 3.196.800 ÷ 12 = Rp266.400.'],
+]);
+
+/* ---------------- SDM & SCHEDULE ---------------- */
+S('aturan-lobby', [
+  ['Kamu belum sempat sarapan dan ada waktu luang di lobby. Apa yang benar?', ['Makan cepat di meja lobby', 'Makan di cafetaria; makanan disimpan di loker', 'Makan di balik counter', 'Boleh minum saja di lobby'], 1, 'Makan & minum di lobby dilarang — gunakan cafetaria dan simpan makanan di loker.'],
+  ['Kamu sering lupa password sistem. Cara yang TIDAK boleh dilakukan?', ['Minta reset ke admin', 'Menempel password dengan sticky note di meja', 'Simpan di password manager pribadi', 'Tanya SPV prosedur reset'], 1, 'Menempel password/data penting dengan sticky note dilarang — budayakan clean desk.'],
+  ['Customer selesai mengisi form perubahan data di lobby. Apa yang dilakukan dengan formnya?', ['Ditaruh di meja agar mudah dicari', 'Simpan di laci dan serahkan ke admin', 'Difoto lalu dibuang', 'Diberikan kembali ke customer'], 1, 'Form registrasi/perubahan data/pembayaran tidak boleh berserakan — simpan di laci & serahkan ke admin.'],
+  ['Kamu CC junior (< 1 tahun) yang ditempatkan di Lobby Badung hari Minggu. Apa peranmu?', ['Ambil antrian seperti senior', 'Tidak ambil antrian; fokus chat, tetap menyapa, dan mempelajari aturan lobby', 'Hanya menyapa tanpa kerja chat', 'Menggantikan kasir'], 1, 'Junior tidak ambil antrian; fokus chat, menyapa, dan mempelajari aturan lobby.'],
+  ['Alas kaki mana yang sesuai grooming CSO?', ['Sepatu sandal', 'Flatshoes dengan stocking warna kulit', 'Sandal jepit', 'Sneakers bebas'], 1, 'Flatshoes hanya dengan stocking warna kulit; sepatu sandal tidak boleh.'],
+  ['Pelanggaran aturan lobby berdampak pada…', ['Tidak ada', 'Dicatat di personal record dan diproses tim HC', 'Potong gaji langsung', 'Teguran lisan saja'], 1, 'Pelanggaran dicatat di personal record dan diproses tim HC.'],
+]);
+S('gx-employee', [
+  ['Draft slip gaji di email belum mencantumkan sick leave-mu yang sudah diupload. Apa yang kamu lakukan?', ['Personal chat Pak Rachmat minta approve', 'Tunggu proses approval (sekitar tgl 27–29) dan info SPV; cek real-time lewat Salary Simulation', 'Upload ulang sick leave', 'Komplain ke HC'], 1, 'Approval dilakukan sekitar tgl 27–29 dan tidak perlu personal chat. Pre-salary email tidak real-time.'],
+  ['Cara cek simulasi gaji real-time di web GX Employee?', ['Attendance → Export', 'My Salary → Simulation → Generate', 'Profile → Payroll', 'Dashboard → Report'], 1, 'Web: My Salary → Simulation → Generate. Apps: Pay Slip → Salary Simulation → Generate.'],
+  ['Kamu ingin memastikan absensimu tercatat benar. Sumber resmi yang dipakai?', ['Grup WhatsApp tim', 'Website GX Employee', 'Draft slip gaji', 'Catatan pribadi'], 1, 'Cek absensi wajib lewat website GX Employee.'],
+  ['Siapa yang meng-approve Shift Correction, Personal Leave, dan Sick Leave?', ['HC', 'Pak Rachmat', 'Rekan satu shift', 'Admin scheduling'], 1, 'Ketiganya dicek & di-approve Pak Rachmat sekitar tanggal 27–29.'],
+  ['Kenapa pre-salary di email tidak boleh dijadikan acuan?', ['Karena salah hitung', 'Karena tidak real-time — approval leave/correction belum tentu masuk', 'Karena belum termasuk pajak', 'Karena hanya untuk SPV'], 1, 'Pre-salary email & slip draft tidak real-time, karena approval baru dilakukan sekitar tgl 27–29.'],
+]);
+S('cso-scheduling', [
+  ['Kamu lupa password CSO Scheduling. Apa yang benar?', ['Buat akun baru', 'Minta reset ke admin/SPV — jangan buat akun baru', 'Pakai akun rekan', 'Tunggu bulan depan'], 1, 'Lupa password → minta reset; jangan membuat akun baru.'],
+  ['Di My Schedule ada kode shift berwarna abu-abu. Artinya?', ['Shift favorit', 'Slot harian penuh, kuota bulananmu habis, atau tidak tersedia', 'Shift malam', 'Sudah di-approve'], 1, 'Abu-abu = slot harian penuh, kuota bulanan habis, atau tidak tersedia.'],
+  ['Kamu ingin tukar shift hari Senin. Paling lambat kapan pengajuannya?', ['Minggu malam', 'Sabtu pukul 17.00 (H-2, weekday sebelum 17.00)', 'Senin pagi', 'Jumat 12.00'], 1, 'Tukar shift maksimal H-2 sebelum hari tukar, sebelum 17.00 — untuk Senin paling lambat Sabtu 17.00.'],
+  ['Hari Minggu/tanggal merah, kode mana yang boleh kamu pilih?', ['C Leave (cuti)', '0 Day off atau ½ Half day', 'i Permission', 'Semua kode'], 1, 'Di Minggu & tanggal merah, 0 Day off dan ½ Half day selalu boleh; cuti dan permission tidak.'],
+  ['Kamu menukar shift sehingga bekerja 9 hari berturut-turut, lalu sakit di hari ke-8. Apa akibatnya?', ['Sick leave tetap di-approve', 'Sick leave tidak di-approve', 'Otomatis jadi cuti', 'Shift dibatalkan'], 1, 'Tukar shift yang membuat kerja > 7 hari lalu sakit di tengahnya → sick leave tidak di-approve.'],
+  ['Status tukar shift belum berubah sampai H-1. Apa yang kamu lakukan?', ['Anggap sudah disetujui', 'Hubungi SPV', 'Batalkan sendiri', 'Masuk sesuai jadwal rekan'], 1, 'Bila approval belum berubah sampai H-1, hubungi SPV.'],
+  ['Kamu mendapat half-day shift 09.00–13.00. Kapan sebaiknya clock out?', ['Tepat 13.00', 'Setelah total kerja lebih dari 4 jam — jangan tepat 13.00', '12.30', 'Kapan saja'], 1, 'Half-day valid bila total kerja > 4 jam; jangan clock out tepat 13.00.'],
+  ['Prinsip memilih jadwal yang benar?', ['Atur libur dulu, lalu shift', 'Penuhi kebutuhan shift dulu, baru atur libur; maks. 7 hari kerja berturut-turut', 'Pilih shift sesuka hati', 'Tabung libur untuk bulan depan'], 1, 'Penuhi kebutuhan shift dulu, maksimal 7 hari kerja berturut-turut, dan libur tidak boleh ditabung.'],
+  ['Kamu ingin melihat jadwal seluruh tim dan catatan admin. Menu yang dipakai?', ['My Schedule', 'Public Recap', 'Shift Swap', 'Settings'], 1, 'Public Recap menampilkan jadwal seluruh tim; tanda merah di pojok sel = catatan admin.'],
+  ['Dua batasan yang berlaku bersamaan saat memilih shift?', ['Jam masuk dan jam pulang', 'Slot kebutuhan harian dan kuota shift per orang (first come, first served)', 'Lokasi dan divisi', 'Senioritas dan absensi'], 1, 'Slot kebutuhan harian dan kuota shift per orang berlaku bersamaan, first come first served.'],
+]);
+S('absence-policy', [
+  ['Kamu sakit dan periksa lewat dokter online. Dokumen apa yang dilampirkan?', ['Cukup chat ke SPV', 'Surat dokter online + foto obat', 'Foto obat saja', 'Surat keterangan RT'], 1, 'Surat dokter online diperbolehkan, tetapi foto obat tetap wajib dilampirkan.'],
+  ['Batas upload bukti sick leave ke GX Employee?', ['H+3', 'Hari yang sama atau maks. H+1', '1 minggu', 'Akhir bulan'], 1, 'Upload di hari yang sama atau maksimal H+1; tanpa surat & foto obat → unapproved.'],
+  ['Kamu sakit tapi tidak ke dokter. Bagaimana statusnya?', ['Tetap sick leave', 'Ambil cuti (bila slot ada) atau personal leave (unpaid)', 'Otomatis alfa tanpa opsi', 'Izin biasa'], 1, 'Tanpa surat dokter → ambil cuti bila slot ada, atau personal leave (unpaid).'],
+  ['Kamu sadar kode shift kemarin salah sehingga tercatat late. Kapan seharusnya diinformasikan?', ['Akhir bulan', 'Hari H — terlambat info tidak bisa shift correction', 'Saat slip gaji keluar', 'Kapan saja'], 1, 'Kesalahan clock in/out & kode shift wajib diinfokan di hari H.'],
+  ['Hal mana yang bisa menyebabkan status alfa?', ['Cuti yang sudah di-approve', 'Clock in/out tidak terdeteksi atau kode shift salah', 'Half-day yang valid', 'Sick leave lengkap'], 1, 'Alfa bisa terjadi karena tidak masuk tanpa leave, leave tidak di-approve, clock in/out tidak terdeteksi, atau kode shift salah.'],
+  ['Alfa berapa kali dalam sebulan yang berujung SP 1?', ['Lebih dari 1 kali', 'Lebih dari 2 kali', 'Lebih dari 4 kali', '6 kali'], 1, 'Alfa > 2 kali dalam 1 bulan → SP 1.'],
+  ['Kamu terlambat 1,5 jam karena urusan mendadak. Bagaimana statusnya?', ['Cukup minta permit', 'Pakai cuti (bila slot ada); bila tidak, dianggap alfa / personal leave', 'Tidak dihitung', 'Half-day otomatis'], 1, 'Telat > 1 jam → pakai cuti bila slot ada, atau dianggap alfa / personal leave. Tidak ada permit.'],
+  ['Pola keterlambatan mana yang dikenakan sanksi?', ['1 kali seminggu', 'Lebih dari 3 kali berturut dalam seminggu atau 5 kali sebulan', '2 kali sebulan', 'Hanya bila lebih dari 1 jam'], 1, 'Telat > 3 kali berturut dalam seminggu atau 5 kali sebulan → sanksi.'],
+  ['Kamu ingin cuti 5 hari. Paling lambat kapan diinformasikan?', ['H-1', '1 minggu setelah jadwal dinyatakan fix', 'Kapan saja selama ada slot', '1 bulan sebelumnya'], 1, 'Cuti paling lambat diinformasikan 1 minggu setelah jadwal fix; maksimal 7 hari dan bersifat permohonan.'],
+  ['Kamu minta masuk setengah hari karena urusan pribadi (tanpa SK HC). Saran yang tepat?', ['Pasti disetujui', 'Tidak disetujui — disarankan ambil cuti', 'Ganti dengan lembur', 'Cukup info rekan'], 1, 'Masuk setengah hari tidak disetujui kecuali ada SK HC; disarankan ambil cuti.'],
+]);
+S('personal-record', [
+  ['Kamu sudah menerima 3 Personal Record. Apa konsekuensinya?', ['Teguran lisan', 'SP 1 — berlaku 6 bulan, incentive dipotong 25%', 'SP 2', 'Tidak ada'], 1, '3 Personal Record → SP 1 (6 bulan, incentive dipotong 25%).'],
+  ['Selama SP 1 kamu mendapat 3 Personal Record lagi. Apa yang terjadi?', ['SP 1 diperpanjang', 'SP 2 — 6 bulan, incentive dipotong 50%', 'Personal record dihapus', 'PHK langsung'], 1, '3 Personal Record tambahan selama SP 1 → SP 2 (6 bulan, incentive dipotong 50%).'],
+  ['Siapa yang berhak mengeluarkan Personal Record?', ['Rekan senior', 'SPV atau Head of Division', 'HC saja', 'Admin scheduling'], 1, 'Hanya SPV atau Head of Division yang berhak mengeluarkan Personal Record.'],
+  ['Berapa lama Personal Record berlaku?', ['3 bulan', '6 bulan', '1 tahun, lalu dihapus bila tidak ada pelanggaran lanjutan', 'Permanen'], 2, 'Personal Record berlaku 1 tahun.'],
+  ['Kamu tidak sengaja melewatkan satu langkah prosedur. Apakah ini bisa menjadi Personal Record?', ['Tidak, karena tidak disengaja', 'Bisa — Personal Record berlaku untuk pelanggaran disengaja maupun tidak', 'Hanya bila customer komplain', 'Hanya bila terjadi 3 kali'], 1, 'Personal Record diberikan untuk pelanggaran aturan, disengaja maupun tidak.'],
+]);
+
+/* ---------------- TEKNIS ---------------- */
+S('slot-lan', [
+  ['Customer minta pemasangan LAN dan belum bayar. Bagaimana cara booking slot yang benar?', ['Personal chat CTSO', 'Booking di WAG KOORDINASI CSO–CTSO–MNT dengan tag SPV Teknisi, cantumkan UserID & keterangan jadwal', 'Tunggu customer bayar dulu baru booking', 'Input sendiri di GXOne tanpa konfirmasi'], 1, 'Booking lewat WAG KOORDINASI CSO–CTSO–MNT dengan tag SPV Teknisi; boleh sambil menunggu pembayaran.'],
+  ['Kapan booking slot LAN dianggap sudah diterima?', ['Setelah pesan terkirim', 'Setelah request di-reply / di-reaction SPV Teknisi', 'Setelah customer setuju', 'Setelah 24 jam'], 1, 'Pastikan request sudah di-reply atau di-reaction SPV Teknisi.'],
+  ['Customer sudah membayar setelah slot dibooking. Langkah berikutnya?', ['Tidak perlu apa-apa', 'Update SPV Teknisi dengan nomor tiket jadwal', 'Booking ulang', 'Kirim bukti bayar ke CTSO'], 1, 'Setelah pembayaran selesai, update SPV Teknisi dengan nomor tiket jadwal.'],
+]);
+S('router-spec', [
+  ['Customer ingin upgrade ke paket lebih cepat. Pengecekan teknis apa yang dilakukan sebelum memproses?', ['Cek riwayat pembayaran saja', 'Cek data spesifikasi router customer apakah mendukung kecepatan paket baru', 'Langsung proses', 'Cek alamat customer'], 1, 'Sesuai SOP Change Package, cek spesifikasi router sebelum upgrade.'],
+  ['Spesifikasi router apa yang memengaruhi kinerja koneksi?', ['Warna dan merek', 'Kecepatan transfer, pita frekuensi, jangkauan, jumlah port, dan teknologi jaringan', 'Harga router', 'Tahun pembelian'], 1, 'Kinerja router ditentukan kecepatan transfer, pita frekuensi, jangkauan, jumlah port, dan teknologi jaringan.'],
+]);
+S('basic-technical', [
+  ['Customer bertanya fungsi kotak putih berlogo GlobalXtreme di rumahnya. Penjelasan yang benar?', ['Router WiFi', 'ONU — mengubah sinyal cahaya dari fiber menjadi data dan menghubungkannya ke router', 'Access point', 'Switch'], 1, 'ONU mengubah sinyal cahaya menjadi data dan menghubungkan fiber ke main router.'],
+  ['Teknisi perlu menemukan titik putus atau redaman pada kabel fiber. Alat yang dipakai?', ['Cleaver', 'OTDR', 'Fusion Splicer', 'Joinkit'], 1, 'OTDR dipakai untuk mendeteksi titik putus/redaman.'],
+  ['Customer memasang kabel LAN di area dengan banyak gangguan listrik. Jenis kabel yang lebih tepat?', ['UTP', 'STP (berpelindung/shield)', 'Kabel telepon', 'Coaxial'], 1, 'STP memiliki shield untuk area dengan banyak gangguan listrik.'],
+  ['Komponen yang menerminasi kabel FO luar ke dalam rumah dan menyimpan gulungan kabel adalah…', ['ODC', 'OTB (Optical Termination Box)', 'Splitter', 'Joint Closure'], 1, 'OTB adalah terminasi kabel FO luar ke dalam rumah, dengan gulungan untuk menjaga power FO.'],
+]);
+S('bod-dia-intracity', [
+  ['Customer Signature 400 Mbps (Rp4.440.000, bulan 31 hari) minta BOD 3 hari. Berapa biayanya?', ['Rp429.677', 'Rp644.514', 'Rp1.332.000', 'Rp214.838'], 1, '(4.440.000 ÷ 31) = 143.225 → +50% = 214.838/hari × 3 = Rp644.514.'],
+  ['Customer DIA minta BOD untuk ketiga kalinya bulan ini. Bagaimana biayanya?', ['Tetap gratis', 'Berbayar — kuota gratis DIA hanya 2x/bulan', 'Ditolak', 'Gratis bila ≤ 1 Gbps'], 1, 'DIA mendapat BOD gratis 2x/bulan; request berikutnya mengikuti rumus BOD berbayar.'],
+  ['Partner Intracity (bukan CNI) minta BOD gratis 5 hari bulan ini. Apa yang kamu lakukan?', ['Approve langsung', 'Jangan approve langsung — eskalasi ke PIC Intracity (Putri) untuk koordinasi Head Sales', 'Tolak permanen', 'Approve 5 hari dengan biaya'], 1, 'BOD Intracity gratis maks. 3 hari/bulan (akumulasi). Melebihi itu → eskalasi ke PIC Intracity.'],
+  ['Customer minta BOD sekaligus menyewa router dari GlobalXtreme. Jawaban yang benar?', ['Bisa sewa router', 'GlobalXtreme tidak menyewakan router — arahkan ke pihak ketiga', 'Router dipinjamkan gratis', 'Harus beli paket DIA'], 1, 'GlobalXtreme tidak menyewakan router; arahkan ke pihak ketiga.'],
+  ['Setelah invoice BOD dibuat, ke mana ticket berikutnya dikirim untuk eksekusi bandwidth?', ['Dispatcher', 'Send to NA dengan remarks "Mohon bantu proses permintaan BOD" + subject email', 'CTSO VIP', 'Sales'], 1, 'Ticket baru Send to NA dengan remarks permintaan BOD dan subject email; masuk grup Telegram CTSO–NA.'],
+  ['Calon customer butuh 100 Mbps dedicated (DIA). Berapa estimasi harga bulanan belum pajak?', ['Rp500.000', 'Rp7.500.000', 'Rp75.000', 'Rp750.000'], 1, 'DIA Rp75.000/Mbps belum pajak → 100 Mbps = Rp7.500.000/bulan.'],
+]);
+S('tech-admin-issues', [
+  ['Customer komplain internet mati, ternyata ada tagihan tertunggak. Langkah yang benar?', ['Langsung troubleshooting', 'Arahkan customer menyelesaikan pembayaran dulu sebelum troubleshooting', 'Jadwalkan teknisi', 'Beri grace tanpa cek'], 1, 'Bill checking: bila ada tunggakan, arahkan bayar dulu sebelum troubleshooting.'],
+  ['Customer yang sama komplain untuk masalah yang sama minggu ini. Apa yang perlu diperhatikan?', ['Buat ticket baru tanpa catatan', 'Cek histori ticket untuk hindari duplikasi; beri note penanganan lanjutan untuk repeat complaint', 'Tolak komplain', 'Langsung terminasi'], 1, 'Cek histori ticket untuk hindari duplikasi; repeat complaint diberi note penanganan lanjutan.'],
+  ['Monitoring menunjukkan power ONU customer low. Ke mana ticket dikirim?', ['NA via Telegram', 'Dispatcher (perbaikan Tim Wiredown)', 'Billing Helpdesk', 'Sales'], 1, 'ONU power low/high → ticket ke Dispatcher untuk perbaikan Tim Wiredown.'],
+  ['WO sudah closed tapi customer belum terkonfirmasi. Bagaimana follow up-nya?', ['Kirim chat sekali', 'Follow up maksimal 2 kali by call; bila masih kendala → "Solved & Create New Ticket"', 'Biarkan saja', 'Tutup tanpa konfirmasi'], 1, 'Setelah WO closed, follow up maks. 2 kali by call; bila masih kendala, Solved & Create New Ticket.'],
+  ['Kamu mengawal ticket gangguan aktif. Seberapa sering progress di-update?', ['Setiap 3 jam', 'Setiap 15 menit (status, estimasi, teknisi)', 'Sekali sehari', 'Saat customer bertanya'], 1, 'Ticket aktif wajib dikawal dengan update progress setiap 15 menit.'],
+]);
+S('tv-transvision', [
+  ['Customer Transvision sudah top up tapi TV belum bisa dipakai. Langkah pertamamu?', ['Open ticket CTSO langsung', 'Konfirmasi status top up ke Team Leader dan minta SS bukti top up', 'Minta customer restart TV', 'Arahkan ke Sales'], 1, 'Konfirmasi top up ke Team Leader → TL kirim SS bukti → customer coba lagi → bila gagal, open ticket CTSO + SS.'],
+  ['Customer Transvision mengeluh tanggal & jam di STB salah. Siapa yang menangani?', ['CC/CSO memandu langsung', 'Seluruhnya langsung ke CTSO', 'Dispatcher', 'Billing Helpdesk'], 1, 'Login–logout, penyesuaian tanggal & jam STB, dan bug sistem langsung ke CTSO.'],
+  ['Customer ingin berlangganan Transvision baru. Jawaban yang tepat?', ['Bisa via Sales', 'Transvision sudah discontinued untuk langganan baru', 'Bisa via MyGX', 'Bisa dengan add-on'], 1, 'Transvision discontinued untuk langganan baru; SOP hanya untuk pelanggan existing.'],
+]);
+S('crm-guide', [
+  ['Di CRM, Account total customer berwarna merah. Artinya?', ['Customer punya uang muka', 'Customer punya tagihan', 'Akun terminasi', 'Akun VIP'], 1, 'Biru = ada uang muka; merah = ada tagihan.'],
+  ['Customer ingin membayar via VA BCA dari rekening BNI. Apa yang kamu sampaikan?', ['Bisa langsung', 'VA BCA hanya dari sesama BCA — gunakan VA Mandiri yang bisa dari semua bank', 'Harus tunai', 'Pakai Wise'], 1, 'VA BCA hanya dari sesama BCA; VA Mandiri bisa dari semua bank (masuk 10–15 menit).'],
+  ['Customer membayar tunai di kasir tapi invoice belum terbit. Menu di My Drawer yang dipakai?', ['Invoice Payment', 'Top Up Credit', 'Close Shift', 'Billing Statement'], 1, 'Invoice belum terbit → Top Up Credit; invoice sudah terbit → Invoice Payment.'],
+  ['Calon customer bertanya apakah alamatnya ter-cover jaringan. Menu CRM yang dipakai?', ['Customer → List', 'Misc → Coverage Area', 'Cashier → My Drawer', 'Misc → Blocking'], 1, 'Misc → Coverage Area untuk cek coverage berdasarkan alamat.'],
+]);
+S('reposisi-relokasi', [
+  ['Customer ingin memindahkan ONU ke ruangan lain di rumah yang sama. Jenis permintaannya?', ['Relokasi', 'Reposisi', 'Restorasi', 'Pasang baru'], 1, 'Perpindahan perangkat di alamat yang sama = Reposisi.'],
+  ['Customer pindah rumah ke alamat baru dan ingin tetap berlangganan. Apa yang CSO lakukan?', ['Buat WO reposisi', 'Input Leads Sales – GX ONE dengan keterangan "Relokasi dari User ID XXXXX" lalu share ke grup Sales & After Sales area', 'Proses restorasi', 'Minta customer terminasi saja'], 1, 'Relokasi mengikuti alur pasang baru; CSO input Leads Sales dengan keterangan relokasi.'],
+  ['Akun terminasi ingin diaktifkan kembali, tetapi atas nama orang lain. Jenis prosesnya?', ['Restorasi', 'Pasang Baru', 'Reposisi', 'Relokasi'], 1, 'Restorasi hanya untuk nama yang sama; nama berbeda = Pasang Baru.'],
+  ['Customer minta router dan 1 access point dipindah posisinya. Berapa biayanya?', ['Gratis', 'Rp200.000 (Rp100.000/titik, akumulatif)', 'Rp100.000 total', 'Rp50.000'], 1, 'Reposisi router/AP Rp100.000 per titik, akumulatif.'],
+]);
+S('cek-status-jaringan', [
+  ['ONU customer Offline dengan Last Dereg Reason "Wiredown". Listrik di lokasi aman. Langkahmu?', ['Ticket send to CTSO', 'Ticket send to Dispatcher (tim Wiredown)', 'Minta customer beli ONU', 'Reboot ONU remote'], 1, 'Wiredown dengan listrik aman → ticket send to Dispatcher.'],
+  ['ONU Online tetapi status port Down. Kemungkinan penyebabnya?', ['FO putus', 'Kabel UTP ONU–router lepas/tidak terhubung (customer side issue)', 'Power ONU low', 'Limiter salah'], 1, 'Port Down = kabel UTP ONU–router tidak terhubung, termasuk customer side issue.'],
+  ['Receive power ONU terbaca -29 dBm. Tindak lanjutnya?', ['Normal, tidak perlu tindakan', 'Too Low → kunjungan Wiredown, ticket send to Dispatcher', 'Too High → CMT Reguler', 'Ganti paket'], 1, 'Normal -18 s/d -28 dBm; -29 dBm = Too Low → Wiredown via Dispatcher.'],
+  ['Receive power ONU terbaca -17 dBm. Tindak lanjutnya?', ['Normal', 'Too High → kunjungan CMT Reguler, ticket send to CTSO + share nomor ticket ke WAG Ticket Request CTSO', 'Too Low → Dispatcher', 'Hubungi Sales'], 1, '-17 dBm = Too High → CMT Reguler via CTSO.'],
+  ['Customer paket 200 Mbps mengeluh lambat. Nilai limiter yang benar?', ['200.000 Kbps', '210.000 Kbps', '250.000 Kbps', '180.000 Kbps'], 1, 'Contoh limiter sesuai paket: 210.000 Kbps = 200 Mbps.'],
+]);
+S('restart-perangkat', [
+  ['Kamu akan me-reboot ONU customer dari remote. Apa yang disampaikan ke customer lebih dulu?', ['Tidak perlu info', 'Internet akan mati sekitar 2–3 menit', 'Router harus dicabut', 'Customer harus di lokasi teknisi'], 1, 'Info customer bahwa internet mati 2–3 menit, lalu reboot via Service Location → Reboot ONU.'],
+  ['Setelah reboot ONU remote, apa yang dicek sebelum meminta customer mencoba lagi?', ['Billing customer', 'ONU Monitoring sampai ONU up dan power normal', 'Status tiket', 'Riwayat chat'], 1, 'Cek ONU Monitoring sampai up & power normal, lalu minta customer mencoba lagi.'],
+]);
+S('ticketing-guide', [
+  ['Customer melapor internet sering putus-sambung. Klasifikasi ticket yang paling tepat?', ['Info → Internet → Network availability', 'Complaint → Internet Problem → Connection ON/OFF', 'Complaint → Other', 'Info → Technician'], 1, 'Putus-sambung = Complaint → Internet Problem → Connection ON/OFF.'],
+  ['Customer melapor internet sering putus DAN minta ganti password WiFi. Berapa ticket yang dibuat?', ['1 ticket gabungan', '2 ticket — 1 issue dengan 1 workflow = 1 ticket', '3 ticket', 'Tidak perlu ticket'], 1, 'Dua workflow berbeda → 2 ticket: Complaint (Connection ON/OFF) dan Info (Changing SSID & Password).'],
+  ['Customer minta perpanjangan masa tenggang. Klasifikasi ticket yang benar?', ['Complaint → Billing Problem', 'Info → Billing → Grace Period Extension', 'Info → Account → Reactivation', 'Complaint → Other'], 1, 'Grace period extension masuk Info → Billing.'],
+  ['Customer hanya bilang "internetnya bermasalah". Apa yang dilakukan sebelum memilih problem type?', ['Pilih Other', 'Probing: apakah tidak bisa dipakai sama sekali, lambat, atau sering terputus', 'Langsung kirim teknisi', 'Pilih Mass-Problem'], 1, 'Untuk case tidak jelas, probing dulu; hindari Other / generik bila ada pilihan lebih spesifik.'],
+]);
+})();

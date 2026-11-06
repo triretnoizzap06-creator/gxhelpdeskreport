@@ -62,6 +62,10 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 .trow .act2{display:flex;gap:4px;justify-content:flex-end}.trow .ed{display:none;gap:4px}.editing .trow .ed{display:flex}.editing .trow .act2 .open{display:none}
 .editing .trow{grid-template-columns:minmax(170px,1.05fr) minmax(230px,1.45fr) minmax(220px,1.25fr) 150px}
 .tools .k{display:none}
+.lnks{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 16px;border-top:1px solid #F1F1F3}.lnks-h{width:100%;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.lk2{display:inline-flex;align-items:center;gap:4px}.lk2 a{display:inline-flex;align-items:baseline;gap:6px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;text-decoration:none;color:var(--ink);font-size:13px;max-width:100%}
+.lk2 a:hover{border-color:var(--y);background:#FFFBEA}.lk2 a b{font-weight:700}.lk2 a small{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}.lk2 a em{font-style:normal;color:var(--muted);font-size:12px}
+.lk2 .ed{display:none;gap:3px}.editing .lk2 .ed{display:inline-flex}
 @media (max-width:760px){.trow{grid-template-columns:1fr;gap:8px;padding:14px}.trow.head{display:none}.tools .k{display:block;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}.trow .act2{justify-content:flex-start}.editing .trow{grid-template-columns:1fr}.fld code{white-space:normal;word-break:break-all}.trow .emp{display:none}.trow .act2:empty{display:none}}
 .unl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#FFF8DB;border:1px solid #FDE68A;border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:6px}.unl input{border:1px solid var(--line);border-radius:8px;padding:7px 10px;min-width:180px}
 .md{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
@@ -99,7 +103,7 @@ const CFGS = {
         roster: [['Ni Kadek Desi Mirayani', 'Desi'], ['Aulia Sevi Diana', 'Sevia'], ['Devin Bagaskara', 'Bagas']],
         links: [['📘', 'Flow Account Manager', 'Notion', 'https://app.notion.com/p/Flow-Account-Manager-2fe9b0fbceac808ba433d9149a7d0a4f'],
                 ['📗', 'VIP Group Monitoring', 'Tracking sheet', 'https://docs.google.com/spreadsheets/d/1nfn0cazlhz0Vck7vz5WikBnIV9LFTBWZXLfk8Q34xuk/edit?gid=480098290#gid=480098290'],
-                ['📒', 'VIP Group Masterlist', 'VIP data', 'https://docs.google.com/spreadsheets/d/1LRCBD_d1KjX1HQ4cIyAakXVlkPwQTg8mBv7E5QoMBkU/edit?gid=0#gid=0'],
+                ['📒', 'Dashboard VIP', 'VIP Masterlist (live)', '/dashboard-vip'],
                 ['🗂', 'CSO Workspace', 'Observation details', 'https://cso-workspace.vercel.app'], ['📚', 'Knowledge Base', 'Account Manager', '/knowledge-base#am'], ['🎯', 'Quiz', 'Practice & live quiz', '/quiz']] },
 };
 const CFG = CFGS[TEAM];
@@ -121,7 +125,7 @@ const T_ = (name, url, account, note) => ({ id: newId(), name, url, account: acc
 const TOOLS_BASE = () => ({
   Helpdesk: [T_('Qiscus Helpdesk', 'https://omnichannel.qiscus.com/web/welcome/coani-jj7bz2y9lonj4ky/login', 'helpdesk2@dps.globalxtreme.net'), T_('CSO Bali Email', '', 'cso.bali@globalxtreme.net'), T_('CSO Email', '', 'cso@globalxtreme.net'),
     T_('GX Connect', 'https://gxcsconnect.globalxtreme-solutions.net/login'), T_('GX Connect — Public Tickets', 'https://gxcsconnect.globalxtreme-solutions.net/public/tickets')],
-  VIP: [T_('VIP Masterlist', 'https://docs.google.com/spreadsheets/d/1LRCBD_d1KjX1HQ4cIyAakXVlkPwQTg8mBv7E5QoMBkU/edit?hl=id&gid=0#gid=0'), T_('VIP Bill Reminder (25th)', 'https://docs.google.com/spreadsheets/d/19mNgXyeEei_hIwdwS9gfphbzlbPVjdn-/edit?gid=138707526#gid=138707526'),
+  VIP: [T_('VIP Masterlist', '/dashboard-vip', '', 'Live VIP & Intracity group list'), T_('VIP Bill Reminder (25th)', 'https://docs.google.com/spreadsheets/d/19mNgXyeEei_hIwdwS9gfphbzlbPVjdn-/edit?gid=138707526#gid=138707526'),
     T_('DIA Outstanding Bills', 'https://docs.google.com/spreadsheets/d/1p2rNp5duqp8zvWIqDWFznzCkv4TUBXY3E2WJEd_J5U0/edit?usp=sharing'), T_('Survey UID', '', 'globalxtremG39A', 'Use this UID to open survey WOs.'),
     T_('GX Connect', 'https://gxcsconnect.globalxtreme-solutions.net/login', '', 'VIP case tracking & load monitoring.'), T_('GX Connect — Public Tickets', 'https://gxcsconnect.globalxtreme-solutions.net/public/tickets'),
     T_('Pak Ferre Project Overview', 'https://docs.google.com/spreadsheets/d/1kZod_oNU-eYa9vE6jXV2g0KvAJTbmPdCQyDM0cvFQdc/edit?gid=290041170#gid=290041170')],
@@ -166,12 +170,15 @@ function renderTools() {
   $('#tState').textContent = TL.secrets ? 'Passwords unlocked' : '';
   $('#tools').innerHTML = G.map((g, gi) => `<div class="tg"><div class="tg-h"><span>${esc(g.name)}</span><span class="cnt">${g.items.length}</span><span class="sp"></span>
       <span class="gedit"><button class="ib" data-gadd="${gi}">+ Tool</button><button class="ib" data-gren="${gi}">Rename</button><button class="ib" data-gdel="${gi}" style="color:var(--r)">Delete group</button></span></div>
-    ${g.items.length ? `<div class="trow head"><span>Tool</span><span>Email / Username</span><span>Password</span><span></span></div>` : '<div class="trow"><span style="color:var(--muted)">No tools yet.</span></div>'}
-    ${g.items.map((it, ii) => { const u = safeUrl(it.url) || (/^\//.test(it.url || '') ? it.url : '');
-      return `<div class="trow"><div class="nm">${esc(it.name)}${it.note ? `<small>${esc(it.note)}</small>` : ''}</div>
-        <div class="${it.account ? '' : 'emp'}"><span class="k">Email / Username</span>${it.account ? fld(esc(it.account), it.account) : '<div class="fld none"><code>—</code></div>'}</div>
-        <div class="${isAcct(it) ? '' : 'emp'}"><span class="k">Password</span>${isAcct(it) ? pwCell(it) : '<div class="fld none"><code>—</code></div>'}</div>
-        <div class="act2">${u ? `<a class="ib open" href="${esc(u)}"${/^https?:/.test(u) ? ' target="_blank" rel="noopener"' : ''}>Open ↗</a>` : ''}<span class="ed"><button class="ib" data-tedit="${gi}.${ii}">Edit</button><button class="ib" data-tdup="${gi}.${ii}">Duplicate</button></span></div></div>`; }).join('')}</div>`).join('')
+    ${(() => { const acc = g.items.map((it, ii) => ({ it, ii })).filter(x => isAcct(x.it)), lnk = g.items.map((it, ii) => ({ it, ii })).filter(x => !isAcct(x.it));
+      if (!g.items.length) return '<div class="trow"><span style="color:var(--muted)">No tools yet.</span></div>';
+      return (acc.length ? `<div class="trow head"><span>Account</span><span>Email / Username</span><span>Password</span><span></span></div>` + acc.map(({ it, ii }) => { const u = safeUrl(it.url) || (/^\//.test(it.url || '') ? it.url : '');
+        return `<div class="trow"><div class="nm">${esc(it.name)}${it.note ? `<small>${esc(it.note)}</small>` : ''}</div>
+          <div class="${it.account ? '' : 'emp'}"><span class="k">Email / Username</span>${it.account ? fld(esc(it.account), it.account) : '<div class="fld none"><code>—</code></div>'}</div>
+          <div><span class="k">Password</span>${pwCell(it)}</div>
+          <div class="act2">${u ? `<a class="ib open" href="${esc(u)}"${/^https?:/.test(u) ? ' target="_blank" rel="noopener"' : ''}>Open ↗</a>` : ''}<span class="ed"><button class="ib" data-tedit="${gi}.${ii}">Edit</button><button class="ib" data-tdup="${gi}.${ii}">Duplicate</button></span></div></div>`; }).join('') : '')
+      + (lnk.length ? `<div class="lnks">${acc.length ? '<span class="lnks-h">Links</span>' : ''}${lnk.map(({ it, ii }) => { const u = safeUrl(it.url) || (/^\//.test(it.url || '') ? it.url : ''), ext = /^https?:/.test(u);
+        return `<span class="lk2"><a href="${esc(u || '#')}"${ext ? ' target="_blank" rel="noopener"' : ''} title="${esc(it.note || u)}"><b>${esc(it.name)}</b>${it.note ? `<small>${esc(it.note)}</small>` : ''}<em>${ext ? '↗' : '→'}</em></a><span class="ed"><button class="ib" data-tedit="${gi}.${ii}">Edit</button><button class="ib" data-tdup="${gi}.${ii}">Dup</button></span></span>`; }).join('')}</div>` : ''); })()}</div>`).join('')
     + (TL.edit ? '<p><button class="btn" data-gnew="1">+ New group</button></p>' : '');
 }
 async function unlock(e) {

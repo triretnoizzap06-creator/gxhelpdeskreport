@@ -8,6 +8,7 @@
 //   DELETE /api/todo?id=…
 //   GET    /api/todo?doc=spv-h1-2026        → { data, revision }   ·   POST { doc, data, revision }
 //   GET    /api/todo?doc=knowledge-base     → dibaca tim tanpa login (Knowledge Base, team-tools); POST tetap wajib login
+//   GET/POST /api/todo?vip=1               → Dashboard VIP (tim / SPV)
 //   GET    /api/todo?secrets=HD             → password tools tim (SPV / cookie tim GX_TEAM_PASSWORD)
 // Tim (tanpa login, hanya task yang di-assign ke timnya):
 //   GET    /api/todo?team=HD|AM             → { tasks }
@@ -101,6 +102,22 @@ export default async function handler(req, res) {
       return json(res, { error: 'method' }, 405);
     }
 
+    /* ---------- Dashboard VIP (clone Masterlist VIP & Intracity): tim (GX_TEAM_PASSWORD) atau SPV ---------- */
+    if (q.get('vip') != null) {
+      if (!authed(req) && !teamAuthed(req)) return json(res, { error: 'team-login-required' }, 401);
+      if (req.method === 'GET') {
+        const row = must(await db().from('gx_docs').select('data,revision,updated_at').eq('key', 'vip-masterlist').maybeSingle());
+        return json(res, row ? { ...row, spv: authed(req) } : { data: null, revision: null, spv: authed(req) });
+      }
+      if (req.method === 'POST') {
+        const b = await readJson(req);
+        if (!b.data || typeof b.data !== 'object' || !Array.isArray(b.data.tabs)) return json(res, { error: 'bad-payload' }, 400);
+        const r = must(await db().rpc('gx_doc_save', { p_key: 'vip-masterlist', p_data: b.data, p_revision: b.revision ?? null }));
+        if (r && r.conflict) return json(res, { error: 'conflict', revision: r.revision }, 409);
+        return json(res, { ok: true, revision: r.revision });
+      }
+      return json(res, { error: 'method' }, 405);
+    }
     /* ---------- Password tools tim: hanya SPV atau tim yang sudah memasukkan password tim ---------- */
     if (req.method === 'GET' && q.get('secrets')) {
       const team = q.get('secrets');

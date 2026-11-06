@@ -142,7 +142,7 @@ main{max-width:1400px;margin:0 auto;padding:22px 20px 60px}
 
   <!-- ================= REPORT H1 ================= -->
   <section id="tab-h1" class="hidden">
-    <div class="h2t" style="margin-top:0">Riwayat Management Report</div>
+    <div class="h2t" style="margin-top:0">Management Report history</div>
     <div class="mrh" id="mrHist"></div>
     <div class="mrbar" id="mrBar"></div>
     <div id="mrDeck"></div>
@@ -235,16 +235,26 @@ const SEED_H2 = {"2026-07":[["DAILY","General","Cashier + Setor + Email",[{"labe
 const SEEDS = { ...Object.fromEntries(Object.entries(SEED_H2).map(([m, rows]) => [m, rows.map(([section, category, title, links, priority, status, remarks], i) => ({ month: m, section, category, title, links, priority, status, remarks, sort: i, assignee: '', team: null, due: null }))])), '2026-10': SEED_OCT };
 /* Task bulanan tim: update INV VIP di Reminder Bill 25 (pembagian dari Putri) */
 const INV25_NOTE = 'Guys ini aku bagi biar per tanggal 25 langsung update inv vip di link ini yaa, ada di desc group jugaa';
-const INV25 = [
-  ['AM', 'Devin Bagaskara', 'Gilangram Management, Betrand'],
-  ['AM', 'Ni Kadek Desi Mirayani', 'Balinest, Red Cubic'],
-  ['HD', 'Kadek Arisita Dhyana Putri', 'BnB Profits, Saridewi'],
-  ['AM', 'Aulia Sevi Diana', 'Canggu Property M, Taman Bali Surga/BVM, Padma'],
-  ['HD', 'A.A Ngurah Kiyana Adhisa Oka Pertama', 'Taufik Hidayat'],
-  ['HD', 'Nilma Syahrani', 'Mr. Arnaulth, Pepito - Crossfit'],
+const INV25 = [   // [team, assignee, group, link Account Data, label, cara kirim (dari Notes Reminder Bill; nomor & email disembunyikan)]
+  ["AM", "Devin Bagaskara", "Gilangram Management", "https://docs.google.com/spreadsheets/d/1Et-GM39oxxHWCMBd-1Xx10LoN-XJbUGY/edit?rtpof=true&sd=true&gid=1217008808", "Account Data - Gilangram.xlsx", "- Update datasheet setiap tanggal 25\n- Collect invoice setiap akun dan jadikan 1 file zip\n- Pengiriman data melalui WAG CS GlobalXtreme - GilangramG23 X PTBALI\n- Customer bayar ke rekening umum secara gabungan jadi perlu di requestkan pp manual ke tim Accounting"],
+  ["AM", "Devin Bagaskara", "Betrand", "https://docs.google.com/spreadsheets/d/12Gw8aC-tIs7YcfHa0jy3T9r8mKWbRlXEkEcc6zOtwqA/edit?gid=1493224800", "Account Data - Mr Betrand", "- Proforma Recap Payment"],
+  ["AM", "Ni Kadek Desi Mirayani", "Balinest", "https://docs.google.com/spreadsheets/d/1s4gZCN-CdpuoNbD2nx6fEbZM7MFD42y5yqhrbO1AgmY/edit?gid=0", "Account Data Balinest", "- Update datasheet setiap tanggal 25\n- Collect invoice setiap akun dan jadikan 1 file zip\n- Pengiriman data melalui Personal WhatsApp (nomor: lihat Notes di Reminder Bill) Rani\n- Customer bayar ke rekening umum secara gabungan jadi perlu di requestkan pp manual ke tim Accounting"],
+  ["AM", "Ni Kadek Desi Mirayani", "Red Cubic", "https://docs.google.com/spreadsheets/d/1aA_yra0tXmTaMYOYVwLOXUArXsccZUWai7J6ZxgMezs/edit?gid=1043923739", "Account Data - Red Cubic", "- Update datasheet setiap tanggal 25\n- Collect invoice setiap akun dan kirim recap dalam bentuk pdf\n- Pengiriman data melalui WAG Global Xtreme + Red Cubic (Pak Iren)\n- Customer bayar ke rekening VA"],
+  ["HD", "Kadek Arisita Dhyana Putri", "BnB Profits", "https://docs.google.com/spreadsheets/d/12sLzL9UhOcM36bObptN7ugbvBSwiHkeMGAmZ3l99V_w/edit?gid=515107595", "Account Data - Bnb Profits Management", "- Update datasheet setiap tanggal 25\n- Collect invoice setiap akun dan jadikan 1 file zip\n- Pengiriman data melalui Personal WhatsApp (nomor: lihat Notes di Reminder Bill) Thaddy\n- Customer bayar ke rekening umum secara gabungan jadi perlu di requestkan pp manual ke tim Accounting"],
+  ["HD", "Kadek Arisita Dhyana Putri", "Saridewi", "https://docs.google.com/spreadsheets/d/1q_w1NJmm7ZSKFFplDHqMeIMNFuxpKWMJhZm0ZwiAksM/edit?gid=381579160", "Account Data Saridewi", "- Update datasheet setiap tanggal 25\n- Collect invoice setiap akun dan kirim rekap tagihan dalam bentuk excel\n- Pengiriman data melalui email, contohnya: GlobalXtreme Invoice April 2026 (Ni Nyoman Saridewi)\n- Customer bayar ke rekening VA"],
+  ["AM", "Aulia Sevi Diana", "Canggu Property M", "https://docs.google.com/spreadsheets/d/1FGHASyYM3tNN0of0iNYPWr4spoOHs6hQzFlSu65N8YU/edit?gid=102828758", "Account Data CPM", "- Update datasheet setiap tanggal 25 dan verifikasi ke Dewi Accounting (nomor: lihat Notes di Reminder Bill)\n- Setelah datasheet valid selanjutnya request ke tim Billing Helpdesk untuk collect invoice setiap akun dan buat proforma invoice gabungan seluruh akun\n- Pengiriman data melalui email\n- Customer bayar ke rekening umum secara gabungan jadi perlu di requestkan pp manual ke tim Accounting"],
+  ["AM", "Aulia Sevi Diana", "Taman Bali Surga/BVM", "https://docs.google.com/spreadsheets/d/1OaOnCeFxpnnHa77S0uk63d1yUBwDXWO_KAWPYw5nMhM/edit?gid=189797170", "Account Data - PT. Taman Bali Surga BVM", "- Update datasheet setiap tanggal 25\n- Collect invoice setiap akun dan kirim recap tagihan dalam bentuk excel\n- Pengiriman data melalui email, contohnya: GlobalXtreme: Informasi Tagihan Periode Maret 2026\n- Customer bayar ke umum jadi perlu di request pp secara manual"],
+  ["AM", "Aulia Sevi Diana", "Padma", "https://docs.google.com/spreadsheets/d/1uJ21Hj3kLh56d995c7ZHsknwCEK80TK7zY3mFVx0aPQ/edit?gid=1167312639", "Account data - Padma", "- Update datasheet setiap tanggal 25\n- Collect invoice setiap akun dan kirim recap tagihan dalam bentuk pdf\n- Pengiriman data melalui WAG Padma beserta invoice."],
+  ["HD", "A.A Ngurah Kiyana Adhisa Oka Pertama", "Taufik Hidayat", "https://docs.google.com/spreadsheets/d/1SY-fZU9yDPhcYu8SjUC_YYcmUYidpownoIoYJN5e4tY/edit?gid=1689818546", "Account Data - Pak Taufik", "- Update datasheet setiap tanggal 25\n- Pengiriman Rekap Tagihan ke Personal WhatsApp (nomor: lihat Notes di Reminder Bill) Bapak Taufik\n- Recap PDF dan Bill Statement"],
+  ["HD", "Nilma Syahrani", "Mr. Arnaulth", "https://docs.google.com/spreadsheets/d/1N2IavLqhuEfShxrjl2V1tiMAegcZJCePJ46Gen4oe9Y/edit?gid=1178067472", "Account Data Mr. Arnaulth", "- Update datasheet setiap tanggal 25\n- Collect invoice setiap akun dan kirim recap dalam bentuk pdf\n- Pengiriman data melalui Personal WhatsApp, file terpisah jangan di buat zip (nomor: lihat Notes di Reminder Bill) Mr. Arnault)\n- Customer bayar ke rekening umum secara gabungan jadi perlu di requestkan pp manual ke tim Accounting"],
+  ["HD", "Nilma Syahrani", "Pepito - Crossfit", "https://docs.google.com/spreadsheets/d/1iS7hbCKTmfzBFizQ2NuDwRCKmGi8De4m8oZavhbJM-s/edit?gid=834978781", "Account Data Pepito", "- Update datasheet setiap tanggal 25\n- Create proforma untuk recap peyment seluruh akun\n- Pengiriman proforma melalui WAG Pepito beserta link sheet\n- Customer bayar ke rekening umum secara gabungan jadi perlu di requestkan pp manual ke tim Accounting"],
 ];
-const inv25Title = groups => 'Update INV VIP tgl 25 — ' + groups;
-const inv25Tasks = ym => INV25.map(([team, assignee, groups], i) => ({ month: ym, section: 'MONTHLY', category: 'VIP', title: inv25Title(groups), links: [L('Reminder Bill 25 — VIP & Intracity', T_LINK.bill + '#gid=138707526')], priority: 'High', status: 'NOT STARTED', remarks: INV25_NOTE, sort: 900 + i, assignee, team, due: ym + '-25' }));
+const inv25Title = group => 'Update INV VIP tgl 25 — ' + group;
+const inv25Tasks = ym => INV25.map(([team, assignee, group, url, label, how], i) => ({ month: ym, section: 'MONTHLY', category: 'VIP', title: inv25Title(group),
+  links: [L(label || 'Account Data', url), L('Reminder Bill 25 — VIP', T_LINK.bill + '#gid=138707526')].filter(l => l.url), priority: 'High', status: 'NOT STARTED',
+  remarks: INV25_NOTE + '\n\nCara kirim (' + group + '):\n' + how, sort: 900 + i, assignee, team, due: ym + '-25' }));
+/* task gabungan versi lama (1 task berisi beberapa group) → diganti 1 task per group */
+const inv25Legacy = () => ST.tasks.filter(t => t.team && /^Update INV VIP tgl 25 — /.test(t.title) && !INV25.some(r => inv25Title(r[2]) === t.title));
 const DIA_NEW = 'https://docs.google.com/spreadsheets/d/1p2rNp5duqp8zvWIqDWFznzCkv4TUBXY3E2WJEd_J5U0/edit?usp=sharing';
 
 /* ======================= Report H1 2026 (replika pulp-stove-83526355.figma.site) ======================= */
@@ -406,7 +416,7 @@ function fillMonths() {
   const miss = Object.keys(SEEDS).filter(m => !ST.months.includes(m));
   $('#importBtn').classList.toggle('hidden', !(ST.mode === 'online' && miss.length));
   $('#importBtn').textContent = 'Import Monthly Tracker (' + miss.map(m => ymLabel(m).replace(/ \d{4}$/, '').slice(0, 3)).join(', ') + ' 2026)';
-  $('#inv25Btn').classList.toggle('hidden', !(ST.month >= '2026-11' && ST.mode !== 'error' && inv25Missing().length));
+  $('#inv25Btn').classList.toggle('hidden', !(ST.month >= '2026-11' && ST.mode !== 'error' && (inv25Missing().length || inv25Legacy().length)));
   $('#copyBtn').classList.toggle('hidden', ST.tasks.length > 0);
 }
 const asKey = t => t.team ? (t.assignee ? `${t.team}:${t.assignee}` : `${t.team}:*`) : '';
@@ -535,9 +545,10 @@ $('#importBtn').onclick = async () => {
 };
 function inv25Missing() { const have = new Set(ST.tasks.filter(t => t.team).map(t => t.team + '|' + t.assignee + '|' + t.title)); return inv25Tasks(ST.month).filter(t => !have.has(t.team + '|' + t.assignee + '|' + t.title)); }
 $('#inv25Btn').onclick = async () => {
-  const add = inv25Missing(); if (!add.length) return toast('Task INV VIP tgl 25 bulan ini sudah lengkap');
-  if (!confirm(`Buat ${add.length} task tim "Update INV VIP tgl 25" untuk ${ymLabel(ST.month)} (due ${ST.month}-25)?\n\n` + add.map(t => '• ' + t.assignee.split(' ').slice(-1)[0] + ' — ' + t.title.split('— ')[1]).join('\n'))) return;
+  const add = inv25Missing(), old = inv25Legacy(); if (!add.length && !old.length) return toast('Task INV VIP tgl 25 bulan ini sudah lengkap');
+  if (!confirm(`${add.length} task "Update INV VIP tgl 25" (1 task per group, due ${ST.month}-25) untuk ${ymLabel(ST.month)}:\n\n` + add.map(t => '• ' + nickOf(t.assignee) + ' — ' + t.title.split('— ')[1]).join('\n') + (old.length ? `\n\n${old.length} task gabungan versi lama akan dihapus.` : ''))) return;
   for (const t of add) if (!(await saveTask(t))) return;
+  for (const t of old) await delTask(t.id);
   toast(`${add.length} task tim dibuat ✓`); fillMonths();
 };
 /* DIA: mulai Nov 2026 pakai sheet Outstanding Bills — Dedicated Package yang baru */
@@ -576,7 +587,7 @@ function renderH1() {
   $('#h1nav').innerHTML = `<button data-go="${pages[Math.max(0, i - 1)][0]}">←</button>${pages.map(([k, l]) => `<button data-go="${k}" aria-pressed="${k === R.page}">${l}</button>`).join('')}<button data-go="${pages[Math.min(pages.length - 1, i + 1)][0]}">→</button>
     <span style="font-size:12px;color:var(--muted);margin-left:8px">${i + 1} / ${pages.length}</span>
     <button class="btn sm ed" id="edToggle">${R.edit ? '✓ Selesai edit' : '✎ Edit report'}</button>${R.edit ? '<button class="btn sm danger" id="edReset" title="Kembalikan ke isi awal report H1">Reset ke versi awal</button>' : ''}
-    <button class="btn sm" id="h1Slides">▶ Lihat sebagai slide</button>`;
+    <button class="btn sm" id="h1Slides">▶ View as slides</button>`;
   const wrap = $('#h1wrap'); wrap.classList.toggle('editing', R.edit);
   const P = $('#h1page'), C = D.cover;
   if (R.page === 'cover') {
@@ -653,12 +664,12 @@ $('#h1wrap').addEventListener('click', e => {
 const PREP = { by: 'Tri Retno Izza Pramusthi', role: 'Customer Service Supervisor', division: 'Customer Service Division' };
 const REPORTS = [];
 for (let y = 2026; y <= 2030; y++) {
-  REPORTS.push(y === 2026 ? { key: 'h1-2026', year: y, half: 1, title: 'Report H1 2026', period: 'Januari – Juni 2026', h1: true }
-    : { key: `h1-${y}`, year: y, half: 1, title: `Report H1 ${y}`, period: `Januari – Juni ${y}`, from: `${y}-01`, to: `${y}-06` });
-  REPORTS.push({ key: `h2-${y}`, year: y, half: 2, title: `Report H2 ${y}`, period: `Juli – Desember ${y}`, from: `${y}-07`, to: `${y}-12` });
+  REPORTS.push(y === 2026 ? { key: 'h1-2026', year: y, half: 1, title: 'Report H1 2026', period: 'January – June 2026', h1: true }
+    : { key: `h1-${y}`, year: y, half: 1, title: `Report H1 ${y}`, period: `January – June ${y}`, from: `${y}-01`, to: `${y}-06` });
+  REPORTS.push({ key: `h2-${y}`, year: y, half: 2, title: `Report H2 ${y}`, period: `July – December ${y}`, from: `${y}-07`, to: `${y}-12` });
 }
 const repState = r => { const now = ymNow(), from = r.from || '2026-01', to = r.to || '2026-06'; return now > to ? 'done' : now < from ? 'next' : 'now'; };
-const REP_TAG = { done: 'RIWAYAT', now: 'BERJALAN', next: 'AKAN DATANG' };
+const REP_TAG = { done: 'ARCHIVE', now: 'IN PROGRESS', next: 'UPCOMING' };
 const MR = { sel: (REPORTS.find(r => repState(r) === 'now') || REPORTS[1]).key, rev: {}, h1edit: false, snap: {}, year: null };
 try { const k = localStorage.getItem('gx-spv-mr'); if (REPORTS.some(r => r.key === k)) MR.sel = k; } catch (e) {}
 const viewerUrl = key => new URL('/management-report?r=' + key, location.href).href;
@@ -684,28 +695,28 @@ async function publish(key, snap) {
 function renderHist() {
   const sel = REPORTS.find(r => r.key === MR.sel), yr = MR.year || sel.year;
   $('#mrHist').innerHTML = `<div class="mryr">${[...new Set(REPORTS.map(r => r.year))].map(y => `<button class="btn sm" data-mr-year="${y}" aria-pressed="${y === yr}">${y}</button>`).join('')}</div>`
-    + REPORTS.filter(r => r.year === yr).map(r => { const st = repState(r); return `<button class="mrc" data-mr-open="${r.key}" aria-pressed="${r.key === MR.sel}"><span class="tg ${st === 'now' ? '' : 'arc'}">${REP_TAG[st]}</span><b>${esc(r.title)}</b><span>${esc(r.period)} · ${r.h1 ? 'Arsip · bisa diedit' : st === 'next' ? 'Terisi otomatis saat to-do bulan itu dibuat' : 'Otomatis dari Personal To-Do List'}</span></button>`; }).join('');
+    + REPORTS.filter(r => r.year === yr).map(r => { const st = repState(r); return `<button class="mrc" data-mr-open="${r.key}" aria-pressed="${r.key === MR.sel}"><span class="tg ${st === 'now' ? '' : 'arc'}">${REP_TAG[st]}</span><b>${esc(r.title)}</b><span>${esc(r.period)} · ${r.h1 ? 'Archive · editable' : st === 'next' ? 'Fills in automatically from the to-do list' : 'Auto-generated from the personal to-do list'}</span></button>`; }).join('');
 }
 async function openReport(key) {
   MR.sel = key; MR.year = REPORTS.find(r => r.key === key).year; try { localStorage.setItem('gx-spv-mr', key); } catch (e) {}
   renderHist();
   const def = REPORTS.find(r => r.key === key), url = viewerUrl(key);
-  $('#mrBar').innerHTML = `<b style="font-size:13px">Link viewer:</b><code title="${esc(url)}">${esc(url)}</code><button class="btn sm" data-mr-copy="${key}">Salin link</button><a class="btn sm" href="/management-report?r=${key}" target="_blank" rel="noopener">Buka viewer ↗</a><span class="grow"></span>
-    ${def.h1 ? `<button class="btn sm" data-mr-h1edit>${MR.h1edit ? '▶ Lihat sebagai slide' : '✎ Edit report H1'}</button>` : '<button class="btn sm" data-mr-refresh>↻ Perbarui dari to-do</button>'}<span id="mrPub" style="font-size:12px;color:var(--muted)"></span>`;
+  $('#mrBar').innerHTML = `<b style="font-size:13px">Viewer link:</b><code title="${esc(url)}">${esc(url)}</code><button class="btn sm" data-mr-copy="${key}">Copy link</button><a class="btn sm" href="/management-report?r=${key}" target="_blank" rel="noopener">Open viewer ↗</a><span class="grow"></span>
+    ${def.h1 ? `<button class="btn sm" data-mr-h1edit>${MR.h1edit ? '▶ View as slides' : '✎ Edit H1 report'}</button>` : '<button class="btn sm" data-mr-refresh>↻ Refresh from to-do</button>'}<span id="mrPub" style="font-size:12px;color:var(--muted)"></span>`;
   const editing = !!(def.h1 && MR.h1edit);
   $('#h1wrap').classList.toggle('hidden', !editing); $('#mrDeck').classList.toggle('hidden', editing);
   if (editing) { renderH1(); return; }
-  $('#mrDeck').innerHTML = '<div class="empty">Menyiapkan report…</div>';
+  $('#mrDeck').innerHTML = '<div class="empty">Preparing report…</div>';
   const snap = def.h1 ? h1Snap() : await autoSnap(def); if (!snap) return;
   MR.snap[key] = snap;
   MReport.render($('#mrDeck'), snap);
   const ok = await publish(key, snap);
-  const st = $('#mrPub'); if (st) st.textContent = ok ? (ST.mode === 'preview' ? 'Preview — viewer membaca data browser ini' : 'Viewer ter-update ✓') : '';
+  const st = $('#mrPub'); if (st) st.textContent = ok ? (ST.mode === 'preview' ? 'Preview — viewer reads this browser’s data' : 'Viewer updated ✓') : '';
 }
 $('#tab-h1').addEventListener('click', async e => {
   const yb = e.target.closest('[data-mr-year]'); if (yb) { MR.year = +yb.dataset.mrYear; const r = REPORTS.find(x => x.year === MR.year && repState(x) !== 'next') || REPORTS.find(x => x.year === MR.year); MR.h1edit = false; return openReport(r.key); }
   const o = e.target.closest('[data-mr-open]'); if (o) { MR.h1edit = false; return openReport(o.dataset.mrOpen); }
-  const c = e.target.closest('[data-mr-copy]'); if (c) { const u = viewerUrl(c.dataset.mrCopy); try { await navigator.clipboard.writeText(u); toast('Link viewer disalin ✓'); } catch (er) { prompt('Salin link viewer:', u); } return; }
+  const c = e.target.closest('[data-mr-copy]'); if (c) { const u = viewerUrl(c.dataset.mrCopy); try { await navigator.clipboard.writeText(u); toast('Viewer link copied ✓'); } catch (er) { prompt('Copy viewer link:', u); } return; }
   if (e.target.closest('[data-mr-refresh]')) return openReport(MR.sel);
   if (e.target.closest('[data-mr-h1edit]')) { MR.h1edit = !MR.h1edit; return openReport('h1-2026'); }
 });

@@ -16,6 +16,12 @@ Team Dashboard (terbuka):
 - `/dashboard-am` → To-Do List Account Manager VIP
 - `/knowledge-base` → Knowledge Base: 50 materi (Info Helpdesk, Administrasi, Teknis, Handling & Kebijakan) + quiz per materi + link referensi (edit hanya SPV yang login)
 
+## Update: Dashboard VIP, INV tgl 25 per group, deck report baru
+- `/dashboard-vip` → clone Masterlist VIP & Intracity (semua tab). Terkunci: password tim (`GX_TEAM_PASSWORD`) atau login SPV.
+  Isi pertama kali: buka Google Sheet Masterlist → File → Download → Microsoft Excel (.xlsx) → di Dashboard VIP klik **⤓ Import .xlsx** (hanya SPV). Setelah itu tim bisa tambah/edit group langsung di dashboard.
+- Personal To-Do List → bulan November → **+ Task INV VIP tgl 25** sekarang membuat 12 task (1 per group) lengkap dengan link Account Data & cara kirim dari Notes Reminder Bill. Task gabungan versi lama otomatis dihapus.
+- Management Report: deck baru (English, grafik animasi, key insights). Viewer link tetap sama.
+
 ## Kalau halaman bilang "env belum diisi" padahal sudah diisi di Vercel
 1. Buka **/api/health** → bagian `env` menunjukkan env mana yang terbaca (true/false) di deployment yang sedang live. Nilai tidak pernah ditampilkan.
 2. Env baru **tidak berlaku untuk deployment lama** → Vercel → Deployments → deployment teratas → ⋯ → **Redeploy**.

@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Dashboard VIP · GX CS</title>
+<link rel="icon" href="mark.png">
+<style>
+:root{--bg:#F5F5F7;--card:#fff;--ink:#1D1D1F;--muted:#6E6E73;--line:#E5E5EA;--y:#F5C518;--acc:#7C3AED;--accbg:#EDE9FE;--g:#16A34A;--gbg:#DCFCE7;--r:#DC2626;--rbg:#FEE2E2;
+  --font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:10px 20px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top img{height:24px;display:block}.top .sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;color:inherit;white-space:nowrap}
+.btn.pri{background:var(--ink);color:#fff;border-color:var(--ink)}.btn.sm{padding:5px 9px;font-size:12px}.btn.danger{color:var(--r)}.btn[disabled]{opacity:.5;cursor:default}
+main{max-width:1500px;margin:0 auto;padding:24px 20px 60px}
+.hero{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.hero .ic{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#C4B5FD,#7C3AED);font-size:24px}
+.hero h1{margin:0;font-size:24px}.hero p{margin:3px 0 0;color:var(--muted);font-size:13.5px}.hero .sp{flex:1}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}.kpi span{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.kpi b{font-size:22px;font-weight:800}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tab{border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer}.tab[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}.tab small{opacity:.6;margin-left:5px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}.bar .sp{flex:1}
+.bar input[type=search],.bar select{border:1px solid var(--line);border-radius:9px;padding:8px 11px;background:#fff;min-width:220px}
+.sheet{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:auto;max-height:calc(100vh - 290px)}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
+th{position:sticky;top:0;z-index:2;background:#FAFAFA;text-align:left;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #F1F1F3;vertical-align:top;max-width:360px}
+tr:hover td{background:#FCFCFD}
+td.no{color:var(--muted);font-variant-numeric:tabular-nums;width:40px}
+td .txt{white-space:pre-line;line-height:1.45}
+td.money{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;text-decoration:none;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis}
+.chip.wa{background:#DCFCE7;color:#166534}.chip.doc{background:#EDE9FE;color:#5B21B6}.chip.lnk{background:#FFF6D1;color:#7A5B00}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:99px;background:#F4F4F5;color:#3F3F46}
+.tag.out{background:var(--rbg);color:#991B1B}.tag.keep{background:var(--gbg);color:#166534}
+.editing td[data-c]{cursor:text}.editing td[data-c]:hover{outline:2px solid #FDE68A;outline-offset:-2px}
+td textarea{width:100%;min-width:180px;border:1px solid var(--y);border-radius:6px;padding:5px 7px;font-size:13px;resize:vertical}
+.rowdel{display:none}.editing .rowdel{display:inline-flex}
+.lock{max-width:460px;margin:60px auto;background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px;text-align:center}
+.lock h2{margin:0 0 6px}.lock p{color:var(--muted);font-size:14px;margin:0 0 16px}.lock form{display:flex;gap:8px}.lock input{flex:1;border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+.empty{background:#fff;border:1px dashed var(--line);border-radius:14px;padding:30px;text-align:center;color:var(--muted)}
+.md{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.mdb{width:100%;max-width:560px;background:#fff;border-radius:16px;padding:20px 22px;box-shadow:0 30px 80px rgba(0,0,0,.3)}.mdb h3{margin:0 0 10px}.mdb p{font-size:13.5px;color:var(--muted);line-height:1.5}
+.f{margin-bottom:10px}.f label{display:block;font-size:11.5px;font-weight:700;color:var(--muted);margin-bottom:4px}.f input,.f textarea{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 10px}
+.mfoot{display:flex;gap:8px;align-items:center;margin-top:8px}.mfoot .sp{flex:1}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1D1D1F;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:80;opacity:0;transition:opacity .2s}.toast.on{opacity:1}
+#state{font-size:12px;color:var(--muted)}
+.hidden{display:none!important}
+@media (max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}main{padding:16px 12px 50px}.top{padding:10px 12px}.bar input[type=search]{min-width:0;flex:1}.sheet{max-height:none}}
+</style>
+</head>
+<body>
+<header class="top"><a href="/"><img src="wordmark.png" alt="GlobalXtreme"></a><div class="sp"></div><a class="btn" href="/dashboard-am">Dashboard AM</a><a class="btn" href="/">Home</a></header>
+<main id="app"><div class="empty">Loading…</div></main>
+<div class="toast" id="toast"></div>
+<script src="xlsx.full.min.js"></script><!-- SheetJS 0.18.5 (Apache-2.0) — for importing the Google Sheets .xlsx -->
+<script>
+/* Dashboard VIP — clone of "Masterlist VIP & Intracity Group" (all tabs). Data lives in Supabase (doc vip-masterlist),
+   readable/editable only by the team (GX_TEAM_PASSWORD) or the SPV. Nothing is stored in the code. */
+const $ = s => document.querySelector(s), app = $('#app');
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const safeUrl = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : '';
+function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2600); }
+async function jget(u, opt) { try { const r = await fetch(u, { cache: 'no-store', credentials: 'same-origin', ...opt }); let j = null; try { j = await r.json(); } catch (e) {} return { status: r.status, j }; } catch (e) { return null; } }
+const V = { data: null, rev: null, spv: false, online: true, tab: 0, q: '', f: '', edit: false };
+const newId = () => 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const isMoney = c => /revenue|mrr|tagihan|amount|price/i.test(c);
+const isNotes = c => /^notes?$/i.test(c.trim());
+const money = v => { const n = +String(v || '').replace(/[^\d]/g, ''); return Number.isFinite(n) ? n : 0; };
+const rp = n => 'Rp' + n.toLocaleString('id-ID');
+
+async function load() {
+  const r = await jget('/api/todo?vip=1');
+  if (!r || !r.j) { V.online = false; V.spv = true; try { V.data = JSON.parse(localStorage.getItem('gx-preview-vip') || 'null'); } catch (e) {} return render(); }
+  if (r.status === 401) return lockScreen();
+  if (r.status !== 200) { app.innerHTML = `<div class="empty">Could not load: ${esc(r.j.detail || r.j.error || r.status)}</div>`; return; }
+  V.data = r.j.data; V.rev = r.j.revision; V.spv = !!r.j.spv; render();
+}
+function lockScreen() {
+  app.innerHTML = `<div class="lock"><div style="font-size:34px">🔒</div><h2>Dashboard VIP</h2><p>This page contains customer data. Enter the team password to continue.</p>
+    <form id="unl"><input type="password" id="pw" placeholder="Team password" autocomplete="current-password" required><button class="btn pri">Unlock</button></form>
+    <p style="margin:14px 0 0;font-size:12.5px">SPV? <a href="#" id="spvl">Log in with the dashboard password</a></p></div>`;
+  $('#unl').onsubmit = async e => { e.preventDefault(); const r = await jget('/api/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ team: 1, password: $('#pw').value }) });
+    if (r && r.status === 200) load(); else toast(r && r.j && r.j.error === 'team-not-configured' ? 'Team password is not set yet (GX_TEAM_PASSWORD)' : 'Wrong password'); };
+  $('#spvl').onclick = e => { e.preventDefault(); const el = document.createElement('div'); el.className = 'md';
+    el.innerHTML = `<div class="mdb" style="max-width:420px"><h3>SPV login</h3><form method="post" action="/api/login"><input type="hidden" name="next" value="/dashboard-vip"><div class="f"><input type="password" name="password" placeholder="Dashboard password" required autofocus></div><div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>Cancel</button><button class="btn pri">Log in</button></div></form></div>`;
+    document.body.appendChild(el); el.addEventListener('click', ev => { if (ev.target === el || ev.target.closest('[data-x]')) el.remove(); }); };
+}
+function cell(col, v, link) {
+  const u = safeUrl(link) || safeUrl(v);
+  if (!v && !u) return '<span style="color:#C4C4C8">—</span>';
+  if (/whatsapp/i.test(col) && u) return `<a class="chip wa" href="${esc(u)}" target="_blank" rel="noopener">WhatsApp group ↗</a>`;
+  if (u) return `<a class="chip ${/account|data/i.test(col) ? 'doc' : 'lnk'}" href="${esc(u)}" target="_blank" rel="noopener" title="${esc(u)}">${esc(safeUrl(v) ? (/account|data/i.test(col) ? 'Account data' : 'Open') : v)} ↗</a>`;
+  if (isNotes(col) && String(v).length <= 40) { const s = String(v); return `<span class="tag ${/take-?out/i.test(s) ? 'out' : /keep/i.test(s) ? 'keep' : ''}" style="white-space:pre-line">${esc(s)}</span>`; }
+  return `<span class="txt">${esc(v)}</span>`;
+}
+function render() {
+  if (!V.data || !V.data.tabs || !V.data.tabs.length) {
+    app.innerHTML = `<div class="hero"><div class="ic">💎</div><div><h1>Dashboard VIP</h1><p>Masterlist VIP & Intracity Group</p></div></div>
+      <div class="empty"><b>No data yet.</b><br><br>Import the Masterlist once: open the Google Sheet → <b>File → Download → Microsoft Excel (.xlsx)</b>, then upload it here.<br><br><button class="btn pri" id="imp">Import .xlsx</button></div>`;
+    $('#imp').onclick = pickFile; return;
+  }
+  const T = V.data.tabs[V.tab] || V.data.tabs[0], ql = V.q.toLowerCase();
+  const notesCol = T.cols.find(isNotes), salesCol = T.cols.find(c => /sales/i.test(c)), mCol = T.cols.find(isMoney);
+  const rows = T.rows.filter(r => (!ql || T.cols.some(c => String(r.cells[c] || '').toLowerCase().includes(ql))) && (!V.f || String(r.cells[salesCol] || '').trim() === V.f));
+  const keep = notesCol ? T.rows.filter(r => /keep/i.test(r.cells[notesCol] || '')).length : 0, out = notesCol ? T.rows.filter(r => /take-?out/i.test(r.cells[notesCol] || '')).length : 0;
+  const mrr = mCol ? T.rows.reduce((a, r) => a + money(r.cells[mCol]), 0) : 0;
+  const sales = salesCol ? [...new Set(T.rows.map(r => String(r.cells[salesCol] || '').trim()).filter(Boolean))].sort() : [];
+  app.innerHTML = `<div class="hero"><div class="ic">💎</div><div><h1>Dashboard VIP</h1><p>Masterlist VIP & Intracity Group · ${V.data.updatedAt ? 'last updated ' + esc(new Date(V.data.updatedAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })) : ''}</p></div><span class="sp"></span>
+      <span id="state"></span><button class="btn" id="edit">${V.edit ? '✓ Done' : '✎ Edit'}</button>${V.spv ? '<button class="btn" id="imp">⤓ Import .xlsx</button>' : ''}</div>
+    ${V.online ? '' : '<div class="empty" style="padding:10px;margin-bottom:12px;text-align:left"><b>Preview mode</b> — saved in this browser only.</div>'}
+    <div class="kpis"><div class="kpi"><span>Groups (${esc(T.name)})</span><b>${T.rows.length}</b></div>${mCol ? `<div class="kpi"><span>Total MRR</span><b>${rp(mrr)}</b></div>` : ''}${notesCol ? `<div class="kpi"><span>Keep</span><b style="color:var(--g)">${keep}</b></div><div class="kpi"><span>Take-out</span><b style="color:var(--r)">${out}</b></div>` : ''}</div>
+    <div class="tabs">${V.data.tabs.map((t, i) => `<button class="tab" data-tab="${i}" aria-pressed="${i === V.tab}">${esc(t.name)}<small>${t.rows.length}</small></button>`).join('')}</div>
+    <div class="bar"><input type="search" id="q" placeholder="Search group, sales, notes…" value="${esc(V.q)}">${sales.length ? `<select id="f"><option value="">All sales</option>${sales.map(s => `<option ${s === V.f ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>` : ''}<span class="sp"></span>
+      ${V.edit ? '<button class="btn pri" id="add">+ Add group</button><button class="btn" id="addcol">+ Column</button>' : ''}</div>
+    <div class="sheet ${V.edit ? 'editing' : ''}"><table><thead><tr><th>#</th>${T.cols.map(c => `<th>${esc(c)}</th>`).join('')}${V.edit ? '<th></th>' : ''}</tr></thead>
+      <tbody>${rows.map(r => { const i = T.rows.indexOf(r); return `<tr data-r="${esc(r.id)}"><td class="no">${i + 1}</td>${T.cols.map(c => `<td data-c="${esc(c)}" class="${isMoney(c) ? 'money' : ''}">${cell(c, r.cells[c], r.links && r.links[c])}</td>`).join('')}${V.edit ? `<td><button class="btn sm danger rowdel" data-del="${esc(r.id)}">✕</button></td>` : ''}</tr>`; }).join('') || `<tr><td colspan="${T.cols.length + 1}" style="color:var(--muted);padding:20px">No matching groups.</td></tr>`}</tbody></table></div>`;
+  $('#q').oninput = e => { V.q = e.target.value; const p = e.target.selectionStart; render(); const q = $('#q'); q.focus(); q.setSelectionRange(p, p); };
+  if ($('#f')) $('#f').onchange = e => { V.f = e.target.value; render(); };
+  $('#edit').onclick = () => { V.edit = !V.edit; render(); };
+  if ($('#imp')) $('#imp').onclick = pickFile;
+  if ($('#add')) $('#add').onclick = () => rowModal(null);
+  if ($('#addcol')) $('#addcol').onclick = () => { const n = prompt('New column name:'); if (n && n.trim() && !T.cols.includes(n.trim())) { T.cols.push(n.trim()); save(); render(); } };
+}
+function rowModal(id) {
+  const T = V.data.tabs[V.tab], r = id ? T.rows.find(x => x.id === id) : { id: newId(), cells: {}, links: {} };
+  const el = document.createElement('div'); el.className = 'md';
+  el.innerHTML = `<div class="mdb"><h3>${id ? 'Edit group' : 'Add group'} · ${esc(T.name)}</h3>
+    ${T.cols.map((c, k) => `<div class="f"><label>${esc(c)}</label><textarea data-k="${k}" rows="${isNotes(c) ? 3 : 1}">${esc(r.cells[c] || '')}</textarea>${/link|data|whatsapp/i.test(c) ? `<input data-l="${k}" placeholder="Link URL (optional) — https://…" value="${esc((r.links || {})[c] || '')}" style="margin-top:4px">` : ''}</div>`).join('')}
+    <div class="mfoot">${id ? '<button class="btn danger" data-act="del">Delete</button>' : ''}<span class="sp"></span><button class="btn" data-act="x">Cancel</button><button class="btn pri" data-act="ok">Save</button></div></div>`;
+  document.body.appendChild(el);
+  el.addEventListener('click', e => {
+    const b = e.target.closest('[data-act]'); if (e.target === el) return el.remove(); if (!b) return;
+    if (b.dataset.act === 'x') return el.remove();
+    if (b.dataset.act === 'del') { if (!confirm('Delete this group row?')) return; T.rows = T.rows.filter(x => x.id !== id); el.remove(); save(); render(); return; }
+    const cells = {}, links = {};
+    T.cols.forEach((c, k) => { cells[c] = el.querySelector(`[data-k="${k}"]`).value.trim(); const l = el.querySelector(`[data-l="${k}"]`); if (l && l.value.trim()) { if (!safeUrl(l.value)) return; links[c] = l.value.trim(); } });
+    if (!Object.values(cells).some(Boolean)) return alert('Fill in at least one field.');
+    if (id) Object.assign(r, { cells, links }); else T.rows.push({ id: r.id, cells, links });
+    el.remove(); save(); render();
+  });
+}
+let saveT = null;
+function save() {
+  V.data.updatedAt = new Date().toISOString();
+  if (!V.online) { try { localStorage.setItem('gx-preview-vip', JSON.stringify(V.data)); } catch (e) {} toast('Preview — saved in this browser only'); return; }
+  clearTimeout(saveT); const st = $('#state'); if (st) st.textContent = 'Saving…';
+  saveT = setTimeout(async () => {
+    const r = await jget('/api/todo?vip=1', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ data: V.data, revision: V.rev }) });
+    const s2 = $('#state');
+    if (r && r.status === 200) { V.rev = r.j.revision; if (s2) s2.textContent = 'Saved ✓'; }
+    else if (r && r.status === 409) { if (s2) s2.textContent = ''; toast('Someone else changed the list — reloading'); load(); }
+    else { if (s2) s2.textContent = ''; toast(r && r.status === 401 ? 'Session expired — unlock again' : 'Save failed'); }
+  }, 500);
+}
+/* ---------- import .xlsx (Google Sheets → File → Download → .xlsx) ---------- */
+function pickFile() { const i = document.createElement('input'); i.type = 'file'; i.accept = '.xlsx,.xls,.csv'; i.onchange = () => i.files[0] && importFile(i.files[0]); i.click(); }
+async function importFile(file) {
+  if (!window.XLSX) return toast('Importer failed to load');
+  const wb = XLSX.read(await file.arrayBuffer(), { type: 'array', cellStyles: false });
+  const tabs = [];
+  wb.SheetNames.forEach(name => {
+    const ws = wb.Sheets[name]; if (!ws['!ref']) return;
+    const R = XLSX.utils.decode_range(ws['!ref']), at = (r, c) => ws[XLSX.utils.encode_cell({ r, c })];
+    const val = (r, c) => { const x = at(r, c); return x ? String(x.w != null ? x.w : x.v).trim() : ''; };
+    let hr = -1; for (let r = R.s.r; r <= Math.min(R.e.r, R.s.r + 15) && hr < 0; r++) { let n = 0; for (let c = R.s.c; c <= R.e.c; c++) if (val(r, c)) n++; if (n >= 3) hr = r; }
+    if (hr < 0) return;
+    const cols = []; for (let c = R.s.c; c <= R.e.c; c++) { const h = val(hr, c); if (h) cols.push({ c, h: cols.some(x => x.h === h) ? h + ' ' + c : h }); }
+    const noCol = cols.find(x => /^no\.?$/i.test(x.h)), dataCols = cols.filter(x => x !== noCol);
+    const rows = [];
+    for (let r = hr + 1; r <= R.e.r; r++) {
+      const cells = {}, links = {}; let any = false;
+      dataCols.forEach(({ c, h }) => { const v = val(r, c), x = at(r, c); if (v) { cells[h] = v; any = true; } if (x && x.l && safeUrl(x.l.Target)) links[h] = x.l.Target; });
+      if (any) rows.push({ id: newId(), cells, links });
+    }
+    if (rows.length) tabs.push({ name, cols: dataCols.map(x => x.h), rows });
+  });
+  if (!tabs.length) return toast('No tables found in this file');
+  if (!confirm(`Import ${tabs.length} tab(s): ${tabs.map(t => `${t.name} (${t.rows.length})`).join(', ')}?\n\nThis replaces the current Dashboard VIP data.`)) return;
+  V.data = { tabs, updatedAt: new Date().toISOString(), source: file.name }; V.tab = 0; save(); render(); toast('Imported ✓');
+}
+app.addEventListener('click', e => {
+  const t = e.target.closest('[data-tab]'); if (t) { V.tab = +t.dataset.tab; V.f = ''; render(); return; }
+  const d = e.target.closest('[data-del]'); if (d) { const T = V.data.tabs[V.tab]; if (confirm('Delete this group row?')) { T.rows = T.rows.filter(x => x.id !== d.dataset.del); save(); render(); } return; }
+  if (V.edit && !e.target.closest('a,button')) { const tr = e.target.closest('tr[data-r]'); if (tr) rowModal(tr.dataset.r); }
+});
+load();
+</script>
+</body>
+</html>

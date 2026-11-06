@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -21,7 +21,7 @@ main{max-width:1240px;margin:0 auto;padding:22px 16px 40px}
 <body>
 <main>
   <div class="top"><img src="wordmark.png" alt="GlobalXtreme" id="wm"><h1 id="ttl">Management Report</h1><span class="sp"></span></div>
-  <div id="deck"><div class="msg">Memuat report…</div></div>
+  <div id="deck"><div class="msg">Loading report…</div></div>
 </main>
 <script src="mreport.js"></script>
 <script>
@@ -31,16 +31,16 @@ main{max-width:1240px;margin:0 auto;padding:22px 16px 40px}
   const p = new URLSearchParams(location.search), r = (p.get('r') || 'h2-2026').toLowerCase();
   const el = document.getElementById('deck');
   const fail = t => { el.innerHTML = `<div class="msg">${t}</div>`; };
-  if (!/^[a-z0-9-]{3,30}$/.test(r)) return fail('Link report tidak valid.');
+  if (!/^[a-z0-9-]{3,30}$/.test(r)) return fail('Invalid report link.');
   const show = S => { document.title = (S.title || 'Management Report') + ' · GX CS'; document.getElementById('ttl').textContent = S.title || 'Management Report'; MReport.render(el, S, { start: +(p.get('p') || 0) }); };
   fetch('/api/todo?doc=mr-' + r, { cache: 'no-store' }).then(async res => {
     let j = null; try { j = await res.json(); } catch (e) {}
     if (res.status === 200 && j && j.data && j.data.months) return show(j.data);
-    if (j) return fail('Report ini belum dipublish. Minta SPV membuka Management Report di Helpdesk Management sekali agar link viewer aktif.');
+    if (j) return fail('This report has not been published yet. Ask the SPV to open it once in Helpdesk Management to activate the viewer link.');
     throw new Error('no-api');
   }).catch(() => {
     let S = null; try { S = JSON.parse(localStorage.getItem('gx-preview-mr-' + r) || 'null'); } catch (e) {}
-    if (S && S.months) show(S); else fail('Mode preview — buka Management Report di halaman Helpdesk Management dulu.');
+    if (S && S.months) show(S); else fail('Preview mode — open the Management Report in Helpdesk Management first.');
   });
 })();
 </script>

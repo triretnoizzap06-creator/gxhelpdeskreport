@@ -987,7 +987,7 @@ const shortRange=(a,b)=>{const A=new Date(a),B=new Date(b);return A.getFullYear(
 
 /* ---------- settings ---------- */
 const LS='gxcs-report-v5';
-const DEF_RC={woLink:'',hdOrigin:'Sales Representative',vipOrigin:'VIP WhatsApp Group',actValues:'Activation',complaintOnly:true,skipCanceled:true,allOrigins:false,excludeCats:'Billing, Account, Package, Termination, Administration'};
+const DEF_RC={woLink:'',hdOrigin:'Sales Representative',vipOrigin:'VIP WhatsApp Group',actValues:'Activation',complaintOnly:true,skipCanceled:true,allOrigins:false,excludeCats:'Billing, Account, Package, Termination, Administration',excludeProblems:'Working Result, Billing Issue',excludeBranches:'Malang'};
 const DEF_S=()=>({excl:'DotAI, AI',vis:{},edits:{},chart:{},blocks:{},order:[],anim:'subtle',rc:{...DEF_RC},period:{mode:'all',from:'',to:''},imports:[],cur:'cover'});
 let S=DEF_S();
 try{const o=JSON.parse(localStorage.getItem(LS)||'null');if(o&&typeof o==='object')S={...S,...o,rc:{...DEF_RC,...(o.rc||{})},period:{...S.period,...(o.period||{})},chart:o.chart||{},vis:o.vis||{},edits:o.edits||{},blocks:o.blocks||{},order:Array.isArray(o.order)?o.order:[],anim:o.anim||'subtle',imports:Array.isArray(o.imports)?o.imports:[]}}catch(e){}
@@ -1350,7 +1350,7 @@ function rcAnalyze(rep){
   const PXI=[...new Set([I.product,...(R.map.pkgx||[]).map(h=>R.headers.indexOf(h))].filter(i=>i>=0))].sort((a,b)=>a-b);
   const pkgOf=r=>{const parts=[];for(const i of PXI){const v=String(r[i]??'').trim();if(!v||v==='-')continue;const lv=v.toLowerCase();if(parts.some(q=>q.toLowerCase().includes(lv)))continue;const k=parts.findIndex(q=>lv.includes(q.toLowerCase()));if(k>=0)parts[k]=v;else parts.push(v)}return parts.join(' ')};
   const st=S.rc,want=norm(rep==='hd'?st.hdOrigin:st.vipOrigin);
-  const acts=String(st.actValues||'').split(',').map(norm).filter(Boolean),excl=String(st.excludeCats||'').split(',').map(norm).filter(Boolean);
+  const acts=String(st.actValues||'').split(',').map(norm).filter(Boolean),excl=String(st.excludeCats||'').split(',').map(norm).filter(Boolean),exP=String(st.excludeProblems||'').split(',').map(norm).filter(Boolean),exB=String(st.excludeBranches||'').split(',').map(norm).filter(Boolean);
   const hasComplaint=I.type>=0&&R.rows.some(r=>norm(r[I.type])==='complaint');
   const P=periodBounds();
   const G=new Map(),seen=new Set(),dup=new Map(),elig=[],deleted=[];let min=null,max=null,fMin=null,fMax=null;
@@ -1366,6 +1366,8 @@ function rcAnalyze(rep){
     if(st.complaintOnly&&hasComplaint&&norm(g(r,'type'))!=='complaint')continue;
     if(st.skipCanceled&&/cancel/i.test(g(r,'status')))continue;
     const cat=g(r,'category');if(cat&&excl.some(x=>norm(cat).includes(x)))continue;
+    const pbN=norm(g(r,'problem'));if(pbN&&exP.includes(pbN))continue;   /* problem dikeluarkan (CS & VIP): Working Result, Billing Issue */
+    const brN=norm(g(r,'branch').replace(/^GlobalXtreme\s*/i,''));if(brN&&exB.includes(brN))continue;   /* branch dikeluarkan: Malang */
     const tk=g(r,'ticket');if(tk){if(seen.has(tk))continue;seen.add(tk)}
     const cid0=g(r,'cid');if(!cid0)continue;const cid=cidKey(cid0);
     if(dt!=null){min=min==null?dt:Math.min(min,dt);max=max==null?dt:Math.max(max,dt)}
@@ -1486,6 +1488,11 @@ function weekTable(m){return `<table class="tbl"><thead><tr><th>Week</th><th cla
 const row=(...cards)=>{const c=cards.filter(Boolean);return c.length?`<div class="row grow">${c.join('')}</div>`:''};
 const allOff=()=>empty('Semua bagian slide ini dimatikan','Aktifkan lagi di Customize Present.');
 const peakDay=m=>m.daily.reduce((a,b)=>b.value>a.value?b:a,m.daily[0]);
+/* Key highlight peak day (otomatis): hari dengan kasus terbanyak + problem terbanyak di hari itu */
+function peakHl(m){const pk=m&&m.daily&&m.daily.length?peakDay(m):null;if(!pk||!pk.value)return '';
+  const nm=new Date(pk.day).toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long'});
+  const tp=groupCount(m.list.filter(r=>r.day===pk.day),'problem').sort((a,b)=>b.value-a.value)[0];
+  return `Peak day <b>${esc(nm)}</b>: <b>${fInt(pk.value)} kasus</b> (${f1(m.avg?pk.value/m.avg:0)}× rata-rata harian ${f1(m.avg)})${tp?`, terbanyak <b>${esc(tp.label)}</b> (${fInt(tp.value)} kasus)`:''}.`}
 
 function sCsOverview(){const id='cs-overview',m=C.cs,title='Customer Support Snapshot';const tg=on(id,'daily')?seg(id,['bar','line']):'';
   if(!m)return head(id,'cs',title,'',tg)+body(needCS());
@@ -1493,8 +1500,8 @@ function sCsOverview(){const id='cs-overview',m=C.cs,title='Customer Support Sna
   const k=on(id,'kpi')?`<div class="tiles" style="--cols:5">${sm('y','list','Total cases',m.total,`avg ${f1(m.avg)}/day`)}${sm('g','check','Solved',m.adj,`${fInt(m.recl)} via H+1`,'int','c-g')}${sm('g','gauge','Overall resolution',m.rateAdj,`official ${fPct(m.rateOff,2)} · non-inv. ${fPct(m.nonInvRate,1)}`,'p2','c-g')}${sm('o','alert','No response',m.nrAfter,`${fInt(m.bc2A)} BC2 · ${fInt(m.acA)} AC`,'int','c-o')}${afrTile(m,1)}</div>`:'';
   const r=row(on(id,'daily')&&dailyCard(id,m,'Daily case volume'),on(id,'weeks')&&`<div class="card" data-a style="--f:1;overflow:hidden"><div class="ctitle">Week performance</div>${weekTable(m)}</div>`);
   const h=hl(id,[`Total <b>${fInt(m.total)} kasus</b> dalam ${m.nDays} hari, rata-rata ${f1(m.avg)} kasus/hari.`,
-    `Resolution rate <b>${fPct(m.rateAdj,2)}</b>, ${gap>=0?`di atas target 90% (+${f1(gap)} poin)`:`masih ${f1(-gap)} poin di bawah target 90%`}.`,
-    m.afr!=null?`First response: <b>AFR ${f1(m.afr)} menit</b>, <b>median ${f1(afrMed(m))} menit</b> (separuh customer dibalas ≤ ${f1(afrMed(m))} menit).`:`Puncak kasus ${ID_DATE(pk.day)} (${fInt(pk.value)} kasus)${m.weeks.length>1?`; minggu terbaik ${bw.name} (${fPct(bw.rate)})`:''}.`]);
+    `Resolution rate <b>${fPct(m.rateAdj,2)}</b>, ${gap>=0?`di atas target 90% (+${f1(gap)} poin)`:`masih ${f1(-gap)} poin di bawah target 90%`}${m.afr!=null?`; AFR <b>${f1(m.afr)} menit</b> (median ${f1(afrMed(m))} menit)`:''}.`,
+    peakHl(m)]);
   return head(id,'cs',title,`${fInt(m.total)} cases · ${m.nDays} days`,tg)+body((k+r+h)||allOff())}
 function sCsResolution(){const id='cs-resolution',m=C.cs,title='Resolution & No Response';
   if(!m)return head(id,'cs',title)+body(needCS());
@@ -1755,8 +1762,8 @@ function sVipOverview(){const id='vip-overview',m=C.vip,title='VIP Overview';con
   const it=m.issue.slice(0,3).map(x=>({...x,color:x.label==='Internet'?'#F5C518':x.label==='Administration'?'#1F3A5F':'#3E6E9E'}));const pk=peakDay(m);
   const k=on(id,'kpi')?`<div class="tiles" style="--cols:5">${sm('y','list','VIP cases',m.total,`avg ${f1(m.avg)}/day`)}${sm('g','check','Total solved',m.adj,'incl. investigation outcome','int','c-g')}${sm('g','gauge','Resolution rate',m.rateAdj,'end-to-end · target ≥95%','p2','c-g')}${sm('o','alert','Hold / no resp',m.hold,'Total VIP − Total Solved','int','c-o')}${afrTile(m,1)}</div>`:'';
   const mix=on(id,'mix')&&`<div class="card" data-a style="--f:1;display:flex;flex-direction:column"><div class="ctitle">Issue mix</div><div class="dn sm">${donut(it,fInt(m.total),'VIP cases')}${legend(it,m.total)}</div></div>`;
-  const h=hl(id,[`<b>${fPct(m.rateAdj,2)}</b> dari ${fInt(m.total)} kasus VIP sudah solved.`,
-    `${fInt(m.hold+m.nrAfter)} kasus masih hold / no response. Puncak ${ID_DATE(pk.day)} (${fInt(pk.value)} kasus).`,
+  const h=hl(id,[`<b>${fPct(m.rateAdj,2)}</b> dari ${fInt(m.total)} kasus VIP sudah solved; ${fInt(m.hold+m.nrAfter)} kasus masih hold / no response.`,
+    peakHl(m),
     `${esc(it[0].label)} ${fPct(pct(it[0].value,m.total))}${it[1]?` vs ${esc(it[1].label)} ${fPct(pct(it[1].value,m.total))}`:''}.`]);
   return head(id,'vip',title,`${fInt(m.total)} VIP cases · ${m.nDays} days`,tg)+body((k+row(on(id,'daily')&&dailyCard(id,m,'Daily VIP volume'),mix)+h)||allOff())}
 function sVipIssues(){const id='vip-issues',m=C.vip,title='VIP Top Issue Categories';
@@ -2237,6 +2244,8 @@ function renderImport(){
        <label>Via Origin — VIP<input type="text" data-rule="vipOrigin" value="${esc(S.rc.vipOrigin)}"></label>
        <label>Problem dikeluarkan (CS, pisahkan koma)<input type="text" data-rule="actValues" value="${esc(S.rc.actValues)}"></label>
        <label>Category administratif dikeluarkan (koma)<input type="text" data-rule="excludeCats" value="${esc(S.rc.excludeCats)}"></label>
+       <label>Problem dikeluarkan — CS &amp; VIP (koma)<input type="text" data-rule="excludeProblems" value="${esc(S.rc.excludeProblems??'')}"></label>
+       <label>Branch dikeluarkan (koma, tanpa "GlobalXtreme")<input type="text" data-rule="excludeBranches" value="${esc(S.rc.excludeBranches??'')}"></label>
        <span class="chk"><input type="checkbox" data-rule="complaintOnly" ${S.rc.complaintOnly?'checked':''}> Hanya Type = Complaint</span>
        <span class="chk"><input type="checkbox" data-rule="skipCanceled" ${S.rc.skipCanceled?'checked':''}> Abaikan tiket Canceled</span>
        <span class="chk"><input type="checkbox" data-rule="allOrigins" ${S.rc.allOrigins?'checked':''}> Hitung semua channel: customer yang pernah komplain via origin di atas → tiket komplainnya dari channel lain (Omnichannel, DotAI, dst.) ikut dihitung</span>

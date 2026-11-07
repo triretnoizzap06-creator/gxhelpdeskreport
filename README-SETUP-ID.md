@@ -84,3 +84,16 @@ AFR = menit dari **Created** sampai **first take** (orang & jam pertama yang tak
 - Slide First Response by Agent menampilkan pop-up notes bila ada jam Monitoring yang janggal dibanding Created (tombol Lihat tiket / Sembunyikan; status sembunyi per browser, muncul lagi bila data berubah).
 - Klik nama agent di slide First Response by Agent untuk melihat AFR per tiket.
 - Take over yang tidak meninggalkan jejak di export: **Import data → Customer Support → Koreksi AFR take over**, isi satu baris per tiket `Ticket ID, nama first take, jam` (mis. `GX-CSC-20261017114927, Nilma, 11:55`). Koreksi tersimpan bersama report sehingga berlaku untuk semua viewer. Daftar "Perlu dicek" menampilkan tiket dengan AFR > 3 jam sebagai bahan cek.
+
+## Quiz — approval peserta & review jawaban
+
+- Peserta scan QR / masukkan PIN → isi nama → **Daftar** → layar "Menunggu approval SPV". Soal baru dikirim server setelah SPV meng-approve; jawaban dari peserta yang belum di-approve ditolak server.
+- Layar host (SPV): panel **Peserta & approval** → Approve / Tolak / Approve semua. Status: Menunggu approval · Sedang mengerjakan · Selesai · Ditolak.
+- Klik nama di leaderboard (atau tombol **Review**) untuk melihat jawaban tiap peserta: pilihan peserta, kunci, poin & waktu per soal.
+- **Izinkan ulang**: menghapus hasil peserta itu supaya bisa mengulang (perlu daftar & di-approve lagi).
+- Peserta melihat skor, leaderboard (update otomatis), dan review jawabannya sendiri setelah selesai.
+- Data approval disimpan di tabel `gx_docs` (key `quiz-join-<pin>`) — **tidak perlu menjalankan SQL baru**.
+
+## Repeat Complaint — pengecualian
+
+Di pengaturan Repeat Complaint (Import data → kartu Repeat Complaint): **Problem dikeluarkan — CS & VIP** (default `Working Result, Billing Issue`) dan **Branch dikeluarkan** (default `Malang`). Tiket dengan problem/branch tersebut tidak dihitung sebagai repeat complaint.

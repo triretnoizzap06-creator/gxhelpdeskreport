@@ -70,6 +70,16 @@ h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}.lead{color:var(--muted);
 .banner{border-radius:12px;padding:10px 14px;font-size:13px;margin:0 0 14px;background:#FEF3C7;color:#92400E}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1D1D1F;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:80;opacity:0;transition:opacity .2s}.toast.on{opacity:1}
 .hidden{display:none!important}
+.appr{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:18px}
+.apr{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 4px;border-top:1px solid var(--line)}.apr:first-of-type{border-top:0}
+.apr b{font-size:14.5px}.apr span.s{font-size:12px;color:var(--muted);display:block}.apr .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.pill.pending{background:#FEF3C7;color:#92400E}.pill.approved{background:#DBEAFE;color:#1E40AF}.pill.done{background:var(--okbg);color:var(--ok)}.pill.rejected{background:var(--badbg);color:var(--bad)}
+.lbr.click{cursor:pointer}.lbr.click:hover{background:var(--bg);border-radius:10px}
+.wait{text-align:center;background:#fff;border:1px solid var(--line);border-radius:18px;padding:34px 18px}
+.wait .dot{width:54px;height:54px;border-radius:50%;margin:0 auto 14px;border:5px solid var(--line);border-top-color:var(--y);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:70;display:grid;place-items:center;padding:14px}
+.modal .box{background:var(--bg);width:min(860px,100%);max-height:92vh;overflow:auto;border-radius:18px;padding:18px}
 @media (max-width:760px){.host{grid-template-columns:1fr}.tiles{grid-template-columns:1fr}.tile{min-height:64px;padding:14px}.qbox{padding:20px 14px;min-height:90px}main{padding:18px 14px 50px}.top{padding:10px 14px}}
 </style>
 </head>
@@ -118,17 +128,37 @@ const LOCAL = {
 };
 const pts = (ok, ms, t) => ok ? Math.round(1000 * (1 - Math.min(1, ms / (t * 1000)) / 2)) : 0;
 const API = {
-  async session(code) { const r = await call('?code=' + code); if (r) { ONLINE = true; return r.status === 200 ? r.j.session : null; } ONLINE = false; const s = LOCAL.get(code); return s ? { ...s, questions: s.questions.map(x => ({ q: x.q, o: x.o })) } : null; },
+  async session(code) { const r = await call('?code=' + code); if (r) { ONLINE = true; return r.status === 200 ? r.j.session : null; } ONLINE = false; const s = LOCAL.get(code); return s ? { ...s, n: s.questions.length, questions: s.questions.map(x => ({ q: x.q, o: x.o })) } : null; },
   async board(code) { const r = await call('?code=' + code + '&board=1'); if (r) return r.j.board || []; const s = LOCAL.get(code); return s ? s.results.slice().sort((a, b) => b.score - a.score || a.duration_ms - b.duration_ms) : []; },
-  async submit(code, player, answers) {
-    const r = await call('', { method: 'POST', body: JSON.stringify({ code, player, answers }) }); if (r) return r;
+  async submit(code, player, answers, token) {
+    const r = await call('', { method: 'POST', body: JSON.stringify({ code, player, token, answers }) }); if (r) return r;
     const d = LOCAL.all(), s = d[code]; if (!s) return { status: 404, j: { error: 'not-found' } };
     if (s.results.some(x => x.player.toLowerCase() === player.toLowerCase())) return { status: 409, j: { error: 'name-taken', detail: 'Nama ini sudah dipakai di sesi ini — pakai nama lain.' } };
     const ans = s.questions.map((x, i) => { const a = answers[i] || {}; const ms = Math.min(s.timer_s * 1000, a.ms || s.timer_s * 1000); return { c: a.c ?? null, ms, p: pts(a.c === x.a, ms, s.timer_s) }; });
-    const row = { player, score: ans.reduce((t, a) => t + a.p, 0), correct: ans.filter((a, i) => a.c === s.questions[i].a).length, total: s.questions.length, duration_ms: ans.reduce((t, a) => t + a.ms, 0) };
-    s.results.push(row); LOCAL.save(d); const B = await this.board(code);
+    const row = { player, score: ans.reduce((t, a) => t + a.p, 0), correct: ans.filter((a, i) => a.c === s.questions[i].a).length, total: s.questions.length, duration_ms: ans.reduce((t, a) => t + a.ms, 0), answers: ans, created_at: new Date().toISOString() };
+    s.results.push(row); const jp = (s.joins || {})[player.toLowerCase()]; if (jp) jp.status = 'done'; LOCAL.save(d); const B = await this.board(code);
     return { status: 200, j: { result: row, rank: B.findIndex(x => x.player === player) + 1, players: B.length, review: s.questions.map((x, i) => ({ ...x, ...ans[i] })) } };
   },
+  async join(code, player, token) {
+    const r = await call('', { method: 'POST', body: JSON.stringify({ join: { code, player, token } }) }); if (r) return r;
+    const d = LOCAL.all(), s = d[code]; if (!s) return { status: 404, j: { error: 'not-found' } }; s.joins = s.joins || {};
+    const k = player.toLowerCase(), p = s.joins[k]; if (p && p.token === token) return { status: 200, j: p };
+    if ((p && p.status !== 'rejected') || s.results.some(x => x.player.toLowerCase() === k)) return { status: 409, j: { error: 'name-taken', detail: 'Nama ini sudah dipakai di sesi ini — pakai nama lain.' } };
+    s.joins[k] = { player, name: player, token: Math.random().toString(36).slice(2), status: 'pending', at: new Date().toISOString() }; LOCAL.save(d); return { status: 200, j: s.joins[k] };
+  },
+  async me(code, token) {
+    const r = await call('?code=' + code + '&me=' + encodeURIComponent(token)); if (r) return r;
+    const s = LOCAL.get(code); const p = s && Object.values(s.joins || {}).find(x => x.token === token); if (!p) return { status: 404, j: { error: 'not-joined' } };
+    return { status: 200, j: { status: p.status, player: p.name, session: p.status === 'approved' ? { ...s, questions: s.questions.map(x => ({ q: x.q, o: x.o })) } : { ...s, questions: undefined, n: s.questions.length } } };
+  },
+  async joins(code) { const r = await call('?code=' + code + '&joins=1'); if (r) return r; const s = LOCAL.get(code); return { status: 200, j: { players: Object.values((s && s.joins) || {}) } }; },
+  async decide(code, player, act) {
+    const body = act === 'all' ? { approveAll: code } : { [act]: { code, player } }; const r = await call('', { method: 'POST', body: JSON.stringify(body) }); if (r) return r;
+    const d = LOCAL.all(), s = d[code]; if (!s) return { status: 404, j: {} }; s.joins = s.joins || {};
+    for (const p of Object.values(s.joins)) { if (act === 'all' ? p.status === 'pending' : p.name.toLowerCase() === player.toLowerCase()) { if (act === 'allowRetry') { s.results = s.results.filter(x => x.player.toLowerCase() !== p.name.toLowerCase()); p.status = 'rejected'; p.token = 'x' + Math.random(); } else p.status = act === 'reject' ? 'rejected' : 'approved'; } }
+    LOCAL.save(d); return { status: 200, j: { ok: true } };
+  },
+  async results(code) { const r = await call('?code=' + code + '&results=1'); if (r) return r; const s = LOCAL.get(code); return { status: 200, j: { questions: s.questions, timer_s: s.timer_s, results: s.results } }; },
   async create(c) { const r = await call('', { method: 'POST', body: JSON.stringify({ create: c }) }); if (r) return r; return { status: 200, j: { code: LOCAL.create(c) } }; },
   async list() { const r = await call('?list=1'); if (r) return r; const d = LOCAL.all(); return { status: 200, j: { sessions: Object.values(d).reverse().map(s => ({ ...s, n: s.questions.length, players: s.results.length })) } }; },
   async setStatus(code, close) { const r = await call('', { method: 'POST', body: JSON.stringify(close ? { close: code } : { reopen: code }) }); if (r) return r; const d = LOCAL.all(); if (d[code]) d[code].status = close ? 'closed' : 'open'; LOCAL.save(d); return { status: 200, j: {} }; },
@@ -173,17 +203,38 @@ let poll = null;
 async function host(code) {
   const s = await API.session(code); if (!s) { app.innerHTML = '<div class="msg">Sesi tidak ditemukan.</div>'; return; }
   const url = joinUrl(code);
-  app.innerHTML = `<p style="margin:0 0 14px"><button class="btn sm" data-home>← Semua sesi</button></p><h1>${esc(s.title || 'Live quiz')}</h1><p class="lead">${esc(SETNAME[s.set_key] || '')} · ${s.questions.length} soal · ${s.timer_s} detik per soal</p>
+  app.innerHTML = `<p style="margin:0 0 14px"><button class="btn sm" data-home>← Semua sesi</button></p><h1>${esc(s.title || 'Live quiz')}</h1><p class="lead">${esc(SETNAME[s.set_key] || '')} · ${s.n ?? s.questions.length} soal · ${s.timer_s} detik per soal</p>
     <div class="host"><div class="pin"><small>SCAN ATAU MASUKKAN PIN</small><div class="code">${esc(code)}</div><div class="qr" id="qr"></div><div class="url">${esc(url)}</div>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px"><button class="btn sm" id="cpy">Salin link</button><button class="btn sm" id="tog">${s.status === 'open' ? 'Tutup sesi' : 'Buka lagi'}</button><button class="btn sm danger" id="del">Hapus</button></div></div>
-      <div class="lb"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Leaderboard</b><span id="cnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span><span class="pill ${s.status}">${s.status === 'open' ? 'Live' : 'Ditutup'}</span></div><div id="lb"></div></div></div>`;
+      <div><div class="lb"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Leaderboard</b><span id="cnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span><span class="pill ${s.status}">${s.status === 'open' ? 'Live' : 'Ditutup'}</span></div><div id="lb"></div><div style="font-size:12px;color:var(--muted);margin-top:8px">Klik nama peserta untuk review jawabannya.</div></div>
+      <div class="appr"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Peserta & approval</b><span id="pcnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span><button class="btn sm y hidden" id="apAll">Approve semua</button></div><div id="ap"></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">Peserta baru bisa mulai mengerjakan setelah kamu approve.</div></div></div></div>`;
   try { const qr = qrcode(0, 'M'); qr.addData(url); qr.make(); $('#qr').innerHTML = qr.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); const sv = $('#qr svg'); sv.style.width = '230px'; sv.style.height = '230px'; } catch (e) { $('#qr').innerHTML = '<div class="msg">QR tidak bisa dimuat — bagikan link/PIN.</div>'; }
   $('#cpy').onclick = async () => { try { await navigator.clipboard.writeText(url); toast('Link disalin ✓'); } catch (e) { prompt('Salin link:', url); } };
   $('#tog').onclick = async () => { await API.setStatus(code, s.status === 'open'); host(code); };
   $('#del').onclick = async () => { if (confirm('Hapus sesi ' + code + ' beserta semua hasilnya?')) { await API.del(code); go(''); } };
-  const tick = async () => { const B = await API.board(code); const el = $('#lb'); if (!el) return; $('#cnt').textContent = B.length + ' peserta';
-    el.innerHTML = B.length ? B.map((x, i) => `<div class="lbr"><span class="rk">${i + 1}</span><div><b>${esc(x.player)}</b><span>${x.correct}/${x.total} benar · ${fmtS(x.duration_ms)}</span></div><span class="sc">${x.score}</span></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Menunggu peserta… minta tim scan QR di HP.</div>'; };
+  $('#apAll').onclick = async () => { await API.decide(code, '', 'all'); tick(); };
+  const ST = { pending: 'Menunggu approval', approved: 'Sedang mengerjakan', done: 'Selesai', rejected: 'Ditolak' };
+  const tick = async () => { const [B, Jr] = await Promise.all([API.board(code), API.joins(code)]); const el = $('#lb'); if (!el) return; $('#cnt').textContent = B.length + ' selesai';
+    el.innerHTML = B.length ? B.map((x, i) => `<div class="lbr click" data-rv="${esc(x.player)}" title="Review jawaban"><span class="rk">${i + 1}</span><div><b>${esc(x.player)}</b><span>${x.correct}/${x.total} benar · ${fmtS(x.duration_ms)}</span></div><span class="sc">${x.score}</span></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Belum ada yang selesai.</div>';
+    const P = (Jr && Jr.status === 200 && Jr.j.players) || [], pend = P.filter(p => p.status === 'pending');
+    $('#pcnt').textContent = P.length ? `${P.length} peserta · ${pend.length} menunggu` : ''; $('#apAll').classList.toggle('hidden', pend.length < 2);
+    const order = { pending: 0, approved: 1, done: 2, rejected: 3 };
+    $('#ap').innerHTML = P.length ? P.slice().sort((a, b) => order[a.status] - order[b.status]).map(p => `<div class="apr"><div><b>${esc(p.name)}</b><span class="s"><span class="pill ${p.status}">${ST[p.status] || p.status}</span> · daftar ${new Date(p.at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span></div><div class="acts">${p.status === 'pending' ? `<button class="btn sm y" data-dec="approve" data-p="${esc(p.name)}">Approve</button><button class="btn sm danger" data-dec="reject" data-p="${esc(p.name)}">Tolak</button>` : p.status === 'rejected' ? `<button class="btn sm" data-dec="approve" data-p="${esc(p.name)}">Approve</button>` : p.status === 'done' ? `<button class="btn sm" data-rv="${esc(p.name)}">Review</button><button class="btn sm" data-dec="allowRetry" data-p="${esc(p.name)}">Izinkan ulang</button>` : ''}</div></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Menunggu peserta… minta tim scan QR di HP.</div>'; };
+  HOSTCODE = code; HOSTTICK = tick;
   tick(); clearInterval(poll); poll = setInterval(() => { if (!$('#lb')) return clearInterval(poll); if (!document.hidden) tick(); }, 3000);
+}
+
+/* review jawaban peserta (sisi SPV) */
+let HOSTCODE = null, HOSTTICK = null;
+async function reviewPlayer(code, player) {
+  const r = await API.results(code); if (!r || r.status !== 200) return toast(r && r.j.error === 'login-required' ? 'Login SPV dulu' : 'Gagal memuat jawaban');
+  const Q = r.j.questions || [], x = (r.j.results || []).find(z => z.player.toLowerCase() === player.toLowerCase()); if (!x) return toast('Hasil belum ada');
+  const A = x.answers || [], m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = `<div class="box"><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="flex:1"><div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--muted)">REVIEW JAWABAN</div><b style="font-size:20px">${esc(x.player)}</b></div><button class="btn sm" data-x>Tutup</button></div>
+    <div class="res" style="padding:16px"><div class="kp" style="margin-top:0"><div><b>${x.score}</b><span>poin</span></div><div><b>${x.correct}/${x.total}</b><span>benar</span></div><div><b>${fmtS(x.duration_ms)}</b><span>total waktu</span></div><div><b>${A.filter(a => a.c == null).length}</b><span>tidak dijawab</span></div></div></div>
+    ${Q.map((q, i) => { const a = A[i] || {}; return `<div class="rv"><span class="pts">${a.c === q.a ? '+' + (a.p || 0) : '0'} · ${fmtS(a.ms || 0)}</span><div class="qt">${i + 1}. ${esc(q.q)}</div>${q.o.map((o, j) => `<div class="o ${j === q.a ? 'ok' : j === a.c ? 'bad' : ''}">${j === q.a ? '✓ ' : j === a.c ? '✗ ' : ''}${esc(o)}${j === a.c ? ' <i>(jawaban peserta)</i>' : ''}</div>`).join('')}${a.c == null ? '<div class="ex"><b>Tidak dijawab (waktu habis).</b></div>' : ''}<div class="ex">${esc(q.e)}${q.src ? ` <i>— ${esc(q.src)}</i>` : ''}</div></div>`; }).join('')}</div>`;
+  m.onclick = e => { if (e.target === m || e.target.closest('[data-x]')) m.remove(); }; document.body.appendChild(m);
 }
 
 /* ======================= PLAY ======================= */
@@ -191,12 +242,33 @@ let G = null, timerRaf = null;
 async function joinScreen(code) {
   const done = LS.get('gx-quiz-done', {})[code];
   if (done) return result(done);   // sudah pernah main → tampilkan hasil & review lagi
+  const tk = LS.get('gx-quiz-tok', {})[code];
+  if (tk) return waitApproval(code, tk);   // sudah daftar → lanjut menunggu / mulai
   const s = await API.session(code);
   if (!s) { app.innerHTML = `<div class="msg">PIN <b>${esc(code)}</b> tidak ditemukan. Cek lagi PIN dari SPV.</div><p><button class="btn" data-home>← Kembali</button></p>`; return; }
   if (s.status !== 'open') { app.innerHTML = `<div class="msg">Sesi <b>${esc(s.title)}</b> sudah ditutup.</div><p><button class="btn" data-home>← Kembali</button></p>`; return; }
-  app.innerHTML = `<div class="play"><div class="res"><div style="font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--muted)">PIN ${esc(code)}</div><h1 style="margin:8px 0 4px">${esc(s.title)}</h1><p class="lead" style="margin:0 0 18px">${s.questions.length} soal · ${s.timer_s} detik per soal · jawab cepat & tepat untuk poin maksimal</p>
-    <form id="nameF" style="display:flex;gap:10px;max-width:420px;margin:0 auto;flex-wrap:wrap"><input id="nm" placeholder="Nama kamu" maxlength="40" value="${esc(LS.get('gx-quiz-name', ''))}" style="flex:1;min-width:180px;border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;font-weight:700;outline:none"><button class="btn y" style="font-size:16px">Mulai</button></form></div></div>`;
-  $('#nameF').onsubmit = e => { e.preventDefault(); const n = $('#nm').value.trim(); if (n.length < 2) return toast('Isi nama minimal 2 huruf'); LS.set('gx-quiz-name', n); start({ mode: 'live', code, title: s.title, timer: s.timer_s, qs: s.questions, player: n }); };
+  app.innerHTML = `<div class="play"><div class="res"><div style="font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--muted)">PIN ${esc(code)}</div><h1 style="margin:8px 0 4px">${esc(s.title)}</h1><p class="lead" style="margin:0 0 18px">${s.n ?? (s.questions || []).length} soal · ${s.timer_s} detik per soal · jawab cepat & tepat untuk poin maksimal</p>
+    <form id="nameF" style="display:flex;gap:10px;max-width:420px;margin:0 auto;flex-wrap:wrap"><input id="nm" placeholder="Nama kamu" maxlength="40" value="${esc(LS.get('gx-quiz-name', ''))}" style="flex:1;min-width:180px;border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;font-weight:700;outline:none"><button class="btn y" style="font-size:16px">Daftar</button></form>
+    <p style="font-size:12.5px;color:var(--muted);margin:12px 0 0">Setelah daftar, tunggu SPV meng-approve — quiz mulai otomatis.</p></div></div>`;
+  $('#nameF').onsubmit = async e => { e.preventDefault(); const n = $('#nm').value.trim(); if (n.length < 2) return toast('Isi nama minimal 2 huruf');
+    const btn = e.target.querySelector('button'); btn.disabled = true; const r = await API.join(code, n); btn.disabled = false;
+    if (!r || r.status !== 200) return toast((r && r.j.detail) || 'Gagal mendaftar');
+    LS.set('gx-quiz-name', n); const T = LS.get('gx-quiz-tok', {}); T[code] = { token: r.j.token, player: r.j.player || n }; LS.set('gx-quiz-tok', T); waitApproval(code, T[code]); };
+}
+async function waitApproval(code, tk) {
+  const forget = () => { const T = LS.get('gx-quiz-tok', {}); delete T[code]; LS.set('gx-quiz-tok', T); };
+  const render = (title, body) => { app.innerHTML = `<div class="play"><div class="wait">${body}<p style="margin-top:18px"><button class="btn sm" id="ganti">Ganti nama</button> <button class="btn sm" data-home>← Kembali</button></p></div></div>`; $('#ganti').onclick = () => { forget(); joinScreen(code); }; };
+  const check = async () => {
+    const r = await API.me(code, tk.token);
+    if (!r || r.status === 404) { clearInterval(poll); forget(); return joinScreen(code); }
+    const st = r.j.status, s = r.j.session || {};
+    if (st === 'approved' && s.questions && s.questions.length) { clearInterval(poll); return start({ mode: 'live', code, title: s.title, timer: s.timer_s, qs: s.questions, player: r.j.player, token: tk.token }); }
+    if (st === 'rejected') { clearInterval(poll); render('', `<h1 style="margin:0 0 6px">Belum bisa ikut</h1><p class="lead" style="margin:0">Pendaftaran <b>${esc(r.j.player)}</b> di sesi ini tidak di-approve SPV.</p>`); return; }
+    if (st === 'done') { clearInterval(poll); render('', `<h1 style="margin:0 0 6px">Sudah selesai</h1><p class="lead" style="margin:0">${esc(r.j.player)} sudah menyelesaikan quiz ini.</p>`); return; }
+    if (s.status && s.status !== 'open') { clearInterval(poll); render('', `<h1 style="margin:0 0 6px">Sesi ditutup</h1><p class="lead" style="margin:0">Sesi <b>${esc(s.title || code)}</b> sudah ditutup SPV.</p>`); return; }
+    if (!$('#waitBox')) render('', `<div id="waitBox"><div class="dot"></div><div style="font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--muted)">PIN ${esc(code)}</div><h1 style="margin:8px 0 4px">Menunggu approval SPV…</h1><p class="lead" style="margin:0">Halo <b>${esc(r.j.player)}</b>! Quiz <b>${esc(s.title || '')}</b> (${s.n || ''} soal · ${s.timer_s || ''} detik per soal) akan mulai otomatis setelah SPV meng-approve.</p></div>`);
+  };
+  clearInterval(poll); await check(); if ($('#waitBox')) poll = setInterval(() => { if (!$('#waitBox')) return clearInterval(poll); if (!document.hidden) check(); }, 3000);
 }
 function start(g) { G = { ...g, i: 0, answers: [], score: 0, correct: 0 }; question(); }
 function question() {
@@ -232,11 +304,11 @@ async function next() {
     return result(res);
   }
   app.innerHTML = '<div class="msg">Mengirim jawaban…</div>';
-  const r = await API.submit(G.code, G.player, G.answers);
+  const r = await API.submit(G.code, G.player, G.answers, G.token);
   if (r.status === 409 && r.j.error === 'name-taken') { const n = prompt(r.j.detail + '\n\nNama baru:', G.player + ' 2'); if (n && n.trim().length >= 2) { G.player = n.trim(); LS.set('gx-quiz-name', G.player); G.i = G.qs.length - 1; return next(); } }
   if (r.status !== 200) { app.innerHTML = `<div class="msg">Gagal mengirim: ${esc(r.j.detail || r.j.error)}</div><p><button class="btn" id="retry">Coba kirim lagi</button></p>`; $('#retry').onclick = () => { G.i = G.qs.length - 1; next(); }; return; }
   const res = { mode: 'live', code: G.code, title: G.title, player: G.player, ...r.j.result, rank: r.j.rank, players: r.j.players, review: r.j.review };
-  const done = LS.get('gx-quiz-done', {}); done[G.code] = res; LS.set('gx-quiz-done', done);
+  const done = LS.get('gx-quiz-done', {}); done[G.code] = res; LS.set('gx-quiz-done', done); const T = LS.get('gx-quiz-tok', {}); delete T[G.code]; LS.set('gx-quiz-tok', T);
   result(res);
 }
 async function result(res) {
@@ -244,7 +316,7 @@ async function result(res) {
     <div class="big" style="margin-top:10px">${res.score}</div><div style="color:var(--muted);font-weight:700">poin${res.player ? ' · ' + esc(res.player) : ''}</div>
     <div class="kp"><div><b>${res.correct}/${res.total}</b><span>Benar</span></div><div><b>${fmtS(res.duration_ms)}</b><span>Total waktu</span></div>${res.rank ? `<div><b>#${res.rank}</b><span>dari ${res.players} peserta</span></div>` : ''}</div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px"><button class="btn pri" id="toRv">Review jawaban</button>${res.mode === 'practice' ? `<button class="btn" data-prac="${res.set}" data-n="${res.total}">Ulangi latihan</button>` : ''}<button class="btn" data-home>Quiz lain</button></div></div>
-    ${res.mode === 'live' ? '<div class="lb" style="margin-bottom:16px"><b style="font-size:17px">Leaderboard</b><div id="lb"></div></div>' : historyHtml(res.set)}
+    ${res.mode === 'live' ? '<div class="lb" style="margin-bottom:16px"><div style="display:flex;align-items:baseline;gap:10px"><b style="font-size:17px">Leaderboard</b><span style="font-size:12.5px;color:var(--muted)">update otomatis saat peserta lain selesai</span></div><div id="lb"></div></div>' : historyHtml(res.set)}
     <div id="rv"><div class="h2">Review jawaban</div>${res.review.map((q, i) => `<div class="rv"><span class="pts">${q.c === q.a ? '+' + q.p : '0'}</span><div class="qt">${i + 1}. ${esc(q.q)}</div>
       ${q.o.map((o, j) => `<div class="o ${j === q.a ? 'ok' : j === q.c ? 'bad' : ''}">${j === q.a ? '✓ ' : j === q.c ? '✗ ' : ''}${esc(o)}</div>`).join('')}
       ${q.c == null ? '<div class="ex"><b>Tidak dijawab (waktu habis).</b></div>' : ''}<div class="ex">${esc(q.e)}${q.src ? ` <i>— ${esc(q.src)}</i>` : ''}</div></div>`).join('')}</div></div>`;
@@ -265,7 +337,7 @@ function practice(set, n) { const all = questions(set); if (!all.length) return 
 /* ======================= ROUTER ======================= */
 function go(qs) { history.pushState(null, '', location.pathname + qs); route(); }
 function route() {
-  clearInterval(poll); cancelAnimationFrame(timerRaf);
+  clearInterval(poll); cancelAnimationFrame(timerRaf); HOSTCODE = null; HOSTTICK = null; document.querySelectorAll('.modal').forEach(m => m.remove());
   const p = new URLSearchParams(location.search);
   if (p.get('c')) return joinScreen(p.get('c').toUpperCase());
   if (p.get('host')) return host(p.get('host').toUpperCase());
@@ -276,6 +348,8 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-home]')) return go('');
   const pr = e.target.closest('[data-prac]'); if (pr) return practice(pr.dataset.prac, +pr.dataset.n);
   const h = e.target.closest('[data-host]'); if (h) return go('?host=' + h.dataset.host);
+  const rv = e.target.closest('[data-rv]'); if (rv && HOSTCODE) return reviewPlayer(HOSTCODE, rv.dataset.rv);
+  const dc = e.target.closest('[data-dec]'); if (dc && HOSTCODE) { if (dc.dataset.dec === 'allowRetry' && !confirm('Hapus hasil ' + dc.dataset.p + ' supaya bisa mengulang quiz? Peserta perlu daftar & di-approve lagi.')) return; dc.disabled = true; return API.decide(HOSTCODE, dc.dataset.p, dc.dataset.dec).then(() => HOSTTICK && HOSTTICK()); }
   const t = e.target.closest('.tile[data-c]'); if (t && G && !G.locked) answer(+t.dataset.c);
 });
 document.addEventListener('keydown', e => { if (G && !G.locked && /^[1-6]$/.test(e.key) && document.querySelector('.tile')) { const t = document.querySelector(`.tile[data-c="${+e.key - 1}"]`); if (t) answer(+e.key - 1); } });

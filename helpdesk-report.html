@@ -118,6 +118,14 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .rules textarea{width:100%;min-height:90px;border:1px solid var(--line);background:var(--solid);border-radius:8px;padding:6px 8px;font:12px ui-monospace,Menlo,monospace}
 .afx{width:100%;border-collapse:collapse;font-size:11px}.afx th,.afx td{text-align:left;padding:4px 6px;border-bottom:1px solid var(--line);white-space:nowrap}.afx td.n,.afx th.n{text-align:right}
 .afxw{max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+.afr-pop{display:flex;gap:1cqw;align-items:flex-start;background:#FFF8E1;border:1px solid #F5C518;border-radius:1cqw;padding:.9cqw 1.2cqw;margin-bottom:1cqw;font-size:.95cqw;line-height:1.45;color:#3A2F00;box-shadow:0 .6cqw 1.6cqw rgba(0,0,0,.08)}
+.afr-pop .i{flex:none;width:2cqw;height:2cqw;border-radius:50%;background:#F5C518;color:#111;display:grid;place-items:center;font-weight:800;font-size:1.1cqw}
+.afr-pop .t{flex:1;min-width:0}.afr-pop b{color:#111}.afr-pop .acts{display:flex;gap:.6cqw;flex:none}.afr-pop button{font:600 .9cqw inherit;border:1px solid rgba(0,0,0,.15);background:#fff;border-radius:999px;padding:.35cqw .9cqw;cursor:pointer;color:#111}
+.afr-r[data-afr-agent]{cursor:pointer;border-radius:8px}.afr-r[data-afr-agent]:hover{background:rgba(0,0,0,.04)}
+.afd{width:100%;border-collapse:collapse;font-size:12.5px}.afd th,.afd td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}.afd th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0;background:var(--solid)}
+.afd td.n,.afd th.n{text-align:right;font-variant-numeric:tabular-nums}.afd tr.hi td.n b{color:#C93400}.afdw{max-height:58vh;overflow:auto;border:1px solid var(--line);border-radius:12px}
+.afk{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 14px}.afk div{background:var(--bg);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--muted)}.afk b{display:block;font-size:20px;color:var(--ink);letter-spacing:-.02em}
+.tg{display:inline-block;font-size:10.5px;font-weight:700;border-radius:999px;padding:2px 8px;background:var(--bg);color:var(--muted)}.tg.o{background:#FFF1E6;color:#C93400}.tg.b{background:#E8F0FB;color:#1F3A5F}.tg.g{background:#E7F6EC;color:#1E7B3C}
 .dfoot{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
 .mlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0 6px}
 .mitem{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:600;cursor:pointer}
@@ -885,6 +893,13 @@ html.viewonly .mwc{display:flex}
   </section>
 </div>
 
+<div class="modal hidden" id="afrModal" role="dialog" aria-modal="true" aria-labelledby="afrTitle">
+  <div class="dialog">
+    <div class="dhead"><div><div class="eyebrow">Detail AFR</div><h2 id="afrTitle">AFR per tiket</h2><div class="sub" id="afrSub"></div></div><button class="btn" data-close="afrModal">Close</button></div>
+    <div id="afrBody"></div>
+  </div>
+</div>
+
 <div class="modal hidden" id="importModal" role="dialog" aria-modal="true" aria-labelledby="impTitle">
   <div class="dialog">
     <div class="dhead"><div><div class="eyebrow">Data</div><h2 id="impTitle">Import data</h2><div class="sub">Tiap bagian punya import sendiri. File diproses di browser ini saja dan tidak di-upload ke server.</div></div><button class="btn" data-close="importModal">Close</button></div>
@@ -1187,6 +1202,8 @@ const TZC=new WeakMap();
    3) Koreksi SPV (S.afrFix: "Ticket ID, nama first take, jam") menimpa semuanya, untuk case take over
       yang tidak meninggalkan jejak di export. */
 const AFR_TO_MS=60e3;
+const AM_TO_MIN=180;
+const AFR_WHY={fr:'take over monitoring',am:'take over monitoring oleh AM'};   /* AM mengambil alih case Customer Support > 3 jam setelah dibuat = take over case Helpdesk */
 let AFRFIX_C={k:null,m:new Map()};
 function afrFixMap(){const raw=String(S.afrFix||'');if(AFRFIX_C.k===raw)return AFRFIX_C.m;const m=new Map();
   for(const line of raw.split(/\n/)){const t=line.split(/[,;\t|]/).map(x=>x.trim());if(!t[0]||!/[a-z0-9]/i.test(t[0]))continue;const id=t[0].toUpperCase();if(!/\d{6}/.test(id))continue;m.set(id,{by:t[1]||'',time:t[2]||''})}
@@ -1204,13 +1221,13 @@ function afrFixPanel(){
   const to=rows.filter(r=>r.afrTO),fx=rows.filter(r=>r.afrFix),sus=rows.filter(r=>!r.afrFix&&!r.afrTO&&r.afr!=null&&r.afr>180&&r.ticket).sort((a,b)=>b.afr-a.afr).slice(0,80);
   return `<details data-afrfix-box><summary>Koreksi AFR take over</summary><div class="rules">
     <span class="sub">AFR dihitung dari <b>first take</b>. Export GX CS Connect menimpa Monitor By & Monitoring Time saat case di-take over, jadi:</span>
-    <span class="sub">• <b>Otomatis</b>: First Response lebih awal dari Monitoring = case sudah di-take sebelum di-take over → AFR pakai jam first take, tidak dibebankan ke yang take over. Terdeteksi: <b>${fInt(to.length)}</b> tiket.</span>
+    <span class="sub">• <b>Otomatis</b> (terdeteksi <b>${fInt(to.length)}</b> tiket): (1) First Response lebih awal dari Monitoring → AFR pakai jam First Response; (2) Account Manager take over monitoring case Customer Support &gt; 3 jam setelah dibuat — jam first take asli tidak ada di export, jadi AFR tiket itu tidak dihitung ke siapa pun sampai dikoreksi.</span>
     <span class="sub">• <b>Manual</b>: untuk take over yang tidak meninggalkan jejak di export, tulis satu baris per tiket: <b>Ticket ID, nama yang take pertama, jam take</b> (mis. <code>GX-CSC-20261017114927, Nilma, 11:55</code>; tanggal opsional <code>17/10 11:55</code>). Jam kosong = tiket dikeluarkan dari AFR yang take over; masuk AFR nama itu hanya bila export punya jejak first take. Koreksi aktif: <b>${fInt(fx.length)}</b>.</span>
     <textarea data-afrfix placeholder="GX-CSC-20261017114927, Nilma, 11:55">${esc(S.afrFix||'')}</textarea>
     <div><button class="btn sm" data-afrfix-save>Simpan koreksi</button></div>
     ${sus.length?`<span class="sub"><b>Perlu dicek</b> — AFR &gt; 3 jam tanpa jejak take over (${sus.length}${sus.length===80?'+':''}). Klik + untuk menambahkan ke koreksi bila ternyata hasil take over.</span>
     <div class="afxw"><table class="afx"><thead><tr><th></th><th>Ticket</th><th>Created</th><th>Taken</th><th class="n">AFR</th><th>Monitor By</th></tr></thead><tbody>${sus.map(r=>`<tr><td><button class="btn sm" data-afrfix-add="${esc(r.ticket)}" title="Tambah ke koreksi">+</button></td><td title="${esc(r.ticket)}">${esc(String(r.ticket).replace(/^GX-CSC-/i,""))}</td><td>${f(r.created)}</td><td>${f(r.afrAt)}</td><td class="n">${fInt(r.afr)}m</td><td>${esc(r.afrAgent||r.monitored)}</td></tr>`).join('')}</tbody></table></div>`:'<span class="sub">Tidak ada tiket dengan AFR &gt; 3 jam yang perlu dicek.</span>'}
-    ${to.length?`<details><summary>${fInt(to.length)} take over terdeteksi otomatis</summary><div class="afxw"><table class="afx"><thead><tr><th>Ticket</th><th>Created</th><th>First take</th><th class="n">AFR</th><th>Take over oleh</th></tr></thead><tbody>${to.slice(0,200).map(r=>`<tr><td>${esc(r.ticket)}</td><td>${f(r.created)}</td><td>${f(r.afrAt)}</td><td class="n">${r.afr!=null?f1(r.afr)+'m':'—'}</td><td>${esc(r.monitored)}</td></tr>`).join('')}</tbody></table></div><span class="sub">Nama yang take pertama tidak ada di export — AFR-nya masuk AFR tim; tambahkan di koreksi manual bila ingin masuk AFR perorangan.</span></details>`:''}
+    ${to.length?`<details><summary>${fInt(to.length)} take over terdeteksi otomatis</summary><div class="afxw"><table class="afx"><thead><tr><th>Ticket</th><th>Created</th><th>First take</th><th class="n">AFR</th><th>Take over oleh</th></tr></thead><tbody>${to.slice(0,200).map(r=>`<tr><td>${esc(r.ticket)}</td><td>${f(r.created)}</td><td>${f(r.afrAt)}</td><td class="n">${r.afr!=null?f1(r.afr)+'m':'tidak dihitung'}</td><td>${esc(r.monitored)}</td></tr>`).join('')}</tbody></table></div><span class="sub">Nama yang take pertama tidak ada di export. Pola (1): AFR masuk AFR tim saja. Pola (2): AFR tidak dihitung. Tambahkan di koreksi manual bila ingin masuk AFR orang yang take pertama.</span></details>`:''}
   </div></details>`}
 const afrLockedCol=(ds,I)=>I.afrBy>=0||(I.afrAt>=0&&/afr|first take|first taken/.test(norm(ds.headers[I.afrAt]||'')));
 function prepMain(ds,kind,fromCs){
@@ -1243,17 +1260,27 @@ function prepMain(ds,kind,fromCs){
       if(t!=null&&c0!=null&&t>=c0){afr=(t-c0)/6e4;afrAt=t}
       else{const tm=AT>=0&&filled(r[AT])?tsOf(r[AT]):null,tf=I.fr>=0&&filled(r[I.fr])?tsOf(r[I.fr]):null;   /* jam kosong: pakai First Response hanya bila itu jejak first take */
         if(tm!=null&&tf!=null&&c0!=null&&tf>=c0&&tm-tf>AFR_TO_MS){afrAt=tf;afr=(tf-c0)/6e4}}}
-    else if(LOCK){if(AT>=0&&filled(r[AT])){const t=tsOf(r[AT]);if(t!=null&&c0!=null&&t>=c0){afr=(t-c0)/6e4;afrAt=t}}afrAgent=I.afrBy>=0&&afrBy?afrBy:monitored}   /* afr_taken_at terkunci */
+    else if(LOCK){const tf=I.fr>=0&&filled(r[I.fr])?tsOf(r[I.fr]):null;afrAgent=I.afrBy>=0&&afrBy?afrBy:monitored;   /* afr_taken_at (first take) */
+      if(AT>=0&&filled(r[AT])){const t=tsOf(r[AT]);if(t!=null&&c0!=null&&t>=c0){afr=(t-c0)/6e4;afrAt=t;
+        if(tf!=null&&tf>=c0&&t-tf>AFR_TO_MS){afr=(tf-c0)/6e4;afrAt=tf;afrTO=true;afrAgent=''}}}}   /* sudah ada first response sebelum afr_taken_at = afr_taken_at ikut tertimpa take over */
     else if(AT>=0||I.fr>=0){const tm=AT>=0&&filled(r[AT])?tsOf(r[AT]):null,tf=I.fr>=0&&filled(r[I.fr])?tsOf(r[I.fr]):null;
       const c=[tm,tf].filter(t=>t!=null&&c0!=null&&t>=c0);if(c.length){afrAt=Math.min(...c);afr=(afrAt-c0)/6e4}
       afrTO=tm!=null&&tf!=null&&c0!=null&&tf>=c0&&tm-tf>AFR_TO_MS;   /* First Response sebelum Monitoring = sudah di-take sebelum take over */
       afrAgent=afrTO?'':monitored}
     else{afr=numAfr(g(r,'afr'));afrAgent=monitored}
+    /* take over monitoring tanpa jejak first take di export: Account Manager mengambil alih monitoring case
+       Customer Support (non-VIP) > 3 jam setelah case dibuat (case Helpdesk yang di-take over AM).
+       Jam & nama first take asli tidak ada di export → AFR tiket ini tidak dihitung (tim maupun perorangan); koreksi SPV tetap bisa mengisinya. */
+    let afrWhy='';
+    if(!afrFix&&!afrTO&&afr!=null&&afrAt!=null&&c0!=null){
+      if(kind==='cs'&&/account manager/i.test(msub)&&afr>AM_TO_MIN)afrWhy='am';
+      if(afrWhy){afrTO=true;afrAgent='';afr=null}}
+    else if(afrTO)afrWhy='fr';
     const aiAgent=n=>isEx(n)||/^(ai|dotai)$/i.test(norm(n));
     if(afr!=null&&(afrAgent?aiAgent(afrAgent):!afrTO))afr=null;   /* first take AI tidak dihitung; take over tanpa nama tetap masuk AFR tim */
     let afrOut=false;if(afr!=null&&afr>AFR_MAX){afr=null;afrOut=true}   /* > 3 jam tidak dihitung */
     out.push({date,day:dayStart(date),status,nr,solved,sSolved,recl,adj:solved||recl,res,hasInv,inv,hold:/hold|pending/i.test(status),
-      afrOnly,handler,monitored,team,monTeam,afr,afrOut,afrAgent:afr!=null?afrAgent:'',afrTO,afrFix,afrAt,created:c0,
+      afrOnly,handler,monitored,team,monTeam,afr,afrOut,afrAgent:afr!=null?afrAgent:'',afrTO,afrWhy,afrFix,afrAt,monAt:AT>=0&&filled(r[AT])?tsOf(r[AT]):null,created:c0,
       subarea:g(r,'subarea').replace(/^GlobalXtreme\s*/i,'')||'Not set',incident:g(r,'incident')||'Not set',category,issue:issueType(category),problem,ptype:probType(problem,category),company:g(r,'company'),group:g(r,'group'),cid:g(r,'cid'),ticket:tk,uid:g(r,'uid'),desc:g(r,'desc'),note:g(r,'invNote')});
   }
   return out;
@@ -1538,7 +1565,7 @@ function sAfrAgents(kind){const vip=kind==='vip',m=C[kind],id=kind+'-afr',title=
   const a=[...by.values()].map(x=>({...x,n:x.v.length,afr:x.v.reduce((p,q)=>p+q,0)/x.v.length,med:med(x.v),w5:x.v.filter(z=>z<=AFR_SLA).length/x.v.length*100})).sort((p,q)=>p.afr-q.afr||q.n-p.n);
   if(!a.length)return head(id,SECK(kind),title)+body(needCol('First Response (tanggal + jam)','First response'));
   const max=Math.max(...a.map(x=>x.afr)),avg=m.afr;
-  const rows=a.map((x,i)=>`<div class="afr-r"><span class="mut no">${i+1}</span><div class="afr-n"><b title="${esc(x.label)}">${esc(x.label)}</b><span>${esc(x.team)} · ${fInt(x.n)} tiket · median ${fAfr(x.med)}</span></div><div class="afr-t"><i style="width:${Math.max(1,x.afr/max*100)}%;background:${avg!=null&&x.afr<=avg?'#1F3A5F':'#9DB8D9'}"></i>${avg!=null?`<em style="left:${Math.min(100,avg/max*100)}%"></em>`:''}</div><b class="afr-v">${fAfr(x.afr)}</b></div>`).join('');
+  const rows=a.map((x,i)=>`<div class="afr-r" data-afr-agent="${esc(x.label)}" data-afr-kind="${kind}" title="Klik untuk detail tiket"><span class="mut no">${i+1}</span><div class="afr-n"><b title="${esc(x.label)}">${esc(x.label)}</b><span>${esc(x.team)} · ${fInt(x.n)} tiket · median ${fAfr(x.med)}</span></div><div class="afr-t"><i style="width:${Math.max(1,x.afr/max*100)}%;background:${avg!=null&&x.afr<=avg?'#1F3A5F':'#9DB8D9'}"></i>${avg!=null?`<em style="left:${Math.min(100,avg/max*100)}%"></em>`:''}</div><b class="afr-v">${fAfr(x.afr)}</b></div>`).join('');
   const list=`<div class="card scroll" data-a style="--f:2.2;display:flex;flex-direction:column"><div class="ctitle">Avg first response per agent · fastest first <span class="mut" style="font-weight:500;text-transform:none;letter-spacing:0">— garis = rata-rata tim ${fAfr(avg)}</span></div><div class="afr-l">${rows}</div></div>`;
   const md=afrMed(m),w=afrWithin(m);
   const sum=on(id,'summary')&&`<div class="card" data-a style="--f:.8;display:flex;flex-direction:column;justify-content:center;gap:1.4cqw"><div class="ctitle">${vip?'VIP':'Customer Support'} · First response time</div>${afrPair(m,1)}<div class="legend"><span><i style="background:#1F3A5F"></i>≤ rata-rata tim</span><span><i style="background:#9DB8D9"></i>di atas rata-rata</span></div></div>`;
@@ -1547,7 +1574,7 @@ function sAfrAgents(kind){const vip=kind==='vip',m=C[kind],id=kind+'-afr',title=
   const h=hl(id,[`<b>AFR ${f1(avg)} menit</b> = rata-rata waktu first response dari ${fInt(m.afrN)} tiket.`,
     `<b>Median ${f1(md)} menit</b> = separuh customer dibalas dalam ${f1(md)} menit atau lebih cepat.`,
     avg!=null&&md!=null&&avg-md>md?`AFR lebih tinggi dari median karena <b>${fInt(long)} tiket</b> dibalas lebih dari 30 menit.`:`AFR dan median berdekatan: kecepatan respon tim merata.`]);
-  return head(id,SECK(kind),title,`AFR = created_at → afr_taken_at (first take Monitor By) · ${fInt(m.afrN)} tiket`)+body(row(list,sum)+h)}
+  return head(id,SECK(kind),title,`AFR = Created → first take (take over tidak mengubah AFR) · ${fInt(m.afrN)} tiket · klik nama agent untuk detail tiket`)+body(afrPop(kind,m)+row(list,sum)+h)}
 
 /* ---------- VIP hold detail ---------- */
 function sVipHold(){const m=C.vip,id='vip-hold',title='VIP Hold Cases — Detail';
@@ -2231,6 +2258,59 @@ $('#wipeAll').onclick=async()=>{if(!confirm('Hapus semua data import, edit teks,
 
 /* ---------- modals ---------- */
 function openModal(id){$('#'+id).classList.remove('hidden')}
+/* Detail AFR per agent: semua tiket yang AFR-nya dihitung ke agent ini (urut paling lama), plus take over yang dikeluarkan dari agent ini */
+/* Pop-up notes di slide AFR: muncul bila ada jarak Created → Monitoring yang janggal. Bisa disembunyikan (per browser);
+   muncul lagi bila datanya berubah. */
+const POPK='gx-afr-pop-hide';
+function afrPopSig(kind,m){const L=m.afrList||m.list;return [kind,_PRMIN,_PRMAX,L.filter(r=>r.afrTO).length,L.filter(r=>!r.afrTO&&!r.afrFix&&r.afr!=null&&r.afr>180).length].join('|')}
+function afrPop(kind,m){
+  const L=m.afrList||m.list,to=L.filter(r=>r.afrTO&&!r.afrFix),sus=L.filter(r=>!r.afrTO&&!r.afrFix&&r.afr!=null&&r.afr>180),fx=L.filter(r=>r.afrFix);
+  if(!to.length&&!sus.length)return '';
+  let hid={};try{hid=JSON.parse(localStorage.getItem(POPK)||'{}')}catch(e){}
+  if(hid[kind]===afrPopSig(kind,m))return '';
+  const by={};to.forEach(r=>{const k=r.monitored||'—';by[k]=(by[k]||0)+1});
+  const top=Object.entries(by).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([k,n])=>`${esc(k.split(' ').slice(0,2).join(' '))} ${n}`).join(', ');
+  return `<div class="afr-pop" data-a><span class="i">!</span><div class="t">AFR dibaca dari <b>pertama kali case di-take</b>, bukan dari jam take over.
+    ${to.length?` <b>${fInt(to.length)} tiket</b> punya jam Monitoring yang janggal dibanding jam Created (take over monitoring) dan sudah otomatis dikoreksi — tidak dihitung ke agent yang take over${top?` (${top})`:''}.`:''}
+    ${sus.length?` <b>${fInt(sus.length)} tiket</b> lain AFR-nya &gt; 3 jam tanpa jejak take over — perlu dicek.`:''}${fx.length?` ${fInt(fx.length)} tiket memakai koreksi SPV.`:''}</div>
+    <div class="acts"><button data-afrpop-list="${kind}">Lihat tiket</button><button data-afrpop-hide="${kind}">Sembunyikan</button></div></div>`}
+function afrAnoms(kind){
+  const m=C&&C[kind];if(!m)return;const L=m.afrList||m.list;
+  const f=t=>{if(t==null)return '—';const d=new Date(t);return `${p2(d.getDate())}/${p2(d.getMonth()+1)} ${p2(d.getHours())}:${p2(d.getMinutes())}`};
+  const dur=v=>v==null?'—':v<60?f1(v)+'m':`${Math.floor(v/60)}j ${p2(Math.round(v%60))}m`;
+  const to=L.filter(r=>r.afrTO&&!r.afrFix).sort((a,b)=>((b.monAt||0)-(b.created||0))-((a.monAt||0)-(a.created||0))),sus=L.filter(r=>!r.afrTO&&!r.afrFix&&r.afr!=null&&r.afr>180).sort((a,b)=>b.afr-a.afr);
+  const tr=(r,i,k)=>`<tr><td class="mut">${i+1}</td><td title="${esc(r.ticket||'')}">${esc(String(r.ticket||'—').replace(/^GX-CSC-/i,''))}</td><td>${f(r.created)}</td><td>${f(r.monAt)}</td><td class="n">${dur(r.monAt!=null&&r.created!=null?(r.monAt-r.created)/6e4:null)}</td><td>${esc(r.monitored||'')}</td><td class="n"><b>${k?(r.afr==null?'tidak dihitung':dur(r.afr)+' (tim)'):dur(r.afr)}</b></td><td>${k?`<span class="tg b">${AFR_WHY[r.afrWhy]||'take over monitoring'}</span>`:'<span class="tg o">cek: take over?</span>'}</td><td>${r.ticket?`<button class="btn sm" data-afr-fix="${esc(r.ticket)}">+ Koreksi</button>`:''}</td></tr>`;
+  const th='<thead><tr><th>#</th><th>Ticket</th><th>Created</th><th>Monitoring</th><th class="n">Jarak</th><th>Monitor By</th><th class="n">AFR</th><th></th><th></th></tr></thead>';
+  $('#afrTitle').textContent='Jam Monitoring janggal';
+  $('#afrSub').textContent=`${kind==='vip'?'VIP':'Customer Support'} · AFR dibaca dari pertama kali case di-take`;
+  $('#afrBody').innerHTML=`${to.length?`<h3 style="margin:0 0 6px;font-size:15px">Take over monitoring — sudah dikoreksi otomatis (${fInt(to.length)})</h3><div class="afdw" style="max-height:34vh"><table class="afd">${th}<tbody>${to.map((r,i)=>tr(r,i,1)).join('')}</tbody></table></div>`:''}
+    ${sus.length?`<h3 style="margin:18px 0 6px;font-size:15px">AFR &gt; 3 jam tanpa jejak take over — perlu dicek (${fInt(sus.length)})</h3><div class="afdw" style="max-height:30vh"><table class="afd">${th}<tbody>${sus.map((r,i)=>tr(r,i,0)).join('')}</tbody></table></div>`:''}
+    <p class="sub" style="margin-top:12px">Jam &amp; nama first take asli tidak ada di export GX CS Connect untuk tiket take over. Bila kamu tahu siapa yang take pertama, klik <b>+ Koreksi</b> lalu isi nama &amp; jam first take — AFR tiket itu pindah ke orang tersebut.</p>`;
+  openModal('afrModal')}
+function afrDrill(kind,agent){
+  const m=C&&C[kind];if(!m)return;const L=m.afrList||m.list;
+  const f=t=>{if(t==null)return '—';const d=new Date(t);return `${p2(d.getDate())}/${p2(d.getMonth()+1)} ${p2(d.getHours())}:${p2(d.getMinutes())}`};
+  const dur=v=>v==null?'—':v<60?f1(v)+'m':`${Math.floor(v/60)}j ${p2(Math.round(v%60))}m`;
+  const mine=L.filter(r=>r.afr!=null&&r.afrAgent===agent).sort((a,b)=>b.afr-a.afr);
+  const out=L.filter(r=>r.monitored===agent&&r.afrAgent!==agent&&(r.afrTO||r.afrFix));
+  const tot=mine.reduce((s,r)=>s+r.afr,0),avg=mine.length?tot/mine.length:null,sorted=mine.map(r=>r.afr).sort((a,b)=>a-b),k=sorted.length>>1,med=sorted.length?(sorted.length%2?sorted[k]:(sorted[k-1]+sorted[k])/2):null;
+  const top=mine.slice(0,5).reduce((s,r)=>s+r.afr,0),long=mine.filter(r=>r.afr>30).length;
+  const restAvg=mine.length>5?(tot-top)/(mine.length-5):null;
+  const WHY=AFR_WHY;
+  const tag=r=>r.afrFix?'<span class="tg g">koreksi SPV</span>':r.afrTO?`<span class="tg b">${WHY[r.afrWhy]||'take over'}</span>`:r.afr>180?'<span class="tg o">cek: take over?</span>':r.afr>30?'<span class="tg">&gt; 30m</span>':'';
+  const tr=(r,i,x)=>`<tr class="${r.afr>30?'hi':''}"><td class="mut">${i+1}</td><td title="${esc(r.ticket||'')}">${esc(String(r.ticket||'—').replace(/^GX-CSC-/i,''))}</td><td>${f(r.created)}</td><td>${f(r.afrAt)}</td><td class="n"><b>${r.afr==null?'tidak dihitung':dur(r.afr)}</b></td><td>${esc(r.status||'')}</td><td>${esc(x?r.afrAgent||'— (first take tidak ada di export)':r.monitored||'')}</td><td>${tag(r)}</td><td>${r.ticket&&!r.afrFix?`<button class="btn sm" data-afr-fix="${esc(r.ticket)}">+ Koreksi</button>`:''}</td></tr>`;
+  $('#afrTitle').textContent=agent;
+  $('#afrSub').textContent=`${kind==='vip'?'VIP':'Customer Support'} · ${rangeLabel?rangeLabel(_PRMIN,_PRMAX,true):''} · AFR = Created → first take`;
+  $('#afrBody').innerHTML=`<div class="afk"><div><b>${dur(avg)}</b>AFR rata-rata</div><div><b>${dur(med)}</b>median</div><div><b>${fInt(mine.length)}</b>tiket dihitung</div><div><b>${fInt(long)}</b>tiket &gt; 30 menit</div>${mine.length>5?`<div><b>${tot?fPct(top/tot*100,0):'—'}</b>menit dari 5 tiket terlama</div><div><b>${dur(restAvg)}</b>AFR tanpa 5 tiket terlama</div>`:''}</div>
+    <div class="afdw"><table class="afd"><thead><tr><th>#</th><th>Ticket</th><th>Created</th><th>First take</th><th class="n">AFR</th><th>Status</th><th>Monitor By sekarang</th><th></th><th></th></tr></thead><tbody>${mine.map((r,i)=>tr(r,i,false)).join('')||'<tr><td colspan="9" class="mut">Tidak ada tiket.</td></tr>'}</tbody></table></div>
+    ${out.length?`<h3 style="margin:18px 0 6px;font-size:15px">Take over oleh ${esc(agent)} — tidak dihitung ke AFR ${esc(agent)} (${fInt(out.length)})</h3><div class="afdw" style="max-height:30vh"><table class="afd"><thead><tr><th>#</th><th>Ticket</th><th>Created</th><th>Jam di export</th><th class="n">AFR</th><th>Status</th><th>AFR masuk ke</th><th></th><th></th></tr></thead><tbody>${out.map((r,i)=>tr(r,i,true)).join('')}</tbody></table></div>`:''}
+    <p class="sub" style="margin-top:12px">Tiket bertanda <b>cek: take over?</b> = AFR &gt; 3 jam tanpa jejak take over di export. Bila case itu sebenarnya sudah di-take orang lain lebih dulu, klik <b>+ Koreksi</b> lalu isi nama & jam first take.</p>`;
+  openModal('afrModal')}
+document.addEventListener('click',e=>{
+  const a=e.target.closest('[data-afr-agent]');if(a){afrDrill(a.dataset.afrKind,a.dataset.afrAgent);return}
+  const pl=e.target.closest('[data-afrpop-list]');if(pl){afrAnoms(pl.dataset.afrpopList);return}
+  const ph=e.target.closest('[data-afrpop-hide]');if(ph){const k=ph.dataset.afrpopHide;let h={};try{h=JSON.parse(localStorage.getItem(POPK)||'{}')}catch(_){}if(C&&C[k])h[k]=afrPopSig(k,C[k]);try{localStorage.setItem(POPK,JSON.stringify(h))}catch(_){}const box=ph.closest('.afr-pop');if(box)box.remove();return}
+  const fx=e.target.closest('[data-afr-fix]');if(fx){closeModal('afrModal');renderImport();openModal('importModal');const box=$('[data-afrfix-box]');if(box){box.open=true;const ta=$('[data-afrfix]');const v=ta.value.replace(/\s+$/,'');ta.value=(v?v+'\n':'')+fx.dataset.afrFix+', ';box.scrollIntoView({block:'center'});ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length)}}});
 function closeModal(id){$('#'+id).classList.add('hidden')}
 $$('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
 $$('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id)}));

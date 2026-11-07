@@ -80,4 +80,7 @@ AFR = menit dari **Created** sampai **first take** (orang & jam pertama yang tak
 
 - Export GX CS Connect menimpa *Monitor By* dan *Monitoring Date/Time* saat case di-take over. Report memakai **First Response** sebagai jejak first take: bila First Response lebih awal dari Monitoring, case dianggap take over → AFR tim memakai jam First Response, dan AFR perorangan tidak masuk ke Monitor By terakhir.
 - Bila export punya kolom `afr_taken_at` / `afr_taken_by`, kolom itu yang dipakai (first take terkunci, termasuk nama).
+- Otomatis juga: take over monitoring oleh Account Manager untuk case Customer Support > 3 jam setelah dibuat (case Helpdesk yang diambil alih AM). Jam first take asli tidak ada di export, jadi AFR tiket ini tidak dihitung sampai dikoreksi.
+- Slide First Response by Agent menampilkan pop-up notes bila ada jam Monitoring yang janggal dibanding Created (tombol Lihat tiket / Sembunyikan; status sembunyi per browser, muncul lagi bila data berubah).
+- Klik nama agent di slide First Response by Agent untuk melihat AFR per tiket.
 - Take over yang tidak meninggalkan jejak di export: **Import data → Customer Support → Koreksi AFR take over**, isi satu baris per tiket `Ticket ID, nama first take, jam` (mis. `GX-CSC-20261017114927, Nilma, 11:55`). Koreksi tersimpan bersama report sehingga berlaku untuk semua viewer. Daftar "Perlu dicek" menampilkan tiket dengan AFR > 3 jam sebagai bahan cek.

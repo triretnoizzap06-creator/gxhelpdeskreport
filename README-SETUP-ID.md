@@ -73,3 +73,11 @@ Link viewer deck (`?view=1`) Helpdesk Report & Performance tetap bisa dibuka tan
 
 Menambah menu dashboard: edit daftar `MENUS` di index.html.
 Kunci service_role hanya di Vercel — jangan taruh di GitHub atau config.js.
+
+## AFR & take over (Helpdesk Report)
+
+AFR = menit dari **Created** sampai **first take** (orang & jam pertama yang take case). Take over sesudahnya tidak mengubah AFR dan tidak dibebankan ke yang take over.
+
+- Export GX CS Connect menimpa *Monitor By* dan *Monitoring Date/Time* saat case di-take over. Report memakai **First Response** sebagai jejak first take: bila First Response lebih awal dari Monitoring, case dianggap take over → AFR tim memakai jam First Response, dan AFR perorangan tidak masuk ke Monitor By terakhir.
+- Bila export punya kolom `afr_taken_at` / `afr_taken_by`, kolom itu yang dipakai (first take terkunci, termasuk nama).
+- Take over yang tidak meninggalkan jejak di export: **Import data → Customer Support → Koreksi AFR take over**, isi satu baris per tiket `Ticket ID, nama first take, jam` (mis. `GX-CSC-20261017114927, Nilma, 11:55`). Koreksi tersimpan bersama report sehingga berlaku untuk semua viewer. Daftar "Perlu dicek" menampilkan tiket dengan AFR > 3 jam sebagai bahan cek.

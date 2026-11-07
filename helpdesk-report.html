@@ -115,6 +115,9 @@ summary{cursor:pointer;font-weight:700;font-size:12.5px}
 .rules{display:grid;gap:8px;margin-top:8px;font-size:12px}
 .rules label{display:grid;gap:3px}
 .rules .chk{display:flex;gap:7px;align-items:center}
+.rules textarea{width:100%;min-height:90px;border:1px solid var(--line);background:var(--solid);border-radius:8px;padding:6px 8px;font:12px ui-monospace,Menlo,monospace}
+.afx{width:100%;border-collapse:collapse;font-size:11px}.afx th,.afx td{text-align:left;padding:4px 6px;border-bottom:1px solid var(--line);white-space:nowrap}.afx td.n,.afx th.n{text-align:right}
+.afxw{max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:8px}
 .dfoot{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
 .mlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0 6px}
 .mitem{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:600;cursor:pointer}
@@ -1174,10 +1177,47 @@ function tzShift(ds,I){
   const sh=n>=20&&bc/n>=.8&&Math.abs(best)>=1&&Math.abs(best)<=14?best*3600e3:0;
   TZC.set(ds,{k:K,v:sh});return sh}
 const TZC=new WeakMap();
+/* ---- AFR take over ----
+   Export GX CS Connect menimpa "Monitor By" + "Monitoring Date/Time" setiap kali case di-take over.
+   AFR harus tetap dihitung dari FIRST TAKE (orang & jam pertama case di-take), bukan dari yang take over.
+   1) Kolom afr_taken_at / afr_taken_by (bila ada di export) = first take terkunci → dipakai apa adanya.
+   2) Tanpa kolom itu: first take = waktu paling awal antara Monitoring At dan First Response At.
+      First Response lebih awal dari Monitoring (> 1 menit) = bukti case sudah di-take sebelum di-take over →
+      AFR tim memakai jam first take, dan AFR tidak dibebankan ke Monitor By (yang take over).
+   3) Koreksi SPV (S.afrFix: "Ticket ID, nama first take, jam") menimpa semuanya, untuk case take over
+      yang tidak meninggalkan jejak di export. */
+const AFR_TO_MS=60e3;
+let AFRFIX_C={k:null,m:new Map()};
+function afrFixMap(){const raw=String(S.afrFix||'');if(AFRFIX_C.k===raw)return AFRFIX_C.m;const m=new Map();
+  for(const line of raw.split(/\n/)){const t=line.split(/[,;\t|]/).map(x=>x.trim());if(!t[0]||!/[a-z0-9]/i.test(t[0]))continue;const id=t[0].toUpperCase();if(!/\d{6}/.test(id))continue;m.set(id,{by:t[1]||'',time:t[2]||''})}
+  AFRFIX_C={k:raw,m};return m}
+function fixAgent(n,names){const q=norm(n);if(!q)return '';const ex=names.find(x=>norm(x)===q);if(ex)return ex;const hit=names.filter(x=>norm(x).split(' ').some(w=>w===q)||norm(x).startsWith(q));return hit.length===1?hit[0]:agentName(n)}
+function fixTime(v,c0){if(!v||c0==null)return null;const s=String(v).trim();
+  let m=s.match(/^(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{2,4}))?\s+(\d{1,2})[:.](\d{2})/);const base=new Date(c0);
+  if(m){const y=m[3]?(+m[3]<100?2000+ +m[3]:+m[3]):base.getFullYear();return new Date(y,+m[2]-1,+m[1],+m[4],+m[5]).getTime()}
+  m=s.match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{1,2}):(\d{2})/);if(m)return new Date(+m[1],+m[2]-1,+m[3],+m[4],+m[5]).getTime();
+  const sec=timeSecs(s);if(sec==null)return null;return new Date(base.getFullYear(),base.getMonth(),base.getDate(),0,0,sec).getTime()}
+function afrFixPanel(){
+  if(!DS.cs&&!DS.vip)return '';
+  const rows=prepMain(DS.cs,'cs').concat(DS.vip?prepMain(DS.vip,'vip'):(DS.cs&&DS.cs.map.vip?prepMain(DS.cs,'vip',true):[]));
+  const f=t=>{if(t==null)return '—';const d=new Date(t);return `${p2(d.getDate())}/${p2(d.getMonth()+1)} ${p2(d.getHours())}:${p2(d.getMinutes())}`};
+  const to=rows.filter(r=>r.afrTO),fx=rows.filter(r=>r.afrFix),sus=rows.filter(r=>!r.afrFix&&!r.afrTO&&r.afr!=null&&r.afr>180&&r.ticket).sort((a,b)=>b.afr-a.afr).slice(0,80);
+  return `<details data-afrfix-box><summary>Koreksi AFR take over</summary><div class="rules">
+    <span class="sub">AFR dihitung dari <b>first take</b>. Export GX CS Connect menimpa Monitor By & Monitoring Time saat case di-take over, jadi:</span>
+    <span class="sub">• <b>Otomatis</b>: First Response lebih awal dari Monitoring = case sudah di-take sebelum di-take over → AFR pakai jam first take, tidak dibebankan ke yang take over. Terdeteksi: <b>${fInt(to.length)}</b> tiket.</span>
+    <span class="sub">• <b>Manual</b>: untuk take over yang tidak meninggalkan jejak di export, tulis satu baris per tiket: <b>Ticket ID, nama yang take pertama, jam take</b> (mis. <code>GX-CSC-20261017114927, Nilma, 11:55</code>; tanggal opsional <code>17/10 11:55</code>). Jam kosong = tiket dikeluarkan dari AFR yang take over; masuk AFR nama itu hanya bila export punya jejak first take. Koreksi aktif: <b>${fInt(fx.length)}</b>.</span>
+    <textarea data-afrfix placeholder="GX-CSC-20261017114927, Nilma, 11:55">${esc(S.afrFix||'')}</textarea>
+    <div><button class="btn sm" data-afrfix-save>Simpan koreksi</button></div>
+    ${sus.length?`<span class="sub"><b>Perlu dicek</b> — AFR &gt; 3 jam tanpa jejak take over (${sus.length}${sus.length===80?'+':''}). Klik + untuk menambahkan ke koreksi bila ternyata hasil take over.</span>
+    <div class="afxw"><table class="afx"><thead><tr><th></th><th>Ticket</th><th>Created</th><th>Taken</th><th class="n">AFR</th><th>Monitor By</th></tr></thead><tbody>${sus.map(r=>`<tr><td><button class="btn sm" data-afrfix-add="${esc(r.ticket)}" title="Tambah ke koreksi">+</button></td><td title="${esc(r.ticket)}">${esc(String(r.ticket).replace(/^GX-CSC-/i,""))}</td><td>${f(r.created)}</td><td>${f(r.afrAt)}</td><td class="n">${fInt(r.afr)}m</td><td>${esc(r.afrAgent||r.monitored)}</td></tr>`).join('')}</tbody></table></div>`:'<span class="sub">Tidak ada tiket dengan AFR &gt; 3 jam yang perlu dicek.</span>'}
+    ${to.length?`<details><summary>${fInt(to.length)} take over terdeteksi otomatis</summary><div class="afxw"><table class="afx"><thead><tr><th>Ticket</th><th>Created</th><th>First take</th><th class="n">AFR</th><th>Take over oleh</th></tr></thead><tbody>${to.slice(0,200).map(r=>`<tr><td>${esc(r.ticket)}</td><td>${f(r.created)}</td><td>${f(r.afrAt)}</td><td class="n">${r.afr!=null?f1(r.afr)+'m':'—'}</td><td>${esc(r.monitored)}</td></tr>`).join('')}</tbody></table></div><span class="sub">Nama yang take pertama tidak ada di export — AFR-nya masuk AFR tim; tambahkan di koreksi manual bila ingin masuk AFR perorangan.</span></details>`:''}
+  </div></details>`}
+const afrLockedCol=(ds,I)=>I.afrBy>=0||(I.afrAt>=0&&/afr|first take|first taken/.test(norm(ds.headers[I.afrAt]||'')));
 function prepMain(ds,kind,fromCs){
   if(!ds)return [];
   const I=idx(ds,MAIN_FIELDS),g=(r,k)=>I[k]<0?'':String(r[I[k]]??'').trim(),EX=exclList(),isEx=n=>!!n&&EX.includes(norm(n)),AT=afrIdx(ds,I);
-  const out=[],seen=new Set(),TZ=tzShift(ds,I);
+  const out=[],seen=new Set(),TZ=tzShift(ds,I),FX=afrFixMap(),LOCK=afrLockedCol(ds,I);
+  const NAMES=FX.size&&I.monitored>=0?[...new Set(ds.rows.map(r=>agentName(r[I.monitored])).filter(Boolean))]:[];
   for(const r of ds.rows){
     let date=I.date<0?null:parseDate(r[I.date]);if(date!=null&&TZ)date+=TZ;
     const category=g(r,'category'),problem=g(r,'problem');
@@ -1197,19 +1237,28 @@ function prepMain(ds,kind,fromCs){
     const handler=agentName(handlerRaw),monitored=agentName(monRaw),sub=g(r,'team'),msub=g(r,'monTeam');
     const team=I.team>=0?(handler&&sub?sub:'Unassigned'):teamOf(handler,'',kind);   /* Handling Team = Sub Division Handle By */
     const monTeam=I.monTeam>=0?(msub||'Unassigned'):(I.team>=0&&monitored&&monitored===handler?team:teamOf(monitored,'',kind));
-    let afr=null;const afrBy=agentName(g(r,'afrBy'));
-    if(AT>=0){if(filled(r[AT])){const t=tsOf(r[AT]),c0=tsOf(r[I.date]);if(t!=null&&c0!=null&&t>=c0)afr=(t-c0)/6e4}}   /* AFR = created_at -> afr_taken_at */
-    else afr=numAfr(g(r,'afr'));
-    const afrAgent=I.afrBy>=0&&afrBy?afrBy:monitored;   /* first take Monitor By */   /* AFR monitoring per agent = Monitor By */
-    if(afr!=null&&(!afrAgent||isEx(afrAgent)||/^(ai|dotai)$/i.test(norm(afrAgent))))afr=null;   /* first take AI tidak dihitung */
+    let afr=null,afrAgent='',afrTO=false,afrFix=false,afrAt=null;const afrBy=agentName(g(r,'afrBy'));
+    const c0=I.date>=0?tsOf(r[I.date]):null,fx=tk?FX.get(tk.toUpperCase()):null;
+    if(fx){afrFix=true;afrAgent=fixAgent(fx.by,NAMES)||monitored;const t=fixTime(fx.time,c0);   /* koreksi SPV: first take manual */
+      if(t!=null&&c0!=null&&t>=c0){afr=(t-c0)/6e4;afrAt=t}
+      else{const tm=AT>=0&&filled(r[AT])?tsOf(r[AT]):null,tf=I.fr>=0&&filled(r[I.fr])?tsOf(r[I.fr]):null;   /* jam kosong: pakai First Response hanya bila itu jejak first take */
+        if(tm!=null&&tf!=null&&c0!=null&&tf>=c0&&tm-tf>AFR_TO_MS){afrAt=tf;afr=(tf-c0)/6e4}}}
+    else if(LOCK){if(AT>=0&&filled(r[AT])){const t=tsOf(r[AT]);if(t!=null&&c0!=null&&t>=c0){afr=(t-c0)/6e4;afrAt=t}}afrAgent=I.afrBy>=0&&afrBy?afrBy:monitored}   /* afr_taken_at terkunci */
+    else if(AT>=0||I.fr>=0){const tm=AT>=0&&filled(r[AT])?tsOf(r[AT]):null,tf=I.fr>=0&&filled(r[I.fr])?tsOf(r[I.fr]):null;
+      const c=[tm,tf].filter(t=>t!=null&&c0!=null&&t>=c0);if(c.length){afrAt=Math.min(...c);afr=(afrAt-c0)/6e4}
+      afrTO=tm!=null&&tf!=null&&c0!=null&&tf>=c0&&tm-tf>AFR_TO_MS;   /* First Response sebelum Monitoring = sudah di-take sebelum take over */
+      afrAgent=afrTO?'':monitored}
+    else{afr=numAfr(g(r,'afr'));afrAgent=monitored}
+    const aiAgent=n=>isEx(n)||/^(ai|dotai)$/i.test(norm(n));
+    if(afr!=null&&(afrAgent?aiAgent(afrAgent):!afrTO))afr=null;   /* first take AI tidak dihitung; take over tanpa nama tetap masuk AFR tim */
     let afrOut=false;if(afr!=null&&afr>AFR_MAX){afr=null;afrOut=true}   /* > 3 jam tidak dihitung */
     out.push({date,day:dayStart(date),status,nr,solved,sSolved,recl,adj:solved||recl,res,hasInv,inv,hold:/hold|pending/i.test(status),
-      afrOnly,handler,monitored,team,monTeam,afr,afrOut,afrAgent:afr!=null?afrAgent:'',
+      afrOnly,handler,monitored,team,monTeam,afr,afrOut,afrAgent:afr!=null?afrAgent:'',afrTO,afrFix,afrAt,created:c0,
       subarea:g(r,'subarea').replace(/^GlobalXtreme\s*/i,'')||'Not set',incident:g(r,'incident')||'Not set',category,issue:issueType(category),problem,ptype:probType(problem,category),company:g(r,'company'),group:g(r,'group'),cid:g(r,'cid'),ticket:tk,uid:g(r,'uid'),desc:g(r,'desc'),note:g(r,'invNote')});
   }
   return out;
 }
-function afrNote(){const m=(DS.cs||DS.vip||{}).map||{};return (m.fr||m.afr||m.afrAt)?'AFR = rata-rata menit created_at → afr_taken_at (first take Monitor By). First take AI tidak dihitung.':''}
+function afrNote(){const m=(DS.cs||DS.vip||{}).map||{};return (m.fr||m.afr||m.afrAt)?'AFR = rata-rata menit Created → FIRST TAKE (jam & orang pertama yang take case). Take over sesudahnya tidak mengubah AFR dan tidak dibebankan ke yang take over. First take AI tidak dihitung.':''}
 function groupCount(list,key,filter){const m=new Map();for(const r of list){if(filter&&!filter(r))continue;const k=typeof key==='function'?key(r):r[key];if(!k)continue;m.set(k,(m.get(k)||0)+1)}return [...m].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value||String(a.label).localeCompare(String(b.label)))}
 /* group objects: value = cases, adj = resolved (aturan Investigation), nr = status No Response (BC2 + After Connected), hold = cases − resolved */
 function groupStats(list,key){const m=new Map();for(const r of list){const k=r[key];if(!k)continue;if(!m.has(k))m.set(k,{label:k,value:0,solved:0,adj:0,nr:0,hold:0});const a=m.get(k);a.value++;if(r.solved)a.solved++;if(r.res)a.adj++;if(r.nr)a.nr++}for(const a of m.values())a.hold=a.value-a.adj;return [...m.values()].sort((a,b)=>b.value-a.value)}
@@ -2154,7 +2203,7 @@ function renderImport(){
      <div class="fstatus ${ds?(miss.length?'err':'ok'):''}" id="st-${k}">${ds?`${esc(ds.name)} · ${fInt(ds.rows.length)} rows · ${ds.headers.length} columns${(()=>{const r=dsRange(ds);return r?'<br>Isi tanggal: <b>'+esc(rangeLabel(r.a,r.b,true))+'</b> ('+r.n+' hari ada data)':''})()}${ds.joined&&ds.joined.length?'<br>Digabung: '+esc(ds.joined.join(', ')):''}${miss.length?'<br>Kolom wajib belum dimapping: '+esc(miss.join(', ')):''}`:'Belum ada file.'}</div>
      ${dataCheck(ds,k)}
      ${ds?`<details ${miss.length?'open':''}><summary>Column mapping</summary><div class="maps">${F.map(f=>`<label>${esc(f.l)}${f.req?' <span class="req">*</span>':''}<select data-map="${k}" data-key="${f.k}"><option value="">— not mapped —</option>${ds.headers.map(h=>`<option ${ds.map[f.k]===h?'selected':''}>${esc(h)}</option>`).join('')}</select></label>`).join('')}</div></details><div><button class="btn sm danger" data-clear="${k}">Remove file</button></div>`:''}
-     ${k==='cs'?`<details><summary>Analytics rules</summary><div class="rules"><label>User yang dikecualikan (Monitor / Handle / Reporter, pisahkan koma)<input type="text" data-excl value="${esc(S.excl??'DotAI, AI')}"></label><span class="sub">Ticket dengan user ini tidak dihitung (sesuai Analytics Formulas: DotAI / Software Development).</span></div></details>`:''}
+     ${k==='cs'?`<details><summary>Analytics rules</summary><div class="rules"><label>User yang dikecualikan (Monitor / Handle / Reporter, pisahkan koma)<input type="text" data-excl value="${esc(S.excl??'DotAI, AI')}"></label><span class="sub">Ticket dengan user ini tidak dihitung (sesuai Analytics Formulas: DotAI / Software Development).</span></div></details>${afrFixPanel()}`:''}
      ${k==='rc'?`<details><summary>Filter rules</summary><div class="rules">
        <label>WO link template (opsional, pakai {wo})<input type="text" data-rule="woLink" placeholder="https://gxone.../work-order/{wo}" value="${esc(S.rc.woLink||'')}"></label>
        <label>Via Origin — Customer Support<input type="text" data-rule="hdOrigin" value="${esc(S.rc.hdOrigin)}"></label>
@@ -2173,6 +2222,8 @@ function renderImport(){
   $$('[data-map]').forEach(sel=>sel.onchange=async()=>{const k=sel.dataset.map;DS[k].map[sel.dataset.key]=sel.value;await idbPut(k,DS[k]);renderImport();refresh(0)});
   $$('[data-clear]').forEach(b=>b.onclick=async()=>{const k=b.dataset.clear;DS[k]=null;await idbPut(k,null);renderImport();refresh(0)});
   const ex=$('[data-excl]');if(ex)ex.onchange=()=>{S.excl=ex.value;save();refresh(0)};
+  const afb=$('[data-afrfix-save]');if(afb)afb.onclick=()=>{S.afrFix=$('[data-afrfix]').value.trim();save();refresh(0);renderImport();const d=$('[data-afrfix-box]');if(d)d.open=true};
+  $$('[data-afrfix-add]').forEach(b=>b.onclick=()=>{const ta=$('[data-afrfix]');const v=ta.value.replace(/\s+$/,'');ta.value=(v?v+'\n':'')+b.dataset.afrfixAdd+', ';ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length)});
   $$('[data-rule]').forEach(inp=>inp.onchange=()=>{S.rc[inp.dataset.rule]=inp.type==='checkbox'?inp.checked:inp.value;save();refresh(0)});
   const rr=$('[data-rule-reset]');if(rr)rr.onclick=()=>{S.rc={...DEF_RC};save();renderImport();refresh(0)}}
 $('#importBtn').onclick=()=>{renderImport();openModal('importModal')};

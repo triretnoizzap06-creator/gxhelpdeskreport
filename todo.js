@@ -10,9 +10,12 @@
 //   GET    /api/todo?doc=knowledge-base     → dibaca tim tanpa login (Knowledge Base, team-tools); POST tetap wajib login
 //   GET/POST /api/todo?vip=1               → Dashboard VIP (tim / SPV)
 //   GET    /api/todo?secrets=HD             → password tools tim (SPV / cookie tim GX_TEAM_PASSWORD)
+//   GET    /api/todo?board=HD|AM           → { board:{ roster, tasks, notes }, revision } — dashboard tim (publik)
+//   POST   /api/todo?board=HD|AM  { op, … } → task/notes tim (publik) · roster.add/roster.del (password tim / SPV)
 // Tim (tanpa login, hanya task yang di-assign ke timnya):
 //   GET    /api/todo?team=HD|AM             → { tasks }
 //   PATCH  /api/todo?id=…&team=HD  { status, team_note, team_by }
+import { randomUUID } from 'node:crypto';
 import { AppError, configured, db, dbError } from './_store.js';
 import { authed, teamAuthed } from './_auth.js';
 
@@ -102,6 +105,40 @@ export default async function handler(req, res) {
       return json(res, { error: 'method' }, 405);
     }
 
+    /* ---------- Board tim (anggota, task & notes buatan tim) — gx_docs team-board-hd / team-board-am ---------- */
+    if (q.get('board') != null) {
+      const team = String(q.get('board')).toUpperCase(); if (!TEAMS.includes(team)) return json(res, { error: 'bad-team' }, 400);
+      const key = 'team-board-' + team.toLowerCase();
+      const read = async () => { const row = must(await db().from('gx_docs').select('data,revision').eq('key', key).maybeSingle()); const d = (row && row.data) || {};
+        return { data: { roster: Array.isArray(d.roster) ? d.roster : null, tasks: Array.isArray(d.tasks) ? d.tasks : [], notes: Array.isArray(d.notes) ? d.notes : [] }, revision: row ? row.revision : null }; };
+      if (req.method === 'GET') { const r = await read(); return json(res, { board: r.data, revision: r.revision, canRoster: authed(req) || teamAuthed(req) }); }
+      if (req.method !== 'POST') return json(res, { error: 'method' }, 405);
+      const b = await readJson(req), op = str(b.op, 20), now = new Date().toISOString();
+      const nm = v => str(v, 60).replace(/\s+/g, ' ').trim();
+      if (/^roster\./.test(op) && !authed(req) && !teamAuthed(req)) return json(res, { error: 'team-login-required', detail: 'Masukkan password tim untuk mengubah anggota.' }, 401);
+      for (let t = 0; t < 6; t++) {
+        const cur = await read(), D = cur.data;
+        if (!D.roster) D.roster = Array.isArray(b.defaultRoster) ? b.defaultRoster.slice(0, 40).map(x => ({ name: nm(x && x.name), nick: nm(x && x.nick) })).filter(x => x.name) : [];
+        let err = null;
+        if (op === 'roster.add') { const name = nm(b.name), nick = nm(b.nick) || name.split(' ')[0]; if (name.length < 2) err = 'Nama minimal 2 huruf.'; else if (D.roster.some(x => x.name.toLowerCase() === name.toLowerCase())) err = 'Nama sudah ada.'; else D.roster.push({ name, nick }); }
+        else if (op === 'roster.del') { const name = nm(b.name); D.roster = D.roster.filter(x => x.name !== name); }
+        else if (op === 'roster.edit') { const x = D.roster.find(y => y.name === nm(b.name)); if (x) x.nick = nm(b.nick) || x.nick; }
+        else if (op === 'task.add') { const title = str(b.title, 300).trim(); if (!title) err = 'Judul task wajib diisi.';
+          else D.tasks.unshift({ id: randomUUID(), title, by: nm(b.by), assignee: nm(b.assignee), due: /^\d{4}-\d{2}-\d{2}$/.test(b.due || '') ? b.due : '', note: str(b.note, 2000), status: 'NOT STARTED', at: now, updated_at: now, upd_by: nm(b.by) }); }
+        else if (op === 'task.upd') { const x = D.tasks.find(y => y.id === b.id); if (!x) err = 'Task tidak ditemukan.'; else { if (['NOT STARTED', 'IN PROGRESS', 'DONE'].includes(b.status)) { x.status = b.status; x.doneAt = b.status === 'DONE' ? now : null; } if (b.note != null) x.note = str(b.note, 2000); if (b.assignee != null) x.assignee = nm(b.assignee); if (b.due != null) x.due = /^\d{4}-\d{2}-\d{2}$/.test(b.due) ? b.due : ''; if (b.title != null && str(b.title, 300).trim()) x.title = str(b.title, 300).trim(); x.updated_at = now; x.upd_by = nm(b.by); } }
+        else if (op === 'task.del') D.tasks = D.tasks.filter(y => y.id !== b.id);
+        else if (op === 'note.add') { const text = str(b.text, 3000).trim(); if (!text) err = 'Catatan kosong.'; else D.notes.unshift({ id: randomUUID(), by: nm(b.by), to: nm(b.to), text, at: now, pinned: false }); }
+        else if (op === 'note.pin') { const x = D.notes.find(y => y.id === b.id); if (x) x.pinned = !x.pinned; }
+        else if (op === 'note.del') D.notes = D.notes.filter(y => y.id !== b.id);
+        else return json(res, { error: 'bad-op' }, 400);
+        if (err) return json(res, { error: 'invalid', detail: err }, 400);
+        /* batasi ukuran: task DONE > 90 hari & notes > 300 dibuang */
+        const cut = Date.now() - 90 * 864e5; D.tasks = D.tasks.filter(x => x.status !== 'DONE' || !x.doneAt || Date.parse(x.doneAt) > cut).slice(0, 500); D.notes = D.notes.slice(0, 300);
+        const r = must(await db().rpc('gx_doc_save', { p_key: key, p_data: D, p_revision: cur.revision }));
+        if (!r || !r.conflict) return json(res, { board: D, revision: r.revision, canRoster: authed(req) || teamAuthed(req) });
+      }
+      return json(res, { error: 'busy', detail: 'Server sibuk, coba lagi.' }, 503);
+    }
     /* ---------- Dashboard VIP (clone Masterlist VIP & Intracity): tim (GX_TEAM_PASSWORD) atau SPV ---------- */
     if (q.get('vip') != null) {
       if (!authed(req) && !teamAuthed(req)) return json(res, { error: 'team-login-required' }, 401);

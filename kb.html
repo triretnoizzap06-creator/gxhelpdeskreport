@@ -112,17 +112,19 @@ mark{background:#FDE68A;color:inherit;border-radius:3px;padding:0 1px}
 <header class="top">
   <a href="/"><img class="logo lt" src="wordmark.png" alt="GlobalXtreme"><img class="logo dk" src="wordmark-white.png" alt="GlobalXtreme"></a>
   <div class="sp"></div>
-  <a class="btn" href="/quiz" style="background:#F5C518;border-color:#F5C518;color:#111">🎯 Quiz</a><a class="btn hide-sm" href="/dashboard-helpdesk">Dashboard Helpdesk</a><a class="btn hide-sm" href="/dashboard-am">Dashboard AM</a><a class="btn" href="/">Beranda</a>
+  <a class="btn" href="#quiz" style="background:#F5C518;border-color:#F5C518;color:#111">🎯 Quiz 🔒</a><a class="btn hide-sm" href="/dashboard-helpdesk">Dashboard Helpdesk</a><a class="btn hide-sm" href="/dashboard-am">Dashboard AM</a><a class="btn" href="/">Beranda</a>
 </header>
 <main>
   <div id="home">
-    <div class="hero"><h1>Knowledge Base</h1><p>Materi tim Helpdesk Customer Support & Account Manager — dikelompokkan per Info Helpdesk, Administrasi, Teknis, SDM & Schedule, serta Handling & Kebijakan. Quiz ada di halaman terpisah.</p></div>
+    <div class="hero"><h1>Knowledge Base</h1><p>Materi tim Helpdesk Customer Support & Account Manager — dikelompokkan per Info Helpdesk, Administrasi, Teknis, SDM & Schedule, serta Handling & Kebijakan. Quiz ada di tab <b>🎯 Quiz</b> (dikunci password tim).</p></div>
     <div id="banner"></div>
     <input class="search" id="q" type="search" placeholder="Cari materi, SOP, template… (mis. grace, BOD, power ONU, tanggal 25)" aria-label="Cari knowledge base">
     <div class="bar"><div class="tabs" id="chips"></div><span class="sp"></span><button class="btn" id="edBtn" style="display:none">✎ Edit</button><button class="btn" id="loginBtn" style="display:none">🔒 Login SPV untuk edit</button><span id="saveState" style="font-size:12px;color:var(--muted)"></span></div>
     <div id="list"></div>
   </div>
   <div id="read" class="reader hidden"></div>
+  <div id="quizView" class="hidden"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><button class="btn" data-qback>← Knowledge Base</button><b style="font-size:15px">🎯 Quiz Knowledge Base</b><span style="font-size:12.5px;color:var(--muted)">dikunci password tim · materi KB tetap terbuka</span></div>
+    <iframe id="quizFrame" title="Quiz Knowledge Base" style="display:block;width:100%;height:calc(100vh - 150px);min-height:560px;border:1px solid var(--line);border-radius:14px;background:#F5F5F7"></iframe></div>
 </main>
 <div class="toast" id="toast"></div>
 <script src="kb-data.js"></script>
@@ -282,7 +284,7 @@ function renderRead(id) {
   $('#read').innerHTML = `<div class="crumb"><button class="btn sm" data-back>← Semua materi</button><span class="pill c-${x.cat}">${esc(CATNAME[x.cat] || x.cat)}</span></div>
     <div class="rhead"><h1>${esc(x.title)}</h1>${KB.canEdit ? `<button class="btn sm" data-medit="${esc(x.id)}" style="margin-top:10px">✎ Edit materi</button>` : KB.online ? '<button class="btn sm" data-login style="margin-top:10px">🔒 Login SPV untuk edit</button>' : ''}</div>${x.summary ? `<p class="lead">${esc(x.summary)}</p>` : ''}
     <article class="doc">${md(x.body)}${src ? `<a class="srcl" href="${esc(src)}" target="_blank" rel="noopener">${LSVG}Sumber: Notion Customer Service Division</a>` : ''}</article>
-    ${(x.quiz || []).length && CATNAME[x.cat] ? `<section class="quiz"><h2>Quiz ${esc(CATNAME[x.cat])}</h2><p class="qsub">Soal dari materi ini masuk ke quiz kategori <b>${esc(CATNAME[x.cat])}</b> — latihan sendiri pakai timer, atau ikut live quiz dari SPV.</p><a class="btn pri" href="/quiz?set=${esc(x.cat)}">Latihan quiz ${esc(CATNAME[x.cat])} →</a> <a class="btn" href="/quiz">Masukkan PIN live quiz</a></section>` : ''}
+    ${(x.quiz || []).length && CATNAME[x.cat] ? `<section class="quiz"><h2>Quiz ${esc(CATNAME[x.cat])}</h2><p class="qsub">Soal dari materi ini masuk ke quiz kategori <b>${esc(CATNAME[x.cat])}</b> — latihan sendiri pakai timer, atau ikut live quiz dari SPV.</p><a class="btn pri" href="#quiz?set=${esc(x.cat)}">🔒 Latihan quiz ${esc(CATNAME[x.cat])} →</a> <a class="btn" href="#quiz">Masukkan PIN live quiz</a><p class="qsub" style="margin:10px 0 0">Quiz dikunci password tim.</p></section>` : ''}
     <div class="nav2">${prev ? `<button class="btn" data-open="${esc(prev.id)}">← ${esc(prev.title)}</button>` : '<span></span>'}${next ? `<button class="btn" data-open="${esc(next.id)}">${esc(next.title)} →</button>` : ''}</div>`;
   window.scrollTo(0, 0);
 }
@@ -298,6 +300,13 @@ function renderQuiz() {
     <div class="qbar">${QZ.done ? `<span class="score">Skor: ${right}/${Q.length}</span><button class="btn" data-retry>Ulangi quiz</button>` : `<button class="btn pri" data-check>Cek jawaban</button><span style="font-size:12.5px;color:var(--muted)">${Object.keys(QZ.ans).length}/${Q.length} terjawab</span>`}</div>`;
 }
 function route() {
+  const qz = location.hash.match(/^#quiz(?:\?(.*))?$/);
+  $('#quizView').classList.toggle('hidden', !qz);
+  if (qz) {   // Quiz di dalam Knowledge Base (halaman /quiz di-embed; kunci password tim ada di halaman quiz & API)
+    $('#home').classList.add('hidden'); $('#read').classList.add('hidden');
+    const p = new URLSearchParams(qz[1] || ''); p.set('embed', '1'); const src = '/quiz?' + p.toString(), f = $('#quizFrame');
+    if (f.dataset.src !== src) { f.dataset.src = src; f.src = src; } window.scrollTo(0, 0); return;
+  }
   const m = location.hash.match(/^#m\/(.+)$/);
   $('#home').classList.toggle('hidden', !!m); $('#read').classList.toggle('hidden', !m);
   if (m) renderRead(decodeURIComponent(m[1])); else renderHome();
@@ -469,6 +478,7 @@ document.addEventListener('click', e => {
   const ed = e.target.closest('[data-edit]'); if (ed) { e.preventDefault(); const [k, i] = ed.dataset.edit.split('.'); return linkModal(k, +i); }
   const ad = e.target.closest('[data-add]'); if (ad) return linkModal(ad.dataset.add, null);
   const op = e.target.closest('[data-open]'); if (op) { location.hash = 'm/' + encodeURIComponent(op.dataset.open); return; }
+  if (e.target.closest('[data-qback]')) { location.hash = ''; return; }
   if (e.target.closest('[data-back]')) { location.hash = KB.filter === '*' ? '' : (KB.filter === 'helpdesk' ? 'hd' : KB.filter); return; }
   const o = e.target.closest('.opt[data-q]'); if (o && QZ && !QZ.done) { QZ.ans[+o.dataset.q] = +o.dataset.o; renderQuiz(); return; }
   if (e.target.closest('[data-check]') && QZ) {

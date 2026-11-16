@@ -1,5 +1,6 @@
 // /api/quiz — Quiz Knowledge Base ala Kahoot (sesi + leaderboard).
-//   GET  /api/quiz?code=ABC123            → info sesi (soal hanya untuk SPV) — publik
+// Semua endpoint wajib cookie tim (GX_TEAM_PASSWORD) atau login SPV.
+//   GET  /api/quiz?code=ABC123            → info sesi (soal hanya untuk SPV)
 //   GET  /api/quiz?code=ABC123&board=1    → leaderboard — publik
 //   POST /api/quiz { join:{ code, player, token? } } → daftar ikut quiz, status 'pending' sampai di-approve SPV — publik
 //   GET  /api/quiz?code=ABC123&me=TOKEN   → status peserta; bila approved → soal (TANPA kunci jawaban) — publik
@@ -15,7 +16,7 @@
 // Approval disimpan di gx_docs (key quiz-join-<pin>) → tidak perlu tabel baru.
 import { randomInt, randomUUID } from 'node:crypto';
 import { AppError, configured, db, dbError } from './_store.js';
-import { authed } from './_auth.js';
+import { authed, teamAuthed } from './_auth.js';
 
 const json = (res, obj, status = 200) => { res.statusCode = status; res.setHeader('content-type', 'application/json'); res.setHeader('cache-control', 'no-store'); res.end(JSON.stringify(obj)); };
 const must = ({ data, error }) => { if (error) throw dbError(error); return data; };
@@ -58,6 +59,8 @@ export default async function handler(req, res) {
   try {
     if (!configured()) return json(res, { error: 'storage-not-configured' }, 501);
     const code = str(q.get('code'), 8).toUpperCase();
+    /* Quiz dikunci: wajib password tim (GX_TEAM_PASSWORD) atau login SPV — Knowledge Base tetap terbuka */
+    if (!authed(req) && !teamAuthed(req)) return json(res, { error: 'team-login-required', detail: 'Quiz dikunci — masukkan password tim.' }, 401);
 
     if (req.method === 'GET' && code) {
       if (!okCode(code)) return json(res, { error: 'bad-code' }, 400);

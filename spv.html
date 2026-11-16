@@ -739,7 +739,9 @@ const HT = { '#todo': 'todo', '#h1': 'h1', '#links': 'links' };
 if (HT[location.hash]) showTab(HT[location.hash]); else { try { const k = localStorage.getItem('gx-spv-tab'); if (k === 'h1' || k === 'links') showTab(k); } catch (e) {} }
 addEventListener('hashchange', () => { if (HT[location.hash]) showTab(HT[location.hash]); });
 HT_SYNC = true;
-Promise.all([loadMonth(), loadDoc()]).then(() => { MR.ready = true; renderHist(); if (!$('#tab-h1').classList.contains('hidden')) openReport(MR.sel); });
+/* anggota tim yang di-custom di Dashboard Helpdesk/AM (👥 Team) dipakai juga untuk assign task di sini */
+async function loadRosters() { for (const tm of ['HD', 'AM']) { try { const r = await fetch('/api/todo?board=' + tm, { cache: 'no-store', credentials: 'same-origin' }); const j = await r.json(); const R = j && j.board && j.board.roster; if (Array.isArray(R) && R.length) ROSTER[tm] = R.map(x => [x.name, x.nick || x.name.split(' ')[0]]); } catch (e) {} } }
+Promise.all([loadRosters().then(loadMonth), loadDoc()]).then(() => { MR.ready = true; renderHist(); if (!$('#tab-h1').classList.contains('hidden')) openReport(MR.sel); });
 </script>
 </body>
 </html>

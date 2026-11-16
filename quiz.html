@@ -70,6 +70,9 @@ h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}.lead{color:var(--muted);
 .banner{border-radius:12px;padding:10px 14px;font-size:13px;margin:0 0 14px;background:#FEF3C7;color:#92400E}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1D1D1F;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:80;opacity:0;transition:opacity .2s}.toast.on{opacity:1}
 .hidden{display:none!important}
+body.embed .top{display:none}body.embed main{padding-top:14px}
+.lock{max-width:440px;margin:30px auto;text-align:center;background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px 22px}
+.lock .ic{font-size:40px}.lock h1{margin:8px 0 6px}.lock form{display:flex;gap:8px;margin-top:16px}.lock input{flex:1;border:2px solid var(--line);border-radius:12px;padding:11px 13px;font-size:16px;outline:none}.lock input:focus{border-color:var(--y)}
 .appr{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:18px}
 .apr{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 4px;border-top:1px solid var(--line)}.apr:first-of-type{border-top:0}
 .apr b{font-size:14.5px}.apr span.s{font-size:12px;color:var(--muted);display:block}.apr .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
@@ -84,7 +87,7 @@ h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}.lead{color:var(--muted);
 </style>
 </head>
 <body>
-<header class="top"><a href="/"><img src="wordmark.png" alt="GlobalXtreme"></a><b>Quiz</b><span class="sp"></span><a class="btn sm" href="/knowledge-base">Knowledge Base</a></header>
+<header class="top"><a href="/"><img src="wordmark.png" alt="GlobalXtreme"></a><b>Quiz</b><span class="sp"></span><a class="btn sm" href="/knowledge-base#quiz">Knowledge Base</a></header>
 <main id="app"><div class="msg">Memuat…</div></main>
 <div class="toast" id="toast"></div>
 <script src="kb-data.js"></script>
@@ -164,11 +167,23 @@ const API = {
   async setStatus(code, close) { const r = await call('', { method: 'POST', body: JSON.stringify(close ? { close: code } : { reopen: code }) }); if (r) return r; const d = LOCAL.all(); if (d[code]) d[code].status = close ? 'closed' : 'open'; LOCAL.save(d); return { status: 200, j: {} }; },
   async del(code) { const r = await call('?code=' + code, { method: 'DELETE' }); if (r) return r; const d = LOCAL.all(); delete d[code]; LOCAL.save(d); return { status: 200, j: {} }; },
 };
-const joinUrl = code => new URL('/quiz?c=' + code, location.href).href;
+const joinUrl = code => new URL('/knowledge-base#quiz?c=' + code, location.href).href;   // QR membuka tab Quiz di Knowledge Base
+const EMBED = new URLSearchParams(location.search).has('embed'); if (EMBED) document.body.classList.add('embed');
+function lockScreen() {
+  app.innerHTML = `<div class="lock"><div class="ic">🔒</div><h1>Quiz dikunci</h1><p class="lead" style="margin:0">Masukkan password tim untuk membuka quiz. Materi Knowledge Base tetap bisa dibaca tanpa password.</p>
+    <form id="lkF"><input type="password" id="lkPw" placeholder="Password tim" autocomplete="current-password" autofocus><button class="btn y">Buka</button></form>
+    <p style="font-size:12.5px;color:var(--muted);margin:14px 0 0">SPV? <a href="#" id="lkSpv">Login SPV</a></p>
+    <form id="spvF" method="post" action="/api/login" class="hidden" target="_top"><input type="hidden" name="next" value="/knowledge-base#quiz"><input type="password" name="password" placeholder="Password dashboard SPV"><button class="btn pri">Login</button></form></div>`;
+  $('#lkF').onsubmit = async e => { e.preventDefault(); const pw = $('#lkPw').value; if (!pw) return;
+    let r = null; try { r = await fetch('/api/login', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ team: 1, password: pw }) }); } catch (e) {}
+    if (r && r.ok) { toast('Quiz terbuka ✓'); route(); } else toast(r && r.status === 503 ? 'Password tim belum diatur di server (GX_TEAM_PASSWORD)' : 'Password salah'); };
+  $('#lkSpv').onclick = e => { e.preventDefault(); $('#spvF').classList.remove('hidden'); $('#lkF').classList.add('hidden'); $('#spvF input[type=password]').focus(); };
+}
+async function unlocked() { if (!ONLINE) return true; try { const r = await fetch('/api/login', { cache: 'no-store', credentials: 'same-origin' }); const j = await r.json(); return !!(j && (j.team || j.authed)); } catch (e) { return true; } }
 
 /* ======================= HOME ======================= */
 function home() {
-  history.replaceState(null, '', location.pathname);
+  history.replaceState(null, '', location.pathname + (EMBED ? '?embed=1' : ''));
   const best = LS.get('gx-quiz-best', {});
   app.innerHTML = `<h1>Quiz Knowledge Base</h1><p class="lead">Masukkan PIN dari SPV untuk ikut live quiz, atau latihan sendiri per kategori. Setiap soal ada timernya — makin cepat jawab benar, makin besar poinnya.</p>
     <form class="join" id="joinF"><input id="pinIn" placeholder="PIN" maxlength="8" autocomplete="off" aria-label="PIN quiz"><button class="btn y" style="font-size:16px;padding:12px 22px">Ikut quiz →</button></form>
@@ -332,12 +347,13 @@ function historyHtml(set) {
   const H = LS.get('gx-quiz-history', []).filter(h => h.set === set).slice(0, 8);
   return H.length ? `<div class="lb" style="margin-bottom:16px"><b style="font-size:17px">Riwayat latihanmu — ${esc(SETNAME[set])}</b>${H.map((h, i) => `<div class="lbr"><span class="rk">${i + 1}</span><div><b>${h.correct}/${h.total} benar</b><span>${new Date(h.at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</span></div><span class="sc">${h.score}</span></div>`).join('')}</div>` : '';
 }
-function practice(set, n) { const all = questions(set); if (!all.length) return toast('Belum ada soal'); history.replaceState(null, '', '?set=' + set); start({ mode: 'practice', set, timer: 20, qs: prepare(all, n) }); }
+function practice(set, n) { const all = questions(set); if (!all.length) return toast('Belum ada soal'); history.replaceState(null, '', '?set=' + set + (EMBED ? '&embed=1' : '')); start({ mode: 'practice', set, timer: 20, qs: prepare(all, n) }); }
 
 /* ======================= ROUTER ======================= */
-function go(qs) { history.pushState(null, '', location.pathname + qs); route(); }
-function route() {
+function go(qs) { const keep = EMBED ? (qs ? qs + '&embed=1' : '?embed=1') : qs; history.pushState(null, '', location.pathname + keep); route(); }
+async function route() {
   clearInterval(poll); cancelAnimationFrame(timerRaf); HOSTCODE = null; HOSTTICK = null; document.querySelectorAll('.modal').forEach(m => m.remove());
+  if (!(await unlocked())) return lockScreen();
   const p = new URLSearchParams(location.search);
   if (p.get('c')) return joinScreen(p.get('c').toUpperCase());
   if (p.get('host')) return host(p.get('host').toUpperCase());

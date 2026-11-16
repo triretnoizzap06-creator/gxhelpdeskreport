@@ -72,6 +72,16 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 .mdb{width:100%;max-width:520px;background:#fff;border-radius:16px;padding:20px 22px;box-shadow:0 30px 80px rgba(0,0,0,.3)}.mdb h3{margin:0 0 14px}
 .f{margin-bottom:12px}.f label{display:block;font-size:11.5px;font-weight:700;color:var(--muted);margin-bottom:5px}.f input,.f textarea,.f select{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 10px}
 .mfoot{display:flex;gap:8px;align-items:center;margin-top:6px}.mfoot .sp{flex:1}.btn.danger{color:var(--r)}.hidden{display:none!important}
+.board{margin-top:30px}.bcols{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
+.bcol{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.bh{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.bh .sp{flex:1}.bh .cnt{color:var(--muted)}
+.bcol .card{margin-bottom:8px}.card .ops{display:flex;gap:4px;margin-left:auto}.ib2{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:13px;padding:2px 6px;border-radius:6px}.ib2:hover{background:var(--grbg);color:var(--ink)}
+.nf{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}.nf textarea{border:1px solid #D2D2D7;border-radius:9px;padding:8px 10px;font-size:13px;min-height:64px;resize:vertical}
+.nf .row{display:flex;gap:8px;align-items:center}.nf select{flex:1;border:1px solid var(--line);border-radius:9px;padding:7px 9px;background:#fff;font-size:13px}
+.nt{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:#FFFDF5}.nt.pin{border-color:var(--y);box-shadow:inset 3px 0 0 var(--y)}
+.nt .nh{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}.nt .nh b{color:var(--ink)}.nt .tx{font-size:13.5px;white-space:pre-line;line-height:1.5;margin-top:5px}
+.rs{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}.rs:first-child{border-top:0}.rs b{flex:1;font-size:14px}.rs input{width:110px;border:1px solid var(--line);border-radius:8px;padding:5px 8px;font-size:13px}
+@media (max-width:860px){.bcols{grid-template-columns:1fr}}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1D1D1F;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:80;opacity:0;transition:opacity .2s}.toast.on{opacity:1}
 @media (max-width:640px){.top{padding:10px 12px;gap:6px}.top .logo{height:20px}.top .btn{padding:6px 8px;font-size:12px}.kpis{grid-template-columns:repeat(2,1fr)}.who{margin-left:0;width:100%}main{padding:18px 12px 50px}}
 </style>
@@ -80,11 +90,15 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 <header class="top"><a href="/"><img class="logo" src="wordmark.png" alt="GlobalXtreme"></a><div class="sp"></div><a class="btn" id="switch" href="/dashboard-am"></a><a class="btn" href="/">Home</a></header>
 <main>
   <div class="hero"><div class="ic" id="heroIc">🎧</div><div><h1 id="title"></h1><p id="sub"></p></div>
-    <label class="who">I am: <select id="me"></select></label></div>
+    <label class="who">I am: <select id="me"></select><button class="btn" id="teamBtn" type="button" title="Add / remove team members">👥 Team</button></label></div>
   <div id="banner"></div>
   <div class="kpis" id="kpis"></div>
   <div class="bar" id="filter"></div>
   <div id="list"></div>
+  <section class="board"><div class="tools-h"><h2>Team tasks &amp; notes</h2><span class="sp"></span><span id="bState" style="font-size:12px;color:var(--muted)">Create your own tasks, assign to a teammate, and leave notes for the team.</span></div>
+    <div class="bcols"><div class="bcol"><div class="bh">Team tasks <span class="cnt" id="btCnt"></span><span class="sp"></span><button class="btn pri" id="btAdd" type="button">+ New task</button></div><div id="btList"></div></div>
+      <div class="bcol"><div class="bh">Notes <span class="cnt" id="ntCnt"></span></div>
+        <form class="nf" id="nForm"><textarea id="nTx" maxlength="3000" placeholder="Take a note for yourself or the team…"></textarea><div class="row"><select id="nTo"></select><button class="btn pri">Post note</button></div></form><div id="nList"></div></div></div></section>
   <section class="tools"><div class="tools-h"><h2>Tools &amp; Access</h2><span class="sp"></span><span id="tState"></span><button class="btn hidden" id="tEdit">✎ Edit tools</button><button class="btn hidden" id="tLogin">🔒 SPV login to edit</button></div>
     <div id="tUnlock"></div><div id="tools"></div></section>
 </main>
@@ -98,13 +112,13 @@ const CFGS = {
         roster: [['Kadek Arisita Dhyana Putri', 'Sita'], ['Gede Dimas Pery Narendra', 'Dimas'], ['Bayu Sukma Ramadhan', 'Bayu'], ['A.A Ngurah Kiyana Adhisa Oka Pertama', 'Oka'], ['Nilma Syahrani', 'Rani']],
         links: [['📘', 'SOP Flow Handling Helpdesk', 'Notion', 'https://melon-lime-e28.notion.site/SOP-Flow-Handling-Helpdesk-1d69b0fbceac80b98317da1a66743b16'],
                 ['💬', 'GX CS Connect', 'Customer Support', 'https://gxcsconnect.globalxtreme-solutions.net/'],
-                ['🗂', 'CSO Workspace', 'Observation details', 'https://cso-workspace.vercel.app'], ['📚', 'Knowledge Base', 'Helpdesk', '/knowledge-base#hd'], ['🎯', 'Quiz', 'Practice & live quiz', '/quiz']] },
+                ['🗂', 'CSO Workspace', 'Observation details', 'https://cso-workspace.vercel.app'], ['📚', 'Knowledge Base', 'Helpdesk', '/knowledge-base#hd'], ['🎯', 'Quiz', 'Knowledge Base quiz (locked)', '/knowledge-base#quiz']] },
   AM: { title: 'Dashboard Account Manager', sub: 'Account Manager VIP To-Do List · update status & notes right here', icon: '💼',
         roster: [['Ni Kadek Desi Mirayani', 'Desi'], ['Aulia Sevi Diana', 'Sevia'], ['Devin Bagaskara', 'Bagas']],
         links: [['📘', 'Flow Account Manager', 'Notion', 'https://app.notion.com/p/Flow-Account-Manager-2fe9b0fbceac808ba433d9149a7d0a4f'],
                 ['📗', 'VIP Group Monitoring', 'Tracking sheet', 'https://docs.google.com/spreadsheets/d/1nfn0cazlhz0Vck7vz5WikBnIV9LFTBWZXLfk8Q34xuk/edit?gid=480098290#gid=480098290'],
                 ['📒', 'Dashboard VIP', 'VIP Masterlist (live)', '/dashboard-vip'],
-                ['🗂', 'CSO Workspace', 'Observation details', 'https://cso-workspace.vercel.app'], ['📚', 'Knowledge Base', 'Account Manager', '/knowledge-base#am'], ['🎯', 'Quiz', 'Practice & live quiz', '/quiz']] },
+                ['🗂', 'CSO Workspace', 'Observation details', 'https://cso-workspace.vercel.app'], ['📚', 'Knowledge Base', 'Account Manager', '/knowledge-base#am'], ['🎯', 'Quiz', 'Knowledge Base quiz (locked)', '/knowledge-base#quiz']] },
 };
 const CFG = CFGS[TEAM];
 const $ = s => document.querySelector(s);
@@ -286,6 +300,7 @@ function render() {
   const o = list.filter(t => t.status !== 'DONE').sort((a, b) => (a.due || '9999').localeCompare(b.due || '9999')), d = list.filter(t => t.status === 'DONE');
   $('#list').innerHTML = (o.length ? `<div class="grp">Open · ${o.length}</div>` + o.map(card).join('') : '<div class="empty">No active tasks 🎉</div>')
     + (d.length ? `<div class="grp">Done · ${d.length}</div>` + d.map(card).join('') : '');
+  renderBoard();
 }
 function card(t) {
   const late = t.due && t.due < today() && t.status !== 'DONE';
@@ -314,7 +329,112 @@ $('#list').onclick = e => {
   const s = e.target.closest('[data-s]'); if (s) return patch(t, { status: s.dataset.s, team_note: c.querySelector('textarea').value });
   if (e.target.closest('[data-save]')) return patch(t, { team_note: c.querySelector('textarea').value });
 };
-load(); setInterval(() => { if (!document.hidden && !document.activeElement.matches('textarea')) load(); }, 60000);
+/* ======================= Team board: anggota (custom), task & notes buatan tim ======================= */
+const BD = { data: { roster: null, tasks: [], notes: [] }, canRoster: false, online: true };
+const DEF_ROSTER = CFGS[TEAM].roster.map(([name, nick]) => ({ name, nick }));
+const PKEY = 'gx-preview-board-' + TEAM;
+function applyRoster() {
+  const R = (BD.data.roster && BD.data.roster.length ? BD.data.roster : (BD.data.roster ? [] : DEF_ROSTER));
+  CFG.roster = R.map(x => [x.name, x.nick || x.name.split(' ')[0]]);
+  $('#me').innerHTML = '<option value="">— select your name —</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${f === ME ? 'selected' : ''}>${esc(k)}</option>`).join('');
+  $('#nTo').innerHTML = '<option value="">For: whole team</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}">For: ${esc(k)}</option>`).join('');
+}
+function localOp(b) {   // preview tanpa server: logika sama dengan /api/todo?board
+  const D = BD.data, now = new Date().toISOString(), id = 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  if (!D.roster) D.roster = DEF_ROSTER.slice();
+  if (b.op === 'roster.add') { if (D.roster.some(x => x.name.toLowerCase() === b.name.toLowerCase())) return 'Nama sudah ada.'; D.roster.push({ name: b.name, nick: b.nick || b.name.split(' ')[0] }); }
+  else if (b.op === 'roster.del') D.roster = D.roster.filter(x => x.name !== b.name);
+  else if (b.op === 'roster.edit') { const x = D.roster.find(y => y.name === b.name); if (x) x.nick = b.nick || x.nick; }
+  else if (b.op === 'task.add') D.tasks.unshift({ id, title: b.title, by: b.by, assignee: b.assignee, due: b.due || '', note: b.note || '', status: 'NOT STARTED', at: now, updated_at: now, upd_by: b.by });
+  else if (b.op === 'task.upd') { const x = D.tasks.find(y => y.id === b.id); if (x) { ['status', 'note', 'assignee', 'due', 'title'].forEach(k => { if (b[k] != null) x[k] = b[k]; }); x.updated_at = now; x.upd_by = b.by; } }
+  else if (b.op === 'task.del') D.tasks = D.tasks.filter(y => y.id !== b.id);
+  else if (b.op === 'note.add') D.notes.unshift({ id, by: b.by, to: b.to || '', text: b.text, at: now, pinned: false });
+  else if (b.op === 'note.pin') { const x = D.notes.find(y => y.id === b.id); if (x) x.pinned = !x.pinned; }
+  else if (b.op === 'note.del') D.notes = D.notes.filter(y => y.id !== b.id);
+  try { localStorage.setItem(PKEY, JSON.stringify(D)); } catch (e) {}
+  return null;
+}
+async function loadBoard() {
+  const r = await jget('/api/todo?board=' + TEAM);
+  if (r && r.status === 200 && r.j && r.j.board) { BD.online = true; BD.data = r.j.board; BD.canRoster = !!r.j.canRoster; }
+  else if (!r || (r.status >= 500 && !(r.j && r.j.error)) || r.status === 404) { BD.online = false; BD.canRoster = true; try { BD.data = JSON.parse(localStorage.getItem(PKEY) || 'null') || { roster: null, tasks: [], notes: [] }; } catch (e) {} }
+  applyRoster(); render();
+}
+async function bop(b, quiet) {
+  const needMe = /^(task|note)\.(add|upd)$/.test(b.op);
+  if (needMe && !ME) { toast('Select your name first (top right)'); $('#me').focus(); return false; }
+  b.by = ME;
+  if (!BD.online) { const err = localOp(b); if (err) { toast(err); return false; } applyRoster(); render(); if (!quiet) toast('Preview — saved in this browser only'); return true; }
+  const r = await jget('/api/todo?board=' + TEAM, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...b, defaultRoster: DEF_ROSTER }) });
+  if (r && r.status === 200 && r.j.board) { BD.data = r.j.board; BD.canRoster = !!r.j.canRoster; applyRoster(); render(); if (!quiet) toast('Saved ✓'); return true; }
+  toast((r && r.j && (r.j.detail || r.j.error)) || 'Save failed'); return false;
+}
+const fmtD = d => d ? new Date(d + 'T00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '';
+const fmtT = t => new Date(t).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+function renderBoard() {
+  const T = BD.data.tasks || [], N = BD.data.notes || [];
+  const pass = t => FILTER === 'all' ? true : FILTER === 'mine' ? (ME ? (t.assignee === ME || t.by === ME || !t.assignee) : true) : (t.assignee === FILTER.slice(2) || (!t.assignee));
+  const L = T.filter(pass), o = L.filter(t => t.status !== 'DONE').sort((a, b) => (a.due || '9999').localeCompare(b.due || '9999')), d = L.filter(t => t.status === 'DONE');
+  $('#btCnt').textContent = `· ${o.length} open`;
+  const tc = t => { const late = t.due && t.due < today() && t.status !== 'DONE';
+    return `<div class="card ${t.status === 'DONE' ? 'done' : ''}" data-bt="${esc(t.id)}"><div class="ch"><div class="ti">${esc(t.title)}</div><span class="ops"><button class="ib2" data-bedit title="Edit">✎</button><button class="ib2" data-bdel title="Delete">🗑</button></span></div>
+      <div class="meta"><span class="tag acc">${t.assignee ? 'For ' + esc(nick(t.assignee)) : 'Whole team'}</span>${t.by ? `<span class="tag">by ${esc(nick(t.by))}</span>` : ''}${t.due ? `<span class="tag ${late ? 'late' : ''}">Due ${fmtD(t.due)}</span>` : ''}</div>
+      <div class="act">${[['NOT STARTED', 'Not started'], ['IN PROGRESS', 'In progress'], ['DONE', 'Done']].map(([s, l]) => `<button class="sb ${s.replace(/\s/g, '')}" data-bs="${s}" aria-pressed="${t.status === s}">${l}</button>`).join('')}
+        <div class="note"><textarea placeholder="Note / update…" maxlength="2000">${esc(t.note)}</textarea><button class="btn pri" data-bsave>Save</button></div></div>
+      ${t.upd_by ? `<div class="upd">Last update by ${esc(nick(t.upd_by))} · ${fmtT(t.updated_at)}</div>` : ''}</div>`; };
+  $('#btList').innerHTML = (o.length ? o.map(tc).join('') : '<div class="empty" style="padding:18px">No open team tasks. Click <b>+ New task</b>.</div>') + (d.length ? `<div class="grp">Done · ${d.length}</div>` + d.map(tc).join('') : '');
+  const nn = N.filter(n => FILTER === 'all' || FILTER === 'mine' ? (FILTER === 'all' || !ME || !n.to || n.to === ME || n.by === ME) : (!n.to || n.to === FILTER.slice(2) || n.by === FILTER.slice(2))).sort((a, b) => (b.pinned - a.pinned) || String(b.at).localeCompare(String(a.at)));
+  $('#ntCnt').textContent = `· ${nn.length}`;
+  $('#nList').innerHTML = nn.length ? nn.map(n => `<div class="nt ${n.pinned ? 'pin' : ''}" data-nt="${esc(n.id)}"><div class="nh"><b>${esc(n.by ? nick(n.by) : '—')}</b>${n.to ? ` → <b>${esc(nick(n.to))}</b>` : ''} · ${fmtT(n.at)}<span style="flex:1"></span><button class="ib2" data-npin title="${n.pinned ? 'Unpin' : 'Pin'}">${n.pinned ? '📌' : '📍'}</button>${!n.by || n.by === ME ? '<button class="ib2" data-ndel title="Delete">🗑</button>' : ''}</div><div class="tx">${esc(n.text)}</div></div>`).join('') : '<div class="empty" style="padding:18px">No notes yet.</div>';
+}
+function taskModal(t) {
+  if (!ME) { toast('Select your name first (top right)'); $('#me').focus(); return; }
+  const el = document.createElement('div'); el.className = 'md';
+  el.innerHTML = `<form class="mdb"><h3>${t ? 'Edit task' : 'New team task'}</h3>
+    <div class="f"><label>Task</label><textarea data-f="title" rows="2" maxlength="300" required>${esc(t ? t.title : '')}</textarea></div>
+    <div class="f"><label>Assign to</label><select data-f="assignee"><option value="">Whole team</option>${CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${(t ? t.assignee : ME) === f ? 'selected' : ''}>${esc(k)}${f === ME ? ' (me)' : ''}</option>`).join('')}</select></div>
+    <div class="f"><label>Due date (optional)</label><input type="date" data-f="due" value="${esc(t ? t.due : '')}"></div>
+    ${t ? '' : '<div class="f"><label>Note (optional)</label><textarea data-f="note" rows="3" maxlength="2000"></textarea></div>'}
+    <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>Cancel</button><button class="btn pri">${t ? 'Save' : 'Create task'}</button></div></form>`;
+  document.body.appendChild(el); el.querySelector('textarea').focus();
+  el.onclick = e => { if (e.target === el || e.target.closest('[data-x]')) el.remove(); };
+  el.querySelector('form').onsubmit = async e => { e.preventDefault(); const v = k => (el.querySelector(`[data-f="${k}"]`) || {}).value;
+    const title = (v('title') || '').trim(); if (!title) return;
+    const ok = await bop(t ? { op: 'task.upd', id: t.id, title, assignee: v('assignee'), due: v('due') } : { op: 'task.add', title, assignee: v('assignee'), due: v('due'), note: v('note') || '' });
+    if (ok) { el.remove(); if (!t && v('assignee') && v('assignee') !== ME) toast('Task assigned to ' + nick(v('assignee')) + ' ✓'); } };
+}
+function rosterModal() {
+  const el = document.createElement('div'); el.className = 'md';
+  const draw = () => { el.innerHTML = `<div class="mdb"><h3>👥 Team members — ${esc(CFG.title.replace('Dashboard ', ''))}</h3>
+    ${BD.canRoster ? '' : '<form class="unl" id="rUnl">🔒 Enter the team password to add or remove members.<input type="password" id="rPw" placeholder="Team password" autocomplete="current-password"><button class="btn pri">Unlock</button></form>'}
+    <div>${CFG.roster.map(([f, k]) => `<div class="rs"><b>${esc(f)}</b>${BD.canRoster ? `<input value="${esc(k)}" data-nick="${esc(f)}" title="Nickname" maxlength="30"><button class="btn danger" data-rdel="${esc(f)}" type="button">Remove</button>` : `<span style="color:var(--muted);font-size:13px">${esc(k)}</span>`}</div>`).join('') || '<div class="empty">No members yet.</div>'}</div>
+    ${BD.canRoster ? `<form id="rAdd" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><input id="rName" placeholder="Full name" maxlength="60" style="flex:2;min-width:170px;border:1px solid var(--line);border-radius:9px;padding:8px 10px"><input id="rNick" placeholder="Nickname" maxlength="30" style="flex:1;min-width:100px;border:1px solid var(--line);border-radius:9px;padding:8px 10px"><button class="btn pri">+ Add</button></form>` : ''}
+    <p style="font-size:12px;color:var(--muted);margin:12px 0 0">Members appear in “I am”, filters, task assignment and notes. Tasks already assigned by SPV are not affected.</p>
+    <div class="mfoot"><span class="sp"></span><button class="btn" data-x type="button">Close</button></div></div>`;
+    const u = el.querySelector('#rUnl'); if (u) u.onsubmit = async e => { e.preventDefault(); const pw = el.querySelector('#rPw').value; if (!pw) return;
+      const r = await jget('/api/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ team: 1, password: pw }) });
+      if (r && r.status === 200) { await loadBoard(); TL.teamOk = true; draw(); toast('Unlocked ✓'); if (typeof loadSecrets === 'function') { await loadSecrets(); renderTools(); } } else toast('Wrong password'); };
+    const a = el.querySelector('#rAdd'); if (a) a.onsubmit = async e => { e.preventDefault(); const name = el.querySelector('#rName').value.trim(); if (name.length < 2) return toast('Name min. 2 letters'); if (await bop({ op: 'roster.add', name, nick: el.querySelector('#rNick').value.trim() })) draw(); };
+  };
+  draw(); document.body.appendChild(el);
+  el.addEventListener('click', async e => { if (e.target === el || e.target.closest('[data-x]')) return el.remove();
+    const d = e.target.closest('[data-rdel]'); if (d && confirm('Remove ' + d.dataset.rdel + ' from the team list?')) { if (await bop({ op: 'roster.del', name: d.dataset.rdel })) draw(); } });
+  el.addEventListener('change', async e => { const n = e.target.closest('[data-nick]'); if (n && n.value.trim()) await bop({ op: 'roster.edit', name: n.dataset.nick, nick: n.value.trim() }); });
+}
+$('#teamBtn').onclick = rosterModal;
+$('#btAdd').onclick = () => taskModal(null);
+$('#nForm').onsubmit = async e => { e.preventDefault(); const tx = $('#nTx').value.trim(); if (!tx) return; if (await bop({ op: 'note.add', text: tx, to: $('#nTo').value })) { $('#nTx').value = ''; $('#nTo').value = ''; } };
+$('#btList').onclick = async e => {
+  const c = e.target.closest('[data-bt]'); if (!c) return; const t = (BD.data.tasks || []).find(x => x.id === c.dataset.bt); if (!t) return;
+  const s = e.target.closest('[data-bs]'); if (s) return bop({ op: 'task.upd', id: t.id, status: s.dataset.bs, note: c.querySelector('textarea').value });
+  if (e.target.closest('[data-bsave]')) return bop({ op: 'task.upd', id: t.id, note: c.querySelector('textarea').value });
+  if (e.target.closest('[data-bedit]')) return taskModal(t);
+  if (e.target.closest('[data-bdel]') && confirm('Delete this task?')) return bop({ op: 'task.del', id: t.id });
+};
+$('#nList').onclick = e => { const c = e.target.closest('[data-nt]'); if (!c) return;
+  if (e.target.closest('[data-npin]')) return bop({ op: 'note.pin', id: c.dataset.nt }, true);
+  if (e.target.closest('[data-ndel]') && confirm('Delete this note?')) return bop({ op: 'note.del', id: c.dataset.nt }); };
+load(); loadBoard(); setInterval(() => { if (!document.hidden && !document.activeElement.matches('textarea,input')) { load(); loadBoard(); } }, 60000);
 </script>
 </body>
 </html>

@@ -87,6 +87,7 @@ input[type=date].sel{padding:6px 10px}
 .editing .gt-ed{outline:1.5px dashed #E0A800;outline-offset:2px;border-radius:3px;cursor:text}.editing .gt-ed:focus{outline:2px solid #E0A800;background:#FFFBEA}
 .editing [data-edit]{outline:1.5px dashed #E0A800;outline-offset:3px;border-radius:4px;cursor:text}
 .editing [data-edit]:focus{outline:2px solid #E0A800;background:#FFFBEA}
+.editing [data-edit].ed-stale{outline-color:#9AA0AE}
 /* modals */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.38);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:100;display:grid;place-items:center;padding:16px;animation:fadeIn .2s ease}
 .dialog{background:var(--solid);color:var(--ink);width:min(1100px,100%);max-height:92vh;overflow:auto;border-radius:22px;padding:24px;box-shadow:0 40px 120px rgba(0,0,0,.35);animation:pop .3s cubic-bezier(.2,.9,.25,1.1)}
@@ -1432,7 +1433,13 @@ const ICON={
   wifi:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 9.5a12 12 0 0 1 17 0M6.5 12.8a7.5 7.5 0 0 1 11 0M9.5 16a3 3 0 0 1 5 0"/><path d="M12 19v.01"/></svg>',
   doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 3.5h7l4 4v13H7z"/><path d="M14 3.5v4h4M10 13h5M10 16.5h5"/></svg>'
 };
-function ed(key,def,tag='div',cls='',attrs=''){const v=S.edits['t.'+key];return `<${tag} class="${cls}" data-edit="${key}" ${attrs}>${v!=null?esc(v).replace(/\n/g,'<br>'):def}</${tag}>`}
+/* Teks editan yang berisi angka (Key highlights & subjudul slide) dikunci ke data saat diedit:
+   bila periode / jumlah data berubah, teks otomatis yang terbaru ditampilkan lagi (editan lama tidak dipakai). */
+const SIGKEY=k=>/\.(hl\d+|lede)$/.test(k);
+const dataSig=()=>[_PRMIN,_PRMAX,C&&C.cs?C.cs.total:0,C&&C.vip?C.vip.total:0].join('|');
+function ed(key,def,tag='div',cls='',attrs=''){let v=S.edits['t.'+key],stale=false;
+  if(v!=null&&SIGKEY(key)&&S.edits['sig.'+key]!==dataSig()){v=null;stale=true}
+  return `<${tag} class="${cls}${stale?' ed-stale':''}" data-edit="${key}" ${stale?'title="Teks editan sebelumnya dibuat untuk periode/data lain — teks otomatis terbaru yang ditampilkan."':''} ${attrs}>${v!=null?esc(v).replace(/\n/g,'<br>'):def}</${tag}>`}
 const num=(v,f='int')=>`<span data-n="${v}" data-f="${f}">${fmtN(v,f)}</span>`;
 function fmtN(v,f){return f==='int'?fInt(v):f==='p'?fPct(v,1):f==='p2'?fPct(v,2):f==='d1'?f1(v):f==='d2'?(Math.round(v*100)/100).toFixed(2):fInt(v)}
 function tile(tone,icon,label,value,foot,f='int',vcls=''){return `<div class="card tile t-${tone}" data-a><div class="ico">${ICON[icon]}</div><div style="min-width:0"><div class="tlab">${label}</div><div class="tval ${vcls}">${value==null?'—':num(value,f)}</div><div class="tfoot">${foot||''}</div></div></div>`}
@@ -1479,7 +1486,7 @@ const AFR_MAX=Infinity;   /* semua tiket dihitung (tanpa batas atas), sama denga
 const AFR_SLA=5;   /* batas first take (menit) untuk ukuran "% first take dalam X menit" */
 function afrWithin(m){const a=(m.afrList||m.list||[]).map(r=>r.afr).filter(v=>v!=null);return a.length?a.filter(v=>v<=AFR_SLA).length/a.length*100:null}
 function afrMed(m){const a=(m.afrList||m.list||[]).map(r=>r.afr).filter(v=>v!=null).sort((x,y)=>x-y);if(!a.length)return null;const k=a.length>>1;return a.length%2?a[k]:(a[k-1]+a[k])/2}
-function afrPair(m,big){const md=afrMed(m),w=afrWithin(m);return `<div class="frc ${big?'big':''}"><div class="frc-c"><span class="frc-l">AFR</span><b>${m.afr!=null?f1(m.afr):'—'}<small>m</small></b><span class="frc-s">rata-rata</span></div><div class="frc-c"><span class="frc-l">Median</span><b>${md!=null?f1(md):'—'}<small>m</small></b><span class="frc-s">nilai tengah</span></div></div><div class="frc-f">${fInt(m.afrN)} tiket${w!=null?` · ${fPct(w,0)} ≤ ${AFR_SLA} menit`:''}</div>`}
+function afrPair(m,big){const md=afrMed(m),w=afrWithin(m);return `<div class="frc ${big?'big':''}"><div class="frc-c"><span class="frc-l">AFR</span><b>${m.afr!=null?f1(m.afr):'—'}<small>m</small></b><span class="frc-s">rata-rata</span></div><div class="frc-c"><span class="frc-l">Median</span><b>${md!=null?f1(md):'—'}<small>m</small></b><span class="frc-s">nilai tengah</span></div></div><div class="frc-f">${fInt(m.afrN)} tiket${(n=>n?` (incl. ${fInt(n)} DotAI)`:'')((m.afrList||[]).filter(r=>r.afrOnly&&r.afr!=null).length)}${w!=null?` · ${fPct(w,0)} ≤ ${AFR_SLA} menit`:''}</div>`}
 function afrTile(m,force){if(m.afr==null&&!force)return sm('b','cal','Avg cases / day',m.avg,`across ${m.nDays} day${m.nDays>1?'s':''}`,'d1');
   return `<div class="card tile sm t-b frt" data-a><div class="frt-h"><div class="ico">${ICON.clock}</div><div class="tlab">First response time</div></div>${m.afr!=null?afrPair(m):'<div class="tfoot">butuh kolom afr_taken_at (first take)</div>'}</div>`}
 function dailyCard(id,m,title){const t=ctype(id,'bar'),items=dayItems(m).map(x=>({...x,label:x.short,short:null}));
@@ -1902,7 +1909,7 @@ function sTrafficMinute(){const id='ops-min',title='Traffic per Minute';const nt
     <div class="mseg">${btn({s:peakHour*60},'Peak hour',start===peakHour*60)}${btn({s:pkM-pkM%60},'Menit tersibuk',start===pkM-pkM%60&&start!==peakHour*60)}</div>`:`<span class="mwl">00:00–23:59</span>`}
     <div class="mseg">${[['7','7 hari'],['month','Bulan terakhir'],['all','Semua bulan'],['custom','Custom']].map(([v,l])=>`<button data-pm="${v}" class="${S.period.mode===v?'on':''}">${l}</button>`).join('')}</div>${S.period.mode==='custom'?`<input type="date" class="mws" data-pf value="${esc(S.period.from||'')}"> – <input type="date" class="mws" data-pt value="${esc(S.period.to||'')}">`:''}
     <select class="mws" data-mwsel='${JSON.stringify(st).replace(/'/g,'&#39;')}'><option value="all">Semua tanggal (total)</option>${dayOpts.map(t=>`<option value="${t}" ${t===dSel?'selected':''}>${DOWS[new Date(t).getDay()]}, ${ID_DATE(t)}</option>`).join('')}</select></div>`;
-  const k=on(id,'kpi')?`<div class="tiles mtiles" style="--cols:4">${sm('g','gauge','Avg case / menit',avgMin,`jam Helpdesk ${HH(NIGHT.to)}–${HH(NIGHT.from)} · ${fInt(daySum)} case`,'d2')}${tileTxt('o','clock','Menit tersibuk',MM(pkM),`${fInt(byM[pkM])} case ${dSel==='all'?`total ${fInt(T.nDays)} hari`:'hari ini'}`)}${burst?tileTxt('b','alert','Lonjakan 1 menit',`${fInt(burst.v)} case`,`${ID_DATE(bD)} · ${MM(bM)}`):''}${sm('y','list','Case di jendela ini',wSum,`${MM(start)}–${MM(start+len-1)} · ${f2n(wAvg)}/menit`)}</div>`:'';
+  const k=on(id,'kpi')?`<div class="tiles mtiles" style="--cols:4">${sm('g','gauge','Avg case / menit',avgMin,`jam Helpdesk ${HH(NIGHT.to)}–${HH(NIGHT.from)} · ${fInt(daySum)} dari ${fInt(T.rows.length)} case`,'d2')}${tileTxt('o','clock','Menit tersibuk',MM(pkM),`${fInt(byM[pkM])} case ${dSel==='all'?`total ${fInt(T.nDays)} hari`:'hari ini'}`)}${burst?tileTxt('b','alert','Lonjakan 1 menit',`${fInt(burst.v)} case`,`${ID_DATE(bD)} · ${MM(bM)}`):''}${sm('y','list','Case di jendela ini',wSum,`${MM(start)}–${MM(start+len-1)} · ${f2n(wAvg)}/menit`)}</div>`:'';
   const chart=on(id,'chart')?`<div class="card fill1 mcard" data-a style="display:flex;flex-direction:column;min-height:0;overflow:hidden"><div class="ctitle">Case masuk per menit · ${MM(start)}–${MM(start+len-1)} · ${dSel==='all'?`total ${fInt(T.nDays)} hari`:`${DOW[new Date(dSel).getDay()]}, ${ID_DATE(dSel)}`}</div>${len===1440?overview(byM,pkM)+'':''}${areaChart(items,{id:id+start+len,color:'#3B4CCA',dense:1,xEvery:len===60?5:15,hideZero:len>60,scrollW:len===1440?'1440%':'',scrollTo:len===1440?Math.max(0,(peakHour*60-30)/1440):0})}<div class="legend"><span><i style="background:#E8590C"></i>≥ 2× rata-rata jendela</span><span><i style="background:#3B4CCA"></i>lainnya</span>${len>60?'<span>angka 0 disembunyikan</span>':''}${len===1440?'<span>↔ geser grafik bawah untuk melihat tiap menit · strip atas = gambaran 24 jam</span>':''}</div></div>`:'';
   const h=hl(id,[`Rata-rata <b>${f2n(avgMin)} case per menit</b> di jam Helpdesk (≈ 1 case tiap <b>${avgMin?f1(1/avgMin):'—'} menit</b>).`,
     `Menit tersibuk <b>${MM(pkM)}</b>: ${fInt(byM[pkM])} case${dSel==='all'?` dalam ${fInt(T.nDays)} hari`:''}${burst?` · lonjakan terbesar <b>${fInt(burst.v)} case dalam 1 menit</b> (${ID_DATE(bD)} ${MM(bM)})`:''}.`,
@@ -2190,7 +2197,7 @@ swipe($('#stage'),d=>step(d));
 
 /* ---------- edit text ---------- */
 let editing=false;
-function applyEditing(){document.body.classList.toggle('editing',editing);{const sl=$('#stage .slide:last-child');if(sl)gtApply(sl,sl.dataset.id,gtStore(),editing,()=>save())}$$('#stage [data-edit]').forEach(e=>{if(editing){e.contentEditable='true';e.spellcheck=false;e.onblur=()=>{const t=e.innerText.replace(/ /g,' ').trim();if(t)S.edits['t.'+e.dataset.edit]=t;else delete S.edits['t.'+e.dataset.edit];save()}}else{e.removeAttribute('contenteditable');e.onblur=null}})}
+function applyEditing(){document.body.classList.toggle('editing',editing);{const sl=$('#stage .slide:last-child');if(sl)gtApply(sl,sl.dataset.id,gtStore(),editing,()=>save())}$$('#stage [data-edit]').forEach(e=>{if(editing){e.contentEditable='true';e.spellcheck=false;e.dataset.auto=e.innerText.replace(/ /g,' ').trim();e.onblur=()=>{const t=e.innerText.replace(/ /g,' ').trim(),k=e.dataset.edit;if(e.classList.contains('ed-stale')&&t===e.dataset.auto)return;if(t){S.edits['t.'+k]=t;if(SIGKEY(k))S.edits['sig.'+k]=dataSig();e.classList.remove('ed-stale')}else{delete S.edits['t.'+k];delete S.edits['sig.'+k]}save()}}else{e.removeAttribute('contenteditable');e.onblur=null}})}
 $('#editBtn').onclick=()=>{editing=!editing;$('#editBtn').classList.toggle('on',editing);$('#editBtn').textContent=editing?'Done editing':'Edit text';if(!editing){document.activeElement?.blur?.();refresh(0)}else{applyEditing();renderDock()}};
 
 /* ---------- data check (shown under the CS / VIP import) ---------- */

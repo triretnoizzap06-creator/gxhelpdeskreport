@@ -33,6 +33,13 @@ main{max-width:1400px;margin:0 auto;padding:22px 20px 60px}
 .sec{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:16px;overflow:hidden}
 .blk-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:26px 0 12px}.blk-h:first-child{margin-top:4px}.blk-h h2{margin:0;font-size:15px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}.blk-h span{font-size:12.5px;color:var(--muted)}
 .sec.team.HD .sec-h{border-bottom-color:#06B6D4}.sec.team.AM .sec-h{border-bottom-color:#8B5CF6}
+.ibadge{display:inline-block;min-width:18px;padding:1px 6px;border-radius:99px;background:var(--r);color:#fff;font-size:11px;font-weight:800;margin-left:4px}
+.inb{background:#FFFBEB;border:1px solid #FDE68A;border-radius:14px;margin-bottom:16px;overflow:hidden}.inb .sec-h{border-bottom-color:var(--y2)}
+.inb-l{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;padding:12px 14px}
+.ic{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 13px;display:flex;flex-direction:column;gap:7px}.ic.done{opacity:.7}.ic .ih{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--muted)}.ic .ih b{color:var(--ink)}
+.ic .it{font-size:13.5px;font-weight:600;white-space:pre-line;line-height:1.45}.ic .in{font-size:12.5px;color:#52525B;white-space:pre-line;background:#FAFAFA;border-radius:8px;padding:6px 9px}
+.ic textarea{width:100%;border:1px solid #D2D2D7;border-radius:8px;padding:6px 9px;font-size:13px;min-height:52px;resize:vertical}.ic .ia{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.pill{font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px;background:var(--grbg);color:#3F3F46}.pill.HD{background:#CFFAFE;color:#0E7490}.pill.AM{background:#EDE9FE;color:#6D28D9}.pill.new{background:var(--r);color:#fff}
 .sec-h{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:2px solid var(--y)}.sec-h h2{margin:0;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.sec-h .cnt{font-size:12px;color:var(--muted);font-weight:600}.sec-h .sp{flex:1}
 .tt{width:100%;border-collapse:collapse;font-size:13px}
 .tt th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:8px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
@@ -114,7 +121,7 @@ main{max-width:1400px;margin:0 auto;padding:22px 20px 60px}
 <header class="top">
   <a href="/"><img class="logo" src="wordmark.png" alt="GlobalXtreme"></a>
   <h1>Helpdesk Management</h1>
-  <div class="tabs" role="tablist"><button data-tab="todo" aria-pressed="true">Personal To-Do List</button><button data-tab="h1" aria-pressed="false">Management Report</button><button data-tab="links" aria-pressed="false">Links</button></div>
+  <div class="tabs" role="tablist"><button data-tab="todo" aria-pressed="true">Personal To-Do List <span class="ibadge hidden" id="iBadge"></span></button><button data-tab="h1" aria-pressed="false">Management Report</button><button data-tab="links" aria-pressed="false">Links</button></div>
   <div class="sp"></div>
   <span id="saveState" style="font-size:12px;color:var(--muted)"></span>
   <a class="btn" href="/api/login?logout=1">Logout</a>
@@ -136,6 +143,7 @@ main{max-width:1400px;margin:0 auto;padding:22px 20px 60px}
       <select id="fSt" aria-label="Filter status"><option value="">Semua status</option><option>NOT STARTED</option><option>PLAN</option><option>IN PROGRESS</option><option>DONE</option><option value="OPEN">Belum selesai</option></select>
       <input id="fQ" type="search" placeholder="Cari task…" aria-label="Cari task">
     </div>
+    <div id="inbox"></div>
     <div class="kpis" id="kpis"></div>
     <div id="secs"></div>
   </section>
@@ -742,6 +750,49 @@ HT_SYNC = true;
 /* anggota tim yang di-custom di Dashboard Helpdesk/AM (👥 Team) dipakai juga untuk assign task di sini */
 async function loadRosters() { for (const tm of ['HD', 'AM']) { try { const r = await fetch('/api/todo?board=' + tm, { cache: 'no-store', credentials: 'same-origin' }); const j = await r.json(); const R = j && j.board && j.board.roster; if (Array.isArray(R) && R.length) ROSTER[tm] = R.map(x => [x.name, x.nick || x.name.split(' ')[0]]); } catch (e) {} } }
 Promise.all([loadRosters().then(loadMonth), loadDoc()]).then(() => { MR.ready = true; renderHist(); if (!$('#tab-h1').classList.contains('hidden')) openReport(MR.sel); });
+
+/* ================= Inbox: task review & catatan dari tim (Dashboard Helpdesk / AM → assignee/to = 'SPV') ================= */
+const INB = { HD: null, AM: null, showDone: false };
+async function loadInbox() {
+  for (const tm of ['HD', 'AM']) { try { const r = await fetch('/api/todo?board=' + tm, { cache: 'no-store', credentials: 'same-origin' }); if (!r.ok) continue; const j = await r.json(); if (j && j.board) INB[tm] = j.board; } catch (e) {} }
+  renderInbox();
+}
+function renderInbox() {
+  const box = $('#inbox'); if (!box) return;
+  const nk = (tm, n) => { const R = (INB[tm] && INB[tm].roster) || []; const x = R.find(y => y.name === n); return n === 'SPV' ? 'SPV' : x ? (x.nick || x.name.split(' ')[0]) : (n || '—'); };
+  const fmt = t => t ? new Date(t).toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+  const items = [];
+  ['HD', 'AM'].forEach(tm => { const B = INB[tm]; if (!B) return;
+    (B.tasks || []).filter(t => t.assignee === 'SPV').forEach(t => items.push({ k: 't', tm, x: t, open: t.status !== 'DONE', at: t.at }));
+    (B.notes || []).filter(n => n.to === 'SPV').forEach(n => items.push({ k: 'n', tm, x: n, open: !n.seen, at: n.at })); });
+  const openN = items.filter(i => i.open).length, b = $('#iBadge'); if (b) { b.textContent = openN; b.classList.toggle('hidden', !openN); }
+  if (!items.length) { box.innerHTML = ''; return; }
+  const L = items.filter(i => INB.showDone || i.open).sort((a, b) => (b.open - a.open) || String(b.at).localeCompare(String(a.at)));
+  box.innerHTML = `<div class="inb"><div class="sec-h"><h2>📥 Dari tim — review &amp; catatan</h2><span class="cnt">${openN} perlu dilihat</span><span class="sp"></span><label style="font-size:12px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="iDone" ${INB.showDone ? 'checked' : ''}> Tampilkan yang selesai</label><button class="btn sm" id="iRef" type="button">↻</button></div>
+    <div class="inb-l">${L.map(({ k, tm, x, open }) => k === 't'
+      ? `<div class="ic ${open ? '' : 'done'}" data-ik="t" data-tm="${tm}" data-id="${esc(x.id)}"><div class="ih"><span class="pill ${tm}">${tm === 'AM' ? 'AM' : 'Helpdesk'}</span>${open && x.status === 'NOT STARTED' ? '<span class="pill new">BARU</span>' : ''}<span class="pill">📋 Task review · ${esc(x.status)}</span><b>${esc(nk(tm, x.by))}</b> · ${fmt(x.at)}${x.due ? ' · due ' + esc(x.due) : ''}</div>
+          <div class="it">${esc(x.title)}</div>${x.note ? `<div class="in">${esc(x.note)}</div>` : ''}
+          <textarea placeholder="Balasan / hasil review untuk ${esc(nk(tm, x.by))}…" maxlength="2000">${esc(x.spvReply || '')}</textarea>
+          <div class="ia"><button class="btn sm" data-ist="IN PROGRESS" type="button">Sedang direview</button><button class="btn sm pri" data-ist="DONE" type="button">✓ Selesai</button><button class="btn sm" data-isave type="button">Kirim balasan</button>${x.spvAt ? `<span style="font-size:11px;color:var(--muted)">dibalas ${fmt(x.spvAt)}</span>` : ''}</div></div>`
+      : `<div class="ic ${open ? '' : 'done'}" data-ik="n" data-tm="${tm}" data-id="${esc(x.id)}"><div class="ih"><span class="pill ${tm}">${tm === 'AM' ? 'AM' : 'Helpdesk'}</span>${open ? '<span class="pill new">BARU</span>' : '<span class="pill">✓ dilihat</span>'}<span class="pill">🗒 Catatan</span><b>${esc(nk(tm, x.by))}</b> · ${fmt(x.at)}</div>
+          <div class="it">${esc(x.text)}</div>
+          <textarea placeholder="Balas (opsional)…" maxlength="2000">${esc(x.spvReply || '')}</textarea>
+          <div class="ia"><button class="btn sm pri" data-iseen type="button">✓ ${open ? 'Tandai dilihat' : 'Simpan balasan'}</button></div></div>`).join('') || '<div style="color:var(--muted);font-size:13px">Semua sudah dilihat ✓</div>'}</div></div>`;
+}
+async function iop(tm, body) {
+  try { const r = await fetch('/api/todo?board=' + tm, { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...body, by: 'SPV' }) });
+    const j = await r.json().catch(() => null); if (r.ok && j && j.board) { INB[tm] = j.board; renderInbox(); toast('Tersimpan ✓ — terlihat di dashboard tim'); return true; }
+    toast((j && (j.detail || j.error)) || 'Gagal menyimpan'); } catch (e) { toast('Gagal menyimpan (offline / preview)'); } return false;
+}
+$('#inbox').addEventListener('click', e => {
+  if (e.target.id === 'iRef') return loadInbox();
+  const c = e.target.closest('[data-ik]'); if (!c) return; const tm = c.dataset.tm, id = c.dataset.id, tx = c.querySelector('textarea').value;
+  const st = e.target.closest('[data-ist]'); if (st) return iop(tm, { op: 'task.upd', id, status: st.dataset.ist, reply: tx });
+  if (e.target.closest('[data-isave]')) return iop(tm, { op: 'task.upd', id, reply: tx });
+  if (e.target.closest('[data-iseen]')) return iop(tm, { op: 'note.seen', id, reply: tx });
+});
+$('#inbox').addEventListener('change', e => { if (e.target.id === 'iDone') { INB.showDone = e.target.checked; renderInbox(); } });
+loadInbox(); setInterval(() => { if (!document.hidden && !document.activeElement.matches('textarea,input')) loadInbox(); }, 90000);
 </script>
 </body>
 </html>

@@ -8,10 +8,12 @@
 //   DELETE /api/todo?id=…
 //   GET    /api/todo?doc=spv-h1-2026        → { data, revision }   ·   POST { doc, data, revision }
 //   GET    /api/todo?doc=knowledge-base     → dibaca tim tanpa login (Knowledge Base, team-tools); POST tetap wajib login
-//   GET/POST /api/todo?vip=1               → Dashboard VIP (tim / SPV)
+//   GET/POST /api/todo?vip=1&s=vip|intracity|billing25|dia → Dashboard VIP (tim / SPV) · GET &sync=<sheetId> → .xlsx terbaru dari Google Sheets
 //   GET    /api/todo?secrets=HD             → password tools tim (SPV / cookie tim GX_TEAM_PASSWORD)
 //   GET    /api/todo?board=HD|AM           → { board:{ roster, tasks, notes }, revision } — dashboard tim (publik)
 //   POST   /api/todo?board=HD|AM  { op, … } → task/notes tim (publik) · roster.add/roster.del (password tim / SPV)
+//          assignee / to = 'SPV' → task review / catatan untuk SPV · reply & note.seen hanya SPV
+//   GET/POST /api/todo?desk=HD|AM  → desk per orang: foto, tagline, template message (POST: password tim / SPV)
 // Tim (tanpa login, hanya task yang di-assign ke timnya):
 //   GET    /api/todo?team=HD|AM             → { tasks }
 //   PATCH  /api/todo?id=…&team=HD  { status, team_note, team_by }
@@ -114,7 +116,9 @@ export default async function handler(req, res) {
       if (req.method === 'GET') { const r = await read(); return json(res, { board: r.data, revision: r.revision, canRoster: authed(req) || teamAuthed(req) }); }
       if (req.method !== 'POST') return json(res, { error: 'method' }, 405);
       const b = await readJson(req), op = str(b.op, 20), now = new Date().toISOString();
-      const nm = v => str(v, 60).replace(/\s+/g, ' ').trim();
+      const nm = v => str(v, 60).replace(/\s+/g, ' ').trim(), spv = authed(req);
+      if (nm(b.by) === 'SPV' && !spv) return json(res, { error: 'spv-login-required', detail: 'Hanya SPV yang bisa menulis sebagai SPV.' }, 401);
+      if (op === 'note.seen' && !spv) return json(res, { error: 'spv-login-required' }, 401);
       if (/^roster\./.test(op) && !authed(req) && !teamAuthed(req)) return json(res, { error: 'team-login-required', detail: 'Masukkan password tim untuk mengubah anggota.' }, 401);
       for (let t = 0; t < 6; t++) {
         const cur = await read(), D = cur.data;
@@ -125,9 +129,12 @@ export default async function handler(req, res) {
         else if (op === 'roster.edit') { const x = D.roster.find(y => y.name === nm(b.name)); if (x) x.nick = nm(b.nick) || x.nick; }
         else if (op === 'task.add') { const title = str(b.title, 300).trim(); if (!title) err = 'Judul task wajib diisi.';
           else D.tasks.unshift({ id: randomUUID(), title, by: nm(b.by), assignee: nm(b.assignee), due: /^\d{4}-\d{2}-\d{2}$/.test(b.due || '') ? b.due : '', note: str(b.note, 2000), status: 'NOT STARTED', at: now, updated_at: now, upd_by: nm(b.by) }); }
-        else if (op === 'task.upd') { const x = D.tasks.find(y => y.id === b.id); if (!x) err = 'Task tidak ditemukan.'; else { if (['NOT STARTED', 'IN PROGRESS', 'DONE'].includes(b.status)) { x.status = b.status; x.doneAt = b.status === 'DONE' ? now : null; } if (b.note != null) x.note = str(b.note, 2000); if (b.assignee != null) x.assignee = nm(b.assignee); if (b.due != null) x.due = /^\d{4}-\d{2}-\d{2}$/.test(b.due) ? b.due : ''; if (b.title != null && str(b.title, 300).trim()) x.title = str(b.title, 300).trim(); x.updated_at = now; x.upd_by = nm(b.by); } }
+        else if (op === 'task.upd') { const x = D.tasks.find(y => y.id === b.id); if (!x) err = 'Task tidak ditemukan.'; else { if (['NOT STARTED', 'IN PROGRESS', 'DONE'].includes(b.status)) { x.status = b.status; x.doneAt = b.status === 'DONE' ? now : null; } if (b.note != null) x.note = str(b.note, 2000); if (b.assignee != null) x.assignee = nm(b.assignee); if (b.due != null) x.due = /^\d{4}-\d{2}-\d{2}$/.test(b.due) ? b.due : ''; if (b.title != null && str(b.title, 300).trim()) x.title = str(b.title, 300).trim();
+            if (b.reply != null && spv) { x.spvReply = str(b.reply, 2000); x.spvAt = now; }   // balasan / hasil review SPV
+            x.updated_at = now; x.upd_by = nm(b.by); } }
         else if (op === 'task.del') D.tasks = D.tasks.filter(y => y.id !== b.id);
         else if (op === 'note.add') { const text = str(b.text, 3000).trim(); if (!text) err = 'Catatan kosong.'; else D.notes.unshift({ id: randomUUID(), by: nm(b.by), to: nm(b.to), text, at: now, pinned: false }); }
+        else if (op === 'note.seen') { const x = D.notes.find(y => y.id === b.id); if (x) { x.seen = true; if (b.reply != null) { x.spvReply = str(b.reply, 2000); x.spvAt = now; } } }
         else if (op === 'note.pin') { const x = D.notes.find(y => y.id === b.id); if (x) x.pinned = !x.pinned; }
         else if (op === 'note.del') D.notes = D.notes.filter(y => y.id !== b.id);
         else return json(res, { error: 'bad-op' }, 400);
@@ -139,17 +146,68 @@ export default async function handler(req, res) {
       }
       return json(res, { error: 'busy', detail: 'Server sibuk, coba lagi.' }, 503);
     }
-    /* ---------- Dashboard VIP (clone Masterlist VIP & Intracity): tim (GX_TEAM_PASSWORD) atau SPV ---------- */
+    /* ---------- Desk per orang (foto, tagline, template message) — gx_docs team-desk-hd / team-desk-am
+       GET publik (dibaca tim) · POST butuh password tim / SPV. Jangan simpan data customer di template. */
+    if (q.get('desk') != null) {
+      const team = String(q.get('desk')).toUpperCase(); if (!TEAMS.includes(team)) return json(res, { error: 'bad-team' }, 400);
+      const key = 'team-desk-' + team.toLowerCase(), can = authed(req) || teamAuthed(req);
+      const read = async () => { const row = must(await db().from('gx_docs').select('data,revision').eq('key', key).maybeSingle()); const d = (row && row.data) || {};
+        return { data: { desks: d.desks && typeof d.desks === 'object' && !Array.isArray(d.desks) ? d.desks : {} }, revision: row ? row.revision : null }; };
+      if (req.method === 'GET') { const r = await read(); return json(res, { desk: r.data, revision: r.revision, canEdit: can }); }
+      if (req.method !== 'POST') return json(res, { error: 'method' }, 405);
+      if (!can) return json(res, { error: 'team-login-required', detail: 'Masukkan password tim untuk mengubah desk.' }, 401);
+      const b = await readJson(req), op = str(b.op, 20), now = new Date().toISOString(), who = str(b.name, 60).replace(/\s+/g, ' ').trim();
+      if (!who) return json(res, { error: 'invalid', detail: 'Nama wajib.' }, 400);
+      for (let t = 0; t < 6; t++) {
+        const cur = await read(), D = cur.data, me = D.desks[who] = D.desks[who] || { tpls: [] }; me.tpls = Array.isArray(me.tpls) ? me.tpls : [];
+        let err = null;
+        const tplIn = x => ({ title: str(x.title, 120).trim(), cat: str(x.cat, 40).trim(), text: str(x.text, 4000) });
+        if (op === 'photo') { const ph = String(b.photo || ''); if (ph && !/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(ph)) err = 'Format foto tidak valid.'; else if (ph.length > 150000) err = 'Foto terlalu besar.'; else me.photo = ph; }
+        else if (op === 'profile') { me.tagline = str(b.tagline, 80); me.emoji = str(b.emoji, 8); me.color = /^#[0-9a-f]{6}$/i.test(b.color || '') ? b.color : (me.color || ''); }
+        else if (op === 'tpl.add') { const x = tplIn(b); if (!x.title || !x.text.trim()) err = 'Judul & isi template wajib.'; else if (me.tpls.length >= 200) err = 'Maks. 200 template per orang.'; else me.tpls.unshift({ id: randomUUID(), ...x, at: now, updated_at: now, uses: 0 }); }
+        else if (op === 'tpl.upd') { const y = me.tpls.find(z => z.id === b.id); if (!y) err = 'Template tidak ditemukan.'; else { const x = tplIn(b); if (!x.title || !x.text.trim()) err = 'Judul & isi template wajib.'; else Object.assign(y, x, { updated_at: now }); } }
+        else if (op === 'tpl.del') me.tpls = me.tpls.filter(z => z.id !== b.id);
+        else if (op === 'tpl.use') { const y = me.tpls.find(z => z.id === b.id); if (y) y.uses = (y.uses || 0) + 1; }
+        else return json(res, { error: 'bad-op' }, 400);
+        if (err) return json(res, { error: 'invalid', detail: err }, 400);
+        if (Object.keys(D.desks).length > 60) return json(res, { error: 'invalid', detail: 'Terlalu banyak desk.' }, 400);
+        const r = must(await db().rpc('gx_doc_save', { p_key: key, p_data: D, p_revision: cur.revision }));
+        if (!r || !r.conflict) return json(res, { desk: D, revision: r.revision, canEdit: can });
+      }
+      return json(res, { error: 'busy', detail: 'Server sibuk, coba lagi.' }, 503);
+    }
+
+    /* ---------- Dashboard VIP: 4 sub-dashboard (Masterlist VIP, Masterlist Intracity, Billing Reminder 25, DIA Outstanding)
+       — tim (GX_TEAM_PASSWORD) atau SPV. Data di gx_docs; sync = server mengambil .xlsx dari Google Sheets ("Anyone with the link"). ---------- */
     if (q.get('vip') != null) {
       if (!authed(req) && !teamAuthed(req)) return json(res, { error: 'team-login-required' }, 401);
+      const VIPDOC = { vip: 'vip-masterlist', intracity: 'vip-intracity', billing25: 'vip-billing25', dia: 'vip-dia' };
+      const sec = VIPDOC[q.get('s')] ? q.get('s') : 'vip', key = VIPDOC[sec];
+      if (req.method === 'GET' && q.get('sync')) {   // ambil file Google Sheets terbaru (hanya ID spreadsheet, URL dibangun di server)
+        const id = String(q.get('sync'));
+        if (!/^[A-Za-z0-9_-]{20,80}$/.test(id)) return json(res, { error: 'bad-id' }, 400);
+        const urls = [`https://docs.google.com/spreadsheets/d/${id}/export?format=xlsx`, `https://drive.google.com/uc?export=download&id=${id}`];
+        for (const u of urls) {
+          try {
+            const r = await fetch(u, { redirect: 'follow', headers: { 'user-agent': 'GX-CS-Dashboard' } });
+            const ct = r.headers.get('content-type') || '';
+            if (!r.ok || /text\/html/i.test(ct)) continue;
+            const buf = Buffer.from(await r.arrayBuffer());
+            if (buf.length < 100 || buf.slice(0, 2).toString() !== 'PK') continue;   // xlsx = zip
+            if (buf.length > 3 * 1024 * 1024) return json(res, { error: 'too-large', detail: 'File spreadsheet terlalu besar untuk sync (> 3 MB) — pakai Import .xlsx.' }, 413);
+            return json(res, { b64: buf.toString('base64'), size: buf.length });
+          } catch (e) { /* coba URL berikutnya */ }
+        }
+        return json(res, { error: 'sync-failed', detail: 'Spreadsheet tidak bisa diambil. Pastikan akses share "Anyone with the link — Viewer", atau pakai Import .xlsx.' }, 502);
+      }
       if (req.method === 'GET') {
-        const row = must(await db().from('gx_docs').select('data,revision,updated_at').eq('key', 'vip-masterlist').maybeSingle());
+        const row = must(await db().from('gx_docs').select('data,revision,updated_at').eq('key', key).maybeSingle());
         return json(res, row ? { ...row, spv: authed(req) } : { data: null, revision: null, spv: authed(req) });
       }
       if (req.method === 'POST') {
         const b = await readJson(req);
         if (!b.data || typeof b.data !== 'object' || !Array.isArray(b.data.tabs)) return json(res, { error: 'bad-payload' }, 400);
-        const r = must(await db().rpc('gx_doc_save', { p_key: 'vip-masterlist', p_data: b.data, p_revision: b.revision ?? null }));
+        const r = must(await db().rpc('gx_doc_save', { p_key: key, p_data: b.data, p_revision: b.revision ?? null }));
         if (r && r.conflict) return json(res, { error: 'conflict', revision: r.revision }, 409);
         return json(res, { ok: true, revision: r.revision });
       }

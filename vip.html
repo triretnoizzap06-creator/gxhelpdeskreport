@@ -49,6 +49,13 @@ td textarea{width:100%;min-width:180px;border:1px solid var(--y);border-radius:6
 .mfoot{display:flex;gap:8px;align-items:center;margin-top:8px}.mfoot .sp{flex:1}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1D1D1F;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:80;opacity:0;transition:opacity .2s}.toast.on{opacity:1}
 #state{font-size:12px;color:var(--muted)}
+.secs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.sec{display:flex;align-items:center;gap:10px;text-align:left;border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;cursor:pointer;color:inherit}
+.sec i{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#F4F4F5;font-style:normal;font-size:18px}.sec b{display:block;font-size:14px}.sec small{display:block;font-size:11.5px;color:var(--muted);margin-top:1px}
+.sec[aria-pressed="true"]{border-color:var(--acc);box-shadow:0 0 0 2px var(--accbg)}.sec[aria-pressed="true"] i{background:var(--accbg)}
+.tag.paid{background:var(--gbg);color:#166534}.tag.unpaid{background:var(--rbg);color:#991B1B}.tag.fu{background:#FEF3C7;color:#92400E}.tag.pic{background:var(--accbg);color:#5B21B6}
+.src{font-size:12px;color:var(--muted)}.src a{color:inherit}
+@media (max-width:900px){.secs{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .hidden{display:none!important}
 @media (max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}main{padding:16px 12px 50px}.top{padding:10px 12px}.bar input[type=search]{min-width:0;flex:1}.sheet{max-height:none}}
 </style>
@@ -59,26 +66,47 @@ td textarea{width:100%;min-width:180px;border:1px solid var(--y);border-radius:6
 <div class="toast" id="toast"></div>
 <script src="xlsx.full.min.js"></script><!-- SheetJS 0.18.5 (Apache-2.0) — for importing the Google Sheets .xlsx -->
 <script>
-/* Dashboard VIP — clone of "Masterlist VIP & Intracity Group" (all tabs). Data lives in Supabase (doc vip-masterlist),
-   readable/editable only by the team (GX_TEAM_PASSWORD) or the SPV. Nothing is stored in the code. */
+/* Dashboard VIP — 4 sub-dashboard: Masterlist VIP, Masterlist Intracity, Monthly Billing Reminder (tgl 25), DIA Outstanding.
+   Data di Supabase (gx_docs, satu dokumen per sub-dashboard), hanya untuk tim (GX_TEAM_PASSWORD) atau SPV.
+   Sync: server mengambil .xlsx terbaru dari Google Sheets (akses "Anyone with the link"), lalu digabung dengan editan di app
+   (kolom & baris yang ditambah di app tetap ada). Tidak ada data customer di dalam kode. */
 const $ = s => document.querySelector(s), app = $('#app');
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const safeUrl = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : '';
-function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2600); }
+function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2800); }
 async function jget(u, opt) { try { const r = await fetch(u, { cache: 'no-store', credentials: 'same-origin', ...opt }); let j = null; try { j = await r.json(); } catch (e) {} return { status: r.status, j }; } catch (e) { return null; } }
-const V = { data: null, rev: null, spv: false, online: true, tab: 0, q: '', f: '', edit: false };
+const SECS = [
+  { k: 'vip', icon: '💎', name: 'Masterlist Data VIP', sub: 'VIP WhatsApp groups', sheet: '1LRCBD_d1KjX1HQ4cIyAakXVlkPwQTg8mBv7E5QoMBkU', tabs: n => !/intracity/i.test(n), what: 'group' },
+  { k: 'intracity', icon: '🏢', name: 'Masterlist Data Intracity', sub: 'Intracity partner groups', sheet: '1LRCBD_d1KjX1HQ4cIyAakXVlkPwQTg8mBv7E5QoMBkU', tabs: n => /intracity/i.test(n), what: 'group' },
+  { k: 'billing25', icon: '🧾', name: 'Monthly Billing Reminder – 25th', sub: 'Reminder Bill VIP & Intracity', sheet: '19mNgXyeEei_hIwdwS9gfphbzlbPVjdn-', tabs: () => true, what: 'row' },
+  { k: 'dia', icon: '📡', name: 'DIA Outstanding – Monthly Reminder', sub: 'Outstanding bills DIA package', sheet: '1ExYcFHKlltt91fRtwnYrG6G6_a__nnrIQ98Y19jw9gI', tabs: () => true, what: 'account' },
+];
+const SEC = k => SECS.find(x => x.k === k) || SECS[0];
+/* PIC update INV VIP tanggal 25 (pembagian SPV) — tampil sebagai kolom di Reminder Bill VIP General */
+const PIC25 = [[/gilangram/i, 'Bagas'], [/betrand/i, 'Bagas'], [/balinest/i, 'Desi'], [/red\s*cubic/i, 'Desi'], [/bnb\s*profit/i, 'Sita'], [/saridewi/i, 'Sita'], [/canggu\s*property/i, 'Sevia'], [/taman\s*bali|bvm/i, 'Sevia'], [/padma/i, 'Sevia'], [/taufik/i, 'Oka'], [/arnaul/i, 'Rani'], [/pepito|crossfit/i, 'Rani']];
+const pic25 = name => { const h = PIC25.find(([re]) => re.test(name || '')); return h ? h[1] : ''; };
+const V = { sec: (location.hash.slice(1) in { vip: 1, intracity: 1, billing25: 1, dia: 1 }) ? location.hash.slice(1) : 'vip', data: null, rev: null, spv: false, online: true, tab: 0, q: '', f: '', edit: false, loading: false };
 const newId = () => 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-const isMoney = c => /revenue|mrr|tagihan|amount|price/i.test(c);
-const isNotes = c => /^notes?$/i.test(c.trim());
-const money = v => { const n = +String(v || '').replace(/[^\d]/g, ''); return Number.isFinite(n) ? n : 0; };
+const isMoney = c => /revenue|mrr|tagihan|amount|price|total/i.test(c);
+const isNotes = c => /^notes?\b/i.test(c.trim());
+const isStatus = c => /^(status|reminder)$/i.test(c.trim());
+const money = v => { const s = String(v || '').replace(/rp\.?/i, '').trim(); if (/^\d+(\.\d+)?$/.test(s)) return Math.round(+s); const n = +s.replace(/[^\d]/g, ''); return Number.isFinite(n) ? n : 0; };
 const rp = n => 'Rp' + n.toLocaleString('id-ID');
+const keyCol = T => T.cols.find(c => /uid|account id|nama group|group|list reminder|holder/i.test(c)) || T.cols[0];
 
 async function load() {
-  const r = await jget('/api/todo?vip=1');
-  if (!r || !r.j) { V.online = false; V.spv = true; try { V.data = JSON.parse(localStorage.getItem('gx-preview-vip') || 'null'); } catch (e) {} return render(); }
+  V.loading = true; const r = await jget('/api/todo?vip=1&s=' + V.sec); V.loading = false;
+  if (!r || !r.j) { V.online = false; V.spv = true; try { V.data = JSON.parse(localStorage.getItem('gx-preview-vip-' + V.sec) || 'null'); } catch (e) {} return render(); }
   if (r.status === 401) return lockScreen();
   if (r.status !== 200) { app.innerHTML = `<div class="empty">Could not load: ${esc(r.j.detail || r.j.error || r.status)}</div>`; return; }
-  V.data = r.j.data; V.rev = r.j.revision; V.spv = !!r.j.spv; render();
+  V.data = r.j.data; V.rev = r.j.revision; V.spv = !!r.j.spv;
+  if (V.data && V.data.tabs) V.data.tabs = V.data.tabs.filter(t => SEC(V.sec).tabs(t.name));   // data lama Masterlist (VIP + Intracity jadi satu)
+  if ((!V.data || !V.data.tabs || !V.data.tabs.length) && V.sec === 'intracity') {   // seed Intracity dari import Masterlist sebelumnya
+    const o = await jget('/api/todo?vip=1&s=vip'); const t = o && o.j && o.j.data && (o.j.data.tabs || []).filter(x => /intracity/i.test(x.name));
+    if (t && t.length) V.data = { tabs: t, updatedAt: o.j.data.updatedAt, source: o.j.data.source, seeded: true };
+  }
+  if (V.tab >= ((V.data && V.data.tabs) || []).length) V.tab = 0;
+  render();
 }
 function lockScreen() {
   app.innerHTML = `<div class="lock"><div style="font-size:34px">🔒</div><h2>Dashboard VIP</h2><p>This page contains customer data. Enter the team password to continue.</p>
@@ -95,97 +123,151 @@ function cell(col, v, link) {
   if (!v && !u) return '<span style="color:#C4C4C8">—</span>';
   if (/whatsapp/i.test(col) && u) return `<a class="chip wa" href="${esc(u)}" target="_blank" rel="noopener">WhatsApp group ↗</a>`;
   if (u) return `<a class="chip ${/account|data/i.test(col) ? 'doc' : 'lnk'}" href="${esc(u)}" target="_blank" rel="noopener" title="${esc(u)}">${esc(safeUrl(v) ? (/account|data/i.test(col) ? 'Account data' : 'Open') : v)} ↗</a>`;
-  if (isNotes(col) && String(v).length <= 40) { const s = String(v); return `<span class="tag ${/take-?out/i.test(s) ? 'out' : /keep/i.test(s) ? 'keep' : ''}" style="white-space:pre-line">${esc(s)}</span>`; }
-  return `<span class="txt">${esc(v)}</span>`;
+  const sv = String(v);
+  if (isStatus(col) || /need follow up/i.test(sv)) { const c = /unpaid|belum/i.test(sv) ? 'unpaid' : /paid|lunas/i.test(sv) ? 'paid' : /follow/i.test(sv) ? 'fu' : ''; return `<span class="tag ${c}">${esc(sv)}</span>`; }
+  if (isNotes(col) && sv.length <= 40) return `<span class="tag ${/take-?out/i.test(sv) ? 'out' : /keep/i.test(sv) ? 'keep' : ''}" style="white-space:pre-line">${esc(sv)}</span>`;
+  return `<span class="txt">${esc(sv)}</span>`;
 }
+function secBar() { return `<div class="secs">${SECS.map(x => `<button class="sec" data-sec="${x.k}" aria-pressed="${x.k === V.sec}"><i>${x.icon}</i><span><b>${esc(x.name)}</b><small>${esc(x.sub)}</small></span></button>`).join('')}</div>`; }
 function render() {
+  const S_ = SEC(V.sec), src = `https://docs.google.com/spreadsheets/d/${(V.data && V.data.sheet) || S_.sheet}`;
+  const head = `<div class="hero"><div class="ic">💎</div><div><h1>Dashboard VIP</h1><p>${esc(S_.name)}${V.data && V.data.updatedAt ? ' · last updated ' + esc(new Date(V.data.updatedAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })) : ''}${V.data && V.data.syncedAt ? ' · synced ' + esc(new Date(V.data.syncedAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })) : ''}</p></div><span class="sp"></span>
+      <span id="state"></span><button class="btn pri" id="sync" title="Ambil data terbaru dari Google Sheets">↻ Sync dari Google Sheets</button>${V.data && V.data.tabs && V.data.tabs.length ? `<button class="btn" id="edit">${V.edit ? '✓ Done' : '✎ Edit'}</button>` : ''}<button class="btn" id="imp">⤓ Import .xlsx</button><button class="btn" id="srcB" title="Ganti link sumber">⚙</button></div>
+    ${secBar()}${V.online ? '' : '<div class="empty" style="padding:10px;margin-bottom:12px;text-align:left"><b>Preview mode</b> — saved in this browser only. Sync needs the server.</div>'}`;
   if (!V.data || !V.data.tabs || !V.data.tabs.length) {
-    app.innerHTML = `<div class="hero"><div class="ic">💎</div><div><h1>Dashboard VIP</h1><p>Masterlist VIP & Intracity Group</p></div></div>
-      <div class="empty"><b>No data yet.</b><br><br>Import the Masterlist once: open the Google Sheet → <b>File → Download → Microsoft Excel (.xlsx)</b>, then upload it here.<br><br><button class="btn pri" id="imp">Import .xlsx</button></div>`;
-    $('#imp').onclick = pickFile; return;
+    app.innerHTML = head + `<div class="empty"><b>Belum ada data ${esc(S_.name)}.</b><br><br>Klik <b>↻ Sync dari Google Sheets</b> untuk mengambil data dari <a href="${esc(src)}" target="_blank" rel="noopener">spreadsheet sumber</a>,<br>atau <b>Import .xlsx</b> (Google Sheets → File → Download → Microsoft Excel).</div>`;
+    return bind();
   }
   const T = V.data.tabs[V.tab] || V.data.tabs[0], ql = V.q.toLowerCase();
-  const notesCol = T.cols.find(isNotes), salesCol = T.cols.find(c => /sales/i.test(c)), mCol = T.cols.find(isMoney);
-  const rows = T.rows.filter(r => (!ql || T.cols.some(c => String(r.cells[c] || '').toLowerCase().includes(ql))) && (!V.f || String(r.cells[salesCol] || '').trim() === V.f));
+  const isGen = V.sec === 'billing25' && /general/i.test(T.name), nameCol = T.cols.find(c => /list reminder|nama group/i.test(c));
+  const cols = isGen && nameCol && !T.cols.includes('PIC (tgl 25)') ? ['PIC (tgl 25)', ...T.cols] : T.cols;
+  const getV = (r, c) => c === 'PIC (tgl 25)' && !(c in r.cells) ? pic25(r.cells[nameCol]) : r.cells[c];
+  const notesCol = T.cols.find(isNotes), salesCol = T.cols.find(c => /^sales/i.test(c)) || (isGen ? 'PIC (tgl 25)' : null), mCol = T.cols.find(isMoney), stCol = T.cols.find(isStatus);
+  const rows = T.rows.filter(r => (!ql || cols.some(c => String(getV(r, c) || '').toLowerCase().includes(ql))) && (!V.f || String(getV(r, salesCol) || '').trim() === V.f));
   const keep = notesCol ? T.rows.filter(r => /keep/i.test(r.cells[notesCol] || '')).length : 0, out = notesCol ? T.rows.filter(r => /take-?out/i.test(r.cells[notesCol] || '')).length : 0;
-  const mrr = mCol ? T.rows.reduce((a, r) => a + money(r.cells[mCol]), 0) : 0;
-  const sales = salesCol ? [...new Set(T.rows.map(r => String(r.cells[salesCol] || '').trim()).filter(Boolean))].sort() : [];
-  app.innerHTML = `<div class="hero"><div class="ic">💎</div><div><h1>Dashboard VIP</h1><p>Masterlist VIP & Intracity Group · ${V.data.updatedAt ? 'last updated ' + esc(new Date(V.data.updatedAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })) : ''}</p></div><span class="sp"></span>
-      <span id="state"></span><button class="btn" id="edit">${V.edit ? '✓ Done' : '✎ Edit'}</button>${V.spv ? '<button class="btn" id="imp">⤓ Import .xlsx</button>' : ''}</div>
-    ${V.online ? '' : '<div class="empty" style="padding:10px;margin-bottom:12px;text-align:left"><b>Preview mode</b> — saved in this browser only.</div>'}
-    <div class="kpis"><div class="kpi"><span>Groups (${esc(T.name)})</span><b>${T.rows.length}</b></div>${mCol ? `<div class="kpi"><span>Total MRR</span><b>${rp(mrr)}</b></div>` : ''}${notesCol ? `<div class="kpi"><span>Keep</span><b style="color:var(--g)">${keep}</b></div><div class="kpi"><span>Take-out</span><b style="color:var(--r)">${out}</b></div>` : ''}</div>
+  const unpaid = stCol ? T.rows.filter(r => /unpaid|belum/i.test(r.cells[stCol] || '')) : [], paid = stCol ? T.rows.filter(r => !/unpaid|belum/i.test(r.cells[stCol] || '') && /paid|lunas/i.test(r.cells[stCol] || '')) : [];
+  const sum = L => mCol ? L.reduce((a, r) => a + money(r.cells[mCol]), 0) : 0;
+  const sales = salesCol ? [...new Set(T.rows.map(r => String(getV(r, salesCol) || '').trim()).filter(Boolean))].sort() : [];
+  const K = [`<div class="kpi"><span>${esc(T.name)}</span><b>${T.rows.length}</b></div>`];
+  if (stCol) { K.push(`<div class="kpi"><span>Unpaid</span><b style="color:var(--r)">${unpaid.length}</b></div>`, `<div class="kpi"><span>Paid</span><b style="color:var(--g)">${paid.length}</b></div>`); if (mCol) K.push(`<div class="kpi"><span>Outstanding (unpaid)</span><b>${rp(sum(unpaid))}</b></div>`); }
+  else { if (mCol) K.push(`<div class="kpi"><span>Total ${esc(/revenue|mrr/i.test(mCol) ? 'MRR' : mCol)}</span><b>${rp(sum(T.rows))}</b></div>`); if (notesCol && (keep || out)) K.push(`<div class="kpi"><span>Keep</span><b style="color:var(--g)">${keep}</b></div><div class="kpi"><span>Take-out</span><b style="color:var(--r)">${out}</b></div>`); }
+  app.innerHTML = head + `<div class="kpis">${K.slice(0, 4).join('')}</div>
     <div class="tabs">${V.data.tabs.map((t, i) => `<button class="tab" data-tab="${i}" aria-pressed="${i === V.tab}">${esc(t.name)}<small>${t.rows.length}</small></button>`).join('')}</div>
-    <div class="bar"><input type="search" id="q" placeholder="Search group, sales, notes…" value="${esc(V.q)}">${sales.length ? `<select id="f"><option value="">All sales</option>${sales.map(s => `<option ${s === V.f ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>` : ''}<span class="sp"></span>
-      ${V.edit ? '<button class="btn pri" id="add">+ Add group</button><button class="btn" id="addcol">+ Column</button>' : ''}</div>
-    <div class="sheet ${V.edit ? 'editing' : ''}"><table><thead><tr><th>#</th>${T.cols.map(c => `<th>${esc(c)}</th>`).join('')}${V.edit ? '<th></th>' : ''}</tr></thead>
-      <tbody>${rows.map(r => { const i = T.rows.indexOf(r); return `<tr data-r="${esc(r.id)}"><td class="no">${i + 1}</td>${T.cols.map(c => `<td data-c="${esc(c)}" class="${isMoney(c) ? 'money' : ''}">${cell(c, r.cells[c], r.links && r.links[c])}</td>`).join('')}${V.edit ? `<td><button class="btn sm danger rowdel" data-del="${esc(r.id)}">✕</button></td>` : ''}</tr>`; }).join('') || `<tr><td colspan="${T.cols.length + 1}" style="color:var(--muted);padding:20px">No matching groups.</td></tr>`}</tbody></table></div>`;
+    <div class="bar"><input type="search" id="q" placeholder="Search…" value="${esc(V.q)}">${sales.length ? `<select id="f"><option value="">${isGen ? 'All PIC' : 'All sales'}</option>${sales.map(s => `<option ${s === V.f ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>` : ''}<span class="sp"></span>
+      <span class="src">Sumber: <a href="${esc(src)}" target="_blank" rel="noopener">Google Sheets ↗</a>${V.data.seeded ? ' · dari import Masterlist sebelumnya — klik Sync untuk data terbaru' : ''}</span>
+      ${V.edit ? `<button class="btn pri" id="add">+ Add ${S_.what}</button><button class="btn" id="addcol">+ Column</button>` : ''}</div>
+    <div class="sheet ${V.edit ? 'editing' : ''}"><table><thead><tr><th>#</th>${cols.map(c => `<th>${esc(c)}</th>`).join('')}${V.edit ? '<th></th>' : ''}</tr></thead>
+      <tbody>${rows.map(r => { const i = T.rows.indexOf(r); return `<tr data-r="${esc(r.id)}"><td class="no">${i + 1}${r.manual ? ' <span title="Ditambah di app" style="color:var(--acc)">●</span>' : ''}</td>${cols.map(c => `<td data-c="${esc(c)}" class="${isMoney(c) ? 'money' : ''}">${c === 'PIC (tgl 25)' && !(c in r.cells) ? (getV(r, c) ? `<span class="tag pic">${esc(getV(r, c))}</span>` : '<span style="color:#C4C4C8">—</span>') : cell(c, r.cells[c], r.links && r.links[c])}</td>`).join('')}${V.edit ? `<td><button class="btn sm danger rowdel" data-del="${esc(r.id)}">✕</button></td>` : ''}</tr>`; }).join('') || `<tr><td colspan="${cols.length + 1}" style="color:var(--muted);padding:20px">No matching rows.</td></tr>`}</tbody></table></div>`;
+  bind();
   $('#q').oninput = e => { V.q = e.target.value; const p = e.target.selectionStart; render(); const q = $('#q'); q.focus(); q.setSelectionRange(p, p); };
   if ($('#f')) $('#f').onchange = e => { V.f = e.target.value; render(); };
-  $('#edit').onclick = () => { V.edit = !V.edit; render(); };
-  if ($('#imp')) $('#imp').onclick = pickFile;
   if ($('#add')) $('#add').onclick = () => rowModal(null);
-  if ($('#addcol')) $('#addcol').onclick = () => { const n = prompt('New column name:'); if (n && n.trim() && !T.cols.includes(n.trim())) { T.cols.push(n.trim()); save(); render(); } };
+  if ($('#addcol')) $('#addcol').onclick = () => { const n = prompt('New column name:'); if (n && n.trim() && !T.cols.includes(n.trim())) { T.cols.push(n.trim()); (T.extraCols = T.extraCols || []).push(n.trim()); save(); render(); } };
+}
+function bind() {
+  $('#sync').onclick = () => sync(false);
+  if ($('#edit')) $('#edit').onclick = () => { V.edit = !V.edit; render(); };
+  $('#imp').onclick = pickFile;
+  $('#srcB').onclick = () => { const cur = `https://docs.google.com/spreadsheets/d/${(V.data && V.data.sheet) || SEC(V.sec).sheet}`; const v = prompt('Link Google Sheets sumber untuk ' + SEC(V.sec).name + ':', cur); if (v == null) return;
+    const m = String(v).match(/\/d\/([A-Za-z0-9_-]{20,80})/) || String(v).match(/^([A-Za-z0-9_-]{20,80})$/); if (!m) return toast('Link tidak valid');
+    V.data = V.data || { tabs: [] }; V.data.sheet = m[1] === SEC(V.sec).sheet ? undefined : m[1]; save(); render(); toast('Sumber disimpan — klik Sync'); };
 }
 function rowModal(id) {
-  const T = V.data.tabs[V.tab], r = id ? T.rows.find(x => x.id === id) : { id: newId(), cells: {}, links: {} };
+  const T = V.data.tabs[V.tab], r = id ? T.rows.find(x => x.id === id) : { id: newId(), cells: {}, links: {}, manual: true };
   const el = document.createElement('div'); el.className = 'md';
-  el.innerHTML = `<div class="mdb"><h3>${id ? 'Edit group' : 'Add group'} · ${esc(T.name)}</h3>
+  el.innerHTML = `<div class="mdb"><h3>${id ? 'Edit' : 'Add'} ${esc(SEC(V.sec).what)} · ${esc(T.name)}</h3>
     ${T.cols.map((c, k) => `<div class="f"><label>${esc(c)}</label><textarea data-k="${k}" rows="${isNotes(c) ? 3 : 1}">${esc(r.cells[c] || '')}</textarea>${/link|data|whatsapp/i.test(c) ? `<input data-l="${k}" placeholder="Link URL (optional) — https://…" value="${esc((r.links || {})[c] || '')}" style="margin-top:4px">` : ''}</div>`).join('')}
     <div class="mfoot">${id ? '<button class="btn danger" data-act="del">Delete</button>' : ''}<span class="sp"></span><button class="btn" data-act="x">Cancel</button><button class="btn pri" data-act="ok">Save</button></div></div>`;
   document.body.appendChild(el);
   el.addEventListener('click', e => {
     const b = e.target.closest('[data-act]'); if (e.target === el) return el.remove(); if (!b) return;
     if (b.dataset.act === 'x') return el.remove();
-    if (b.dataset.act === 'del') { if (!confirm('Delete this group row?')) return; T.rows = T.rows.filter(x => x.id !== id); el.remove(); save(); render(); return; }
+    if (b.dataset.act === 'del') { if (!confirm('Delete this row?')) return; delRow(T, id); el.remove(); save(); render(); return; }
     const cells = {}, links = {};
-    T.cols.forEach((c, k) => { cells[c] = el.querySelector(`[data-k="${k}"]`).value.trim(); const l = el.querySelector(`[data-l="${k}"]`); if (l && l.value.trim()) { if (!safeUrl(l.value)) return; links[c] = l.value.trim(); } });
+    T.cols.forEach((c, k) => { cells[c] = el.querySelector(`[data-k="${k}"]`).value.trim(); const l = el.querySelector(`[data-l="${k}"]`); if (l && l.value.trim() && safeUrl(l.value)) links[c] = l.value.trim(); });
     if (!Object.values(cells).some(Boolean)) return alert('Fill in at least one field.');
-    if (id) Object.assign(r, { cells, links }); else T.rows.push({ id: r.id, cells, links });
+    if (id) { if (!r.manual) { r.edited = r.edited || {}; T.cols.forEach(c => { if ((r.cells[c] || '') !== cells[c]) r.edited[c] = 1; }); } Object.assign(r, { cells, links }); } else T.rows.push({ id: r.id, cells, links, manual: true });
     el.remove(); save(); render();
   });
 }
+function delRow(T, id) { const r = T.rows.find(x => x.id === id); if (r && !r.manual) (T.deleted = T.deleted || []).push(r.k0 != null ? r.k0 : String(r.cells[keyCol(T)] || '').trim().toLowerCase()); T.rows = T.rows.filter(x => x.id !== id); }
 let saveT = null;
 function save() {
-  V.data.updatedAt = new Date().toISOString();
-  if (!V.online) { try { localStorage.setItem('gx-preview-vip', JSON.stringify(V.data)); } catch (e) {} toast('Preview — saved in this browser only'); return; }
+  V.data.updatedAt = new Date().toISOString(); delete V.data.seeded;
+  if (!V.online) { try { localStorage.setItem('gx-preview-vip-' + V.sec, JSON.stringify(V.data)); } catch (e) {} toast('Preview — saved in this browser only'); return; }
   clearTimeout(saveT); const st = $('#state'); if (st) st.textContent = 'Saving…';
   saveT = setTimeout(async () => {
-    const r = await jget('/api/todo?vip=1', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ data: V.data, revision: V.rev }) });
+    const r = await jget('/api/todo?vip=1&s=' + V.sec, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ data: V.data, revision: V.rev }) });
     const s2 = $('#state');
     if (r && r.status === 200) { V.rev = r.j.revision; if (s2) s2.textContent = 'Saved ✓'; }
-    else if (r && r.status === 409) { if (s2) s2.textContent = ''; toast('Someone else changed the list — reloading'); load(); }
+    else if (r && r.status === 409) { if (s2) s2.textContent = ''; toast('Someone else changed this list — reloading'); load(); }
     else { if (s2) s2.textContent = ''; toast(r && r.status === 401 ? 'Session expired — unlock again' : 'Save failed'); }
   }, 500);
 }
-/* ---------- import .xlsx (Google Sheets → File → Download → .xlsx) ---------- */
-function pickFile() { const i = document.createElement('input'); i.type = 'file'; i.accept = '.xlsx,.xls,.csv'; i.onchange = () => i.files[0] && importFile(i.files[0]); i.click(); }
-async function importFile(file) {
-  if (!window.XLSX) return toast('Importer failed to load');
-  const wb = XLSX.read(await file.arrayBuffer(), { type: 'array', cellStyles: false });
-  const tabs = [];
+/* ---------- baca .xlsx (dari sync atau upload) → tabs ---------- */
+function parseWorkbook(buf) {
+  const wb = XLSX.read(buf, { type: 'array', cellStyles: false }), tabs = [];
   wb.SheetNames.forEach(name => {
+    if (!SEC(V.sec).tabs(name)) return;
     const ws = wb.Sheets[name]; if (!ws['!ref']) return;
     const R = XLSX.utils.decode_range(ws['!ref']), at = (r, c) => ws[XLSX.utils.encode_cell({ r, c })];
     const val = (r, c) => { const x = at(r, c); return x ? String(x.w != null ? x.w : x.v).trim() : ''; };
     let hr = -1; for (let r = R.s.r; r <= Math.min(R.e.r, R.s.r + 15) && hr < 0; r++) { let n = 0; for (let c = R.s.c; c <= R.e.c; c++) if (val(r, c)) n++; if (n >= 3) hr = r; }
     if (hr < 0) return;
-    const cols = []; for (let c = R.s.c; c <= R.e.c; c++) { const h = val(hr, c); if (h) cols.push({ c, h: cols.some(x => x.h === h) ? h + ' ' + c : h }); }
+    const cols = []; for (let c = R.s.c; c <= R.e.c; c++) { let h = val(hr, c);
+      if (!h) { let n = 0, fu = 0; for (let r = hr + 1; r <= Math.min(R.e.r, hr + 400); r++) { const v = val(r, c); if (v) { n++; if (/follow up/i.test(v)) fu++; } }   // kolom tanpa judul tapi berisi data (mis. rumus "Need Follow Up !!")
+        if (n && c > R.s.c) h = fu ? 'Reminder' : 'Kolom ' + XLSX.utils.encode_col(c); }
+      if (h) cols.push({ c, h: cols.some(x => x.h === h) ? h + ' ' + (cols.filter(x => x.h.startsWith(h)).length + 1) : h }); }
     const noCol = cols.find(x => /^no\.?$/i.test(x.h)), dataCols = cols.filter(x => x !== noCol);
     const rows = [];
     for (let r = hr + 1; r <= R.e.r; r++) {
       const cells = {}, links = {}; let any = false;
       dataCols.forEach(({ c, h }) => { const v = val(r, c), x = at(r, c); if (v) { cells[h] = v; any = true; } if (x && x.l && safeUrl(x.l.Target)) links[h] = x.l.Target; });
-      if (any) rows.push({ id: newId(), cells, links });
+      if (any && dataCols.filter(({ h }) => cells[h]).length >= 1 && !(dataCols.length > 2 && Object.keys(cells).length === 1 && /follow up/i.test(Object.values(cells)[0]))) rows.push({ id: newId(), cells, links });
     }
     if (rows.length) tabs.push({ name, cols: dataCols.map(x => x.h), rows });
   });
-  if (!tabs.length) return toast('No tables found in this file');
-  if (!confirm(`Import ${tabs.length} tab(s): ${tabs.map(t => `${t.name} (${t.rows.length})`).join(', ')}?\n\nThis replaces the current Dashboard VIP data.`)) return;
-  V.data = { tabs, updatedAt: new Date().toISOString(), source: file.name }; V.tab = 0; save(); render(); toast('Imported ✓');
+  return tabs;
+}
+/* gabung data sheet terbaru dengan editan di app: kolom tambahan, baris manual, sel yang diedit & baris yang dihapus tetap */
+function merge(oldTabs, newTabs) {
+  return newTabs.map(nt => {
+    const kc = keyCol(nt), k = r => String(r.cells[kc] || '').trim().toLowerCase();
+    nt.rows.forEach(r => { r.k0 = k(r); });   // kunci asli dari sheet — editan tetap cocok walau nama/UID diubah di app
+    const ot = (oldTabs || []).find(t => t.name === nt.name); if (!ot) return nt;
+    const extra = (ot.extraCols || []).filter(c => !nt.cols.includes(c)), del = new Set(ot.deleted || []);
+    const byKey = new Map(); ot.rows.forEach(r => { const kk = r.k0 != null ? r.k0 : k(r); if (!r.manual && kk) byKey.set(kk, r); });
+    const rows = nt.rows.filter(r => !del.has(k(r))).map(r => { const o = byKey.get(k(r)); if (!o) return r;
+      const cells = { ...r.cells }; extra.forEach(c => { if (o.cells[c]) cells[c] = o.cells[c]; }); Object.keys(o.edited || {}).forEach(c => { if (c in o.cells) cells[c] = o.cells[c]; });
+      return { ...r, id: o.id, cells, links: { ...r.links, ...(o.links || {}) }, edited: o.edited, k0: r.k0 }; });
+    return { ...nt, cols: [...nt.cols, ...extra], extraCols: extra, deleted: [...del], rows: [...rows, ...ot.rows.filter(r => r.manual)] };
+  });
+}
+async function sync(auto) {
+  if (!window.XLSX) return toast('Importer failed to load');
+  if (!V.online) return toast('Sync butuh server — di preview pakai Import .xlsx');
+  const id = (V.data && V.data.sheet) || SEC(V.sec).sheet, b = $('#sync'); if (b) { b.disabled = true; b.textContent = '↻ Syncing…'; }
+  const r = await jget(`/api/todo?vip=1&s=${V.sec}&sync=${encodeURIComponent(id)}`);
+  if (b) { b.disabled = false; b.textContent = '↻ Sync dari Google Sheets'; }
+  if (!r || r.status !== 200 || !r.j.b64) return toast((r && r.j && (r.j.detail || r.j.error)) || 'Sync gagal');
+  const bin = atob(r.j.b64), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  const tabs = parseWorkbook(u8); if (!tabs.length) return toast('Tidak ada tabel di spreadsheet');
+  const old = V.data && !V.data.seeded ? V.data.tabs : null;
+  V.data = { ...(V.data || {}), tabs: merge(old, tabs), syncedAt: new Date().toISOString(), source: 'Google Sheets' }; if (V.tab >= V.data.tabs.length) V.tab = 0;
+  save(); render(); toast(`Synced ✓ — ${tabs.length} tab, ${tabs.reduce((a, t) => a + t.rows.length, 0)} baris`);
+}
+function pickFile() { const i = document.createElement('input'); i.type = 'file'; i.accept = '.xlsx,.xls,.csv'; i.onchange = () => i.files[0] && importFile(i.files[0]); i.click(); }
+async function importFile(file) {
+  if (!window.XLSX) return toast('Importer failed to load');
+  const tabs = parseWorkbook(await file.arrayBuffer());
+  if (!tabs.length) return toast('No tables found in this file for ' + SEC(V.sec).name);
+  if (!confirm(`Import ${tabs.length} tab(s) ke ${SEC(V.sec).name}: ${tabs.map(t => `${t.name} (${t.rows.length})`).join(', ')}?\n\nData sheet diganti; kolom & baris yang ditambah di app tetap disimpan.`)) return;
+  V.data = { ...(V.data || {}), tabs: merge(V.data && !V.data.seeded ? V.data.tabs : null, tabs), updatedAt: new Date().toISOString(), source: file.name }; V.tab = 0; save(); render(); toast('Imported ✓');
 }
 app.addEventListener('click', e => {
+  const sc = e.target.closest('[data-sec]'); if (sc) { if (sc.dataset.sec !== V.sec) { V.sec = sc.dataset.sec; V.tab = 0; V.q = ''; V.f = ''; V.edit = false; V.data = null; history.replaceState(null, '', '#' + V.sec); app.querySelectorAll('.sec').forEach(x => x.setAttribute('aria-pressed', x.dataset.sec === V.sec)); load(); } return; }
   const t = e.target.closest('[data-tab]'); if (t) { V.tab = +t.dataset.tab; V.f = ''; render(); return; }
-  const d = e.target.closest('[data-del]'); if (d) { const T = V.data.tabs[V.tab]; if (confirm('Delete this group row?')) { T.rows = T.rows.filter(x => x.id !== d.dataset.del); save(); render(); } return; }
+  const d = e.target.closest('[data-del]'); if (d) { const T = V.data.tabs[V.tab]; if (confirm('Delete this row?')) { delRow(T, d.dataset.del); save(); render(); } return; }
   if (V.edit && !e.target.closest('a,button')) { const tr = e.target.closest('tr[data-r]'); if (tr) rowModal(tr.dataset.r); }
 });
 load();

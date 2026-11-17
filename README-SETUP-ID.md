@@ -97,3 +97,17 @@ AFR = menit dari **Created** sampai **first take** (orang & jam pertama yang tak
 ## Repeat Complaint — pengecualian
 
 Di pengaturan Repeat Complaint (Import data → kartu Repeat Complaint): **Problem dikeluarkan — CS & VIP** (default `Working Result, Billing Issue`) dan **Branch dikeluarkan** (default `Malang`). Tiket dengan problem/branch tersebut tidak dihitung sebagai repeat complaint.
+
+## Dashboard VIP — 4 sub dashboard
+- **Masterlist Data VIP**, **Masterlist Data Intracity**, **Monthly Billing Reminder – 25th**, **DIA Outstanding – Monthly Reminder**. Pilih kartu di atas (bisa juga lewat link `/dashboard-vip#intracity`, `#billing25`, `#dia`).
+- Tombol **⟳ Sync dari Google Sheet** mengambil data langsung dari sheet sumber (server yang ambil, bukan browser). Syarat: sheet di-share **Anyone with the link — Viewer**. Kalau aksesnya diubah jadi private, pakai **Import .xlsx** (File → Download → .xlsx lalu upload).
+- ⚙ untuk ganti sumber sheet (paste link/ID baru).
+- Editan sel, kolom tambahan, baris manual, dan baris yang dihapus **tetap tersimpan** walau di-sync ulang (dicocokkan pakai nama group/UID asli dari sheet).
+- Billing 25: kolom **PIC (tgl 25)** otomatis sesuai pembagian (Bagas/Desi/Sita/Sevia/Oka/Rani) + filter PIC. Tab yang punya kolom Status menampilkan Unpaid / Paid / total Outstanding.
+- Data disimpan di Supabase (`gx_docs`: vip-masterlist, vip-intracity, vip-billing25, vip-dia). Tidak ada data customer di dalam ZIP. Butuh login tim/SPV.
+
+## Dashboard Helpdesk / AM — kirim ke SPV & Desk per orang
+- **Task / catatan ke SPV:** saat bikin task pilih *Assign to → ⭐ SPV — send for review*, atau di Notes pilih *For: ⭐ SPV*. Semua masuk ke **Helpdesk Management → Personal To-Do List** di kotak **📥 Dari tim** (badge merah = belum dilihat). SPV bisa set *Sedang direview / Selesai*, kirim balasan, dan tandai catatan dilihat — balasannya muncul di dashboard tim.
+- Hanya SPV yang login yang bisa menulis sebagai SPV (tim tidak bisa memalsukan balasan SPV).
+- **Desk:** tiap anggota punya desk sendiri (kartu foto di atas dashboard, atau tombol 🪑 My desk): foto (upload, otomatis di-crop kecil), tagline + emoji + warna, **template message** (judul, kategori, isi) dengan tombol Copy. Variabel: `{nama}` (isi nama customer di kolom atas), `{agent}`, `{tanggal}`. Template orang lain bisa disalin ke desk sendiri (+ My desk).
+- Baca & copy template terbuka untuk tim; ubah desk (foto/template) perlu password tim. Data disimpan di Supabase `gx_docs` (team-desk-hd / team-desk-am). Jangan simpan nomor HP / email customer di template.

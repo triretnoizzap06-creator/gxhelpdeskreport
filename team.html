@@ -82,6 +82,26 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 .nt .nh{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}.nt .nh b{color:var(--ink)}.nt .tx{font-size:13.5px;white-space:pre-line;line-height:1.5;margin-top:5px}
 .rs{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}.rs:first-child{border-top:0}.rs b{flex:1;font-size:14px}.rs input{width:110px;border:1px solid var(--line);border-radius:8px;padding:5px 8px;font-size:13px}
 @media (max-width:860px){.bcols{grid-template-columns:1fr}}
+.tag.spv{background:#FEF3C7;color:#92400E}.spvr{margin-top:8px;font-size:13px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:9px;padding:8px 10px;white-space:pre-line;line-height:1.5}.spvr b{color:#92400E}
+.nt.tospv{background:#FFFBEB;border-color:#FDE68A}
+.desks{margin-bottom:22px}.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:12px}
+.dk{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 12px 14px;cursor:pointer;transition:transform .15s,box-shadow .15s;overflow:hidden}
+.dk::before{content:"";position:absolute;inset:0 0 auto;height:46px;background:var(--dc,var(--accbg))}.dk:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.08)}.dk.me{border-color:var(--acc);box-shadow:0 0 0 2px var(--accbg)}
+.av{position:relative;width:72px;height:72px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--ink);color:#fff;font-weight:800;font-size:22px;overflow:hidden;border:3px solid #fff;box-shadow:0 0 0 2px var(--dc,var(--acc))}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.av.big{width:104px;height:104px;font-size:32px;border-width:4px}
+.dk b{font-size:15px}.dk .tl{font-size:12px;color:var(--muted);min-height:16px;line-height:1.35}.dk .em{position:absolute;top:8px;right:10px;font-size:18px}
+.dk .st{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;font-size:11px}.dk .st span{background:var(--grbg);border-radius:99px;padding:2px 8px;font-weight:700}
+.dsk{max-width:900px}.dsk-h{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:-20px -22px 16px;padding:22px;border-radius:16px 16px 0 0;background:linear-gradient(135deg,var(--dc,var(--accbg)),#fff 80%)}
+.dsk-h h3{margin:0;font-size:22px}.dsk-h p{margin:3px 0 0;color:#52525B;font-size:13.5px}.dsk-h .sp{flex:1}
+.dtabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tpbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.tpbar input{flex:1;min-width:160px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:var(--bg)}
+.tps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.tp{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;display:flex;flex-direction:column;gap:6px}.tp:hover{border-color:var(--y)}
+.tp .tph{display:flex;gap:6px;align-items:flex-start}.tp .tph b{flex:1;font-size:13.5px}.tp .tx{font-size:12.8px;color:#3F3F46;white-space:pre-wrap;line-height:1.45;max-height:118px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 75%,transparent)}
+.tp .tx.open{max-height:none;-webkit-mask-image:none}.tp .tf{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:auto}.tp .tf small{color:var(--muted);font-size:11px;margin-right:auto}
+.cbtn{background:var(--ink);color:#fff;border:0;border-radius:8px;padding:6px 12px;font-weight:700;font-size:12.5px;cursor:pointer}
+.hint{font-size:12px;color:var(--muted);margin:2px 0 10px}.tp .tag{font-size:11px;padding:2px 8px}
+@media (max-width:640px){.dgrid{grid-template-columns:repeat(2,1fr)}.dsk-h{margin:-20px -16px 14px}.mdb{padding:20px 16px}}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1D1D1F;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:80;opacity:0;transition:opacity .2s}.toast.on{opacity:1}
 @media (max-width:640px){.top{padding:10px 12px;gap:6px}.top .logo{height:20px}.top .btn{padding:6px 8px;font-size:12px}.kpis{grid-template-columns:repeat(2,1fr)}.who{margin-left:0;width:100%}main{padding:18px 12px 50px}}
 </style>
@@ -91,6 +111,7 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 <main>
   <div class="hero"><div class="ic" id="heroIc">🎧</div><div><h1 id="title"></h1><p id="sub"></p></div>
     <label class="who">I am: <select id="me"></select><button class="btn" id="teamBtn" type="button" title="Add / remove team members">👥 Team</button></label></div>
+  <section class="desks"><div class="tools-h"><h2>Desks</h2><span class="sp"></span><span style="font-size:12px;color:var(--muted)">Each person's own desk — photo, message templates, tasks &amp; notes.</span><button class="btn pri" id="myDesk" type="button">🪑 My desk</button></div><div class="dgrid" id="desks"></div></section>
   <div id="banner"></div>
   <div class="kpis" id="kpis"></div>
   <div class="bar" id="filter"></div>
@@ -124,7 +145,7 @@ const CFG = CFGS[TEAM];
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const safeUrl = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : '';
-const nick = n => (CFG.roster.find(r => r[0] === n) || [, n])[1];
+const nick = n => n === 'SPV' ? '⭐ SPV' : (CFG.roster.find(r => r[0] === n) || [, n])[1];
 const LINKSVG = '<svg viewBox="0 0 24 24"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
 function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2400); }
 document.title = CFG.title; document.body.classList.toggle('am', TEAM === 'AM');
@@ -132,7 +153,7 @@ $('#title').textContent = CFG.title; $('#sub').textContent = CFG.sub; $('#heroIc
 $('#switch').textContent = TEAM === 'AM' ? '→ Dashboard Helpdesk' : '→ Dashboard AM'; $('#switch').href = TEAM === 'AM' ? '/dashboard-helpdesk' : '/dashboard-am';
 let ME = ''; try { ME = localStorage.getItem('gx-team-me-' + TEAM) || ''; } catch (e) {}
 $('#me').innerHTML = '<option value="">— select your name —</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${f === ME ? 'selected' : ''}>${esc(k)}</option>`).join('');
-$('#me').onchange = e => { ME = e.target.value; try { localStorage.setItem('gx-team-me-' + TEAM, ME); } catch (er) {} render(); };
+$('#me').onchange = e => { ME = e.target.value; try { localStorage.setItem('gx-team-me-' + TEAM, ME); } catch (er) {} render(); renderDesks(); };
 /* ======================= Tools & Access (editable by SPV; passwords stored server-side only) ======================= */
 const newId = () => 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const T_ = (name, url, account, note) => ({ id: newId(), name, url, account: account || '', note: note || '' });
@@ -337,7 +358,8 @@ function applyRoster() {
   const R = (BD.data.roster && BD.data.roster.length ? BD.data.roster : (BD.data.roster ? [] : DEF_ROSTER));
   CFG.roster = R.map(x => [x.name, x.nick || x.name.split(' ')[0]]);
   $('#me').innerHTML = '<option value="">— select your name —</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${f === ME ? 'selected' : ''}>${esc(k)}</option>`).join('');
-  $('#nTo').innerHTML = '<option value="">For: whole team</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}">For: ${esc(k)}</option>`).join('');
+  $('#nTo').innerHTML = '<option value="">For: whole team</option><option value="SPV">For: ⭐ SPV (review / info)</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}">For: ${esc(k)}</option>`).join('');
+  if (typeof renderDesks === 'function') renderDesks();
 }
 function localOp(b) {   // preview tanpa server: logika sama dengan /api/todo?board
   const D = BD.data, now = new Date().toISOString(), id = 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
@@ -378,21 +400,22 @@ function renderBoard() {
   $('#btCnt').textContent = `· ${o.length} open`;
   const tc = t => { const late = t.due && t.due < today() && t.status !== 'DONE';
     return `<div class="card ${t.status === 'DONE' ? 'done' : ''}" data-bt="${esc(t.id)}"><div class="ch"><div class="ti">${esc(t.title)}</div><span class="ops"><button class="ib2" data-bedit title="Edit">✎</button><button class="ib2" data-bdel title="Delete">🗑</button></span></div>
-      <div class="meta"><span class="tag acc">${t.assignee ? 'For ' + esc(nick(t.assignee)) : 'Whole team'}</span>${t.by ? `<span class="tag">by ${esc(nick(t.by))}</span>` : ''}${t.due ? `<span class="tag ${late ? 'late' : ''}">Due ${fmtD(t.due)}</span>` : ''}</div>
+      <div class="meta">${t.assignee === 'SPV' ? '<span class="tag spv">⭐ For SPV · review</span>' : `<span class="tag acc">${t.assignee ? 'For ' + esc(nick(t.assignee)) : 'Whole team'}</span>`}${t.by ? `<span class="tag">by ${esc(nick(t.by))}</span>` : ''}${t.due ? `<span class="tag ${late ? 'late' : ''}">Due ${fmtD(t.due)}</span>` : ''}</div>
+      ${t.spvReply ? `<div class="spvr"><b>⭐ SPV:</b> ${esc(t.spvReply)}</div>` : ''}
       <div class="act">${[['NOT STARTED', 'Not started'], ['IN PROGRESS', 'In progress'], ['DONE', 'Done']].map(([s, l]) => `<button class="sb ${s.replace(/\s/g, '')}" data-bs="${s}" aria-pressed="${t.status === s}">${l}</button>`).join('')}
         <div class="note"><textarea placeholder="Note / update…" maxlength="2000">${esc(t.note)}</textarea><button class="btn pri" data-bsave>Save</button></div></div>
       ${t.upd_by ? `<div class="upd">Last update by ${esc(nick(t.upd_by))} · ${fmtT(t.updated_at)}</div>` : ''}</div>`; };
   $('#btList').innerHTML = (o.length ? o.map(tc).join('') : '<div class="empty" style="padding:18px">No open team tasks. Click <b>+ New task</b>.</div>') + (d.length ? `<div class="grp">Done · ${d.length}</div>` + d.map(tc).join('') : '');
   const nn = N.filter(n => FILTER === 'all' || FILTER === 'mine' ? (FILTER === 'all' || !ME || !n.to || n.to === ME || n.by === ME) : (!n.to || n.to === FILTER.slice(2) || n.by === FILTER.slice(2))).sort((a, b) => (b.pinned - a.pinned) || String(b.at).localeCompare(String(a.at)));
   $('#ntCnt').textContent = `· ${nn.length}`;
-  $('#nList').innerHTML = nn.length ? nn.map(n => `<div class="nt ${n.pinned ? 'pin' : ''}" data-nt="${esc(n.id)}"><div class="nh"><b>${esc(n.by ? nick(n.by) : '—')}</b>${n.to ? ` → <b>${esc(nick(n.to))}</b>` : ''} · ${fmtT(n.at)}<span style="flex:1"></span><button class="ib2" data-npin title="${n.pinned ? 'Unpin' : 'Pin'}">${n.pinned ? '📌' : '📍'}</button>${!n.by || n.by === ME ? '<button class="ib2" data-ndel title="Delete">🗑</button>' : ''}</div><div class="tx">${esc(n.text)}</div></div>`).join('') : '<div class="empty" style="padding:18px">No notes yet.</div>';
+  $('#nList').innerHTML = nn.length ? nn.map(n => `<div class="nt ${n.pinned ? 'pin' : ''} ${n.to === 'SPV' ? 'tospv' : ''}" data-nt="${esc(n.id)}"><div class="nh"><b>${esc(n.by ? nick(n.by) : '—')}</b>${n.to ? ` → <b>${esc(nick(n.to))}</b>` : ''} · ${fmtT(n.at)}<span style="flex:1"></span><button class="ib2" data-npin title="${n.pinned ? 'Unpin' : 'Pin'}">${n.pinned ? '📌' : '📍'}</button>${!n.by || n.by === ME ? '<button class="ib2" data-ndel title="Delete">🗑</button>' : ''}</div><div class="tx">${esc(n.text)}</div>${n.to === 'SPV' ? `<div class="upd">${n.seen ? '✓ Seen by SPV' : 'Waiting for SPV'}</div>` : ''}${n.spvReply ? `<div class="spvr"><b>⭐ SPV:</b> ${esc(n.spvReply)}</div>` : ''}</div>`).join('') : '<div class="empty" style="padding:18px">No notes yet.</div>';
 }
 function taskModal(t) {
   if (!ME) { toast('Select your name first (top right)'); $('#me').focus(); return; }
   const el = document.createElement('div'); el.className = 'md';
   el.innerHTML = `<form class="mdb"><h3>${t ? 'Edit task' : 'New team task'}</h3>
     <div class="f"><label>Task</label><textarea data-f="title" rows="2" maxlength="300" required>${esc(t ? t.title : '')}</textarea></div>
-    <div class="f"><label>Assign to</label><select data-f="assignee"><option value="">Whole team</option>${CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${(t ? t.assignee : ME) === f ? 'selected' : ''}>${esc(k)}${f === ME ? ' (me)' : ''}</option>`).join('')}</select></div>
+    <div class="f"><label>Assign to</label><select data-f="assignee"><option value="">Whole team</option><option value="SPV" ${t && t.assignee === 'SPV' ? 'selected' : ''}>⭐ SPV — send for review</option>${CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${(t ? t.assignee : ME) === f ? 'selected' : ''}>${esc(k)}${f === ME ? ' (me)' : ''}</option>`).join('')}</select></div>
     <div class="f"><label>Due date (optional)</label><input type="date" data-f="due" value="${esc(t ? t.due : '')}"></div>
     ${t ? '' : '<div class="f"><label>Note (optional)</label><textarea data-f="note" rows="3" maxlength="2000"></textarea></div>'}
     <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>Cancel</button><button class="btn pri">${t ? 'Save' : 'Create task'}</button></div></form>`;
@@ -401,7 +424,7 @@ function taskModal(t) {
   el.querySelector('form').onsubmit = async e => { e.preventDefault(); const v = k => (el.querySelector(`[data-f="${k}"]`) || {}).value;
     const title = (v('title') || '').trim(); if (!title) return;
     const ok = await bop(t ? { op: 'task.upd', id: t.id, title, assignee: v('assignee'), due: v('due') } : { op: 'task.add', title, assignee: v('assignee'), due: v('due'), note: v('note') || '' });
-    if (ok) { el.remove(); if (!t && v('assignee') && v('assignee') !== ME) toast('Task assigned to ' + nick(v('assignee')) + ' ✓'); } };
+    if (ok) { el.remove(); if (!t && v('assignee') && v('assignee') !== ME) toast(v('assignee') === 'SPV' ? 'Sent to SPV for review ✓' : 'Task assigned to ' + nick(v('assignee')) + ' ✓'); } };
 }
 function rosterModal() {
   const el = document.createElement('div'); el.className = 'md';
@@ -434,7 +457,137 @@ $('#btList').onclick = async e => {
 $('#nList').onclick = e => { const c = e.target.closest('[data-nt]'); if (!c) return;
   if (e.target.closest('[data-npin]')) return bop({ op: 'note.pin', id: c.dataset.nt }, true);
   if (e.target.closest('[data-ndel]') && confirm('Delete this note?')) return bop({ op: 'note.del', id: c.dataset.nt }); };
-load(); loadBoard(); setInterval(() => { if (!document.hidden && !document.activeElement.matches('textarea,input')) { load(); loadBoard(); } }, 60000);
+/* ================= Desk per orang: foto, tagline, template message (gx_docs team-desk-hd/am) ================= */
+const DK = { data: { desks: {} }, canEdit: false, online: true, open: null, tab: 'tpl', q: '', cat: '', cust: '' };
+const DKEY = 'gx-preview-desk-' + TEAM;
+const slug = n => String(n).toLowerCase().replace(/\./g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const initials = n => String(n).replace(/[^A-Za-z ]/g, ' ').trim().split(/\s+/).slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
+const deskOf = n => DK.data.desks[n] || { tpls: [] };
+const COLORS = ['#CFFAFE', '#EDE9FE', '#FEF3C7', '#DCFCE7', '#FFE4E6', '#DBEAFE', '#FCE7F3', '#E0F2FE'];
+const dColor = n => deskOf(n).color || COLORS[[...String(n)].reduce((a, c) => a + c.charCodeAt(0), 0) % COLORS.length];
+const avatar = (n, big) => { const d = deskOf(n), src = d.photo || 'photo-' + slug(n) + '.jpg';
+  return `<span class="av ${big ? 'big' : ''}">${esc(initials(n))}<img src="${esc(src)}" alt="" onerror="this.remove()"></span>`; };
+async function loadDesk() {
+  const r = await jget('/api/todo?desk=' + TEAM);
+  if (r && r.status === 200 && r.j && r.j.desk) { DK.online = true; DK.data = r.j.desk; DK.canEdit = !!r.j.canEdit; }
+  else if (!r || (r.status >= 500 && !(r.j && r.j.error)) || r.status === 404) { DK.online = false; DK.canEdit = true; try { DK.data = JSON.parse(localStorage.getItem(DKEY) || 'null') || { desks: {} }; } catch (e) {} }
+  renderDesks(); if (DK.open) drawDesk();
+}
+function localDesk(b) {
+  const D = DK.data, me = D.desks[b.name] = D.desks[b.name] || { tpls: [] }, now = new Date().toISOString();
+  if (b.op === 'photo') me.photo = b.photo;
+  else if (b.op === 'profile') Object.assign(me, { tagline: b.tagline, emoji: b.emoji, color: b.color || me.color });
+  else if (b.op === 'tpl.add') me.tpls.unshift({ id: 'l' + Date.now().toString(36), title: b.title, cat: b.cat, text: b.text, at: now, updated_at: now, uses: 0 });
+  else if (b.op === 'tpl.upd') { const y = me.tpls.find(z => z.id === b.id); if (y) Object.assign(y, { title: b.title, cat: b.cat, text: b.text, updated_at: now }); }
+  else if (b.op === 'tpl.del') me.tpls = me.tpls.filter(z => z.id !== b.id);
+  else if (b.op === 'tpl.use') { const y = me.tpls.find(z => z.id === b.id); if (y) y.uses = (y.uses || 0) + 1; }
+  try { localStorage.setItem(DKEY, JSON.stringify(D)); } catch (e) { toast('Preview storage full'); }
+}
+async function dop(b, quiet) {
+  if (!DK.online) { localDesk(b); renderDesks(); if (DK.open) drawDesk(); if (!quiet) toast('Preview — saved in this browser only'); return true; }
+  const r = await jget('/api/todo?desk=' + TEAM, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(b) });
+  if (r && r.status === 200 && r.j.desk) { DK.data = r.j.desk; DK.canEdit = !!r.j.canEdit; renderDesks(); if (DK.open) drawDesk(); if (!quiet) toast('Saved ✓'); return true; }
+  if (r && r.status === 401) { DK.canEdit = false; if (DK.open) drawDesk(); }
+  if (!quiet) toast((r && r.j && (r.j.detail || r.j.error)) || 'Save failed'); return false;
+}
+function renderDesks() {
+  const el = $('#desks'); if (!el) return; const T = BD.data.tasks || [];
+  el.innerHTML = CFG.roster.map(([f, k]) => { const d = deskOf(f), open = T.filter(t => t.assignee === f && t.status !== 'DONE').length;
+    return `<div class="dk ${f === ME ? 'me' : ''}" data-desk="${esc(f)}" style="--dc:${esc(dColor(f))}" role="button" tabindex="0">${d.emoji ? `<span class="em">${esc(d.emoji)}</span>` : ''}${avatar(f)}<b>${esc(k)}${f === ME ? ' (me)' : ''}</b><div class="tl">${esc(d.tagline || '')}</div>
+      <div class="st"><span>💬 ${(d.tpls || []).length} template</span>${open ? `<span>📋 ${open} open</span>` : ''}</div></div>`; }).join('') || '<div class="empty">No members yet — add them via 👥 Team.</div>';
+}
+const fillVars = (tx, owner) => tx.replace(/\{nama\}/gi, DK.cust || '{nama}').replace(/\{agent\}/gi, nick(owner)).replace(/\{tanggal\}/gi, new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }));
+function openDesk(name) { DK.open = name; DK.tab = 'tpl'; DK.q = ''; DK.cat = '';
+  const el = document.createElement('div'); el.className = 'md'; el.id = 'deskMd'; document.body.appendChild(el);
+  el.addEventListener('click', deskClick); el.addEventListener('input', e => { if (e.target.id === 'tpQ') { DK.q = e.target.value; drawTpls(); } if (e.target.id === 'tpCust') { DK.cust = e.target.value; } });
+  el.addEventListener('change', deskChange); drawDesk(); }
+function closeDesk() { const el = $('#deskMd'); if (el) el.remove(); DK.open = null; }
+function drawDesk() {
+  const el = $('#deskMd'); if (!el) return; const n = DK.open, d = deskOf(n);
+  const T = (BD.data.tasks || []).filter(t => t.assignee === n || (t.by === n && t.assignee === 'SPV')), S = (TASKS || []).filter(t => t.assignee === n);
+  const N = (BD.data.notes || []).filter(x => x.to === n || x.by === n).sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  el.innerHTML = `<div class="mdb dsk" style="--dc:${esc(dColor(n))}"><div class="dsk-h">${avatar(n, true)}<div><h3>${d.emoji ? esc(d.emoji) + ' ' : ''}${esc(nick(n))}'s desk</h3><p>${esc(n)}${d.tagline ? ' · ' + esc(d.tagline) : ''}</p></div><span class="sp"></span>
+      ${DK.canEdit ? `<label class="btn" style="cursor:pointer">📷 Photo<input type="file" accept="image/*" id="dPhoto" hidden></label><button class="btn" data-dprof type="button">✎ Profile</button>` : ''}<button class="btn" data-dx type="button">✕</button></div>
+    ${DK.canEdit ? '' : `<form class="unl" id="dUnl">🔒 Enter the team password to edit desks (photo &amp; templates). Reading &amp; copying templates is open.<input type="password" id="dPw" placeholder="Team password" autocomplete="current-password"><button class="btn pri">Unlock</button></form>`}
+    <div class="dtabs">${[['tpl', '💬 Templates · ' + (d.tpls || []).length], ['task', '📋 Tasks · ' + (T.filter(t => t.status !== 'DONE').length + S.filter(t => t.status !== 'DONE').length)], ['note', '🗒 Notes · ' + N.length]].map(([k, l]) => `<button class="chip" data-dtab="${k}" aria-pressed="${DK.tab === k}" type="button">${l}</button>`).join('')}</div>
+    <div id="dBody"></div></div>`;
+  const u = el.querySelector('#dUnl'); if (u) u.onsubmit = async e => { e.preventDefault(); const pw = el.querySelector('#dPw').value; if (!pw) return;
+    const r = await jget('/api/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ team: 1, password: pw }) });
+    if (r && r.status === 200) { toast('Unlocked ✓'); await Promise.all([loadDesk(), loadBoard()]); } else toast('Wrong password'); };
+  const B = el.querySelector('#dBody');
+  if (DK.tab === 'tpl') { const cats = [...new Set((d.tpls || []).map(t => t.cat).filter(Boolean))].sort();
+    B.innerHTML = `<div class="tpbar"><input id="tpQ" type="search" placeholder="Search templates…" value="${esc(DK.q)}"><input id="tpCust" placeholder="Customer name → fills {nama}" value="${esc(DK.cust)}" style="max-width:240px">${DK.canEdit ? '<button class="btn pri" data-tadd type="button">+ Template</button>' : ''}</div>
+      ${cats.length ? `<div class="bar" style="margin-bottom:10px"><button class="chip" data-tcat="" aria-pressed="${!DK.cat}" type="button">All</button>${cats.map(c => `<button class="chip" data-tcat="${esc(c)}" aria-pressed="${DK.cat === c}" type="button">${esc(c)}</button>`).join('')}</div>` : ''}
+      <p class="hint">Click <b>Copy</b> and paste into the chat. Variables: <code>{nama}</code> customer name, <code>{agent}</code> ${esc(nick(n))}, <code>{tanggal}</code> today. Don't save customer phone numbers / emails in templates.</p><div class="tps" id="tps"></div>`;
+    drawTpls(); }
+  else if (DK.tab === 'task') { const row = (t, src) => `<div class="card ${t.status === 'DONE' ? 'done' : ''}"><div class="ch"><div class="ti">${esc(t.title)}</div></div><div class="meta"><span class="tag">${src}</span><span class="tag">${esc(t.status)}</span>${t.assignee === 'SPV' ? '<span class="tag spv">⭐ Sent to SPV</span>' : ''}${t.due ? `<span class="tag">Due ${fmtD(t.due)}</span>` : ''}</div>${t.spvReply ? `<div class="spvr"><b>⭐ SPV:</b> ${esc(t.spvReply)}</div>` : ''}</div>`;
+    const all = [...S.map(t => row(t, 'From SPV')), ...T.map(t => row(t, t.assignee === 'SPV' ? 'Review request' : 'Team task'))];
+    B.innerHTML = all.length ? all.join('') : '<div class="empty" style="padding:18px">No tasks for this person.</div>'; }
+  else B.innerHTML = N.length ? N.map(x => `<div class="nt ${x.to === 'SPV' ? 'tospv' : ''}"><div class="nh"><b>${esc(x.by ? nick(x.by) : '—')}</b>${x.to ? ` → <b>${esc(nick(x.to))}</b>` : ''} · ${fmtT(x.at)}</div><div class="tx">${esc(x.text)}</div>${x.spvReply ? `<div class="spvr"><b>⭐ SPV:</b> ${esc(x.spvReply)}</div>` : ''}</div>`).join('') : '<div class="empty" style="padding:18px">No notes yet.</div>';
+}
+function drawTpls() {
+  const box = $('#tps'); if (!box) return; const n = DK.open, d = deskOf(n), q = DK.q.toLowerCase();
+  const L = (d.tpls || []).filter(t => (!DK.cat || t.cat === DK.cat) && (!q || (t.title + ' ' + t.text + ' ' + (t.cat || '')).toLowerCase().includes(q))).sort((a, b) => (b.uses || 0) - (a.uses || 0));
+  box.innerHTML = L.length ? L.map(t => `<div class="tp" data-tp="${esc(t.id)}"><div class="tph"><b>${esc(t.title)}</b>${t.cat ? `<span class="tag acc">${esc(t.cat)}</span>` : ''}</div><div class="tx">${esc(t.text)}</div>
+      <div class="tf"><small>${t.uses ? `copied ${t.uses}×` : ''}</small><button class="ib2" data-tmore type="button" title="Show all">⤢</button>${DK.canEdit ? `<button class="ib2" data-tedit type="button" title="Edit">✎</button><button class="ib2" data-tdel type="button" title="Delete">🗑</button>` : ''}${DK.canEdit && ME && ME !== n ? '<button class="ib" data-tclone type="button" title="Copy to my desk">+ My desk</button>' : ''}<button class="cbtn" data-tcopy type="button">Copy</button></div></div>`).join('')
+    : `<div class="empty" style="padding:18px;grid-column:1/-1">${(d.tpls || []).length ? 'No template matches.' : 'No templates yet.' + (DK.canEdit ? ' Click <b>+ Template</b> to add your quick replies.' : '')}</div>`;
+}
+function tplModal(t) {
+  const el = document.createElement('div'); el.className = 'md'; el.style.zIndex = 60;
+  const cats = [...new Set(Object.values(DK.data.desks).flatMap(d => (d.tpls || []).map(x => x.cat)).filter(Boolean))];
+  el.innerHTML = `<form class="mdb"><h3>${t ? 'Edit template' : 'New template'} — ${esc(nick(DK.open))}</h3>
+    <div class="f"><label>Title</label><input data-f="title" maxlength="120" required value="${esc(t ? t.title : '')}" placeholder="e.g. Greeting pagi / Info gangguan / Reminder billing"></div>
+    <div class="f"><label>Category (optional)</label><input data-f="cat" maxlength="40" list="tcats" value="${esc(t ? t.cat : '')}" placeholder="Greeting / Gangguan / Billing / Closing"><datalist id="tcats">${cats.map(c => `<option>${esc(c)}</option>`).join('')}</datalist></div>
+    <div class="f"><label>Message — {nama} = customer name, {agent} = your name, {tanggal} = today</label><textarea data-f="text" rows="9" maxlength="4000" required>${esc(t ? t.text : '')}</textarea></div>
+    <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>Cancel</button><button class="btn pri">${t ? 'Save' : 'Add template'}</button></div></form>`;
+  document.body.appendChild(el); el.querySelector('input').focus();
+  el.onclick = e => { if (e.target === el || e.target.closest('[data-x]')) el.remove(); };
+  el.querySelector('form').onsubmit = async e => { e.preventDefault(); const v = k => el.querySelector(`[data-f="${k}"]`).value;
+    if (!v('title').trim() || !v('text').trim()) return;
+    if (await dop({ op: t ? 'tpl.upd' : 'tpl.add', name: DK.open, id: t && t.id, title: v('title').trim(), cat: v('cat').trim(), text: v('text') })) el.remove(); };
+}
+function profModal() {
+  const d = deskOf(DK.open), el = document.createElement('div'); el.className = 'md'; el.style.zIndex = 60;
+  el.innerHTML = `<form class="mdb" style="max-width:440px"><h3>✎ Desk profile — ${esc(nick(DK.open))}</h3>
+    <div class="f"><label>Tagline / status</label><input data-f="tagline" maxlength="80" value="${esc(d.tagline || '')}" placeholder="e.g. Fast reply, slow coffee ☕"></div>
+    <div class="f"><label>Emoji</label><input data-f="emoji" maxlength="8" value="${esc(d.emoji || '')}" placeholder="🐣"></div>
+    <div class="f"><label>Desk color</label><div style="display:flex;gap:8px;flex-wrap:wrap">${COLORS.map(c => `<label style="cursor:pointer"><input type="radio" name="dc" value="${c}" ${dColor(DK.open) === c ? 'checked' : ''} hidden><span style="display:inline-block;width:30px;height:30px;border-radius:50%;background:${c};border:2px solid ${dColor(DK.open) === c ? '#1D1D1F' : '#E5E5EA'}"></span></label>`).join('')}</div></div>
+    ${d.photo ? '<p><button type="button" class="btn danger" data-rmph>Remove uploaded photo</button></p>' : ''}
+    <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>Cancel</button><button class="btn pri">Save</button></div></form>`;
+  document.body.appendChild(el);
+  el.onchange = e => { if (e.target.name === 'dc') el.querySelectorAll('[name=dc]').forEach(r => r.nextElementSibling.style.borderColor = r.checked ? '#1D1D1F' : '#E5E5EA'); };
+  el.onclick = async e => { if (e.target === el || e.target.closest('[data-x]')) return el.remove(); if (e.target.closest('[data-rmph]') && await dop({ op: 'photo', name: DK.open, photo: '' })) el.remove(); };
+  el.querySelector('form').onsubmit = async e => { e.preventDefault(); const c = el.querySelector('[name=dc]:checked');
+    if (await dop({ op: 'profile', name: DK.open, tagline: el.querySelector('[data-f=tagline]').value.trim(), emoji: el.querySelector('[data-f=emoji]').value.trim(), color: c ? c.value : '' })) el.remove(); };
+}
+function shrink(file) { return new Promise((ok, no) => { const img = new Image(), u = URL.createObjectURL(file);
+  img.onload = () => { const S = 256, c = document.createElement('canvas'); c.width = c.height = S; const m = Math.min(img.width, img.height);
+    c.getContext('2d').drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, S, S); URL.revokeObjectURL(u); ok(c.toDataURL('image/jpeg', 0.84)); };
+  img.onerror = () => no(new Error('bad image')); img.src = u; }); }
+async function deskChange(e) {
+  if (e.target.id !== 'dPhoto' || !e.target.files[0]) return;
+  try { const ph = await shrink(e.target.files[0]); await dop({ op: 'photo', name: DK.open, photo: ph }); } catch (er) { toast('Could not read that image'); }
+}
+async function deskClick(e) {
+  const el = $('#deskMd'); if (e.target === el || e.target.closest('[data-dx]')) return closeDesk();
+  const tb = e.target.closest('[data-dtab]'); if (tb) { DK.tab = tb.dataset.dtab; return drawDesk(); }
+  const tc = e.target.closest('[data-tcat]'); if (tc) { DK.cat = tc.dataset.tcat; return drawDesk(); }
+  if (e.target.closest('[data-dprof]')) return profModal();
+  if (e.target.closest('[data-tadd]')) return tplModal(null);
+  const card = e.target.closest('[data-tp]'); if (!card) return; const t = (deskOf(DK.open).tpls || []).find(x => x.id === card.dataset.tp); if (!t) return;
+  if (e.target.closest('[data-tcopy]')) { const tx = fillVars(t.text, DK.open);
+    try { await navigator.clipboard.writeText(tx); toast(/\{nama\}/i.test(tx) ? 'Copied ✓ — {nama} still empty' : 'Copied ✓'); } catch (er) { prompt('Copy:', tx); }
+    if (DK.canEdit) dop({ op: 'tpl.use', name: DK.open, id: t.id }, true); return; }
+  if (e.target.closest('[data-tmore]')) return card.querySelector('.tx').classList.toggle('open');
+  if (e.target.closest('[data-tedit]')) return tplModal(t);
+  if (e.target.closest('[data-tdel]') && confirm('Delete template "' + t.title + '"?')) return dop({ op: 'tpl.del', name: DK.open, id: t.id });
+  if (e.target.closest('[data-tclone]')) { if (await dop({ op: 'tpl.add', name: ME, title: t.title, cat: t.cat, text: t.text }, true)) toast('Added to your desk ✓'); }
+}
+$('#desks').onclick = e => { const d = e.target.closest('[data-desk]'); if (d) openDesk(d.dataset.desk); };
+$('#desks').onkeydown = e => { const d = e.target.closest('[data-desk]'); if (d && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openDesk(d.dataset.desk); } };
+$('#myDesk').onclick = () => { if (!ME) { toast('Select your name first (top right)'); $('#me').focus(); return; } openDesk(ME); };
+addEventListener('keydown', e => { if (e.key === 'Escape' && DK.open && !document.querySelector('.md[style*="z-index"]')) closeDesk(); });
+load(); loadBoard(); loadDesk(); setInterval(() => { if (!document.hidden && !document.activeElement.matches('textarea,input') && !document.querySelector('.md')) { load(); loadBoard(); loadDesk(); } }, 60000);
 </script>
 </body>
 </html>

@@ -925,7 +925,7 @@ html.viewonly .mwc{display:flex}
 <div class="modal hidden" id="histModal" role="dialog" aria-modal="true" aria-labelledby="histTitle">
   <div class="dialog" style="width:min(720px,100%)">
     <div class="dhead"><div><div class="eyebrow">Report history</div><h2 id="histTitle">History</h2><div class="sub">Weekly &amp; monthly reports, saved with their data, period, Repeat Complaint inputs and text edits. Viewer links always show the latest saved version — use ⟳ Update after changes. Finishing Present also saves (or updates) the snapshot for the current period automatically.</div></div><button class="btn" data-close="histModal">Close</button></div>
-    <div class="hist-new"><select id="histKind" class="sel" style="flex:none;width:auto"><option value="weekly">📅 Weekly report</option><option value="monthly">🗓 Monthly report</option><option value="">Other</option></select><input type="text" id="histName" class="sel" placeholder="Snapshot name"><button class="btn pri" id="histSave">Save now</button></div>
+    <div class="hist-new"><select id="histKind" class="sel" style="flex:none;width:auto"><option value="weekly">📅 Weekly report</option><option value="monthly">🗓 Monthly report</option></select><input type="text" id="histName" class="sel" placeholder="Snapshot name"><button class="btn pri" id="histSave">Save now</button></div>
     <div class="sub" id="histMsg" style="margin:6px 0 2px"></div>
     <div class="htabs" id="histTabs"></div>
     <div id="histList" class="hist-list"></div>
@@ -2582,10 +2582,18 @@ function snapPayload(){return {v:2,at:Date.now(),S:{...S,cur:undefined},DS:syDS(
 const hlGet=()=>{try{return JSON.parse(lsg(HL)||'[]')}catch(e){return []}},hlSet=a=>lss(HL,JSON.stringify(a.slice(0,30)));
 /* jenis riwayat: Weekly / Monthly report (disimpan sebagai awalan judul, mis. "[weekly] Weekly Report · 13–19 Okt") */
 const KINDS={weekly:'Weekly Report',monthly:'Monthly Report'};
-const kindOf=t=>{const m=/^\[(weekly|monthly)\]\s*/i.exec(t||'');return m?m[1].toLowerCase():''};
+/* jenis dibaca dari awalan judul; snapshot lama tanpa awalan → ditebak dari tanggal di judul (≤ 10 hari = weekly, selain itu monthly) */
+const MON_ID='januari|februari|maret|april|mei|juni|juli|agustus|september|oktober|november|desember|january|february|march|may|june|july|august|october|december|jan|feb|mar|apr|jun|jul|agu|aug|sep|okt|oct|nov|des|dec';
+function inferKind(t){t=String(t||'');if(/weekly|mingguan|\bw\d\b|week/i.test(t))return 'weekly';if(/monthly|bulanan/i.test(t))return 'monthly';
+  const d=[...t.matchAll(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/g)].map(m=>new Date(+(m[3].length===2?'20'+m[3]:m[3]),+m[2]-1,+m[1]).getTime());
+  if(d.length>=2)return Math.abs(d[d.length-1]-d[0])/864e5+1<=10?'weekly':'monthly';
+  const r=new RegExp('(\\d{1,2})\\s*[–-]\\s*(\\d{1,2})\\s+('+MON_ID+')','i').exec(t);if(r)return Math.abs(+r[2]-+r[1])+1<=10?'weekly':'monthly';
+  return new RegExp('\\b('+MON_ID+')\\b','i').test(t)?'monthly':'weekly'}
+const kindOf=t=>{const m=/^\[(weekly|monthly)\]\s*/i.exec(t||'');return m?m[1].toLowerCase():inferKind(t)};
 const bareTitle=t=>String(t||'').replace(/^\[(weekly|monthly)\]\s*/i,'');
-function guessKind(){try{if(C&&C.a!=null&&C.b!=null){const d=(+C.b-+C.a)/864e5+1;return d>=20?'monthly':'weekly'}}catch(e){}return 'weekly'}
-const kindTitle=(k,name)=>(k?'['+k+'] ':'')+(String(name||'').trim()||(k?KINDS[k]+' · ':'Helpdesk Report · ')+(C&&C.long||''));
+/* jenis report langsung dibaca dari periode data yang di-import: ≤ 10 hari = Weekly, lebih = Monthly */
+function guessKind(){try{if(C&&C.a!=null&&C.b!=null){const d=Math.round((+C.b-+C.a)/864e5)+1;return d<=10?'weekly':'monthly'}}catch(e){}return 'monthly'}
+const kindTitle=(k,name)=>(k=k||guessKind(),'['+k+'] ')+(String(name||'').trim()||(k?KINDS[k]+' · ':'Helpdesk Report · ')+(C&&C.long||''));
 async function snapPost(p,q){const body=await gzip(JSON.stringify(p));const r=await syFetch(SY.api+'?snap=1'+q,{method:'POST',headers:{'x-publish-key':syKey(),'content-type':'application/octet-stream'},body});const j=await r.json().catch(()=>({}));return r.ok&&j.ok?j:null}
 /* perbarui snapshot online yang sudah ada (ID & link viewer tetap) */
 async function histUpdate(it,p,title){if(!(SY.avail&&syOwner())||it.local)return {ok:false,msg:'Only online snapshots can be updated (login SPV / publish key).'};
@@ -2616,7 +2624,7 @@ let HBK=null;
 function histApplyMem(p){S={...DEF_S(),...p.S,rc:{...DEF_RC,...(p.S.rc||{})},period:{...DEF_S().period,...(p.S.period||{})},cur:S.cur};for(const k of ['cs','vip','rc'])DS[k]=p.DS&&p.DS[k]||null;UNDO.length=0;REDO.length=0;syncPeriod();refresh(0)}
 async function histOpen(it){histBusy(true);let p;try{p=await histLoad(it)}finally{histBusy(false)}if(!p||!p.S){$('#histMsg').textContent='This snapshot could not be opened.';return}
   if(!VIEWING)HBK={S:JSON.parse(JSON.stringify(S)),DS:{...DS}};VIEWING=true;histApplyMem(p);HBK.item=it;HBK.p=p;
-  $('#hbTitle').textContent=(KINDS[kindOf(it.title)]?KINDS[kindOf(it.title)]+' — ':'')+bareTitle(it.title).replace(/^(Weekly|Monthly) Report · /,'');$('#hbAt').textContent=hhmm(it.at);$('#hbUpdate').classList.toggle('hidden',!!(it.local||!(SY.avail&&syOwner())));$('#histBanner').classList.remove('hidden');document.body.classList.add('viewing-hist');closeModal('histModal')}
+  $('#hbTitle').textContent=(/^\[(weekly|monthly)\]/i.test(it.title)?KINDS[kindOf(it.title)]+' — ':'')+bareTitle(it.title).replace(/^(Weekly|Monthly) Report · /,'');$('#hbAt').textContent=hhmm(it.at);$('#hbUpdate').classList.toggle('hidden',!!(it.local||!(SY.avail&&syOwner())));$('#histBanner').classList.remove('hidden');document.body.classList.add('viewing-hist');closeModal('histModal')}
 function histBack(){if(!VIEWING)return;VIEWING=false;S=HBK.S;for(const k of ['cs','vip','rc'])DS[k]=HBK.DS[k];HBK=null;$('#histBanner').classList.add('hidden');document.body.classList.remove('viewing-hist');UNDO.length=0;REDO.length=0;syncPeriod();refresh(0);SIG=sigS()}
 async function histRestore(){if(!VIEWING||!HBK)return;if(!confirm('Restore "'+HBK.item.title+'" as the main data? The current data will be saved to History first.'))return;
   const p=HBK.p,bk=HBK;VIEWING=false;S=bk.S;for(const k of ['cs','vip','rc'])DS[k]=bk.DS[k];
@@ -2625,9 +2633,9 @@ async function histRestore(){if(!VIEWING||!HBK)return;if(!confirm('Restore "'+HB
   histApplyMem(p);lss(SY.kDs,'1');for(const k of ['cs','vip','rc'])await idbPut(k,DS[k]);save()}
 let HTAB=lsg('gxcs-htab')||'weekly';
 async function renderHist(){const el=$('#histList');el.innerHTML='<div class="sub">Loading…</div>';const all=await histItems();const own=syOwner()||!SY.avail;
-  const cnt=k=>all.filter(x=>k==='all'||(k==='other'?!kindOf(x.title):kindOf(x.title)===k)).length,items=all.filter(x=>HTAB==='all'||(HTAB==='other'?!kindOf(x.title):kindOf(x.title)===HTAB));
-  $('#histTabs').innerHTML=[['weekly','📅 Weekly report'],['monthly','🗓 Monthly report'],['other','Other'],['all','All']].filter(([k])=>k!=='other'||cnt('other')).map(([k,l])=>`<button class="htab${HTAB===k?' on':''}" data-htab="${k}">${l} <span>${cnt(k)}</span></button>`).join('');
-  el.innerHTML=items.length?items.map((x,i)=>{const k=kindOf(x.title);return `<div class="hrow"><div class="hmain"><b>${k?`<span class="hkind ${k}">${k==='weekly'?'Weekly':'Monthly'}</span>`:''}${esc(bareTitle(x.title))}</b><span class="mut">${hhmm(x.at)} · ${x.auto?'Auto (after Present)':'Manual'}${x.local?' · <em>this browser only</em>':''}${x.size?` · ${(x.size/1e6).toFixed(1)} MB`:''}</span></div><span class="hact"><button class="btn sm pri" data-hopen="${i}">Open</button>${!x.local&&own?`<button class="btn sm" data-hlink="${i}" title="Copy a viewer link for this snapshot only">🔗 Viewer</button><button class="btn sm" data-hupd="${i}" title="Replace this snapshot with the current report (viewer link stays the same)">⟳ Update</button>`:''}${own?`<button class="btn sm" data-hdel="${i}" title="Delete snapshot">Delete</button>`:''}</span></div>`}).join(''):`<div class="sub">No ${HTAB==='all'?'':HTAB==='other'?'other ':HTAB+' '}snapshots yet. Choose the type above the list and click Save now — a snapshot is also saved automatically every time you finish Present.</div>`;
+  if(HTAB==='other')HTAB='all';const cnt=k=>all.filter(x=>k==='all'||kindOf(x.title)===k).length,items=all.filter(x=>HTAB==='all'||kindOf(x.title)===HTAB);
+  $('#histTabs').innerHTML=[['weekly','📅 Weekly report'],['monthly','🗓 Monthly report'],['all','All']].map(([k,l])=>`<button class="htab${HTAB===k?' on':''}" data-htab="${k}">${l} <span>${cnt(k)}</span></button>`).join('');
+  el.innerHTML=items.length?items.map((x,i)=>{const k=kindOf(x.title);return `<div class="hrow"><div class="hmain"><b><span class="hkind ${k}">${k==='weekly'?'Weekly':'Monthly'}</span>${esc(bareTitle(x.title))}</b><span class="mut">${hhmm(x.at)} · ${x.auto?'Auto (after Present)':'Manual'}${x.local?' · <em>this browser only</em>':''}${x.size?` · ${(x.size/1e6).toFixed(1)} MB`:''}</span></div><span class="hact"><button class="btn sm pri" data-hopen="${i}">Open</button>${!x.local&&own?`<button class="btn sm" data-hlink="${i}" title="Copy a viewer link for this snapshot only">🔗 Viewer</button><button class="btn sm" data-hupd="${i}" title="Replace this snapshot with the current report (viewer link stays the same)">⟳ Update</button>`:''}${own?`<button class="btn sm" data-hdel="${i}" title="Delete snapshot">Delete</button>`:''}</span></div>`}).join(''):`<div class="sub">No ${HTAB==='all'?'':HTAB+' '}snapshots yet. Choose the type above the list and click Save now — a snapshot is also saved automatically every time you finish Present.</div>`;
   el.querySelectorAll('[data-hopen]').forEach(b=>b.onclick=()=>histOpen(items[+b.dataset.hopen]));
   el.querySelectorAll('[data-hlink]').forEach(b=>b.onclick=()=>{const it=items[+b.dataset.hlink];const u=location.origin+location.pathname+'?view=1&snap='+encodeURIComponent(it.id);
     (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>{b.textContent='✓ Link copied';setTimeout(()=>b.textContent='🔗 Viewer',2200)},()=>window.prompt('Copy this snapshot viewer link:',u))});
@@ -2636,7 +2644,7 @@ async function renderHist(){const el=$('#histList');el.innerHTML='<div class="su
   el.querySelectorAll('[data-hdel]').forEach(b=>b.onclick=async()=>{const it=items[+b.dataset.hdel];if(!confirm('Delete snapshot "'+bareTitle(it.title)+'"?'))return;
     if(it.local){hlSet(hlGet().filter(x=>x.id!==it.id));await idbPut('hist:'+it.id,null)}else await syFetch(SY.api+'?del='+encodeURIComponent(it.id),{method:'POST',headers:{'x-publish-key':syKey()}});renderHist()})}
 function histInit(){const defName=k=>(k?KINDS[k]+' · ':'Helpdesk Report · ')+(C&&C.long||'');
-  $('#histBtn').onclick=()=>{const k=guessKind();$('#histKind').value=k;$('#histName').value=defName(k);$('#histName').dataset.auto='1';$('#histMsg').textContent=VIEWING?'Viewing a snapshot — use "Save changes to this snapshot" on the yellow bar, or go back to the latest data to save a new one.':'';HTAB=k;openModal('histModal');renderHist()};
+  $('#histBtn').onclick=()=>{const k=guessKind();$('#histKind').value=k;setTimeout(()=>{if(!VIEWING&&!$('#histMsg').textContent)$('#histMsg').textContent='Detected from the imported data: '+(k==='weekly'?'📅 Weekly report':'🗓 Monthly report')+' ('+(C&&C.long||'')+').'},0);$('#histName').value=defName(k);$('#histName').dataset.auto='1';$('#histMsg').textContent=VIEWING?'Viewing a snapshot — use "Save changes to this snapshot" on the yellow bar, or go back to the latest data to save a new one.':'';HTAB=k;openModal('histModal');renderHist()};
   $('#histKind').onchange=()=>{if($('#histName').dataset.auto==='1')$('#histName').value=defName($('#histKind').value)};$('#histName').oninput=()=>{$('#histName').dataset.auto=''};
   $('#histSave').onclick=async()=>{$('#histMsg').textContent='Saving…';const k=$('#histKind').value;const r=await histSave($('#histName').value,false,k);$('#histMsg').textContent=r.msg;if(k){HTAB=k;lss('gxcs-htab',k)}renderHist()};
   $('#histTabs').onclick=e=>{const b=e.target.closest('[data-htab]');if(!b)return;HTAB=b.dataset.htab;lss('gxcs-htab',HTAB);renderHist()};

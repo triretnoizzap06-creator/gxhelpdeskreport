@@ -152,7 +152,7 @@ Di pengaturan Repeat Complaint (Import data → kartu Repeat Complaint): **Probl
 - 3D memakai three.js dari CDN (cdnjs / jsdelivr).
 
 ## Helpdesk Report — History Weekly & Monthly
-- Tombol **History** → pilih jenis **📅 Weekly report** / **🗓 Monthly report** (otomatis ditebak dari periode) → **Save now**. Daftar dipisah per tab Weekly / Monthly / All.
+- Jenis report **otomatis terbaca dari periode data yang di-import**: periode ≤ 10 hari = **📅 Weekly report**, lebih dari itu = **🗓 Monthly report** (masih bisa diganti manual sebelum Save now). Tidak ada kategori "Other" — snapshot lama ikut diklasifikasi dari tanggal di judulnya. Daftar dipisah per tab Weekly / Monthly / All.
 - **⟳ Update** di daftar = ganti isi snapshot itu dengan report saat ini. **ID & link viewer tetap sama**, jadi orang yang membuka link langsung melihat versi terbaru.
 - Saat membuka snapshot (bar kuning) lalu mengubah sesuatu → **⟳ Save changes to this snapshot**.
 - Save dengan judul (jenis + periode) yang sudah ada → ditawarkan untuk memperbarui, bukan membuat duplikat. Selesai Present juga otomatis memperbarui snapshot periode yang sama.

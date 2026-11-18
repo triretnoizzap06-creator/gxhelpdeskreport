@@ -9,6 +9,10 @@ import { db } from './_store.js';
 export const MEMBER_COOKIE = 'gx_member';
 /* roster bawaan (sama dengan team.html) dipakai kalau roster tim belum pernah diubah */
 export const DEF = { HD: ['Kadek Arisita Dhyana Putri', 'Gede Dimas Pery Narendra', 'Bayu Sukma Ramadhan', 'A.A Ngurah Kiyana Adhisa Oka Pertama', 'Nilma Syahrani'], AM: ['Ni Kadek Desi Mirayani', 'Aulia Sevi Diana', 'Devin Bagaskara'] };
+const DEF_NICK = { 'Kadek Arisita Dhyana Putri': 'Sita', 'Gede Dimas Pery Narendra': 'Dimas', 'Bayu Sukma Ramadhan': 'Bayu', 'A.A Ngurah Kiyana Adhisa Oka Pertama': 'Oka', 'Nilma Syahrani': 'Rani', 'Ni Kadek Desi Mirayani': 'Desi', 'Aulia Sevi Diana': 'Sevia', 'Devin Bagaskara': 'Bagas' };
+/* roster tim (nama lengkap + nickname) dari Supabase, atau bawaan kalau belum pernah diubah */
+async function rosters() { const out = []; for (const team of ['HD', 'AM']) { const d = (await doc('team-board-' + team.toLowerCase())).data;
+  (Array.isArray(d.roster) && d.roster.length ? d.roster.map(x => ({ name: x.name, nick: x.nick || DEF_NICK[x.name] || x.name.split(' ')[0] })) : DEF[team].map(n => ({ name: n, nick: DEF_NICK[n] || n.split(' ')[0] }))).forEach(m => out.push({ ...m, team })); } return out; }
 export const nkey = n => String(n || '').normalize('NFKC').replace(/\s+/g, ' ').trim().toLowerCase();
 const secret = () => { const s = envGet('SUPABASE_SERVICE_ROLE_KEY') || envGet('GX_TEAM_PASSWORD') || envGet('GX_DASH_PASSWORD'); return s ? createHmac('sha256', 'gx-member-v1').update(s).digest() : null; };
 export const defaultPw = () => envGet('GX_MEMBER_DEFAULT_PASSWORD') || '';
@@ -24,13 +28,15 @@ export function memberOf(req) {
 }
 async function doc(key) { const r = await db().from('gx_docs').select('data,revision').eq('key', key).maybeSingle(); if (r.error) throw r.error; return { data: (r.data && r.data.data) || {}, revision: r.data ? r.data.revision : null }; }
 /* cari nama lengkap di roster HD / AM (huruf besar-kecil & spasi diabaikan) */
+/* login pakai nickname (mis. "Sita"); nama lengkap juga diterima. Nickname kembar → wajib nama lengkap */
 export async function findMember(name) {
-  const k = nkey(name); if (!k) return null;
-  for (const team of ['HD', 'AM']) { const d = (await doc('team-board-' + team.toLowerCase())).data, R = Array.isArray(d.roster) && d.roster.length ? d.roster.map(x => x.name) : DEF[team];
-    const hit = R.find(n => nkey(n) === k); if (hit) return { name: hit, team }; }
+  const k = nkey(name); if (!k) return null; const R = await rosters();
+  const full = R.find(m => nkey(m.name) === k); if (full) return { name: full.name, team: full.team };
+  const nk = R.filter(m => nkey(m.nick) === k); if (nk.length === 1) return { name: nk[0].name, team: nk[0].team };
+  if (nk.length > 1) return { ambiguous: true };
   return null;
 }
-export async function listMembers() { const out = []; for (const team of ['HD', 'AM']) { const d = (await doc('team-board-' + team.toLowerCase())).data; (Array.isArray(d.roster) && d.roster.length ? d.roster.map(x => x.name) : DEF[team]).forEach(n => out.push({ name: n, team })); } return out; }
+export async function listMembers() { return rosters(); }
 const hashPw = (pw, salt) => scryptSync(String(pw), salt, 32).toString('base64');
 const same = (a, b) => { const x = Buffer.from(String(a)), y = Buffer.from(String(b)); return x.length === y.length && timingSafeEqual(x, y); };
 export async function checkPassword(m, pw) {

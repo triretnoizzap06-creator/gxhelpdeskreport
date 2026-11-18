@@ -125,7 +125,7 @@ Di pengaturan Repeat Complaint (Import data → kartu Repeat Complaint): **Probl
 
 
 ## Login per orang (Dashboard Helpdesk / AM & Virtual Office)
-- Tiap anggota login pakai **nama lengkap** (sesuai daftar 👥 Team) + password. Password awal diisi SPV di **Vercel → Settings → Environment Variables → `GX_MEMBER_DEFAULT_PASSWORD`** (isi dengan password awal yang sudah kamu tentukan), lalu **Redeploy**. Password ini tidak ditulis di kode/ZIP.
+- Tiap anggota login pakai **nickname** (sesuai daftar 👥 Team, mis. Sita / Bagas; nama lengkap juga bisa) + password. Kalau ada nickname kembar, pakai nama lengkap. Password awal diisi SPV di **Vercel → Settings → Environment Variables → `GX_MEMBER_DEFAULT_PASSWORD`** (isi dengan password awal yang sudah kamu tentukan), lalu **Redeploy**. Password ini tidak ditulis di kode/ZIP.
 - Login pertama kali → muncul "Ganti password awal". Ganti kapan saja lewat tombol **🔑 Password**. Password baru disimpan sebagai hash (scrypt) di Supabase `gx_docs` `member-auth`.
 - Lupa password → SPV (login SPV) buka **👥 Team → Reset password** → kembali ke password awal.
 - Setelah login: task/notes tercatat atas nama orang itu, status ☕ Break / 📅 Meeting hanya bisa diubah pemiliknya, dan **desk hanya bisa dikustom pemiliknya** (SPV & password tim tetap bisa semua).

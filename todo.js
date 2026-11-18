@@ -123,7 +123,7 @@ export default async function handler(req, res) {
       const b = await readJson(req), op = str(b.op, 20), now = new Date().toISOString();
       const nm = v => str(v, 60).replace(/\s+/g, ' ').trim(), spv = authed(req), mem = memberOf(req);
       if (mem && nm(b.by) !== 'SPV') b.by = mem.name;   // sudah login per orang → tercatat atas nama orang itu (tidak bisa mengaku orang lain)
-      if (op === 'presence' && !(mem && nm(b.by) === mem.name) && !(spv && nm(b.by) === 'SPV')) return json(res, { error: 'member-login-required', detail: 'Login dengan nama lengkapmu dulu untuk set status.' }, 401);
+      if (op === 'presence' && !(mem && nm(b.by) === mem.name) && !(spv && nm(b.by) === 'SPV')) return json(res, { error: 'member-login-required', detail: 'Login pakai nickname-mu dulu untuk set status.' }, 401);
       if (nm(b.by) === 'SPV' && !spv) return json(res, { error: 'spv-login-required', detail: 'Hanya SPV yang bisa menulis sebagai SPV.' }, 401);
       if (op === 'note.seen' && !spv) return json(res, { error: 'spv-login-required' }, 401);
       if (/^roster\./.test(op) && !authed(req) && !teamAuthed(req)) return json(res, { error: 'team-login-required', detail: 'Masukkan password tim untuk mengubah anggota.' }, 401);
@@ -191,7 +191,7 @@ export default async function handler(req, res) {
       if (req.method === 'GET') { const r = await read(); return json(res, { desk: r.data, revision: r.revision, canEdit: can, me: mem ? mem.name : null }); }
       if (req.method !== 'POST') return json(res, { error: 'method' }, 405);
       const b = await readJson(req), op = str(b.op, 20), now = new Date().toISOString(), who = str(b.name, 60).replace(/\s+/g, ' ').trim();
-      if (!can && !(mem && mem.name === who)) return json(res, { error: 'member-login-required', detail: mem ? 'Kamu hanya bisa mengubah desk milikmu sendiri.' : 'Login dengan nama lengkapmu untuk mengubah desk.' }, 401);
+      if (!can && !(mem && mem.name === who)) return json(res, { error: 'member-login-required', detail: mem ? 'Kamu hanya bisa mengubah desk milikmu sendiri.' : 'Login pakai nickname-mu untuk mengubah desk.' }, 401);
       if (!who) return json(res, { error: 'invalid', detail: 'Nama wajib.' }, 400);
       if (who === 'SPV' && !authed(req)) return json(res, { error: 'spv-login-required', detail: 'Desk SPV hanya bisa diubah SPV.' }, 401);
       for (let t = 0; t < 6; t++) {

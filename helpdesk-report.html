@@ -17,6 +17,7 @@ html.viewonly .viewtag{display:inline-flex}
 html.viewonly .main{grid-template-columns:minmax(0,1fr)}
 html.viewonly #dashBtn,html.viewonly #side,html.viewonly #tools,html.viewonly #notice,html.viewonly #period,html.viewonly #pFrom,html.viewonly #pTo,html.viewonly .dmy,html.viewonly #histBtn,html.viewonly #printBtn,html.viewonly #hbBack,html.viewonly .seg,html.viewonly .mseg{display:none!important}
 html.viewonly .hist-banner em{display:none}
+.hist-load{position:fixed;left:50%;top:18px;transform:translate(-50%,-30px);opacity:0;z-index:300;background:#1D1D1F;color:#fff;font-size:13px;font-weight:600;padding:10px 16px;border-radius:999px;display:flex;gap:10px;align-items:center;transition:.2s;pointer-events:none}.hist-load.on{opacity:1;transform:translate(-50%,0)}.hl-sp{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#F5C518;animation:hlsp .8s linear infinite}@keyframes hlsp{to{transform:rotate(360deg)}}
 </style>
 
 <script>(function(){try{var m=localStorage.getItem("gx-theme");if(m==="dark"||m==="light")document.documentElement.setAttribute("data-theme",m)}catch(e){}})()</script>
@@ -2567,7 +2568,7 @@ function syncInit(){
       if(r.status===401){h.textContent='Password salah.';return}if(!r.ok){h.textContent='Online belum aktif ('+(j.error||r.status)+').';return}
       lss(SY.kKey,k);SY.reason='';lss(SY.kAuto,$('#syncAuto').checked?'1':'0');h.textContent='Menyimpan…';await syPublish(true);h.textContent=SY.state==='ok'?'Tersimpan online. Semua yang membuka link melihat data ini.':SY.msg}catch(e){h.textContent='Tidak bisa terhubung ke server: '+e.message}};
   syPill();
-  if(location.protocol.startsWith('http')){syFetch(SY.api+'?meta=1',{cache:'no-store'}).then(r=>r.json()).then(j=>{if(typeof j.open==='boolean'){SY.open=j.open;SY.avail=true;SY.reason=!j.open&&!syKey()?'need-key':''}}).catch(()=>{}).finally(()=>syPull().then(()=>{SY.ready=true;syPill();if(syOwner()&&syIsDirty()&&syAuto())syPublish()}));setInterval(syMeta,20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)syMeta()})}
+  if(location.protocol.startsWith('http')){syFetch(SY.api+'?meta=1',{cache:'no-store'}).then(r=>r.json()).then(j=>{if(typeof j.open==='boolean'){SY.open=j.open;SY.avail=true;SY.reason=!j.open&&!syKey()?'need-key':''}}).catch(()=>{}).finally(()=>(new URLSearchParams(location.search).get('snap')?Promise.resolve():syPull()).then(()=>{SY.ready=true;syPill();if(syOwner()&&syIsDirty()&&syAuto())syPublish()}));setInterval(syMeta,20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)syMeta()})}
   else{SY.avail=false;SY.ready=true;syPill()}
 }
 /* ---------- Report history (online bila aktif, kalau tidak di browser ini) ---------- */
@@ -2585,10 +2586,17 @@ async function histSave(title,auto){if(!anyData()||VIEWING)return {ok:false,msg:
   await idbPut('hist:'+id,p);L.unshift({id,at:p.at,title,auto:!!auto,local:1});L.slice(30).forEach(x=>idbPut('hist:'+x.id,null));hlSet(L);
   return {ok:true,online:false,msg:'Saved in this browser: '+title}}
 async function histItems(){let on=[];if(SY.avail){try{const r=await syFetch(SY.api+'?history=1',{cache:'no-store'});if(r.ok){const j=await r.json();on=(j.items||[]).map(x=>({...x,local:0}))}}catch(e){}}return [...on,...hlGet()].sort((a,b)=>b.at-a.at)}
-async function histLoad(it){if(it.local)return await idbGet('hist:'+it.id);const r=await syFetch(SY.api+'?snap='+encodeURIComponent(it.id),{cache:'no-store'});if(!r.ok)return null;return JSON.parse(await gunzip(new Uint8Array(await r.arrayBuffer())))}
+/* snapshot tidak berubah → simpan di memori + IndexedDB supaya dibuka lagi instan (maks. 12 snapshot terakhir) */
+const SNAPMEM=new Map();
+async function histLoad(it){if(it.local)return await idbGet('hist:'+it.id);const k='snapc:'+it.id;
+  if(SNAPMEM.has(k))return SNAPMEM.get(k);let p=await idbGet(k);if(p&&p.S){SNAPMEM.set(k,p);return p}
+  const r=await syFetch(SY.api+'?snap='+encodeURIComponent(it.id));if(!r.ok)return null;p=JSON.parse(await gunzip(new Uint8Array(await r.arrayBuffer())));SNAPMEM.set(k,p);
+  try{await idbPut(k,p);let L=JSON.parse(lsg('gxcs-snapc')||'[]').filter(x=>x!==it.id);L.unshift(it.id);L.slice(12).forEach(x=>idbPut('snapc:'+x,null));lss('gxcs-snapc',JSON.stringify(L.slice(0,12)))}catch(e){}
+  return p}
+function histBusy(on,txt){let o=document.getElementById('histLoad');if(!o){o=document.createElement('div');o.id='histLoad';o.className='hist-load';document.body.appendChild(o)}o.innerHTML='<span class="hl-sp"></span>'+(txt||'Opening history…');o.classList.toggle('on',!!on)}
 let HBK=null;
 function histApplyMem(p){S={...DEF_S(),...p.S,rc:{...DEF_RC,...(p.S.rc||{})},period:{...DEF_S().period,...(p.S.period||{})},cur:S.cur};for(const k of ['cs','vip','rc'])DS[k]=p.DS&&p.DS[k]||null;UNDO.length=0;REDO.length=0;syncPeriod();refresh(0)}
-async function histOpen(it){const p=await histLoad(it);if(!p||!p.S){$('#histMsg').textContent='This snapshot could not be opened.';return}
+async function histOpen(it){histBusy(true);let p;try{p=await histLoad(it)}finally{histBusy(false)}if(!p||!p.S){$('#histMsg').textContent='This snapshot could not be opened.';return}
   if(!VIEWING)HBK={S:JSON.parse(JSON.stringify(S)),DS:{...DS}};VIEWING=true;histApplyMem(p);HBK.item=it;HBK.p=p;
   $('#hbTitle').textContent=it.title;$('#hbAt').textContent=hhmm(it.at);$('#histBanner').classList.remove('hidden');document.body.classList.add('viewing-hist');closeModal('histModal')}
 function histBack(){if(!VIEWING)return;VIEWING=false;S=HBK.S;for(const k of ['cs','vip','rc'])DS[k]=HBK.DS[k];HBK=null;$('#histBanner').classList.add('hidden');document.body.classList.remove('viewing-hist');UNDO.length=0;REDO.length=0;syncPeriod();refresh(0);SIG=sigS()}
@@ -2607,7 +2615,7 @@ async function renderHist(){const el=$('#histList');el.innerHTML='<div class="su
 function histInit(){$('#histBtn').onclick=()=>{$('#histName').value=curTitle();$('#histMsg').textContent=VIEWING?'Viewing a snapshot — go back to the latest data to save.':'';openModal('histModal');renderHist()};
   $('#histSave').onclick=async()=>{$('#histMsg').textContent='Saving…';const r=await histSave($('#histName').value,false);$('#histMsg').textContent=r.msg;renderHist()};
   $('#hbBack').onclick=histBack;$('#hbRestore').onclick=histRestore}
-(async()=>{for(const k of ['cs','vip','rc']){const d=await idbGet(k);if(d&&d.headers&&d.rows){d.map=d.map||{};let ch=0;if(k!=='rc'){const ren=mergeDateTime(d);for(const x in d.map)if(ren[d.map[x]]){d.map[x]=ren[d.map[x]];ch=1}if(Object.keys(ren).length)ch=1}const f=detect(d.headers,FIELDS_OF(k),d.rows);if(k!=='rc'&&f.inv&&d.map.inv!==f.inv){const j=d.headers.indexOf(d.map.inv);if(j<0||!d.rows.slice(0,5000).some(r=>isOutcomeVal(r[j]))){d.map.inv=f.inv;ch=1}}if(k==='rc'){if(d.map.uid&&!d.map.uidManual&&isMailCol(d.headers,d.rows,d.map.uid)){d.map.uid='';ch=1}if(fixRcUid(d.headers,d.rows,d.map))ch=1;if(!d.map.product){fixRcProduct(d.headers,d.rows,d.map);if(d.map.product)ch=1}if(!d.map.pkgx&&fixRcPkgExtra(d.headers,d.rows,d.map))ch=1}for(const x in f)if(!d.map[x]&&f[x]&&!(x==='uid'&&d.map.uidManual)&&!Object.values(d.map).includes(f[x])){d.map[x]=f[x];ch=1}if(ch)idbPut(k,d);DS[k]=d}}syncPeriod();refresh(0);SIG=sigS();syncInit();histInit()})();
+(async()=>{for(const k of (new URLSearchParams(location.search).get('snap')?[]:['cs','vip','rc'])){const d=await idbGet(k);   /* link snapshot: data lokal tidak perlu dimuat */if(d&&d.headers&&d.rows){d.map=d.map||{};let ch=0;if(k!=='rc'){const ren=mergeDateTime(d);for(const x in d.map)if(ren[d.map[x]]){d.map[x]=ren[d.map[x]];ch=1}if(Object.keys(ren).length)ch=1}const f=detect(d.headers,FIELDS_OF(k),d.rows);if(k!=='rc'&&f.inv&&d.map.inv!==f.inv){const j=d.headers.indexOf(d.map.inv);if(j<0||!d.rows.slice(0,5000).some(r=>isOutcomeVal(r[j]))){d.map.inv=f.inv;ch=1}}if(k==='rc'){if(d.map.uid&&!d.map.uidManual&&isMailCol(d.headers,d.rows,d.map.uid)){d.map.uid='';ch=1}if(fixRcUid(d.headers,d.rows,d.map))ch=1;if(!d.map.product){fixRcProduct(d.headers,d.rows,d.map);if(d.map.product)ch=1}if(!d.map.pkgx&&fixRcPkgExtra(d.headers,d.rows,d.map))ch=1}for(const x in f)if(!d.map[x]&&f[x]&&!(x==='uid'&&d.map.uidManual)&&!Object.values(d.map).includes(f[x])){d.map[x]=f[x];ch=1}if(ch)idbPut(k,d);DS[k]=d}}syncPeriod();refresh(0);SIG=sigS();syncInit();histInit()})();
 </script>
 <script>
 /* mode viewer: blokir semua penyimpanan dari halaman ini + tombol salin link viewer */
@@ -2654,9 +2662,11 @@ function histInit(){$('#histBtn').onclick=()=>{$('#histName').value=curTitle();$
   if(typeof ordered==='function'){const o=ordered;ordered=function(){return o().filter(isOn)}}
   const id=q.get('snap');if(!id)return;
   document.documentElement.classList.add('snapview');
-  let tries=0;const go=async()=>{tries++;if(typeof SY==='undefined'||SY.avail==null||SY.loading||SY.busy){if(tries<60)return setTimeout(go,250)}
-    try{const items=await histItems();const it=items.find(x=>String(x.id)===id)||{id,title:'History',at:Date.now()};await histOpen(it)}catch(e){console.error(e)}};
-  setTimeout(go,600);
+  /* langsung buka snapshot (tanpa menunggu data terbaru & daftar riwayat) — judul menyusul dari daftar */
+  let tries=0;const go=async()=>{tries++;if(typeof SY==='undefined'||!SY.api||typeof histOpen!=='function'){if(tries<80)return setTimeout(go,100)}
+    try{const it={id,title:'History',at:Date.now()};const lp=syFetch(SY.api+'?history=1',{cache:'no-store'}).then(r=>r.json()).then(j=>[...(j.items||[]),...hlGet()]).then(items=>{const x=items.find(y=>String(y.id)===id);if(x){it.title=x.title;it.at=x.at;const t=document.getElementById('hbTitle'),a=document.getElementById('hbAt');if(t)t.textContent=x.title;if(a)a.textContent=hhmm(x.at)}}).catch(()=>{});
+      await histOpen(it);await lp}catch(e){console.error(e)}};
+  go();
 })();
 </script>
 </body>

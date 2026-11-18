@@ -270,7 +270,7 @@ function md(src) {
   close(); return out.join('');
 }
 /* ================= Notion → Knowledge Base (isi otomatis ikut Notion) ================= */
-const NT = { on: false, configured: false, pages: {}, root: '', syncedAt: null, remaining: 0, blk: {}, busy: false, msg: '' };
+const NT = { hits: new Map(), hq: '', on: false, configured: false, pages: {}, root: '', syncedAt: null, remaining: 0, blk: {}, busy: false, msg: '' };
 const nid = u => { const s = String(u || ''), m = s.match(/([0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12})(?:[?#][^\/]*)?$/i); return m ? m[1].replace(/-/g, '').toLowerCase() : ''; };
 let NTMID = new Map();
 function sectionOf(id) { let x = id, n = 0; while (x && NT.pages[x] && NT.pages[x].p !== NT.root && n++ < 12) x = NT.pages[x].p; return NT.pages[x] && NT.pages[x].p === NT.root ? x : ''; }
@@ -285,7 +285,7 @@ const ago = t => { if (!t) return 'belum pernah'; const m = Math.round((Date.now
 const fdate = t => t ? new Date(t).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
 function drawNbar() {
   const el = $('#nbar'); if (!el) return;
-  if (!NT.configured) { el.innerHTML = KB.canEdit ? '<div class="nbar off">🔌 <span><b>Sinkronisasi materi belum aktif</b> (khusus SPV): tambahkan <code>NOTION_TOKEN</code> di Vercel lalu Redeploy — langkahnya ada di README.</span></div>' : ''; return; }
+  if (!NT.configured) { el.innerHTML = KB.canEdit ? '<div class="nbar off">🔌 <span><b>Sinkronisasi materi belum aktif</b> (khusus SPV): link Notion (<code>NOTION_PUBLIC_URL</code>) tidak valid — cek README.</span></div>' : ''; return; }
   el.innerHTML = `<div class="nbar"><button class="syncb${NT.busy ? ' spin' : ''}" data-nsync ${NT.busy ? 'disabled' : ''} title="Ambil update materi terbaru"><span class="si">⟳</span>${NT.busy ? 'Menyinkronkan…' : 'Sinkronkan'}</button><span class="ns">${NT.busy ? (NT.remaining ? NT.remaining + ' halaman lagi' : 'mengambil update…') : 'Terakhir disinkronkan ' + ago(NT.syncedAt)}</span></div>`;
 }
 async function runSync(auto, full) {
@@ -306,6 +306,7 @@ async function notionPage(id) {
 /* rich text Notion → HTML aman (semua teks di-escape, link hanya http/https atau halaman KB) */
 function rt(r) {
   return (r || []).map(([t, f = '', h = '']) => {
+    if (!t && String(h).startsWith('notion:')) t = (NT.pages[h.slice(7)] || {}).t || 'Halaman';   // mention halaman
     let s = esc(t).replace(/\n/g, '<br>');
     if (f.includes('c')) s = `<code>${s}</code>`; if (f.includes('b')) s = `<b>${s}</b>`; if (f.includes('i')) s = `<i>${s}</i>`; if (f.includes('s')) s = `<s>${s}</s>`; if (f.includes('u')) s = `<u>${s}</u>`;
     if (h) { const k = h.startsWith('notion:') ? h.slice(7) : (/notion\.(so|site|com)|^\//.test(h) ? nid(h.split('#')[0]) : ''), mid = k && NTMID.get(k);
@@ -361,9 +362,10 @@ document.addEventListener('click', e => { const t = e.target.closest('[data-toc]
 
 const plain = s => String(s || '').replace(/^@embed\s+\S+\s*\|?\s*/gim, '').replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g, '$1').replace(/\*\*/g, '');
 const bodyTxt = x => x.notion && NT.pages[x.notion] ? NT.pages[x.notion].x || '' : plain(x.body);
-function match(x, ql) { return !ql || [x.title, x.summary, bodyTxt(x), CATNAME[x.cat], ...(x.quiz || []).map(q => q.q)].join(' ').toLowerCase().includes(ql); }
+function match(x, ql) { if (ql && x.notion && NT.hits.has(x.notion)) return true; return !ql || [x.title, x.summary, bodyTxt(x), CATNAME[x.cat], ...(x.quiz || []).map(q => q.q)].join(' ').toLowerCase().includes(ql); }
 function snippet(x, q) {
   if (!q) return esc(x.summary || '');
+  if (x.notion && NT.hits.has(x.notion) && !(x.title + ' ' + (x.summary || '')).toLowerCase().includes(q.toLowerCase())) return hl(NT.hits.get(x.notion), q.split(/\s+/)[0]);
   const t = bodyTxt(x).replace(/\n/g, ' '), i = t.toLowerCase().indexOf(q.toLowerCase());
   if ((x.summary || '').toLowerCase().includes(q.toLowerCase()) || i < 0) return hl(x.summary || '', q);
   const s = Math.max(0, i - 60); return (s ? '…' : '') + hl(t.slice(s, i + 110), q) + '…';
@@ -603,7 +605,12 @@ function catEdit(kind, k) {
   KB.data.cats = C; applyCats(); if (KB.filter === k) KB.filter = '*'; renderHome(); save();
 }
 /* ---------- events ---------- */
-$('#q').addEventListener('input', renderHome);
+/* cari di isi lengkap semua halaman (server) — hasil digabung dengan pencarian lokal */
+let sqT = null;
+$('#q').addEventListener('input', () => { renderHome(); clearTimeout(sqT); const q = $('#q').value.trim();
+  if (!NT.on || q.length < 2) { NT.hits = new Map(); return; }
+  sqT = setTimeout(async () => { try { const r = await fetch('/api/todo?kb=search&q=' + encodeURIComponent(q), { cache: 'no-store' }); const j = await r.json();
+    if ($('#q').value.trim() !== q) return; NT.hits = new Map((j.hits || []).map(h => [h.id, h.snip])); renderHome(); } catch (e) {} }, 250); });
 $('#chips').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (b) { KB.filter = b.dataset.f; history.replaceState(null, '', b.dataset.f === '*' ? location.pathname : '#' + (b.dataset.f === 'helpdesk' ? 'hd' : b.dataset.f)); renderHome(); } });
 $('#edBtn').onclick = () => { KB.edit = !KB.edit; renderHome(); };
 $('#loginBtn').onclick = loginModal;

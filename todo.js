@@ -15,8 +15,8 @@
 //          assignee / to = 'SPV' → task review / catatan untuk SPV · reply & note.seen hanya SPV
 //   GET/POST /api/todo?desk=HD|AM  → desk per orang: foto, tagline, template message (POST: password tim / SPV)
 //   GET    /api/todo?kb=notion          → daftar halaman Knowledge Base hasil sinkron Notion (publik)
-//   GET    /api/todo?kb=page&id=…       → isi 1 halaman · GET ?kb=img&b=<blockId> → redirect ke file Notion terbaru
-//   POST   /api/todo?kb=sync[&full=1]   → sinkron dari Notion (tim / SPV) · &auto=1 publik, hanya jika data > 3 jam
+//   GET    /api/todo?kb=page&id=…       → isi 1 halaman · GET ?kb=search&q=… → cari di judul + isi semua halaman
+//   POST   /api/todo?kb=sync[&full=1]   → crawl ulang halaman Notion publik (tanpa token; tim / SPV) · &auto=1 publik, hanya jika cache > 3 jam
 // Tim (tanpa login, hanya task yang di-assign ke timnya):
 //   GET    /api/todo?team=HD|AM             → { tasks }
 //   PATCH  /api/todo?id=…&team=HD  { status, team_note, team_by }
@@ -24,7 +24,7 @@ import { randomUUID } from 'node:crypto';
 import { AppError, configured, db, dbError } from './_store.js';
 import { authed, teamAuthed } from './_auth.js';
 import { memberOf, DEF as MDEF } from './_members.js';
-import { syncStep, freshFileUrl, notionConfigured, ROOT, clean as nclean } from './_notion.js';
+import { syncStep, searchPages, notionConfigured, ROOT, SOURCE, clean as nclean } from './_notion.js';
 
 const STATUS = ['NOT STARTED', 'PLAN', 'IN PROGRESS', 'DONE'];
 const PRIO = ['High', 'Medium', 'Low'];
@@ -161,22 +161,20 @@ export default async function handler(req, res) {
     if (q.get('kb') != null) {
       const mode = q.get('kb'), KEY = 'kb-notion';
       const read = async () => { const row = must(await db().from('gx_docs').select('data,revision').eq('key', KEY).maybeSingle()); return { D: (row && row.data) || {}, rev: row ? row.revision : null }; };
-      if (mode === 'img') { if (!notionConfigured()) return json(res, { error: 'not-configured' }, 404);
-        try { const u = await freshFileUrl(String(q.get('b') || '').slice(0, 40)); if (!/^https:\/\//.test(u || '')) return json(res, { error: 'not-found' }, 404);
-          res.statusCode = 302; res.setHeader('location', u); res.setHeader('cache-control', 'public, max-age=1500'); return res.end(); } catch (e) { return json(res, { error: 'not-found' }, 404); } }
+      if (mode === 'search') { const { D } = await read(); return json(res, { hits: searchPages(D, String(q.get('q') || '').slice(0, 120)) }); }
       if (mode === 'page') { const { D } = await read(), pg = (D.pages || {})[nclean(q.get('id'))]; return pg ? json(res, { page: pg }) : json(res, { error: 'not-found' }, 404); }
       if (mode === 'notion') { const { D } = await read(), P = D.pages || {};
-        return json(res, { configured: notionConfigured(), root: D.root || ROOT(), syncedAt: D.syncedAt || null, remaining: (D.pending || []).length,
+        return json(res, { configured: notionConfigured(), source: SOURCE(), root: D.root || ROOT(), syncedAt: D.syncedAt || null, remaining: (D.queue || []).length,
           pages: Object.fromEntries(Object.entries(P).map(([id, p]) => [id, { t: p.t, i: p.i, p: p.p, o: p.o || [], e: p.e, u: p.u, x: String(p.x || '').slice(0, 1500), n: (p.b || []).filter(b => b.t !== 'page' && !(b.t === 'p' && !(b.r || []).length)).length }])) }); }
       if (mode === 'sync') {
-        if (!notionConfigured()) return json(res, { error: 'not-configured', detail: 'NOTION_TOKEN belum di-set di Vercel (lihat README).' }, 400);
+        if (!notionConfigured()) return json(res, { error: 'not-configured', detail: 'Link Notion (NOTION_PUBLIC_URL) tidak valid.' }, 400);
         const auto = q.get('auto') === '1', can = authed(req) || teamAuthed(req);
         let { D, rev } = await read();
         if (!can) { if (!auto) return json(res, { error: 'team-login-required' }, 401);
-          const age = D.syncedAt ? Date.now() - Date.parse(D.syncedAt) : Infinity; if (age < 3 * 3600e3 && !(D.pending || []).length) return json(res, { done: true, skipped: true, syncedAt: D.syncedAt }); }
+          const age = D.syncedAt ? Date.now() - Date.parse(D.syncedAt) : Infinity; if (age < 3 * 3600e3 && !(D.queue || []).length) return json(res, { done: true, skipped: true, syncedAt: D.syncedAt }); }
         try { const st = await syncStep(D, { full: q.get('full') === '1' && can });
           const r = must(await db().rpc('gx_doc_save', { p_key: KEY, p_data: D, p_revision: rev }));
-          if (r && r.conflict) return json(res, { done: false, busy: true, remaining: (D.pending || []).length });
+          if (r && r.conflict) return json(res, { done: false, busy: true, remaining: (D.queue || []).length });
           return json(res, { ...st, syncedAt: D.syncedAt || null });
         } catch (e) { return json(res, { error: e.code || 'notion-error', detail: e.message }, e.status === 401 ? 400 : 502); }
       }

@@ -133,14 +133,20 @@ Di pengaturan Repeat Complaint (Import data → kartu Repeat Complaint): **Probl
 - Desk → **🎨 Customize**: warna meja (oak/walnut/white/black/pink), warna kursi, layar (2 monitor / 1 monitor / laptop), dan barang di meja (kopi, tanaman, buku, piala, bebek karet, dll).
 - Kalau `GX_MEMBER_DEFAULT_PASSWORD` belum diisi, dashboard tetap jalan seperti sebelumnya (pilih nama di "I am").
 
-## Knowledge Base ⟳ Sinkronkan (isi otomatis dari Notion)
-1. Buka https://www.notion.so/my-integrations → **New integration** → tipe *Internal*, workspace GlobalXtreme → Capabilities cukup **Read content** → simpan, salin **Internal Integration Secret**.
-2. Vercel → Environment Variables → `NOTION_TOKEN` = secret tadi → **Redeploy**. (Opsional `NOTION_ROOT_PAGE` kalau halaman induknya bukan "Customer Service Division Information - GlobalXtreme".)
-3. Di Notion buka halaman **Customer Service Division Information - GlobalXtreme** → `•••` → **Connections** → tambahkan integration tadi (sub-halaman ikut otomatis).
-4. Buka Knowledge Base → klik **⟳ Sinkronkan**. Setelah itu KB otomatis ambil update tiap dibuka (maks. 3 jam sekali), dan tombol ⟳ Sinkronkan bisa diklik kapan saja (login SPV / password tim).
-- Materi yang sumbernya halaman Notion menampilkan isi terbaru (judul, poin, checklist, toggle, callout, tabel, kolom, gambar, video, embed seperti Figma Site / Google Docs). Halaman baru di Notion otomatis muncul jadi materi baru. Daftar isi otomatis di samping.
-- SPV tetap bisa ubah judul, kategori, ringkasan, dan soal quiz per materi (✎ Edit). Isi materi diubah di Notion.
-- Gambar dari Notion dibuka lewat server (`/api/todo?kb=img`) supaya link-nya tidak kedaluwarsa. Token Notion hanya ada di server.
+## Knowledge Base ⟳ Sinkronkan (dari halaman Notion publik — tanpa token)
+- Sumber: halaman Notion yang sudah **Publish to web** — https://melon-lime-e28.notion.site/Customer-Service-Division-Information-GlobalXtreme-47b6a98d6f6347c5893df56334d34b25 (bisa diganti dengan env opsional `NOTION_PUBLIC_URL`). **Tidak perlu NOTION_TOKEN / integration.**
+- Server membaca halaman publik + semua sub-halaman (judul, poin, checklist, toggle, callout, tabel, database, kolom, gambar, video, embed seperti Figma Site / Google Docs, dan semua link), lalu menyimpannya sebagai cache di Supabase `gx_docs` `kb-notion`.
+- **Cache & refresh:** KB otomatis mengambil update saat dibuka (maks. 3 jam sekali). Tombol **⟳ Sinkronkan** untuk refresh manual (login SPV / password tim). Hanya halaman yang berubah yang diambil ulang. Halaman yang dihapus / tidak dipublikasikan lagi ikut hilang dari KB.
+- **Pencarian:** kotak cari di KB mencari judul **dan isi lengkap** semua halaman (`/api/todo?kb=search&q=…`).
+- Halaman baru di Notion otomatis jadi materi baru. SPV tetap bisa ubah judul, kategori, ringkasan & soal quiz per materi (✎ Edit); isi materi diubah di Notion.
+- Catatan: pembacaan memakai endpoint yang sama dengan website notion.site (bukan API resmi). Kalau suatu saat Notion mengubahnya dan sinkron gagal, KB tetap menampilkan cache terakhir.
+
+## Virtual Office 3D
+- Default tampil **3D 360°**: drag untuk memutar, Ctrl + scroll / pinch untuk zoom, tombol ⟲ ⟳ untuk putar 45°, panah untuk geser, **🌀 Vibe mode** untuk auto-rotate, **📍 Me** untuk fokus ke avatarmu. Tombol **🗺 2D** untuk kembali ke tampilan isometrik (pilihan tersimpan per browser). Kalau perangkat tidak mendukung 3D (WebGL), otomatis 2D.
+- 3D memakai three.js dari CDN (cdnjs / jsdelivr).
+
+## Helpdesk Report — History lebih cepat
+- Link snapshot (`?view=1&snap=…`) langsung membuka snapshot tanpa mengunduh data terbaru dulu. Snapshot di-cache di browser (12 terakhir) dan di CDN Vercel, jadi dibuka kedua kalinya hampir instan.
 
 ## Quiz — Bank soal & refresh
 - Quiz → (login SPV) **📝 Bank soal**: pilih set, cari, **✎ edit**, **🗑 hapus**, **+ Soal baru** (bisa untuk halaman Notion baru yang belum punya soal). Tersimpan di Knowledge Base, langsung dipakai latihan & sesi live baru.

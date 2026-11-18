@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       if (!configured()) return json(res, { error: 'storage-not-configured', detail: 'SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY belum diisi di Vercel.' }, 501);
       if (q.has('meta')) return json(res, { ...(await getMeta()), open: isOpen() });
       if (q.has('history')) return json(res, { items: await listSnapshots(), open: isOpen() });
-      if (q.has('snap')) return bytes(res, await getSnapshot(q.get('snap')));
+      if (q.has('snap')) return bytes(res, await getSnapshot(q.get('snap')), { 'cache-control': 'public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400' });   // snapshot tidak pernah berubah → boleh di-cache CDN & browser
       const l = await getLatest();
       if (!l) return json(res, { error: 'empty', open: isOpen() }, 404);
       return bytes(res, l.body, { 'x-published-at': String(l.at), 'x-import-id': String(l.import_id), 'x-revision': String(l.revision) });

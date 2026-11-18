@@ -8,6 +8,7 @@
 //   SPV (login dashboard):
 //   GET  /api/quiz?list=1                 → daftar sesi + jumlah peserta
 //   POST /api/quiz { create:{ title, set_key, timer_s, questions:[{ q, o, a, e, src }] } } → { code }
+//   POST /api/quiz { refresh:{ code, questions } } → ganti soal sesi (SPV, sebelum ada yang mengerjakan)
 //   POST /api/quiz { close: code } / { reopen: code }
 //   DELETE /api/quiz?code=ABC123          → hapus sesi + hasil
 //   GET  /api/quiz?code=ABC123&joins=1    → daftar peserta + status approval
@@ -148,6 +149,14 @@ export default async function handler(req, res) {
           if (b.allowRetry) { p.token = randomUUID(); p.status = 'rejected'; p.retry = true; }   // token lama hangus; peserta daftar ulang & di-approve lagi
         });
         return json(res, { ok: true });
+      }
+      if (b.refresh) {   // ganti soal sesi dengan bank soal terbaru — hanya selama belum ada yang mengerjakan
+        const c = str(b.refresh.code, 8).toUpperCase(); if (!okCode(c)) return json(res, { error: 'bad-code' }, 400);
+        const questions = cleanQuestions(b.refresh.questions); if (!questions.length) return json(res, { error: 'no-questions', detail: 'Set ini belum punya soal.' }, 400);
+        const done = must(await db().from('gx_quiz_results').select('id').eq('code', c).limit(1)) || [], J = (await getJoin(c)).data;
+        if (done.length || Object.values(J.players || {}).some(p => p.status === 'approved')) return json(res, { error: 'in-progress', detail: 'Sudah ada peserta yang mengerjakan — buat sesi baru untuk soal terbaru.' }, 409);
+        must(await db().from('gx_quiz_sessions').update({ questions }).eq('code', c));
+        return json(res, { ok: true, n: questions.length });
       }
       if (b.close || b.reopen) {
         const c = str(b.close || b.reopen, 8).toUpperCase(); if (!okCode(c)) return json(res, { error: 'bad-code' }, 400);

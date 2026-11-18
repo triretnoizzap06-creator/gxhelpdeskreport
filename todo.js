@@ -14,12 +14,17 @@
 //   POST   /api/todo?board=HD|AM  { op, … } → task/notes tim (publik) · roster.add/roster.del (password tim / SPV)
 //          assignee / to = 'SPV' → task review / catatan untuk SPV · reply & note.seen hanya SPV
 //   GET/POST /api/todo?desk=HD|AM  → desk per orang: foto, tagline, template message (POST: password tim / SPV)
+//   GET    /api/todo?kb=notion          → daftar halaman Knowledge Base hasil sinkron Notion (publik)
+//   GET    /api/todo?kb=page&id=…       → isi 1 halaman · GET ?kb=img&b=<blockId> → redirect ke file Notion terbaru
+//   POST   /api/todo?kb=sync[&full=1]   → sinkron dari Notion (tim / SPV) · &auto=1 publik, hanya jika data > 3 jam
 // Tim (tanpa login, hanya task yang di-assign ke timnya):
 //   GET    /api/todo?team=HD|AM             → { tasks }
 //   PATCH  /api/todo?id=…&team=HD  { status, team_note, team_by }
 import { randomUUID } from 'node:crypto';
 import { AppError, configured, db, dbError } from './_store.js';
 import { authed, teamAuthed } from './_auth.js';
+import { memberOf, DEF as MDEF } from './_members.js';
+import { syncStep, freshFileUrl, notionConfigured, ROOT, clean as nclean } from './_notion.js';
 
 const STATUS = ['NOT STARTED', 'PLAN', 'IN PROGRESS', 'DONE'];
 const PRIO = ['High', 'Medium', 'Low'];
@@ -116,13 +121,17 @@ export default async function handler(req, res) {
       if (req.method === 'GET') { const r = await read(); return json(res, { board: r.data, revision: r.revision, canRoster: authed(req) || teamAuthed(req) }); }
       if (req.method !== 'POST') return json(res, { error: 'method' }, 405);
       const b = await readJson(req), op = str(b.op, 20), now = new Date().toISOString();
-      const nm = v => str(v, 60).replace(/\s+/g, ' ').trim(), spv = authed(req);
+      const nm = v => str(v, 60).replace(/\s+/g, ' ').trim(), spv = authed(req), mem = memberOf(req);
+      if (mem && nm(b.by) !== 'SPV') b.by = mem.name;   // sudah login per orang → tercatat atas nama orang itu (tidak bisa mengaku orang lain)
+      if (op === 'presence' && !(mem && nm(b.by) === mem.name) && !(spv && nm(b.by) === 'SPV')) return json(res, { error: 'member-login-required', detail: 'Login dengan nama lengkapmu dulu untuk set status.' }, 401);
       if (nm(b.by) === 'SPV' && !spv) return json(res, { error: 'spv-login-required', detail: 'Hanya SPV yang bisa menulis sebagai SPV.' }, 401);
       if (op === 'note.seen' && !spv) return json(res, { error: 'spv-login-required' }, 401);
       if (/^roster\./.test(op) && !authed(req) && !teamAuthed(req)) return json(res, { error: 'team-login-required', detail: 'Masukkan password tim untuk mengubah anggota.' }, 401);
       for (let t = 0; t < 6; t++) {
         const cur = await read(), D = cur.data;
-        if (!D.roster) D.roster = Array.isArray(b.defaultRoster) ? b.defaultRoster.slice(0, 40).map(x => ({ name: nm(x && x.name), nick: nm(x && x.nick) })).filter(x => x.name) : [];
+        /* roster bawaan baru disimpan saat anggota diubah — operasi lain (task, notes, status) tidak boleh mengosongkan roster */
+        if (!D.roster && /^roster\./.test(op)) { const dr = Array.isArray(b.defaultRoster) ? b.defaultRoster.slice(0, 40).map(x => ({ name: nm(x && x.name), nick: nm(x && x.nick) })).filter(x => x.name) : [];
+          D.roster = dr.length ? dr : (MDEF[team] || []).map(name => ({ name, nick: name.split(' ')[0] })); }
         let err = null;
         if (op === 'roster.add') { const name = nm(b.name), nick = nm(b.nick) || name.split(' ')[0]; if (name.length < 2) err = 'Nama minimal 2 huruf.'; else if (D.roster.some(x => x.name.toLowerCase() === name.toLowerCase())) err = 'Nama sudah ada.'; else D.roster.push({ name, nick }); }
         else if (op === 'roster.del') { const name = nm(b.name); D.roster = D.roster.filter(x => x.name !== name); }
@@ -148,17 +157,43 @@ export default async function handler(req, res) {
       }
       return json(res, { error: 'busy', detail: 'Server sibuk, coba lagi.' }, 503);
     }
+    /* ---------- Knowledge Base ← Notion ---------- */
+    if (q.get('kb') != null) {
+      const mode = q.get('kb'), KEY = 'kb-notion';
+      const read = async () => { const row = must(await db().from('gx_docs').select('data,revision').eq('key', KEY).maybeSingle()); return { D: (row && row.data) || {}, rev: row ? row.revision : null }; };
+      if (mode === 'img') { if (!notionConfigured()) return json(res, { error: 'not-configured' }, 404);
+        try { const u = await freshFileUrl(String(q.get('b') || '').slice(0, 40)); if (!/^https:\/\//.test(u || '')) return json(res, { error: 'not-found' }, 404);
+          res.statusCode = 302; res.setHeader('location', u); res.setHeader('cache-control', 'public, max-age=1500'); return res.end(); } catch (e) { return json(res, { error: 'not-found' }, 404); } }
+      if (mode === 'page') { const { D } = await read(), pg = (D.pages || {})[nclean(q.get('id'))]; return pg ? json(res, { page: pg }) : json(res, { error: 'not-found' }, 404); }
+      if (mode === 'notion') { const { D } = await read(), P = D.pages || {};
+        return json(res, { configured: notionConfigured(), root: D.root || ROOT(), syncedAt: D.syncedAt || null, remaining: (D.pending || []).length,
+          pages: Object.fromEntries(Object.entries(P).map(([id, p]) => [id, { t: p.t, i: p.i, p: p.p, o: p.o || [], e: p.e, u: p.u, x: String(p.x || '').slice(0, 1500), n: (p.b || []).filter(b => b.t !== 'page' && !(b.t === 'p' && !(b.r || []).length)).length }])) }); }
+      if (mode === 'sync') {
+        if (!notionConfigured()) return json(res, { error: 'not-configured', detail: 'NOTION_TOKEN belum di-set di Vercel (lihat README).' }, 400);
+        const auto = q.get('auto') === '1', can = authed(req) || teamAuthed(req);
+        let { D, rev } = await read();
+        if (!can) { if (!auto) return json(res, { error: 'team-login-required' }, 401);
+          const age = D.syncedAt ? Date.now() - Date.parse(D.syncedAt) : Infinity; if (age < 3 * 3600e3 && !(D.pending || []).length) return json(res, { done: true, skipped: true, syncedAt: D.syncedAt }); }
+        try { const st = await syncStep(D, { full: q.get('full') === '1' && can });
+          const r = must(await db().rpc('gx_doc_save', { p_key: KEY, p_data: D, p_revision: rev }));
+          if (r && r.conflict) return json(res, { done: false, busy: true, remaining: (D.pending || []).length });
+          return json(res, { ...st, syncedAt: D.syncedAt || null });
+        } catch (e) { return json(res, { error: e.code || 'notion-error', detail: e.message }, e.status === 401 ? 400 : 502); }
+      }
+      return json(res, { error: 'bad-kb' }, 400);
+    }
+
     /* ---------- Desk per orang (foto, tagline, template message) — gx_docs team-desk-hd / team-desk-am
        GET publik (dibaca tim) · POST butuh password tim / SPV. Jangan simpan data customer di template. */
     if (q.get('desk') != null) {
       const team = String(q.get('desk')).toUpperCase(); if (!TEAMS.includes(team)) return json(res, { error: 'bad-team' }, 400);
-      const key = 'team-desk-' + team.toLowerCase(), can = authed(req) || teamAuthed(req);
+      const key = 'team-desk-' + team.toLowerCase(), mem = memberOf(req), can = authed(req) || teamAuthed(req);
       const read = async () => { const row = must(await db().from('gx_docs').select('data,revision').eq('key', key).maybeSingle()); const d = (row && row.data) || {};
         return { data: { desks: d.desks && typeof d.desks === 'object' && !Array.isArray(d.desks) ? d.desks : {} }, revision: row ? row.revision : null }; };
-      if (req.method === 'GET') { const r = await read(); return json(res, { desk: r.data, revision: r.revision, canEdit: can }); }
+      if (req.method === 'GET') { const r = await read(); return json(res, { desk: r.data, revision: r.revision, canEdit: can, me: mem ? mem.name : null }); }
       if (req.method !== 'POST') return json(res, { error: 'method' }, 405);
-      if (!can) return json(res, { error: 'team-login-required', detail: 'Masukkan password tim untuk mengubah desk.' }, 401);
       const b = await readJson(req), op = str(b.op, 20), now = new Date().toISOString(), who = str(b.name, 60).replace(/\s+/g, ' ').trim();
+      if (!can && !(mem && mem.name === who)) return json(res, { error: 'member-login-required', detail: mem ? 'Kamu hanya bisa mengubah desk milikmu sendiri.' : 'Login dengan nama lengkapmu untuk mengubah desk.' }, 401);
       if (!who) return json(res, { error: 'invalid', detail: 'Nama wajib.' }, 400);
       if (who === 'SPV' && !authed(req)) return json(res, { error: 'spv-login-required', detail: 'Desk SPV hanya bisa diubah SPV.' }, 401);
       for (let t = 0; t < 6; t++) {
@@ -167,7 +202,9 @@ export default async function handler(req, res) {
         const tplIn = x => ({ title: str(x.title, 120).trim(), cat: str(x.cat, 40).trim(), text: str(x.text, 4000) });
         if (op === 'photo') { const ph = String(b.photo || ''); if (ph && !/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(ph)) err = 'Format foto tidak valid.'; else if (ph.length > 150000) err = 'Foto terlalu besar.'; else me.photo = ph; }
         else if (op === 'profile') { me.tagline = str(b.tagline, 80); me.emoji = str(b.emoji, 8); me.color = /^#[0-9a-f]{6}$/i.test(b.color || '') ? b.color : (me.color || '');
-          if (Array.isArray(b.props)) me.props = [...new Set(b.props.map(String).filter(x => /^(window|clock|shelf|lamp|coffee|plant|headset|cat|frame|sticky)$/.test(x)))]; }
+          if (Array.isArray(b.props)) me.props = [...new Set(b.props.map(String).filter(x => /^(window|clock|shelf|lamp|coffee|plant|headset|cat|frame|sticky|books|trophy|duck)$/.test(x)))];
+          const pick = (v, re) => re.test(String(v || '')) ? String(v) : undefined; const st = { dk: pick(b.dk, /^(oak|walnut|white|black|pink)$/), ch: pick(b.ch, /^#[0-9a-f]{6}$/i), sc: pick(b.sc, /^(1|2|laptop)$/), sh: pick(b.sh, /^#[0-9a-f]{6}$/i) };
+          for (const k in st) if (st[k] !== undefined) me[k] = st[k]; }
         else if (op === 'tpl.add') { const x = tplIn(b); if (!x.title || !x.text.trim()) err = 'Judul & isi template wajib.'; else if (me.tpls.length >= 200) err = 'Maks. 200 template per orang.'; else me.tpls.unshift({ id: randomUUID(), ...x, at: now, updated_at: now, uses: 0 }); }
         else if (op === 'tpl.upd') { const y = me.tpls.find(z => z.id === b.id); if (!y) err = 'Template tidak ditemukan.'; else { const x = tplIn(b); if (!x.title || !x.text.trim()) err = 'Judul & isi template wajib.'; else Object.assign(y, x, { updated_at: now }); } }
         else if (op === 'tpl.del') me.tpls = me.tpls.filter(z => z.id !== b.id);
@@ -176,7 +213,7 @@ export default async function handler(req, res) {
         if (err) return json(res, { error: 'invalid', detail: err }, 400);
         if (Object.keys(D.desks).length > 60) return json(res, { error: 'invalid', detail: 'Terlalu banyak desk.' }, 400);
         const r = must(await db().rpc('gx_doc_save', { p_key: key, p_data: D, p_revision: cur.revision }));
-        if (!r || !r.conflict) return json(res, { desk: D, revision: r.revision, canEdit: can });
+        if (!r || !r.conflict) return json(res, { desk: D, revision: r.revision, canEdit: can, me: mem ? mem.name : null });
       }
       return json(res, { error: 'busy', detail: 'Server sibuk, coba lagi.' }, 503);
     }

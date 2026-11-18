@@ -102,7 +102,7 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 .cbtn{background:var(--ink);color:#fff;border:0;border-radius:8px;padding:6px 12px;font-weight:700;font-size:12.5px;cursor:pointer}
 .dk .tl:empty{display:none}.dk{padding:0 0 12px!important}.dk::before{display:none}.dk .scene{width:100%;display:block;border-bottom:1px solid var(--line);margin-bottom:6px}.dk .em{z-index:1;background:#fff;border-radius:99px;padding:1px 5px;box-shadow:0 1px 3px rgba(0,0,0,.12)}.dk b,.dk .tl,.dk .st{padding:0 10px}
 .dsk-h .scene{width:300px;max-width:100%;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.10);flex:none}.pv .scene{width:100%;border-radius:12px;border:1px solid var(--line)}.pv{margin:4px 0 12px}
-.props{display:flex;flex-wrap:wrap;gap:6px}.pchip{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-size:12.5px}.pchip input{accent-color:#1D1D1F;margin:0}
+.props{display:flex;flex-wrap:wrap;gap:6px}.pchip{display:inline-flex!important;flex-direction:row!important;align-items:center;gap:5px;cursor:pointer;font-size:12.5px}.pchip input{accent-color:#1D1D1F;margin:0}
 .scene .brth{animation:brth 4.5s ease-in-out infinite}@keyframes brth{50%{transform:translateY(.8px)}}
 .scene .stm{opacity:0;animation:stm 3s ease-in-out infinite}@keyframes stm{0%{opacity:0;transform:translateY(3px)}35%{opacity:.75}100%{opacity:0;transform:translateY(-9px)}}
 .scene .sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 5s ease-in-out infinite}@keyframes sway{50%{transform:rotate(4deg)}}
@@ -114,10 +114,14 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 .scene .spin{animation:spin 60s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
 .dk:hover .scene .typ{animation-duration:1.8s}
 @media (prefers-reduced-motion:reduce){.scene *{animation:none!important}}
-.office{margin-bottom:22px}.ofscroll{overflow-x:auto;border-radius:18px;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,#F8FAFC,#EEF2F7);border:1px solid var(--line)}.ofc{position:relative;touch-action:pan-y;user-select:none;-webkit-user-select:none}.ofc.zoomed{cursor:grab}.ofc.zoomed:active{cursor:grabbing}.ofz{display:inline-flex;gap:6px;align-items:center}.ofz .btn{min-width:38px;padding:6px 10px}.ofz b{font-size:12px;min-width:42px;text-align:center;color:var(--muted)}.ofsvg{display:block;width:100%;height:auto}
+.office{margin-bottom:22px}.ofscroll{overflow-x:auto;border-radius:18px;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,#F8FAFC,#EEF2F7);border:1px solid var(--line)}.ofc{position:relative;touch-action:pan-y;user-select:none;-webkit-user-select:none}.ofscroll{position:relative}.ofpad{position:absolute;right:12px;bottom:12px;display:grid;grid-template-columns:repeat(3,34px);grid-template-rows:repeat(3,34px);gap:3px;z-index:3}
+.ofpad button{border:1px solid var(--line);background:rgba(255,255,255,.92);border-radius:9px;font-size:13px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.08);color:#1D1D1F}.ofpad button:hover{background:#FFF8E1}
+.ofpad [data-pan='0,-1']{grid-area:1/2}.ofpad [data-pan='-1,0']{grid-area:2/1}.ofpad [data-pan='1,0']{grid-area:2/3}.ofpad [data-pan='0,1']{grid-area:3/2}.ofpad .z{font-weight:800;font-size:16px}#ofZin2{grid-area:1/3}#ofZout2{grid-area:3/3}
+.ofc:focus{outline:none}.ofc:focus-visible{outline:2px solid #F5C518;outline-offset:-2px}
+.ofc.zoomed{cursor:grab}.ofc.zoomed:active{cursor:grabbing}.ofz{display:inline-flex;gap:6px;align-items:center}.ofz .btn{min-width:38px;padding:6px 10px}.ofz b{font-size:12px;min-width:42px;text-align:center;color:var(--muted)}.ofsvg{display:block;width:100%;height:auto}
 .ofh{font-size:12px;color:var(--muted);margin:6px 2px 0}.ofl{display:inline-flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}.ofl i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-left:6px}
 .ofbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
-#ofl [data-od]{cursor:pointer}.wkr{cursor:pointer}.wkr .lab{transition:opacity .2s}
+#ofl [data-od]{cursor:pointer}.wkr{cursor:pointer}.wkr.me .lab rect{stroke:#F5C518;stroke-width:2}.wkr .lab{transition:opacity .2s}
 .wkr .lg,.wkr .arm{transform-box:fill-box;transform-origin:50% 0}
 .wkr.walking .l1,.wkr.walking .a2{animation:swing .38s ease-in-out infinite alternate}.wkr.walking .l2,.wkr.walking .a1{animation:swing .38s ease-in-out infinite alternate-reverse}
 @keyframes swing{from{transform:rotate(-24deg)}to{transform:rotate(24deg)}}
@@ -129,6 +133,9 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 .ofsvg .cloud{animation:cloud2 14s ease-in-out infinite alternate}@keyframes cloud2{to{transform:translateX(14px)}}.ofsvg .tw{animation:blink 1.6s steps(1) infinite}
 .ofsteam{animation:stm 2.6s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.ofsvg *{animation:none!important}}
+.acct{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap}.acc{font-size:13.5px;padding:0 4px}.acc small{color:var(--muted)}
+.ostyle{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px}.ostyle>span{font-weight:700;color:var(--muted);margin:0 2px 0 8px}.ostyle>span:first-child{margin-left:0}.ostyle select{width:auto!important}
+.sw input{position:absolute;opacity:0}.sw{position:relative;cursor:pointer}.sw i{display:block;width:24px;height:24px;border-radius:7px;border:2px solid #E5E5EA}.sw input:checked+i{border-color:#1D1D1F;box-shadow:0 0 0 2px #F5C518}.sw input:focus-visible+i{outline:2px solid #3B82F6}
 .hint{font-size:12px;color:var(--muted);margin:2px 0 10px}.tp .tag{font-size:11px;padding:2px 8px}
 @media (max-width:640px){.dgrid{grid-template-columns:repeat(2,1fr)}.dsk-h{margin:-20px -16px 14px}.mdb{padding:20px 16px}}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1D1D1F;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:80;opacity:0;transition:opacity .2s}.toast.on{opacity:1}
@@ -139,9 +146,9 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 <header class="top"><a href="/"><img class="logo" src="wordmark.png" alt="GlobalXtreme"></a><div class="sp"></div><a class="btn" id="switch" href="/dashboard-am"></a><a class="btn" href="/">Home</a></header>
 <main>
   <div class="hero"><div class="ic" id="heroIc">🎧</div><div><h1 id="title"></h1><p id="sub"></p></div>
-    <label class="who">I am: <select id="me"></select><button class="btn" id="teamBtn" type="button" title="Add / remove team members">👥 Team</button></label></div>
+    <label class="who"><span id="whoL">I am:</span> <select id="me"></select><span id="acct" class="acct"></span><button class="btn" id="teamBtn" type="button" title="Add / remove team members">👥 Team</button></label></div>
   <section class="office"><div class="tools-h"><h2>Virtual Office</h2><span class="sp"></span><span class="ofl"><i style="background:#2F9E44"></i>Clear <i style="background:#E8590C"></i>Open tasks <i style="background:#E03131"></i>Overdue <i style="background:#D97706"></i>SPV</span><button class="btn" id="offPause" type="button">⏸ Pause</button></div>
-    <div class="ofbar"><span id="ofPres" class="ofbar" style="margin:0"></span><span class="sp" style="flex:1"></span><span class="ofz"><button class="btn" id="ofZout" type="button" aria-label="Zoom out">−</button><b id="ofZoomL">100%</b><button class="btn" id="ofZin" type="button" aria-label="Zoom in">+</button><button class="btn" id="ofZfit" type="button">Fit</button><button class="btn" id="ofZme" type="button">📍 Me</button></span></div><div class="ofscroll"><div class="ofc" id="ofc"></div></div><p class="ofh">Helpdesk, Account Manager &amp; Supervisor in one office — set ☕ Break or 📅 Meeting and your avatar walks there. Click a desk or person to open their desk · zoom with + / −, Ctrl + scroll or pinch, drag to move around.</p></section>
+    <div class="ofbar"><span id="ofPres" class="ofbar" style="margin:0"></span><span class="sp" style="flex:1"></span><span class="ofz"><button class="btn" id="ofZout" type="button" aria-label="Zoom out">−</button><b id="ofZoomL">100%</b><button class="btn" id="ofZin" type="button" aria-label="Zoom in">+</button><button class="btn" id="ofZfit" type="button">Fit</button><button class="btn" id="ofZme" type="button">📍 Me</button></span></div><div class="ofscroll"><div class="ofc" id="ofc"></div><div class="ofpad" aria-label="Kontrol peta"><button type="button" data-pan="0,-1" aria-label="Geser ke atas">▲</button><button type="button" data-pan="-1,0" aria-label="Geser ke kiri">◀</button><button type="button" data-pan="1,0" aria-label="Geser ke kanan">▶</button><button type="button" data-pan="0,1" aria-label="Geser ke bawah">▼</button><button type="button" class="z" id="ofZin2" aria-label="Zoom in">＋</button><button type="button" class="z" id="ofZout2" aria-label="Zoom out">－</button></div></div><p class="ofh">Helpdesk, Account Manager &amp; Supervisor in one office — set ☕ Break or 📅 Meeting and your avatar walks there. Klik meja/orang untuk buka desk-nya · klik lantai untuk jalan ke sana, atau klik peta lalu pakai tombol panah keyboard · zoom & geser pakai tombol di pojok peta, Ctrl + scroll, pinch, atau drag.</p></section>
   <section class="desks"><div class="tools-h"><h2>Desks</h2><span class="sp"></span><span style="font-size:12px;color:var(--muted)">Each person's own desk — photo, message templates, tasks &amp; notes.</span><button class="btn pri" id="myDesk" type="button">🪑 My desk</button></div><div class="dgrid" id="desks"></div></section>
   <div id="banner"></div>
   <div class="kpis" id="kpis"></div>
@@ -183,6 +190,53 @@ document.title = CFG.title; document.body.classList.toggle('am', TEAM === 'AM');
 $('#title').textContent = CFG.title; $('#sub').textContent = CFG.sub; $('#heroIc').textContent = CFG.icon;
 $('#switch').textContent = TEAM === 'AM' ? '→ Dashboard Helpdesk' : '→ Dashboard AM'; $('#switch').href = TEAM === 'AM' ? '/dashboard-helpdesk' : '/dashboard-am';
 let ME = ''; try { ME = localStorage.getItem('gx-team-me-' + TEAM) || ''; } catch (e) {}
+/* ---------- login per orang (nama lengkap + password) ---------- */
+const AUTH = { mem: null, spv: false, cfg: false, members: [] };
+function needLogin() { if (AUTH.cfg) loginModal(); else { toast('Select your name first (top right)'); $('#me').focus(); } }
+async function loadAuth() { try { const r = await fetch('/api/login', { cache: 'no-store', credentials: 'same-origin' }); const j = await r.json(); AUTH.mem = j.member || null; AUTH.spv = !!j.authed; AUTH.cfg = !!j.membersConfigured; } catch (e) {} applyAuth(); }
+function applyAuth() {
+  if (AUTH.mem) ME = AUTH.mem.name; else if (AUTH.spv) ME = 'SPV'; else if (AUTH.cfg) ME = '';
+  const legacy = !(AUTH.cfg || AUTH.mem || AUTH.spv); $('#me').style.display = legacy ? '' : 'none'; $('#whoL').style.display = legacy ? '' : 'none';
+  $('#acct').innerHTML = AUTH.mem ? `<span class="acc">👤 <b>${esc(nick(ME))}</b>${AUTH.mem.team !== TEAM ? ` <small>· ${AUTH.mem.team === 'AM' ? 'AM' : 'Helpdesk'}</small>` : ''}</span><button class="btn" type="button" data-pwchg>🔑 Password</button><button class="btn" type="button" data-logout>Logout</button>`
+    : AUTH.spv ? '<span class="acc">⭐ <b>Putri Izza (SPV)</b></span>' : AUTH.cfg ? '<button class="btn pri" type="button" data-login>🔐 Login</button>' : '';
+  if (typeof render === 'function') { try { render(); renderDesks(); } catch (e) {} }
+  if (AUTH.mem && AUTH.mem.mustChange && !applyAuth.asked) { applyAuth.asked = 1; setTimeout(() => pwModal(true), 400); }
+}
+async function loginModal() {
+  if (!AUTH.members.length) { try { const r = await fetch('/api/login?members=1', { cache: 'no-store' }); const j = await r.json(); AUTH.members = j.members || []; } catch (e) {} }
+  const el = document.createElement('div'); el.className = 'md'; el.style.zIndex = 70;
+  el.innerHTML = `<form class="mdb" style="max-width:420px"><h3>🔐 Login</h3><p style="margin:-6px 0 14px;color:var(--muted);font-size:13px">Pakai <b>nama lengkap</b> kamu. Belum pernah ganti password? Pakai password awal dari SPV, lalu ganti sendiri.</p>
+    <div class="f"><label>Nama lengkap</label><input data-f="name" list="memList" autocomplete="username" required placeholder="mis. Kadek Arisita Dhyana Putri"><datalist id="memList">${AUTH.members.map(m => `<option value="${esc(m.name)}">`).join('')}</datalist></div>
+    <div class="f"><label>Password</label><input data-f="pw" type="password" autocomplete="current-password" required></div>
+    <p class="err" style="color:#DC2626;font-size:13px;min-height:18px;margin:0"></p>
+    <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>Batal</button><button class="btn pri">Login</button></div></form>`;
+  document.body.appendChild(el); el.querySelector('input').focus();
+  el.onclick = e => { if (e.target === el || e.target.closest('[data-x]')) el.remove(); };
+  el.querySelector('form').onsubmit = async e => { e.preventDefault(); const b = el.querySelector('button.pri'); b.disabled = true;
+    const r = await jget('/api/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ member: 1, name: el.querySelector('[data-f=name]').value, password: el.querySelector('[data-f=pw]').value }) }); b.disabled = false;
+    if (r && r.status === 200) { el.remove(); AUTH.mem = r.j.member; toast('Hai ' + (AUTH.mem.name.split(' ')[0]) + ' 👋'); applyAuth(); loadDesk(); try { renderOffice(); } catch (er) {} }
+    else el.querySelector('.err').textContent = (r && r.j && r.j.detail) || 'Login gagal'; };
+}
+function pwModal(first) {
+  const el = document.createElement('div'); el.className = 'md'; el.style.zIndex = 70;
+  el.innerHTML = `<form class="mdb" style="max-width:420px"><h3>🔑 ${first ? 'Ganti password awal' : 'Ganti password'}</h3>${first ? '<p style="margin:-6px 0 14px;color:var(--muted);font-size:13px">Kamu masih pakai password awal. Ganti sekarang supaya akunmu hanya kamu yang pakai.</p>' : ''}
+    <div class="f"><label>Password ${first ? 'awal' : 'lama'}</label><input data-f="old" type="password" autocomplete="current-password" required></div>
+    <div class="f"><label>Password baru (min. 6 karakter)</label><input data-f="nw" type="password" autocomplete="new-password" minlength="6" required></div>
+    <div class="f"><label>Ulangi password baru</label><input data-f="nw2" type="password" autocomplete="new-password" minlength="6" required></div>
+    <p class="err" style="color:#DC2626;font-size:13px;min-height:18px;margin:0"></p>
+    <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>${first ? 'Nanti' : 'Batal'}</button><button class="btn pri">Simpan</button></div></form>`;
+  document.body.appendChild(el); el.querySelector('input').focus();
+  el.onclick = e => { if (e.target === el || e.target.closest('[data-x]')) el.remove(); };
+  el.querySelector('form').onsubmit = async e => { e.preventDefault(); const v = k => el.querySelector(`[data-f=${k}]`).value;
+    if (v('nw') !== v('nw2')) { el.querySelector('.err').textContent = 'Password baru tidak sama.'; return; }
+    const r = await jget('/api/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ member: 1, change: { old: v('old'), new: v('nw') } }) });
+    if (r && r.status === 200) { el.remove(); if (AUTH.mem) AUTH.mem.mustChange = false; toast('Password diganti ✓'); } else el.querySelector('.err').textContent = (r && r.j && r.j.detail) || 'Gagal mengganti password'; };
+}
+document.addEventListener('click', async e => {
+  if (e.target.closest('[data-login]')) return loginModal();
+  if (e.target.closest('[data-pwchg]')) return pwModal(false);
+  if (e.target.closest('[data-logout]')) { await fetch('/api/login?logout=member', { credentials: 'same-origin' }).catch(() => {}); AUTH.mem = null; ME = ''; applyAuth(); toast('Kamu sudah logout'); try { renderOffice(); } catch (er) {} }
+});
 $('#me').innerHTML = '<option value="">— select your name —</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${f === ME ? 'selected' : ''}>${esc(k)}</option>`).join('') + `<option value="SPV" ${ME === 'SPV' ? 'selected' : ''}>⭐ Putri Izza (SPV)</option>`;
 $('#me').onchange = e => { ME = e.target.value; try { localStorage.setItem('gx-team-me-' + TEAM, ME); } catch (er) {} render(); renderDesks(); };
 /* ======================= Tools & Access (editable by SPV; passwords stored server-side only) ======================= */
@@ -366,7 +420,7 @@ function card(t) {
     ${t.team_by ? `<div class="upd">Last update by ${esc(nick(t.team_by))} · ${new Date(t.updated_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>` : ''}</div>`;
 }
 async function patch(t, upd) {
-  if (!ME) { toast('Select your name first (top right)'); $('#me').focus(); return; }
+  if (!ME) { needLogin(); return; }
   if (PREVIEW) { let all = []; try { all = JSON.parse(localStorage.getItem('gx-preview-tasks2') || '[]'); } catch (e) {}
     const x = all.find(y => y.id === t.id); if (x) { if (upd.status) x.status = upd.status; if (upd.team_note != null) x.team_note = upd.team_note; x.team_by = ME; x.updated_at = new Date().toISOString(); try { localStorage.setItem('gx-preview-tasks2', JSON.stringify(all)); } catch (e) {} Object.assign(t, x); }
     render(); toast('Preview — saved in this browser only'); return; }
@@ -415,7 +469,7 @@ async function loadBoard() {
 }
 async function bop(b, quiet) {
   const needMe = /^(task|note)\.(add|upd)$/.test(b.op);
-  if (needMe && !ME) { toast('Select your name first (top right)'); $('#me').focus(); return false; }
+  if (needMe && !ME) { needLogin(); return false; }
   b.by = ME;
   if (!BD.online) { const err = localOp(b); if (err) { toast(err); return false; } applyRoster(); render(); if (!quiet) toast('Preview — saved in this browser only'); return true; }
   const r = await jget('/api/todo?board=' + TEAM, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...b, defaultRoster: DEF_ROSTER }) });
@@ -442,7 +496,7 @@ function renderBoard() {
   $('#nList').innerHTML = nn.length ? nn.map(n => `<div class="nt ${n.pinned ? 'pin' : ''} ${n.to === 'SPV' ? 'tospv' : ''}" data-nt="${esc(n.id)}"><div class="nh"><b>${esc(n.by ? nick(n.by) : '—')}</b>${n.to ? ` → <b>${esc(nick(n.to))}</b>` : ''} · ${fmtT(n.at)}<span style="flex:1"></span><button class="ib2" data-npin title="${n.pinned ? 'Unpin' : 'Pin'}">${n.pinned ? '📌' : '📍'}</button>${!n.by || n.by === ME ? '<button class="ib2" data-ndel title="Delete">🗑</button>' : ''}</div><div class="tx">${esc(n.text)}</div>${n.to === 'SPV' ? `<div class="upd">${n.seen ? '✓ Seen by SPV' : 'Waiting for SPV'}</div>` : ''}${n.spvReply ? `<div class="spvr"><b>⭐ SPV:</b> ${esc(n.spvReply)}</div>` : ''}</div>`).join('') : '<div class="empty" style="padding:18px">No notes yet.</div>';
 }
 function taskModal(t) {
-  if (!ME) { toast('Select your name first (top right)'); $('#me').focus(); return; }
+  if (!ME) { needLogin(); return; }
   const el = document.createElement('div'); el.className = 'md';
   el.innerHTML = `<form class="mdb"><h3>${t ? 'Edit task' : 'New team task'}</h3>
     <div class="f"><label>Task</label><textarea data-f="title" rows="2" maxlength="300" required>${esc(t ? t.title : '')}</textarea></div>
@@ -461,7 +515,7 @@ function rosterModal() {
   const el = document.createElement('div'); el.className = 'md';
   const draw = () => { el.innerHTML = `<div class="mdb"><h3>👥 Team members — ${esc(CFG.title.replace('Dashboard ', ''))}</h3>
     ${BD.canRoster ? '' : '<form class="unl" id="rUnl">🔒 Enter the team password to add or remove members.<input type="password" id="rPw" placeholder="Team password" autocomplete="current-password"><button class="btn pri">Unlock</button></form>'}
-    <div>${CFG.roster.map(([f, k]) => `<div class="rs"><b>${esc(f)}</b>${BD.canRoster ? `<input value="${esc(k)}" data-nick="${esc(f)}" title="Nickname" maxlength="30"><button class="btn danger" data-rdel="${esc(f)}" type="button">Remove</button>` : `<span style="color:var(--muted);font-size:13px">${esc(k)}</span>`}</div>`).join('') || '<div class="empty">No members yet.</div>'}</div>
+    <div>${CFG.roster.map(([f, k]) => `<div class="rs"><b>${esc(f)}</b>${BD.canRoster ? `<input value="${esc(k)}" data-nick="${esc(f)}" title="Nickname" maxlength="30">${AUTH.spv && AUTH.cfg ? `<button class="btn" data-rpw="${esc(f)}" type="button" title="Kembalikan ke password awal">Reset password</button>` : ''}<button class="btn danger" data-rdel="${esc(f)}" type="button">Remove</button>` : `<span style="color:var(--muted);font-size:13px">${esc(k)}</span>`}</div>`).join('') || '<div class="empty">No members yet.</div>'}</div>
     ${BD.canRoster ? `<form id="rAdd" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><input id="rName" placeholder="Full name" maxlength="60" style="flex:2;min-width:170px;border:1px solid var(--line);border-radius:9px;padding:8px 10px"><input id="rNick" placeholder="Nickname" maxlength="30" style="flex:1;min-width:100px;border:1px solid var(--line);border-radius:9px;padding:8px 10px"><button class="btn pri">+ Add</button></form>` : ''}
     <p style="font-size:12px;color:var(--muted);margin:12px 0 0">Members appear in “I am”, filters, task assignment and notes. Tasks already assigned by SPV are not affected.</p>
     <div class="mfoot"><span class="sp"></span><button class="btn" data-x type="button">Close</button></div></div>`;
@@ -472,6 +526,7 @@ function rosterModal() {
   };
   draw(); document.body.appendChild(el);
   el.addEventListener('click', async e => { if (e.target === el || e.target.closest('[data-x]')) return el.remove();
+    const rp = e.target.closest('[data-rpw]'); if (rp && confirm('Kembalikan password ' + rp.dataset.rpw + ' ke password awal?')) { const r = await jget('/api/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ member: 1, reset: rp.dataset.rpw }) }); toast(r && r.status === 200 ? 'Password direset ke password awal ✓' : 'Gagal reset password'); return; }
     const d = e.target.closest('[data-rdel]'); if (d && confirm('Remove ' + d.dataset.rdel + ' from the team list?')) { if (await bop({ op: 'roster.del', name: d.dataset.rdel })) draw(); } });
   el.addEventListener('change', async e => { const n = e.target.closest('[data-nick]'); if (n && n.value.trim()) await bop({ op: 'roster.edit', name: n.dataset.nick, nick: n.value.trim() }); });
 }
@@ -489,6 +544,7 @@ $('#nList').onclick = e => { const c = e.target.closest('[data-nt]'); if (!c) re
   if (e.target.closest('[data-npin]')) return bop({ op: 'note.pin', id: c.dataset.nt }, true);
   if (e.target.closest('[data-ndel]') && confirm('Delete this note?')) return bop({ op: 'note.del', id: c.dataset.nt }); };
 /* ================= Desk per orang: foto, tagline, template message (gx_docs team-desk-hd/am) ================= */
+const canDesk = n => !!(DK.canEdit || (AUTH.mem && AUTH.mem.name === n) || (n === 'SPV' && AUTH.spv));
 const DK = { data: { desks: {} }, canEdit: false, online: true, open: null, tab: 'tpl', q: '', cat: '', cust: '' };
 const DKEY = 'gx-preview-desk-' + TEAM;
 const slug = n => String(n).toLowerCase().replace(/\./g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -507,7 +563,7 @@ async function loadDesk() {
 function localDesk(b) {
   const D = DK.data, me = D.desks[b.name] = D.desks[b.name] || { tpls: [] }, now = new Date().toISOString();
   if (b.op === 'photo') me.photo = b.photo;
-  else if (b.op === 'profile') Object.assign(me, { tagline: b.tagline, emoji: b.emoji, color: b.color || me.color, props: b.props || me.props });
+  else if (b.op === 'profile') Object.assign(me, { tagline: b.tagline, emoji: b.emoji, color: b.color || me.color, props: b.props || me.props, dk: b.dk || me.dk, ch: b.ch || me.ch, sc: b.sc || me.sc });
   else if (b.op === 'tpl.add') me.tpls.unshift({ id: 'l' + Date.now().toString(36), title: b.title, cat: b.cat, text: b.text, at: now, updated_at: now, uses: 0 });
   else if (b.op === 'tpl.upd') { const y = me.tpls.find(z => z.id === b.id); if (y) Object.assign(y, { title: b.title, cat: b.cat, text: b.text, updated_at: now }); }
   else if (b.op === 'tpl.del') me.tpls = me.tpls.filter(z => z.id !== b.id);
@@ -522,7 +578,8 @@ async function dop(b, quiet) {
   if (!quiet) toast((r && r.j && (r.j.detail || r.j.error)) || 'Save failed'); return false;
 }
 /* ---------- Animated office desk (SVG) — properti dipilih tiap orang di ✎ Profile ---------- */
-const PROPS = [['window', '🪟 Window'], ['clock', '🕒 Clock'], ['shelf', '📚 Shelf'], ['lamp', '💡 Lamp'], ['coffee', '☕ Coffee'], ['plant', '🌿 Plant'], ['headset', '🎧 Headset'], ['cat', '🐱 Cat'], ['frame', '🖼 Photo frame'], ['sticky', '🗒 Sticky notes']];
+const PROPS = [['window', '🪟 Window'], ['clock', '🕒 Clock'], ['shelf', '📚 Shelf'], ['lamp', '💡 Lamp'], ['coffee', '☕ Coffee'], ['plant', '🌿 Plant'], ['headset', '🎧 Headset'], ['cat', '🐱 Cat'], ['frame', '🖼 Photo frame'], ['sticky', '🗒 Sticky notes'], ['books', '📘 Books'], ['trophy', '🏆 Trophy'], ['duck', '🐤 Rubber duck']];
+const DESKS = [['oak', 'Oak', '#C89B6D'], ['walnut', 'Walnut', '#8B5E3C'], ['white', 'White', '#F4F4F5'], ['black', 'Black', '#3F3F46'], ['pink', 'Pink', '#F6C6CF']], CHAIRS = ['#3F3F46', '#1D4ED8', '#B91C1C', '#15803D', '#F5C518', '#7C3AED', '#F472B6'];
 const DEF_PROPS = TEAM === 'AM' ? ['window', 'clock', 'shelf', 'coffee', 'plant'] : ['window', 'clock', 'coffee', 'plant', 'headset'];
 let SCN = 0;
 function deskScene(n, o = {}) {
@@ -590,8 +647,8 @@ function drawDesk() {
   const T = (BD.data.tasks || []).filter(t => t.assignee === n || (t.by === n && t.assignee === 'SPV')), S = (TASKS || []).filter(t => t.assignee === n);
   const N = (BD.data.notes || []).filter(x => x.to === n || x.by === n).sort((a, b) => String(b.at).localeCompare(String(a.at)));
   el.innerHTML = `<div class="mdb dsk" style="--dc:${esc(dColor(n))}"><div class="dsk-h">${deskScene(n, { big: 1 })}<div><h3>${d.emoji ? esc(d.emoji) + ' ' : ''}${esc(nick(n))}'s desk</h3><p>${esc(n)}${d.tagline ? ' · ' + esc(d.tagline) : ''}</p></div><span class="sp"></span>
-      ${DK.canEdit ? `<label class="btn" style="cursor:pointer">📷 Photo<input type="file" accept="image/*" id="dPhoto" hidden></label><button class="btn" data-dprof type="button">✎ Profile</button>` : ''}<button class="btn" data-dx type="button">✕</button></div>
-    ${DK.canEdit ? '' : `<form class="unl" id="dUnl">🔒 Enter the team password to edit desks (photo &amp; templates). Reading &amp; copying templates is open.<input type="password" id="dPw" placeholder="Team password" autocomplete="current-password"><button class="btn pri">Unlock</button></form>`}
+      ${canDesk(DK.open) ? `<label class="btn" style="cursor:pointer">📷 Photo<input type="file" accept="image/*" id="dPhoto" hidden></label><button class="btn" data-dprof type="button">🎨 Customize</button>` : ''}<button class="btn" data-dx type="button">✕</button></div>
+    ${canDesk(DK.open) ? '' : (AUTH.cfg && !AUTH.mem ? `<div class="unl">🔐 Login dengan nama lengkapmu untuk mengubah desk milikmu (foto, template, tampilan meja). Membaca &amp; copy template tetap terbuka. <button class="btn pri" type="button" data-login>Login</button></div>` : AUTH.mem ? `<div class="unl" style="background:var(--grbg)">👀 Ini desk ${esc(nick(DK.open))} — kamu bisa baca &amp; copy template, dan <b>+ My desk</b> untuk menyalinnya ke desk-mu.</div>` : `<form class="unl" id="dUnl">🔒 Enter the team password to edit desks (photo &amp; templates). Reading &amp; copying templates is open.<input type="password" id="dPw" placeholder="Team password" autocomplete="current-password"><button class="btn pri">Unlock</button></form>`)}
     <div class="dtabs">${[['tpl', '💬 Templates · ' + (d.tpls || []).length], ['task', '📋 Tasks · ' + (T.filter(t => t.status !== 'DONE').length + S.filter(t => t.status !== 'DONE').length)], ['note', '🗒 Notes · ' + N.length]].map(([k, l]) => `<button class="chip" data-dtab="${k}" aria-pressed="${DK.tab === k}" type="button">${l}</button>`).join('')}</div>
     <div id="dBody"></div></div>`;
   const u = el.querySelector('#dUnl'); if (u) u.onsubmit = async e => { e.preventDefault(); const pw = el.querySelector('#dPw').value; if (!pw) return;
@@ -599,7 +656,7 @@ function drawDesk() {
     if (r && r.status === 200) { toast('Unlocked ✓'); await Promise.all([loadDesk(), loadBoard()]); } else toast('Wrong password'); };
   const B = el.querySelector('#dBody');
   if (DK.tab === 'tpl') { const cats = [...new Set((d.tpls || []).map(t => t.cat).filter(Boolean))].sort();
-    B.innerHTML = `<div class="tpbar"><input id="tpQ" type="search" placeholder="Search templates…" value="${esc(DK.q)}"><input id="tpCust" placeholder="Customer name → fills {nama}" value="${esc(DK.cust)}" style="max-width:240px">${DK.canEdit ? '<button class="btn pri" data-tadd type="button">+ Template</button>' : ''}</div>
+    B.innerHTML = `<div class="tpbar"><input id="tpQ" type="search" placeholder="Search templates…" value="${esc(DK.q)}"><input id="tpCust" placeholder="Customer name → fills {nama}" value="${esc(DK.cust)}" style="max-width:240px">${canDesk(DK.open) ? '<button class="btn pri" data-tadd type="button">+ Template</button>' : ''}</div>
       ${cats.length ? `<div class="bar" style="margin-bottom:10px"><button class="chip" data-tcat="" aria-pressed="${!DK.cat}" type="button">All</button>${cats.map(c => `<button class="chip" data-tcat="${esc(c)}" aria-pressed="${DK.cat === c}" type="button">${esc(c)}</button>`).join('')}</div>` : ''}
       <p class="hint">Click <b>Copy</b> and paste into the chat. Variables: <code>{nama}</code> customer name, <code>{agent}</code> ${esc(nick(n))}, <code>{tanggal}</code> today. Don't save customer phone numbers / emails in templates.</p><div class="tps" id="tps"></div>`;
     drawTpls(); }
@@ -612,8 +669,8 @@ function drawTpls() {
   const box = $('#tps'); if (!box) return; const n = DK.open, d = deskOf(n), q = DK.q.toLowerCase();
   const L = (d.tpls || []).filter(t => (!DK.cat || t.cat === DK.cat) && (!q || (t.title + ' ' + t.text + ' ' + (t.cat || '')).toLowerCase().includes(q))).sort((a, b) => (b.uses || 0) - (a.uses || 0));
   box.innerHTML = L.length ? L.map(t => `<div class="tp" data-tp="${esc(t.id)}"><div class="tph"><b>${esc(t.title)}</b>${t.cat ? `<span class="tag acc">${esc(t.cat)}</span>` : ''}</div><div class="tx">${esc(t.text)}</div>
-      <div class="tf"><small>${t.uses ? `copied ${t.uses}×` : ''}</small><button class="ib2" data-tmore type="button" title="Show all">⤢</button>${DK.canEdit ? `<button class="ib2" data-tedit type="button" title="Edit">✎</button><button class="ib2" data-tdel type="button" title="Delete">🗑</button>` : ''}${DK.canEdit && ME && ME !== n ? '<button class="ib" data-tclone type="button" title="Copy to my desk">+ My desk</button>' : ''}<button class="cbtn" data-tcopy type="button">Copy</button></div></div>`).join('')
-    : `<div class="empty" style="padding:18px;grid-column:1/-1">${(d.tpls || []).length ? 'No template matches.' : 'No templates yet.' + (DK.canEdit ? ' Click <b>+ Template</b> to add your quick replies.' : '')}</div>`;
+      <div class="tf"><small>${t.uses ? `copied ${t.uses}×` : ''}</small><button class="ib2" data-tmore type="button" title="Show all">⤢</button>${canDesk(DK.open) ? `<button class="ib2" data-tedit type="button" title="Edit">✎</button><button class="ib2" data-tdel type="button" title="Delete">🗑</button>` : ''}${(DK.canEdit || AUTH.mem) && ME && ME !== n ? '<button class="ib" data-tclone type="button" title="Copy to my desk">+ My desk</button>' : ''}<button class="cbtn" data-tcopy type="button">Copy</button></div></div>`).join('')
+    : `<div class="empty" style="padding:18px;grid-column:1/-1">${(d.tpls || []).length ? 'No template matches.' : 'No templates yet.' + (canDesk(DK.open) ? ' Click <b>+ Template</b> to add your quick replies.' : '')}</div>`;
 }
 function tplModal(t) {
   const el = document.createElement('div'); el.className = 'md'; el.style.zIndex = 60;
@@ -631,10 +688,14 @@ function tplModal(t) {
 }
 function profModal() {
   const d = deskOf(DK.open), el = document.createElement('div'); el.className = 'md'; el.style.zIndex = 60;
-  el.innerHTML = `<form class="mdb" style="max-width:520px"><h3>✎ Desk profile — ${esc(nick(DK.open))}</h3>
+  el.innerHTML = `<form class="mdb" style="max-width:520px"><h3>🎨 Customize desk — ${esc(nick(DK.open))}</h3>
     <div class="f"><label>Tagline / status</label><input data-f="tagline" maxlength="80" value="${esc(d.tagline || '')}" placeholder="e.g. Fast reply, slow coffee ☕"></div>
     <div class="f"><label>Emoji</label><input data-f="emoji" maxlength="8" value="${esc(d.emoji || '')}" placeholder="🐣"></div>
     <div class="f"><label>Desk color</label><div style="display:flex;gap:8px;flex-wrap:wrap">${COLORS.map(c => `<label style="cursor:pointer"><input type="radio" name="dc" value="${c}" ${dColor(DK.open) === c ? 'checked' : ''} hidden><span style="display:inline-block;width:30px;height:30px;border-radius:50%;background:${c};border:2px solid ${dColor(DK.open) === c ? '#1D1D1F' : '#E5E5EA'}"></span></label>`).join('')}</div></div>
+    <div class="f"><label>Office desk — meja di Virtual Office</label><div class="ostyle">
+      <span>Meja</span>${DESKS.map(([k, l, c]) => `<label class="sw" title="${l}"><input type="radio" name="odk" value="${k}" ${(d.dk || (DK.open === 'SPV' ? 'walnut' : 'oak')) === k ? 'checked' : ''}><i style="background:${c}"></i></label>`).join('')}
+      <span>Kursi</span>${CHAIRS.map(c => `<label class="sw"><input type="radio" name="och" value="${c}" ${(d.ch || '#3F3F46') === c ? 'checked' : ''}><i style="background:${c}"></i></label>`).join('')}
+      <span>Layar</span><select data-f="sc">${[['2', '2 monitor'], ['1', '1 monitor'], ['laptop', 'Laptop']].map(([k, l]) => `<option value="${k}" ${(d.sc || '2') === k ? 'selected' : ''}>${l}</option>`).join('')}</select></div></div>
     <div class="f"><label>Desk items</label><div class="props">${PROPS.map(([k, l]) => `<label class="chip pchip"><input type="checkbox" value="${k}" ${(Array.isArray(d.props) ? d.props : DEF_PROPS).includes(k) ? 'checked' : ''}> ${l}</label>`).join('')}</div></div>
     <div class="pv" id="pPrev"></div>
     ${d.photo ? '<p><button type="button" class="btn danger" data-rmph>Remove uploaded photo</button></p>' : ''}
@@ -645,7 +706,7 @@ function profModal() {
   el.onchange = e => { if (e.target.name === 'dc') el.querySelectorAll('[name=dc]').forEach(r => r.nextElementSibling.style.borderColor = r.checked ? '#1D1D1F' : '#E5E5EA'); prev(); };
   el.onclick = async e => { if (e.target === el || e.target.closest('[data-x]')) return el.remove(); if (e.target.closest('[data-rmph]') && await dop({ op: 'photo', name: DK.open, photo: '' })) el.remove(); };
   el.querySelector('form').onsubmit = async e => { e.preventDefault(); const c = el.querySelector('[name=dc]:checked');
-    if (await dop({ op: 'profile', name: DK.open, tagline: el.querySelector('[data-f=tagline]').value.trim(), emoji: el.querySelector('[data-f=emoji]').value.trim(), color: c ? c.value : '', props: props() })) el.remove(); };
+    if (await dop({ op: 'profile', name: DK.open, tagline: el.querySelector('[data-f=tagline]').value.trim(), emoji: el.querySelector('[data-f=emoji]').value.trim(), color: c ? c.value : '', props: props(), dk: (el.querySelector('[name=odk]:checked') || {}).value, ch: (el.querySelector('[name=och]:checked') || {}).value, sc: el.querySelector('[data-f=sc]').value })) el.remove(); };
 }
 function shrink(file) { return new Promise((ok, no) => { const img = new Image(), u = URL.createObjectURL(file);
   img.onload = () => { const S = 256, c = document.createElement('canvas'); c.width = c.height = S; const m = Math.min(img.width, img.height);
@@ -664,7 +725,7 @@ async function deskClick(e) {
   const card = e.target.closest('[data-tp]'); if (!card) return; const t = (deskOf(DK.open).tpls || []).find(x => x.id === card.dataset.tp); if (!t) return;
   if (e.target.closest('[data-tcopy]')) { const tx = fillVars(t.text, DK.open);
     try { await navigator.clipboard.writeText(tx); toast(/\{nama\}/i.test(tx) ? 'Copied ✓ — {nama} still empty' : 'Copied ✓'); } catch (er) { prompt('Copy:', tx); }
-    if (DK.canEdit) dop({ op: 'tpl.use', name: DK.open, id: t.id }, true); return; }
+    if (canDesk(DK.open)) dop({ op: 'tpl.use', name: DK.open, id: t.id }, true); return; }
   if (e.target.closest('[data-tmore]')) return card.querySelector('.tx').classList.toggle('open');
   if (e.target.closest('[data-tedit]')) return tplModal(t);
   if (e.target.closest('[data-tdel]') && confirm('Delete template "' + t.title + '"?')) return dop({ op: 'tpl.del', name: DK.open, id: t.id });
@@ -672,7 +733,7 @@ async function deskClick(e) {
 }
 $('#desks').onclick = e => { const d = e.target.closest('[data-desk]'); if (d) openDesk(d.dataset.desk); };
 $('#desks').onkeydown = e => { const d = e.target.closest('[data-desk]'); if (d && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openDesk(d.dataset.desk); } };
-$('#myDesk').onclick = () => { if (!ME) { toast('Select your name first (top right)'); $('#me').focus(); return; } openDesk(ME); };
+$('#myDesk').onclick = () => { if (!ME) { needLogin(); return; } openDesk(ME); };
 addEventListener('keydown', e => { if (e.key === 'Escape' && DK.open && !document.querySelector('.md[style*="z-index"]')) closeDesk(); });
 /* ================= Virtual Office — denah isometrik, semua tim + SPV, avatar jalan / break / meeting ================= */
 const OF = { other: { roster: null, tasks: [], desks: {}, presence: {} }, paused: false, sig: '', W: [], items: [], raf: 0, last: 0, next: 0, L: null };
@@ -692,9 +753,9 @@ function presenceOf(name) {   // status terbaru dari kedua board; kadaluarsa set
   return x && Date.now() - Date.parse(x.at) < 4 * 3600e3 ? x.s : 'work';
 }
 function teamPeople(tm) {
-  if (tm === TEAM) return CFG.roster.map(([name, nk]) => { const d = deskOf(name); return { name, nk, tm, photo: d.photo, props: d.props, tasks: BD.data.tasks || [] }; });
+  if (tm === TEAM) return CFG.roster.map(([name, nk]) => { const d = deskOf(name); return { name, nk, tm, photo: d.photo, props: d.props, dk: d.dk, ch: d.ch, sc: d.sc, tasks: BD.data.tasks || [] }; });
   const R = OF.other.roster && OF.other.roster.length ? OF.other.roster : (OF.other.roster ? [] : CFGS[tm].roster.map(([name, nick]) => ({ name, nick })));
-  return R.map(x => { const d = OF.other.desks[x.name] || {}; return { name: x.name, nk: x.nick || x.name.split(' ')[0], tm, photo: d.photo, props: d.props, tasks: OF.other.tasks }; });
+  return R.map(x => { const d = OF.other.desks[x.name] || {}; return { name: x.name, nk: x.nick || x.name.split(' ')[0], tm, photo: d.photo, props: d.props, dk: d.dk, ch: d.ch, sc: d.sc, tasks: OF.other.tasks }; });
 }
 function stat(p) { const today = new Date().toISOString().slice(0, 10), T = (p.tasks || []).filter(t => t.assignee === p.name && t.status !== 'DONE');
   return { open: T.length, late: T.some(t => t.due && t.due < today) }; }
@@ -721,7 +782,7 @@ function avatarSvg(p) {
     <text x="0" y="-46" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="system-ui,sans-serif">${esc(spv ? 'PI' : initials(p.name))}</text>
     ${src ? `<image href="${esc(src)}" x="-12" y="-62" width="24" height="24" preserveAspectRatio="xMidYMin slice" clip-path="url(#${id})" onerror="this.remove()"/>` : ''}
     ${hs ? '<path d="M-13 -51a13 13 0 0 1 26 0" fill="none" stroke="#111" stroke-width="2.4"/><rect x="-15" y="-54" width="4" height="8" rx="2" fill="#111"/><rect x="11" y="-54" width="4" height="8" rx="2" fill="#111"/>' : ''}
-    ${spv ? '<path d="M-7 -66l3 4 4-6 4 6 3-4v6h-14z" fill="#F5C518" stroke="#B45309" stroke-width=".8"/>' : ''}</g></g>`; }
+</g></g>`; }
 /* ---------- layout ---------- */
 function layout() {
   const HD = teamPeople('HD'), AM = teamPeople('AM'), rows = Math.max(2, Math.ceil(HD.length / 3), Math.ceil(AM.length / 3));
@@ -747,9 +808,16 @@ function layout() {
   const station = (p, dx, dy, ring) => { const s = stat(p), c = p.name === 'SPV' ? '#D97706' : s.late ? '#E03131' : s.open ? '#E8590C' : '#2F9E44';
     F.push(flat(dx - .35, dy - 1.4, 2.7, 2.55, c + '14', 0, c, 2.6));
     const P = new Set(p.props || (p.tm === 'AM' ? ['coffee', 'plant'] : ['coffee', 'plant', 'headset']));
-    add(dx + .7, dy - .95, .6, .18, box(dx + .7, dy - .95, .6, .14, 26, '#3F3F46', 10) + box(dx + .72, dy - .78, .56, .5, 4, '#52525B', 10) + box(dx + .95, dy - .6, .1, .1, 10, '#71717A'), ` data-od="${esc(p.name)}" data-tm="${p.tm}"`);
-    let top = box(dx, dy, 2, .9, 4, '#C89B6D', 22) + box(dx + .05, dy + .1, .12, .7, 22, '#94693F') + box(dx + 1.83, dy + .1, .12, .7, 22, '#94693F') + box(dx + .1, dy + .72, 1.8, .08, 16, '#7C5A3A', 4);
-    top += box(dx + .08, dy + .2, .62, .07, 13, '#27272A', 29) + box(dx + 1.3, dy + .2, .62, .07, 13, '#27272A', 29) + box(dx + .36, dy + .27, .08, .08, 3, '#3F3F46', 26) + box(dx + 1.58, dy + .27, .08, .08, 3, '#3F3F46', 26) + box(dx + .75, dy + .45, .5, .2, 1.5, '#D4D4D8', 26);
+    const chc = p.ch || '#3F3F46', DKC = { oak: ['#C89B6D', '#94693F'], walnut: ['#8B5E3C', '#5C3B22'], white: ['#F4F4F5', '#D4D4D8'], black: ['#3F3F46', '#27272A'], pink: ['#F6C6CF', '#D99AA6'] }[p.dk || 'oak'] || ['#C89B6D', '#94693F'];
+    add(dx + .7, dy - .95, .6, .18, box(dx + .7, dy - .95, .6, .14, 26, chc, 10) + box(dx + .72, dy - .78, .56, .5, 4, shade(chc, .12), 10) + box(dx + .95, dy - .6, .1, .1, 10, '#71717A'), ` data-od="${esc(p.name)}" data-tm="${p.tm}"`);
+    let top = box(dx, dy, 2, .9, 4, DKC[0], 22) + box(dx + .05, dy + .1, .12, .7, 22, DKC[1]) + box(dx + 1.83, dy + .1, .12, .7, 22, DKC[1]) + box(dx + .1, dy + .72, 1.8, .08, 16, shade(DKC[1], -.1), 4);
+    const sc = p.sc || '2';
+    if (sc === 'laptop') top += box(dx + .15, dy + .35, .55, .4, 1.5, '#A1A1AA', 26) + box(dx + .15, dy + .3, .55, .05, 9, '#52525B', 27.5);
+    else top += box(dx + .08, dy + .2, .62, .07, 13, '#27272A', 29) + box(dx + .36, dy + .27, .08, .08, 3, '#3F3F46', 26) + (sc === '2' ? box(dx + 1.3, dy + .2, .62, .07, 13, '#27272A', 29) + box(dx + 1.58, dy + .27, .08, .08, 3, '#3F3F46', 26) : '');
+    top += box(dx + .75, dy + .45, .5, .2, 1.5, '#D4D4D8', 26);
+    if (P.has('books')) top += box(dx + 1.35, dy + .5, .3, .2, 4, '#3B4CCA', 26) + box(dx + 1.37, dy + .5, .26, .2, 3.5, '#E8590C', 30) + box(dx + 1.36, dy + .5, .28, .2, 3, '#16A34A', 33.5);
+    if (P.has('trophy')) { const [X, Y] = P2(dx + 1.55, dy + .25, 26); top += `<path d="M${X - 4} ${Y - 14}h8v4a4 4 0 0 1 -8 0z" fill="#F5C518" stroke="#B45309" stroke-width=".8"/><rect x="${X - 1}" y="${Y - 6}" width="2" height="4" fill="#B45309"/><rect x="${X - 3.5}" y="${Y - 2.5}" width="7" height="2.5" fill="#B45309"/>`; }
+    if (P.has('duck')) { const [X, Y] = P2(dx + .25, dy + .3, 26); top += `<ellipse cx="${X}" cy="${Y - 4}" rx="5" ry="3.6" fill="#FDE047"/><circle cx="${X - 3}" cy="${Y - 8.5}" r="2.8" fill="#FDE047"/><path d="M${X - 6.6} ${Y - 8.6}l-2 .9 2 .9z" fill="#F97316"/>`; }
     if (P.has('coffee')) top += box(dx + 1.0, dy + .5, .14, .14, 7, '#FFFFFF', 26);
     if (P.has('plant')) { const [X, Y] = P2(dx + 1.85, dy + .55, 26); top += box(dx + 1.75, dy + .45, .2, .2, 6, '#D97757', 26) + `<circle class="sway2" cx="${X}" cy="${Y - 13}" r="6" fill="#5BB06C"/>`; }
     if (P.has('lamp')) top += box(dx + .02, dy + .5, .12, .12, 16, '#F5C518', 26);
@@ -759,7 +827,7 @@ function layout() {
     const seat = [dx + 1, dy - .55]; people.push({ ...p, home: seat, homeCell: [dx, dy - 1], st: s, ring: c }); };
   HD.forEach((p, i) => station(p, 2 + (i % 3) * 3, 2 + Math.floor(i / 3) * 3));
   AM.forEach((p, i) => station(p, 17 + (i % 3) * 3, 2 + Math.floor(i / 3) * 3));
-  station({ name: 'SPV', nk: SPVNAME, tm: TEAM, photo: ownDesk('SPV').photo, props: ownDesk('SPV').props || ['coffee', 'plant', 'frame'], tasks: [...(BD.data.tasks || []), ...OF.other.tasks].filter(t => t.assignee === 'SPV').map(t => ({ ...t, assignee: 'X' })) }, 12, 3);
+  station({ name: 'SPV', nk: SPVNAME, tm: TEAM, photo: ownDesk('SPV').photo, props: ownDesk('SPV').props || ['coffee', 'plant', 'frame'], dk: ownDesk('SPV').dk || 'walnut', ch: ownDesk('SPV').ch, sc: ownDesk('SPV').sc, tasks: [...(BD.data.tasks || []), ...OF.other.tasks].filter(t => t.assignee === 'SPV').map(t => ({ ...t, assignee: 'X' })) }, 12, 3);
   F.push(`<polygon points="${pts([P2(11, 0, 0), P2(11, corY - 1, 0), P2(11, corY - 1, 38), P2(11, 0, 38)])}" fill="#BFE3FF" opacity=".28" stroke="#93C5FD" stroke-width="1.5"/>`);
   add(11, corY - 1.2, 4.6, .1, box(11, corY - 1.15, 1.6, .08, 38, '#BFE3FF', 0, ' opacity=".35"') + box(13.4, corY - 1.15, 2.2, .08, 38, '#BFE3FF', 0, ' opacity=".35"')); blk(11, corY - 2, 2, 1); blk(14, corY - 2, 2, 1);
   add(15.1, 1, .1, corY - 2, box(15.1, 1, .08, corY - 3, 38, '#BFE3FF', 0, ' opacity=".35"')); blk(15, 1, 1, corY - 2);
@@ -794,7 +862,7 @@ function bfs(L, a, b) { const key = c => c[0] + ',' + c[1], goal = key(b), prev 
 /* ---------- render ---------- */
 function renderOffice() {
   const box_ = $('#ofc'); if (!box_) return; const L = layout();
-  const sig = JSON.stringify([L.people.map(p => [p.name, p.tm, p.photo ? p.photo.length : 0, p.st, p.props]), L.GH]);
+  const sig = JSON.stringify([L.people.map(p => [p.name, p.tm, p.photo ? p.photo.length : 0, p.st, p.props, p.dk, p.ch, p.sc]), L.GH, ME]);
   if (sig === OF.sig && box_.querySelector('svg')) { OF.L.people.forEach(q => { const w = OF.W.find(v => v.p.name === q.name && v.p.tm === q.tm); if (w) syncPresence(w); }); drawLabels(); renderPresenceBar(); return; }
   OF.sig = sig; OF.L = L; AVN = 0;
   const c = [P2(0, L.GH)[0] - 20, P2(L.GW, 0)[0] + 20, P2(0, 0, WH + 10)[1] - 30, P2(L.GW, L.GH)[1] + 30];
@@ -816,7 +884,7 @@ function renderOffice() {
 function drawLabels() { OF.W.forEach(w => { const ps = presenceOf(w.p.name), ic = ps === 'break' ? '☕ ' : ps === 'meet' ? '📅 ' : '', n = w.p.st.open && w.p.name !== 'SPV' ? ` · ${w.p.st.open}` : '', t = ic + w.p.nk + (w.p.name === 'SPV' ? ' · SPV' : '') + n, wd = t.length * 5.6 + 14;
   w.g.querySelector('.lab').innerHTML = `<rect x="${-wd / 2}" y="-92" width="${wd}" height="15" rx="7.5" fill="${w.p.name === ME && w.p.tm === TEAM || (w.p.name === 'SPV' && ME === 'SPV') ? '#F5C518' : '#1D1D1F'}" opacity=".88"/><text x="0" y="-81.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="${w.p.name === ME && w.p.tm === TEAM || (w.p.name === 'SPV' && ME === 'SPV') ? '#1D1D1F' : '#fff'}" font-family="system-ui,sans-serif">${esc(t)}</text><g class="bub"></g>`; }); }
 function syncPresence(w) {   // break → sofa, meeting → kursi meeting, work → kembali ke meja
-  const m = presenceOf(w.p.name), L = OF.L; if (m === w.mode) return; w.mode = m;
+  const m = presenceOf(w.p.name), L = OF.L; if (m === w.mode || (m === 'work' && w.mode === 'manual')) return; w.mode = m;
   if (m === 'work') { goHome(w); return; }
   const pool = m === 'break' ? L.lseats : L.mseats, used = new Set(OF.W.filter(v => v !== w && v.dest).map(v => v.dest.x + ',' + v.dest.y)), d = pool.find(s => !used.has(s.x + ',' + s.y)) || pool[0];
   goTo(w, d, true); }
@@ -866,15 +934,32 @@ function zoomAt(f, pt) { const v = OF.view; if (!v) return; const s2 = Math.max(
   const end = e => { P.delete(e.pointerId); if (P.size < 2) pinch = null; if (!P.size) drag = null; }; el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
   el.addEventListener('click', e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
   el.addEventListener('dblclick', e => { e.preventDefault(); zoomAt(1.6, svgPt(e)); });
-  $('#ofZin').onclick = () => zoomAt(1.3); $('#ofZout').onclick = () => zoomAt(1 / 1.3); $('#ofZfit').onclick = () => { OF.view.s = 1; applyView(); };
+  $('#ofZin').onclick = $('#ofZin2').onclick = () => zoomAt(1.3); $('#ofZout').onclick = $('#ofZout2').onclick = () => zoomAt(1 / 1.3); $('#ofZfit').onclick = () => { OF.view.s = 1; applyView(); };
   $('#ofZme').onclick = () => { const w = OF.W.find(v => v.p.name === ME && (v.p.tm === TEAM || ME === 'SPV')); if (!w) { toast('Select your name first (I am)'); return; } const [X, Y] = P2(w.x, w.y); OF.view.s = Math.max(OF.view.s, 2.4); OF.view.cx = X; OF.view.cy = Y - 40; applyView(); }; }
+/* ---------- jalankan avatar sendiri: klik lantai / tombol panah keyboard ---------- */
+const myWalker = () => OF.W.find(v => v.p.name === ME && (v.p.tm === (AUTH.mem ? AUTH.mem.team : TEAM) || ME === 'SPV'));
+function walkMeTo(cell) { const w = myWalker(); if (!w) { needLogin(); return false; } const L = OF.L; if (cell[0] < 0 || cell[1] < 0 || cell[0] >= L.GW || cell[1] >= L.GH || L.blocked.has(cell[0] + ',' + cell[1])) return false;
+  w.mode = 'manual'; goTo(w, { x: cell[0] + .5, y: cell[1] + .5, cell, e: '' }, true); bubble(w, ''); return true; }
+function svgToCell(ev) { const [X, Y] = svgPt(ev); const gx = (X / (TW / 2) + Y / (TH / 2)) / 2, gy = (Y / (TH / 2) - X / (TW / 2)) / 2; return [Math.floor(gx), Math.floor(gy)]; }
+$('#ofc').addEventListener('click', e => { if (e.defaultPrevented || e.target.closest('[data-od]') || !OF.L) return; if (!(AUTH.mem || AUTH.spv || (!AUTH.cfg && ME))) return; const c = svgToCell(e); if (walkMeTo(c)) { const w = myWalker(); if (w) w.g.classList.add('me'); } });
+$('#ofc').tabIndex = 0;
+$('#ofc').addEventListener('keydown', e => { const k = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0], w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0] }[e.key]; if (!k) return;
+  const w = myWalker(); if (!w) return; e.preventDefault(); const c = [Math.floor(w.x) + k[0], Math.floor(w.y) + k[1]];
+  if (!OF.L.blocked.has(c[0] + ',' + c[1]) && c[0] >= 0 && c[1] >= 0 && c[0] < OF.L.GW && c[1] < OF.L.GH) { w.mode = 'manual'; w.sit = false; w.state = 'walk'; w.dest = { x: c[0] + .5, y: c[1] + .5, cell: c, e: '' }; w.stay = true; w.q = [[c[0] + .5, c[1] + .5]]; bubble(w, ''); } });
+function panBy(dx, dy) { if (!OF.view) return; const b = OF.vb0, s = OF.view.s; OF.view.cx += dx * b[2] / s * .2; OF.view.cy += dy * b[3] / s * .2; if (s <= 1.01) { OF.view.s = 1.3; } applyView(); }
+document.addEventListener('click', e => { const p = e.target.closest('[data-pan]'); if (p) { const [x, y] = p.dataset.pan.split(',').map(Number); panBy(x, y); }
+  if (e.target.closest('[data-home]')) { const w = myWalker(); if (w) { w.mode = 'work'; goHome(w); } } });
 /* ---------- status bar ---------- */
 function renderPresenceBar() { const el = $('#ofPres'); if (!el) return; const me = ME, ps = me ? presenceOf(me) : '';
-  el.innerHTML = me ? [['work', '💻 Working'], ['break', '☕ Break'], ['meet', '📅 Meeting']].map(([k, l]) => `<button class="chip" type="button" data-pres="${k}" aria-pressed="${ps === k}">${l}</button>`).join('') : '<span class="ofh" style="margin:0">Select your name (I am) to set Break / Meeting</span>'; }
+  el.innerHTML = me ? [['work', '💻 Working'], ['break', '☕ Break'], ['meet', '📅 Meeting']].map(([k, l]) => `<button class="chip" type="button" data-pres="${k}" aria-pressed="${ps === k}">${l}</button>`).join('') + (AUTH.mem || AUTH.spv ? '<button class="chip" type="button" data-home title="Jalan kembali ke meja">🪑 Ke meja</button>' : '')
+    : AUTH.cfg ? '<button class="btn pri" type="button" data-login>🔐 Login untuk masuk kantor</button>' : '<span class="ofh" style="margin:0">Select your name (I am) to set Break / Meeting</span>'; }
 $('#ofPres').addEventListener('click', async e => { const b = e.target.closest('[data-pres]'); if (!b || !ME) return; const s = b.dataset.pres;
+  const bt = AUTH.mem ? AUTH.mem.team : TEAM;   // status disimpan di board tim orang itu
   if (!BD.online) { (BD.data.presence = BD.data.presence || {})[ME] = { s, at: new Date().toISOString() }; try { localStorage.setItem(PKEY, JSON.stringify(BD.data)); } catch (er) {} }
-  else { const r = await jget('/api/todo?board=' + TEAM, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ op: 'presence', by: ME, status: s, defaultRoster: DEF_ROSTER }) });
-    if (!(r && r.status === 200 && r.j.board)) { toast((r && r.j && (r.j.detail || r.j.error)) || 'Save failed'); return; } BD.data = r.j.board; }
+  else { const r = await jget('/api/todo?board=' + bt, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ op: 'presence', by: ME, status: s, defaultRoster: bt === TEAM ? DEF_ROSTER : CFGS[bt].roster.map(([name, nick]) => ({ name, nick })) }) });
+    if (r && r.status === 401) { needLogin(); return; }
+    if (!(r && r.status === 200 && r.j.board)) { toast((r && r.j && (r.j.detail || r.j.error)) || 'Save failed'); return; }
+    if (bt === TEAM) BD.data = r.j.board; else OF.other.presence = r.j.board.presence || {}; }
   toast(s === 'break' ? 'Enjoy your break ☕' : s === 'meet' ? 'In a meeting 📅' : 'Back to work 💻'); renderOffice(); renderPresenceBar(); });
 $('#ofc').addEventListener('click', e => { const t = e.target.closest('[data-od]'); if (!t) return; const n = t.dataset.od;
   if (n === 'SPV' && TEAM !== 'HD') { location.href = $('#switch').href.split('#')[0] + '#desk=SPV'; return; }
@@ -883,7 +968,7 @@ $('#offPause').onclick = () => { OF.paused = !OF.paused; try { localStorage.setI
 $('#offPause').textContent = OF.paused ? '▶ Walk' : '⏸ Pause';
 { const m = /#desk=([^&]+)/.exec(location.hash); if (m) setTimeout(() => { const n = decodeURIComponent(m[1]); if (n === 'SPV' || CFG.roster.some(r => r[0] === n)) openDesk(n); }, 900); }
 loadOther();
-load(); loadBoard(); loadDesk(); setInterval(() => { if (!document.hidden && !document.activeElement.matches('textarea,input') && !document.querySelector('.md')) { load(); loadBoard(); loadDesk(); loadOther(); } }, 60000);
+loadAuth(); load(); loadBoard(); loadDesk(); setInterval(() => { if (!document.hidden && !document.activeElement.matches('textarea,input') && !document.querySelector('.md')) { load(); loadBoard(); loadDesk(); loadOther(); } }, 60000);
 </script>
 </body>
 </html>

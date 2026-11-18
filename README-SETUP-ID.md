@@ -122,3 +122,26 @@ Di pengaturan Repeat Complaint (Import data → kartu Repeat Complaint): **Probl
   - Warna garis meja: hijau = clear, oranye = ada task, merah = overdue, emas = SPV. Barang di meja (kopi, tanaman, lampu, kucing, frame, headset) mengikuti Desk items di Profile. ⏸ Pause menghentikan jalan-jalan.
 
 - **Traffic per Minute** juga dipisah: **Customer Support Traffic per Minute** dan **VIP Traffic per Minute**. Tile pertama = **Total case** periode (sama dengan total di Overview), bukan gabungan CS+VIP lagi.
+
+
+## Login per orang (Dashboard Helpdesk / AM & Virtual Office)
+- Tiap anggota login pakai **nama lengkap** (sesuai daftar 👥 Team) + password. Password awal diisi SPV di **Vercel → Settings → Environment Variables → `GX_MEMBER_DEFAULT_PASSWORD`** (isi dengan password awal yang sudah kamu tentukan), lalu **Redeploy**. Password ini tidak ditulis di kode/ZIP.
+- Login pertama kali → muncul "Ganti password awal". Ganti kapan saja lewat tombol **🔑 Password**. Password baru disimpan sebagai hash (scrypt) di Supabase `gx_docs` `member-auth`.
+- Lupa password → SPV (login SPV) buka **👥 Team → Reset password** → kembali ke password awal.
+- Setelah login: task/notes tercatat atas nama orang itu, status ☕ Break / 📅 Meeting hanya bisa diubah pemiliknya, dan **desk hanya bisa dikustom pemiliknya** (SPV & password tim tetap bisa semua).
+- Virtual Office: avatarmu bisa dijalankan — klik lantai untuk jalan ke sana, atau klik peta lalu pakai tombol panah keyboard (↑ ↓ ← →). Tombol **🪑 Ke meja** untuk kembali. Kontrol peta (panah + zoom) ada di pojok kanan bawah.
+- Desk → **🎨 Customize**: warna meja (oak/walnut/white/black/pink), warna kursi, layar (2 monitor / 1 monitor / laptop), dan barang di meja (kopi, tanaman, buku, piala, bebek karet, dll).
+- Kalau `GX_MEMBER_DEFAULT_PASSWORD` belum diisi, dashboard tetap jalan seperti sebelumnya (pilih nama di "I am").
+
+## Knowledge Base ⟳ Sinkronkan (isi otomatis dari Notion)
+1. Buka https://www.notion.so/my-integrations → **New integration** → tipe *Internal*, workspace GlobalXtreme → Capabilities cukup **Read content** → simpan, salin **Internal Integration Secret**.
+2. Vercel → Environment Variables → `NOTION_TOKEN` = secret tadi → **Redeploy**. (Opsional `NOTION_ROOT_PAGE` kalau halaman induknya bukan "Customer Service Division Information - GlobalXtreme".)
+3. Di Notion buka halaman **Customer Service Division Information - GlobalXtreme** → `•••` → **Connections** → tambahkan integration tadi (sub-halaman ikut otomatis).
+4. Buka Knowledge Base → klik **⟳ Sinkronkan**. Setelah itu KB otomatis ambil update tiap dibuka (maks. 3 jam sekali), dan tombol ⟳ Sinkronkan bisa diklik kapan saja (login SPV / password tim).
+- Materi yang sumbernya halaman Notion menampilkan isi terbaru (judul, poin, checklist, toggle, callout, tabel, kolom, gambar, video, embed seperti Figma Site / Google Docs). Halaman baru di Notion otomatis muncul jadi materi baru. Daftar isi otomatis di samping.
+- SPV tetap bisa ubah judul, kategori, ringkasan, dan soal quiz per materi (✎ Edit). Isi materi diubah di Notion.
+- Gambar dari Notion dibuka lewat server (`/api/todo?kb=img`) supaya link-nya tidak kedaluwarsa. Token Notion hanya ada di server.
+
+## Quiz — Bank soal & refresh
+- Quiz → (login SPV) **📝 Bank soal**: pilih set, cari, **✎ edit**, **🗑 hapus**, **+ Soal baru** (bisa untuk halaman Notion baru yang belum punya soal). Tersimpan di Knowledge Base, langsung dipakai latihan & sesi live baru.
+- **↻ Refresh soal** di Bank soal = muat ulang soal terbaru. Di halaman sesi live, **↻ Refresh soal** mengganti soal sesi itu dengan soal terbaru (selama belum ada peserta yang mengerjakan).

@@ -105,6 +105,37 @@ mark{background:#FDE68A;color:inherit;border-radius:3px;padding:0 1px}
 .ins .hint{flex-basis:100%;font-size:11.5px;color:var(--chip-ink)}
 .pv{border:1px solid var(--line);border-radius:10px;padding:2px 14px 10px;max-height:420px;overflow:auto;background:var(--card)}
 .rhead{display:flex;gap:8px;align-items:flex-start}.rhead h1{flex:1}
+/* ---------- Notion sync + reader yang lebih enak dibaca ---------- */
+.nbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:9px 12px;margin:0 0 14px;font-size:13px}.nbar .sp{flex:1}.nbar.off{background:#FFF7ED;border-color:#FED7AA;color:#7C2D12}
+.syncb{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:5px 11px 5px 9px;font:600 13px var(--font);cursor:pointer}.syncb:hover:not([disabled]){background:var(--soft)}.syncb .si{display:inline-block;font-size:15px;line-height:1}.syncb.spin .si{animation:rot 1s linear infinite}@keyframes rot{to{transform:rotate(360deg)}}.ns{font-size:12.5px;color:var(--muted)}
+.nlogo{flex:none;width:22px;height:22px;border-radius:6px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font:800 13px/1 Georgia,serif}
+.pill.npill{background:var(--soft);color:var(--muted)}
+.nmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:0 0 12px}.nmeta .sp{flex:1}.nmeta a{color:var(--ink);font-weight:600;text-decoration:none}
+.rgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;align-items:start}
+@media (min-width:1080px){.reader{max-width:1060px}.rgrid:has(.toc:not(.hidden)){grid-template-columns:minmax(0,1fr) 220px}}
+.toc{position:sticky;top:70px;font-size:12.5px;display:flex;flex-direction:column;gap:2px;max-height:calc(100vh - 90px);overflow:auto;padding:4px 0 4px 12px;border-left:2px solid var(--line)}
+.toc b{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}.toc a{color:var(--muted);text-decoration:none;padding:3px 0;line-height:1.35}.toc a:hover{color:var(--ink)}.toc a.l3{padding-left:10px}.toc a.l4{padding-left:20px;font-size:12px}
+@media (max-width:1079px){.toc{position:static;max-height:none;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:12px 14px;order:-1}}
+.doc{font-size:15px;line-height:1.72;padding:10px 28px 22px}.doc p,.doc li{max-width:72ch}
+.doc h2{font-size:20px;margin:26px 0 8px;letter-spacing:-.01em}.doc h3{font-size:16.5px;margin:22px 0 6px}.doc h4{font-size:14.5px;margin:18px 0 4px}
+.doc h2,.doc h3,.doc h4{scroll-margin-top:80px}
+.doc code{font-family:ui-monospace,Menlo,monospace;font-size:.88em;background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+.doc blockquote{margin:12px 0;padding:4px 14px;border-left:3px solid var(--ink);color:var(--ink)}
+.doc hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+.doc .ind{padding-left:22px}
+.callout{display:flex;gap:10px;border-radius:10px;padding:11px 14px;margin:12px 0;background:var(--soft);border:1px solid var(--line)}.callout .ci{flex:none;font-size:18px;line-height:1.4}.callout>div>p:first-child{margin-top:0}
+.callout.yellow,.callout.orange{background:#FFF8E1;border-color:#FDE68A}.callout.red,.callout.pink{background:#FEF2F2;border-color:#FECACA}.callout.green{background:#F0FDF4;border-color:#BBF7D0}.callout.blue,.callout.purple{background:#EFF6FF;border-color:#BFDBFE}
+:root[data-theme="dark"] .callout:not(.gray){background:var(--soft);border-color:var(--line)}
+details.tg{margin:6px 0;border-radius:8px}details.tg>summary{cursor:pointer;list-style:none;padding:4px 0 4px 22px;position:relative;font-weight:600}details.tg>summary::-webkit-details-marker{display:none}
+details.tg>summary::before{content:"▸";position:absolute;left:4px;top:4px;color:var(--muted);transition:transform .15s}details.tg[open]>summary::before{transform:rotate(90deg)}
+details.tg.hd>summary h2,details.tg.hd>summary h3,details.tg.hd>summary h4{display:inline;margin:0}.tgb{padding-left:22px}
+ul.todos{list-style:none;padding-left:4px}ul.todos li{display:flex;gap:8px;align-items:flex-start}ul.todos .cb{flex:none;width:17px;height:17px;margin-top:4px;border:1.6px solid var(--muted);border-radius:4px;display:grid;place-items:center;font-size:11px;font-weight:800}ul.todos li.done>span:not(.cb){text-decoration:line-through;color:var(--muted)}ul.todos li.done .cb{background:#16A34A;border-color:#16A34A;color:#fff}
+.tblw{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}.tblw table{border-collapse:collapse;width:100%;font-size:13.5px;line-height:1.5}.tblw td,.tblw th{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}.tblw th{background:var(--soft);font-weight:700}.tblw tr:last-child td{border-bottom:0}.tblw td:last-child,.tblw th:last-child{border-right:0}
+.ncols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.nimg{margin:14px 0}.nimg img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line);display:block}.nimg figcaption{font-size:12.5px;color:var(--muted);margin-top:5px}.nvid{width:100%;border-radius:10px;margin:12px 0}
+pre.ncode{background:#111827;color:#E5E7EB;border-radius:10px;padding:12px 14px;overflow:auto;font-size:12.5px;line-height:1.55}pre.ncode code{background:none;border:0;padding:0;color:inherit}
+.pcard{display:flex;align-items:center;gap:10px;margin:8px 0;padding:11px 14px;border:1px solid var(--line);border-radius:11px;text-decoration:none!important;color:inherit!important;background:var(--card)}.pcard:hover{border-color:var(--line-h);background:var(--chip)}.pcard .sp{flex:1}.pcard .pi{font-size:17px}.pcard .pa{color:var(--muted)}
+.skel{padding:14px 0}.skel i{display:block;height:12px;border-radius:6px;background:var(--line);margin:12px 0;animation:sk 1.2s ease-in-out infinite}@keyframes sk{50%{opacity:.45}}
 @media (max-width:600px){.doc{padding:4px 14px 14px}.quiz{padding:14px}.reader h1{font-size:21px}}
 </style>
 </head>
@@ -117,7 +148,7 @@ mark{background:#FDE68A;color:inherit;border-radius:3px;padding:0 1px}
 <main>
   <div id="home">
     <div class="hero"><h1>Knowledge Base</h1><p>Materi tim Helpdesk Customer Support & Account Manager — dikelompokkan per Info Helpdesk, Administrasi, Teknis, SDM & Schedule, serta Handling & Kebijakan. Quiz ada di tab <b>🎯 Quiz</b> (dikunci password tim).</p></div>
-    <div id="banner"></div>
+    <div id="banner"></div><div id="nbar"></div>
     <input class="search" id="q" type="search" placeholder="Cari materi, SOP, template… (mis. grace, BOD, power ONU, tanggal 25)" aria-label="Cari knowledge base">
     <div class="bar"><div class="tabs" id="chips"></div><span class="sp"></span><button class="btn" id="edBtn" style="display:none">✎ Edit</button><button class="btn" id="loginBtn" style="display:none">🔒 Login SPV untuk edit</button><span id="saveState" style="font-size:12px;color:var(--muted)"></span></div>
     <div id="list"></div>
@@ -168,18 +199,30 @@ const KB = { data: { ...JSON.parse(JSON.stringify(KB_DEFAULT)), materi: { over: 
 
 function materi() {
   const m = KB.data.materi || {}, over = m.over || {}, hid = new Set(m.hidden || []);
-  return BASE.map(x => over[x.id] ? { ...x, ...over[x.id], quiz: over[x.id].quiz || x.quiz } : x).concat(m.added || []).filter(x => KB.edit || !hid.has(x.id));
+  const L = BASE.map(x => over[x.id] ? { ...x, ...over[x.id], quiz: over[x.id].quiz || x.quiz } : { ...x }).concat((m.added || []).map(x => ({ ...x })));
+  NTMID = new Map();
+  if (NT.on) {   // materi yang sumbernya halaman Notion → isinya ikut Notion; halaman Notion baru otomatis jadi materi
+    L.forEach(x => { const k = nid(x.src); if (k && NT.pages[k]) { x.notion = k; x.edited = NT.pages[k].e; if (!NTMID.has(k)) NTMID.set(k, x.id); } });
+    for (const [id, p] of Object.entries(NT.pages)) { if (id === NT.root || NTMID.has(id)) continue; const mid = 'n-' + id; NTMID.set(id, mid); if (!p.n) continue;   // halaman kosong / hanya berisi sub-halaman
+      const o = over[mid] || {}; L.push({ id: mid, notion: id, cat: o.cat || guessCat(id), title: o.title || p.t, summary: o.summary != null && o.summary !== '' ? o.summary : String(p.x || '').replace(/\s+/g, ' ').trim().slice(0, 170), body: '', src: p.u, quiz: o.quiz || [], icon: p.i, edited: p.e }); }
+  }
+  return L.filter(x => KB.edit || !hid.has(x.id));
 }
+/* materi berdasarkan id — termasuk halaman Notion yang hanya berisi sub-halaman (dibuka dari link) */
+function materiById(id) { const x = materi().find(m => m.id === id); if (x) return x; const k = String(id).startsWith('n-') ? id.slice(2) : ''; const p = NT.pages[k];
+  return p ? { id, notion: k, cat: guessCat(k), title: p.t, summary: '', body: '', src: p.u, quiz: [], icon: p.i, edited: p.e } : null; }
 async function load() {
   try {
     const r = await fetch('/api/todo?doc=' + DOC, { cache: 'no-store', credentials: 'same-origin' }); const j = await r.json();
     KB.online = true; KB.canEdit = !!j.canEdit;
-    if (r.status === 200 && j.data && j.data.HD) { KB.data = { materi: { over: {}, added: [], hidden: [] }, ...j.data }; KB.rev = j.revision; }
+    if (r.status === 200 && j.data && (j.data.HD || j.data.materi || j.data.cats)) { KB.data = { ...JSON.parse(JSON.stringify(KB_DEFAULT)), materi: { over: {}, added: [], hidden: [] }, ...j.data }; KB.data.materi = { over: {}, added: [], hidden: [], ...KB.data.materi }; KB.rev = j.revision; }
+    else if (r.status === 200) KB.rev = j.revision || null;
   } catch (e) { KB.online = false; KB.canEdit = true; $('#banner').innerHTML = '<div class="banner"><b>Mode preview</b> — server belum tersambung; perubahan tidak tersimpan.</div>'; }
-  applyCats();
+  applyCats(); await loadNotion();
   $('#edBtn').style.display = KB.canEdit ? '' : 'none';
   $('#loginBtn').style.display = KB.online && !KB.canEdit ? '' : 'none';
-  route();
+  route(); drawNbar();
+  if (NT.configured && (NT.remaining || !NT.syncedAt || Date.now() - Date.parse(NT.syncedAt) > 3 * 3600e3)) runSync(true);   // otomatis ambil update Notion
 }
 function hl(s, q) { const e = esc(s); if (!q) return e; const i = e.toLowerCase().indexOf(esc(q).toLowerCase()); return i < 0 ? e : e.slice(0, i) + '<mark>' + e.slice(i, i + esc(q).length) + '</mark>' + e.slice(i + esc(q).length); }
 function inline(t) {
@@ -226,11 +269,102 @@ function md(src) {
   });
   close(); return out.join('');
 }
+/* ================= Notion → Knowledge Base (isi otomatis ikut Notion) ================= */
+const NT = { on: false, configured: false, pages: {}, root: '', syncedAt: null, remaining: 0, blk: {}, busy: false, msg: '' };
+const nid = u => { const s = String(u || ''), m = s.match(/([0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12})(?:[?#][^\/]*)?$/i); return m ? m[1].replace(/-/g, '').toLowerCase() : ''; };
+let NTMID = new Map();
+function sectionOf(id) { let x = id, n = 0; while (x && NT.pages[x] && NT.pages[x].p !== NT.root && n++ < 12) x = NT.pages[x].p; return NT.pages[x] && NT.pages[x].p === NT.root ? x : ''; }
+function guessCat(id) { const s = (NT.pages[sectionOf(id)] || {}).t || '', t = s + ' ' + ((NT.pages[id] || {}).t || ''), has = k => CATS.some(c => c[0] === k);
+  const k = /helpdesk|dispatcher|shift/i.test(s) ? 'helpdesk' : /administ|billing|invoice|bayar|payment/i.test(t) ? 'admin' : /basic|teknis|technical|bandwidth|\bbod\b|\bdia\b|jaringan|network/i.test(t) ? 'teknis' : 'umum';
+  return has(k) ? k : (CATS[0] || [])[0]; }
+async function loadNotion() {
+  try { const r = await fetch('/api/todo?kb=notion', { cache: 'no-store' }); if (!r.ok) return; const j = await r.json();
+    NT.configured = !!j.configured; NT.pages = j.pages || {}; NT.root = j.root || ''; NT.syncedAt = j.syncedAt; NT.remaining = j.remaining || 0; NT.on = Object.keys(NT.pages).length > 1; } catch (e) {}
+}
+const ago = t => { if (!t) return 'belum pernah'; const m = Math.round((Date.now() - Date.parse(t)) / 60000); return m < 1 ? 'baru saja' : m < 60 ? m + ' menit lalu' : m < 1440 ? Math.round(m / 60) + ' jam lalu' : Math.round(m / 1440) + ' hari lalu'; };
+const fdate = t => t ? new Date(t).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+function drawNbar() {
+  const el = $('#nbar'); if (!el) return;
+  if (!NT.configured) { el.innerHTML = KB.canEdit ? '<div class="nbar off">🔌 <span><b>Sinkronisasi materi belum aktif</b> (khusus SPV): tambahkan <code>NOTION_TOKEN</code> di Vercel lalu Redeploy — langkahnya ada di README.</span></div>' : ''; return; }
+  el.innerHTML = `<div class="nbar"><button class="syncb${NT.busy ? ' spin' : ''}" data-nsync ${NT.busy ? 'disabled' : ''} title="Ambil update materi terbaru"><span class="si">⟳</span>${NT.busy ? 'Menyinkronkan…' : 'Sinkronkan'}</button><span class="ns">${NT.busy ? (NT.remaining ? NT.remaining + ' halaman lagi' : 'mengambil update…') : 'Terakhir disinkronkan ' + ago(NT.syncedAt)}</span></div>`;
+}
+async function runSync(auto, full) {
+  if (NT.busy) return; NT.busy = true; drawNbar(); let err = null, steps = 0, ok = false;
+  try { while (steps++ < 45) {
+      const r = await fetch('/api/todo?kb=sync' + (auto ? '&auto=1' : '') + (full ? '&full=1' : ''), { method: 'POST', credentials: 'same-origin' }); const j = await r.json().catch(() => ({}));
+      if (r.status === 401) { if (!auto) { toast('Login SPV / password tim dulu untuk sync manual'); loginModal(); } break; }
+      if (!r.ok) { err = j.detail || j.error || ('HTTP ' + r.status); break; }
+      NT.remaining = j.remaining || 0; drawNbar(); if (j.done || j.skipped) { ok = !j.skipped; break; } if (j.busy) await new Promise(x => setTimeout(x, 1500)); full = false; } }
+  catch (e) { err = 'tidak bisa menghubungi server'; }
+  NT.busy = false; if (ok || !auto) { await loadNotion(); NT.blk = {}; } drawNbar(); if (ok || !auto) route();
+  if (!auto) toast(err ? 'Sinkronisasi gagal: ' + err : 'Materi sudah yang terbaru ✓');
+}
+async function notionPage(id) {
+  if (NT.blk[id]) return NT.blk[id];
+  const r = await fetch('/api/todo?kb=page&id=' + id, { cache: 'no-store' }); if (!r.ok) throw new Error('not-found'); const j = await r.json(); return (NT.blk[id] = j.page);
+}
+/* rich text Notion → HTML aman (semua teks di-escape, link hanya http/https atau halaman KB) */
+function rt(r) {
+  return (r || []).map(([t, f = '', h = '']) => {
+    let s = esc(t).replace(/\n/g, '<br>');
+    if (f.includes('c')) s = `<code>${s}</code>`; if (f.includes('b')) s = `<b>${s}</b>`; if (f.includes('i')) s = `<i>${s}</i>`; if (f.includes('s')) s = `<s>${s}</s>`; if (f.includes('u')) s = `<u>${s}</u>`;
+    if (h) { const k = h.startsWith('notion:') ? h.slice(7) : (/notion\.(so|site|com)|^\//.test(h) ? nid(h.split('#')[0]) : ''), mid = k && NTMID.get(k);
+      if (mid) s = `<a href="#m/${encodeURIComponent(mid)}">${s}</a>`; else { const u = safeUrl(h) || (k ? 'https://www.notion.so/' + k : ''); if (u) s = `<a href="${esc(u)}" target="_blank" rel="noopener">${s}</a>`; } }
+    return s; }).join('');
+}
+const rtTxt = r => (r || []).map(x => x[0]).join('');
+const fileSrc = u => String(u || '').startsWith('block:') ? '/api/todo?kb=img&b=' + encodeURIComponent(u.slice(6)) : safeUrl(u);
+function blocksHtml(N) {
+  const out = []; let i = 0; N = N || [];
+  while (i < N.length) { const n = N[i];
+    if (n.t === 'ul' || n.t === 'ol' || n.t === 'todo') { const items = [], t = n.t;
+      while (i < N.length && N[i].t === t) { const m = N[i]; items.push(`<li${t === 'todo' ? ` class="${m.k ? 'done' : ''}"` : ''}>${t === 'todo' ? `<span class="cb">${m.k ? '✓' : ''}</span>` : ''}<span>${rt(m.r)}</span>${m.c ? blocksHtml(m.c) : ''}</li>`); i++; }
+      out.push(t === 'ol' ? `<ol>${items.join('')}</ol>` : `<ul${t === 'todo' ? ' class="todos"' : ''}>${items.join('')}</ul>`); continue; }
+    out.push(blockHtml(n)); i++; }
+  return out.join('');
+}
+function blockHtml(n) {
+  switch (n.t) {
+    case 'p': return (n.r || []).length ? `<p>${rt(n.r)}</p>${n.c ? `<div class="ind">${blocksHtml(n.c)}</div>` : ''}` : (n.c ? blocksHtml(n.c) : '');
+    case 'h1': case 'h2': case 'h3': { const lv = n.t === 'h1' ? 2 : n.t === 'h2' ? 3 : 4, h = `<h${lv}>${rt(n.r)}</h${lv}>`;
+      return n.tg ? `<details class="tg hd" open><summary>${h}</summary><div class="tgb">${blocksHtml(n.c)}</div></details>` : h; }
+    case 'tg': return `<details class="tg"><summary>${rt(n.r)}</summary><div class="tgb">${blocksHtml(n.c)}</div></details>`;
+    case 'q': return `<blockquote>${rt(n.r)}${n.c ? blocksHtml(n.c) : ''}</blockquote>`;
+    case 'co': { const c = (/red|orange|yellow|green|blue|purple|pink|gray|brown/.exec(n.col || '') || [''])[0]; return `<div class="callout ${c}"><span class="ci">${esc(n.ic || '💡')}</span><div>${rt(n.r)}${n.c ? blocksHtml(n.c) : ''}</div></div>`; }
+    case 'code': return `<pre class="ncode"><code>${esc(rtTxt(n.r))}</code></pre>`;
+    case 'hr': return '<hr>';
+    case 'img': { const u = fileSrc(n.u); return u ? `<figure class="nimg"><img src="${esc(u)}" loading="lazy" alt="${esc(rtTxt(n.cap))}">${(n.cap || []).length ? `<figcaption>${rt(n.cap)}</figcaption>` : ''}</figure>` : ''; }
+    case 'file': { const u = fileSrc(n.u); if (!u) return '';
+      if (n.k === 'video' && !String(n.u).startsWith('block:') && embedSrc(u)) return embedHtml(u, rtTxt(n.cap));
+      if (n.k === 'video') return `<video class="nvid" src="${esc(u)}" controls preload="metadata"></video>`;
+      if (n.k === 'pdf' && !String(n.u).startsWith('block:')) return embedHtml(u, rtTxt(n.cap) || 'PDF');
+      return `<a class="lcard" href="${esc(u)}" target="_blank" rel="noopener"><span class="li">📎</span><span class="lt"><b>${esc(n.name || rtTxt(n.cap) || 'File')}</b><span>${esc(n.k.toUpperCase())}</span></span></a>`; }
+    case 'emb': return embedHtml(n.u, rtTxt(n.cap));
+    case 'tbl': return `<div class="tblw"><table>${(n.rows || []).map((r, i) => `<tr>${r.map(c => i === 0 && n.h ? `<th>${rt(c)}</th>` : `<td>${rt(c)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+    case 'cols': return `<div class="ncols">${(n.c || []).map(c => `<div>${blocksHtml(c.c)}</div>`).join('')}</div>`;
+    case 'page': { const p = NT.pages[n.id] || {}, mid = NTMID.get(n.id), t = n.title || p.t || 'Halaman';
+      if (mid) return `<a class="pcard" href="#m/${encodeURIComponent(mid)}"><span class="pi">${esc(p.i || '📄')}</span><b>${esc(t)}</b><span class="sp"></span><span class="pa">→</span></a>`;
+      const u = safeUrl(p.u) || 'https://www.notion.so/' + n.id; return `<a class="pcard" href="${esc(u)}" target="_blank" rel="noopener"><span class="pi">${esc(p.i || '📄')}</span><b>${esc(t)}</b><span class="sp"></span><span class="pa">↗</span></a>`; }
+    case 'db': return `<div class="callout gray"><span class="ci">🗃</span><div>Database: <b>${esc(n.title)}</b> — buka sumber aslinya untuk melihat isinya.</div></div>`;
+    default: return '';
+  }
+}
+/* daftar isi otomatis dari judul (berlaku juga untuk materi non-Notion) */
+function buildToc() {
+  const art = $('#read article.doc'), nav = $('#toc'); if (!art || !nav) return;
+  const H = [...art.querySelectorAll('h2,h3,h4')].filter(h => h.textContent.trim()); H.forEach((h, i) => { h.id = 'h' + (i + 1); });
+  if (H.length < 3) { nav.classList.add('hidden'); return; }
+  nav.classList.remove('hidden'); nav.innerHTML = '<b>Di halaman ini</b>' + H.map(h => `<a href="javascript:void 0" data-toc="${h.id}" class="l${h.tagName[1]}">${esc(h.textContent.trim().slice(0, 70))}</a>`).join('');
+}
+document.addEventListener('click', e => { const t = e.target.closest('[data-toc]'); if (t) { e.preventDefault(); const h = document.getElementById(t.dataset.toc); if (h) { h.closest('details') && (h.closest('details').open = true); h.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
+  if (e.target.closest('[data-nsync]')) runSync(false); });
+
 const plain = s => String(s || '').replace(/^@embed\s+\S+\s*\|?\s*/gim, '').replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g, '$1').replace(/\*\*/g, '');
-function match(x, ql) { return !ql || [x.title, x.summary, plain(x.body), CATNAME[x.cat], ...(x.quiz || []).map(q => q.q)].join(' ').toLowerCase().includes(ql); }
+const bodyTxt = x => x.notion && NT.pages[x.notion] ? NT.pages[x.notion].x || '' : plain(x.body);
+function match(x, ql) { return !ql || [x.title, x.summary, bodyTxt(x), CATNAME[x.cat], ...(x.quiz || []).map(q => q.q)].join(' ').toLowerCase().includes(ql); }
 function snippet(x, q) {
   if (!q) return esc(x.summary || '');
-  const t = plain(x.body).replace(/\n/g, ' '), i = t.toLowerCase().indexOf(q.toLowerCase());
+  const t = bodyTxt(x).replace(/\n/g, ' '), i = t.toLowerCase().indexOf(q.toLowerCase());
   if ((x.summary || '').toLowerCase().includes(q.toLowerCase()) || i < 0) return hl(x.summary || '', q);
   const s = Math.max(0, i - 60); return (s ? '…' : '') + hl(t.slice(s, i + 110), q) + '…';
 }
@@ -238,7 +372,7 @@ function scorePill(x) { return `<span class="pill">${(x.quiz || []).length} soal
 function card(x, q) {
   const hid = (KB.data.materi.hidden || []).includes(x.id);
   return `<button class="mat" data-open="${esc(x.id)}"${hid ? ' style="opacity:.45"' : ''}><span class="ed"><span class="btn sm" data-medit="${esc(x.id)}">Edit</span></span>
-    <b>${hl(x.title, q)}</b><p>${snippet(x, q)}</p><span class="meta"><span class="pill c-${x.cat}">${esc(CATNAME[x.cat] || x.cat)}</span>${(x.quiz || []).length ? scorePill(x) : ''}${hid ? '<span class="pill" style="color:#DC2626">dihapus</span>' : ''}</span></button>`;
+    <b>${x.icon ? esc(x.icon) + ' ' : ''}${hl(x.title, q)}</b><p>${snippet(x, q)}</p><span class="meta"><span class="pill c-${x.cat}">${esc(CATNAME[x.cat] || x.cat)}</span>${x.notion && x.edited ? `<span class="pill npill">🕑 ${esc(fdate(x.edited))}</span>` : ''}${(x.quiz || []).length ? scorePill(x) : ''}${hid ? '<span class="pill" style="color:#DC2626">dihapus</span>' : ''}</span></button>`;
 }
 function renderHome() {
   const q = $('#q').value.trim(), ql = q.toLowerCase(), HID = new Set(KB.data.materi.hidden || []), M = materi().filter(x => !HID.has(x.id)), DEL = materi().filter(x => HID.has(x.id));
@@ -267,7 +401,9 @@ function renderHome() {
     secs.unshift(`<div class="banner" style="background:#EEF2FF;color:#312E81">Mode edit — klik <b>Edit</b> di kartu untuk ubah isi & soal quiz, <b>+ Materi</b> untuk menambah, atau <button class="btn sm" data-cadd="1">+ Kategori baru</button></div>`);
     if (DEL.length) secs.push(`<section class="ksec"><div class="ksec-h"><h2>Materi dihapus</h2><span class="catdesc">Tidak tampil untuk tim & tidak dipakai di quiz</span></div><div class="mgrid">${DEL.map(x => `<div class="mat" style="opacity:.6;cursor:default"><b>${esc(x.title)}</b><p>${esc(CATNAME[x.cat] || x.cat)}</p><span class="meta"><button class="btn sm" data-mrestore="${esc(x.id)}">Pulihkan</button>${BASE.some(b => b.id === x.id) ? '' : `<button class="btn sm danger" data-mpurge="${esc(x.id)}">Hapus permanen</button>`}</span></div>`).join('')}</div></section>`);
   }
-  $('#list').innerHTML = secs.join('') || `<div class="empty">Tidak ada yang cocok dengan “${esc(q)}”.</div>`;
+  if (NT.on && !ql && KB.filter === '*' && !KB.edit) { const R = M.filter(x => x.notion && x.edited).sort((a, b) => String(b.edited).localeCompare(String(a.edited))).slice(0, 6);
+    if (R.length) secs.unshift(`<section class="ksec"><div class="ksec-h"><h2>Baru diupdate</h2><span class="catdesc">Materi yang terakhir berubah</span></div><div class="mgrid">${R.map(x => card(x, '')).join('')}</div></section>`); }
+  $('#list').innerHTML = secs.join('') || `<div class="empty">Tidak ada yang cocok dengan “${esc(q)}”.</div>`; drawNbar();
 }
 /* ---------- reader + quiz ---------- */
 /* urutan opsi diacak tetap (deterministik per soal) supaya jawaban benar tidak selalu di posisi yang sama */
@@ -276,17 +412,21 @@ function perm(seed, n) { let h = 2166136261; for (const c of seed) h = Math.imul
 const qOpts = (id, i, q) => perm(id + '#' + i, q.o.length);
 let QZ = null;
 function renderRead(id) {
-  const M = materi(), x = M.find(m => m.id === id);
+  const M = materi(), x = M.find(m => m.id === id) || materiById(id);
   if (!x) { location.hash = ''; return; }
   const list = M.filter(m => m.cat === x.cat), i = list.indexOf(x), prev = list[i - 1], next = list[i + 1];
   QZ = { id, ans: {}, done: false };
   const src = safeUrl(x.src);
   $('#read').innerHTML = `<div class="crumb"><button class="btn sm" data-back>← Semua materi</button><span class="pill c-${x.cat}">${esc(CATNAME[x.cat] || x.cat)}</span></div>
     <div class="rhead"><h1>${esc(x.title)}</h1>${KB.canEdit ? `<button class="btn sm" data-medit="${esc(x.id)}" style="margin-top:10px">✎ Edit materi</button>` : KB.online ? '<button class="btn sm" data-login style="margin-top:10px">🔒 Login SPV untuk edit</button>' : ''}</div>${x.summary ? `<p class="lead">${esc(x.summary)}</p>` : ''}
-    <article class="doc">${md(x.body)}${src ? `<a class="srcl" href="${esc(src)}" target="_blank" rel="noopener">${LSVG}Sumber: Notion Customer Service Division</a>` : ''}</article>
+    ${x.notion && NT.on ? `<div class="nmeta"><span>Diupdate ${esc(fdate(NT.pages[x.notion].e))}${(() => { const s = sectionOf(x.notion); return s && s !== x.notion ? ` · ${esc(NT.pages[s].t)}` : ''; })()}</span><span class="sp"></span>${NT.configured ? `<button class="syncb${NT.busy ? ' spin' : ''}" data-nsync ${NT.busy ? 'disabled' : ''} title="Ambil update terbaru"><span class="si">⟳</span>${NT.busy ? 'Menyinkronkan…' : 'Sinkronkan'}</button>` : ''}</div>` : ''}
+    <div class="rgrid"><article class="doc${x.notion && NT.on ? ' ndoc' : ''}">${x.notion && NT.on ? '<div class="skel"><i></i><i></i><i style="width:60%"></i><i></i><i style="width:75%"></i></div>' : md(x.body)}${src && !(x.notion && NT.on) ? `<a class="srcl" href="${esc(src)}" target="_blank" rel="noopener">${LSVG}Buka sumber asli</a>` : ''}</article><nav class="toc hidden" id="toc"></nav></div>
     ${(x.quiz || []).length && CATNAME[x.cat] ? `<section class="quiz"><h2>Quiz ${esc(CATNAME[x.cat])}</h2><p class="qsub">Soal dari materi ini masuk ke quiz kategori <b>${esc(CATNAME[x.cat])}</b> — latihan sendiri pakai timer, atau ikut live quiz dari SPV.</p><a class="btn pri" href="#quiz?set=${esc(x.cat)}">🔒 Latihan quiz ${esc(CATNAME[x.cat])} →</a> <a class="btn" href="#quiz">Masukkan PIN live quiz</a><p class="qsub" style="margin:10px 0 0">Quiz dikunci password tim.</p></section>` : ''}
     <div class="nav2">${prev ? `<button class="btn" data-open="${esc(prev.id)}">← ${esc(prev.title)}</button>` : '<span></span>'}${next ? `<button class="btn" data-open="${esc(next.id)}">${esc(next.title)} →</button>` : ''}</div>`;
-  window.scrollTo(0, 0);
+  window.scrollTo(0, 0); buildToc();
+  if (x.notion && NT.on) notionPage(x.notion).then(pg => { if (!location.hash.endsWith(encodeURIComponent(id)) && !location.hash.endsWith(id)) return; const a = $('#read article.doc'); if (!a) return;
+      a.innerHTML = blocksHtml(pg.b) || '<p style="color:var(--muted)">Halaman ini masih kosong.</p>'; buildToc(); })
+    .catch(() => { const a = $('#read article.doc'); if (a) a.innerHTML = x.body ? md(x.body) : `<p>Isi belum tersinkron — klik ⟳ Sinkronkan. <a href="${esc(safeUrl(x.src))}" target="_blank" rel="noopener">Buka sumber ↗</a></p>`; buildToc(); });
 }
 function renderQuiz() {
   const x = materi().find(m => m.id === QZ.id), el = $('#quiz'); if (!x || !el) return;
@@ -358,14 +498,15 @@ function qBlock(q, i) {
     <input data-q="e" value="${esc(q.e || '')}" placeholder="Penjelasan jawaban (muncul saat review)"></div>`;
 }
 function materiModal(id, cat) {
-  const M = KB.data.materi, isBase = BASE.some(b => b.id === id), cur = id ? materi().find(m => m.id === id) : { title: '', cat, summary: '', body: '', src: '', quiz: [] };
+  const M = KB.data.materi, isN = String(id || '').startsWith('n-'), isBase = BASE.some(b => b.id === id) || isN, cur = id ? materiById(id) : { title: '', cat, summary: '', body: '', src: '', quiz: [] }, fromN = !!(cur.notion && NT.on);
   let quiz = JSON.parse(JSON.stringify(cur.quiz || []));
   const el = document.createElement('div'); el.className = 'md';
   el.innerHTML = `<div class="mdb" style="max-width:760px"><h3>${id ? 'Edit materi' : 'Tambah materi'}</h3>
     <div class="f"><label>Kategori</label><select data-f="cat">${CATS.map(c => `<option value="${c[0]}" ${c[0] === cur.cat ? 'selected' : ''}>${esc(c[1])}</option>`).join('')}</select></div>
     <div class="f"><label>Judul</label><input data-f="title" value="${esc(cur.title)}"></div>
     <div class="f"><label>Ringkasan</label><textarea data-f="summary" rows="2">${esc(cur.summary)}</textarea></div>
-    <div class="f"><label>Isi materi</label>
+    ${fromN ? `<div class="banner" style="background:#EEF2FF;color:#312E81">📄 Isi materi ini diambil otomatis dari sumbernya — ubah isinya di sana lalu klik ⟳ Sinkronkan. Di sini kamu tetap bisa ubah judul, kategori, ringkasan & soal quiz.</div>` : ''}
+    <div class="f${fromN ? ' hidden' : ''}"><label>Isi materi</label>
       <div class="tb"><button type="button" class="btn" data-fmt="h">Sub-judul</button><button type="button" class="btn" data-fmt="b"><b>B</b> Tebal</button><button type="button" class="btn" data-fmt="ul">• Poin</button><button type="button" class="btn" data-fmt="ol">1. Langkah</button><button type="button" class="btn" data-fmt="note">❗ Catatan</button><span class="sep"></span>
         <button type="button" class="btn" data-ins-open="link">🔗 Link</button><button type="button" class="btn" data-ins-open="embed">▣ Embed</button><span class="sep"></span><button type="button" class="btn" data-pv>👁 Preview</button></div>
       <div class="ins" data-ins-row><input data-ins="text" placeholder="Teks link (mis. Template VIP)"><input data-ins="url" placeholder="https://…"><button type="button" class="btn pri" data-ins-go>Sisipkan</button><button type="button" class="btn" data-ins-x>Batal</button><span class="hint" data-ins-hint></span></div>

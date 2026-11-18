@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Login · Helpdesk Workspace</title>
+<link rel="icon" href="mark.png">
+<style>
+:root{--ink:#1D1D1F;--muted:#86868B;--gold:#D4912A;--gold2:#E8B04A;--line:#EADFCB;--card:rgba(255,255,255,.82);--font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%}
+body{font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 16px;
+  background:radial-gradient(1200px 700px at 15% 10%,#FFF8EA 0%,transparent 60%),radial-gradient(900px 600px at 90% 90%,#F6E3C2 0%,transparent 60%),linear-gradient(160deg,#FBF6EE 0%,#F4E9D8 100%)}
+.wrap{width:100%;max-width:400px}
+.logo{display:block;height:26px;margin:0 auto 22px}
+.eyebrow{text-align:center;font-size:12px;font-weight:700;letter-spacing:.28em;color:#8E8E93;margin:0 0 8px}
+h1{text-align:center;font-size:clamp(22px,5.4vw,26px);font-weight:800;letter-spacing:-.01em;margin:0 0 28px}h1 span{color:var(--gold)}
+.card{background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.9);border-radius:24px;padding:30px 30px 26px;box-shadow:0 24px 60px rgba(160,120,60,.16),0 2px 6px rgba(0,0,0,.04)}
+.card h2{font-size:21px;margin:0 0 6px}.card .sub{color:#6E6E73;font-size:13.5px;margin:0 0 22px;line-height:1.45}
+label{display:block;font-size:12.5px;font-weight:700;color:#6E6E73;margin:0 0 7px}
+.fld{position:relative;margin-bottom:16px}.fld svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:17px;height:17px;stroke:#8E8E93;fill:none;stroke-width:1.8;pointer-events:none}
+.fld input{width:100%;height:46px;border:1px solid var(--line);background:#FFFDF8;border-radius:12px;padding:0 44px 0 42px;font:inherit;font-size:15px;color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s}
+.fld input:focus{border-color:var(--gold2);box-shadow:0 0 0 4px rgba(232,176,74,.18)}
+.eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;background:none;border-radius:8px;cursor:pointer;display:grid;place-items:center}.eye svg{position:static;transform:none}.eye:hover{background:#F6EEDF}
+.btn{width:100%;height:48px;border:0;border-radius:13px;margin-top:6px;cursor:pointer;font:700 15px var(--font);color:#1D1D1F;display:flex;align-items:center;justify-content:center;gap:9px;
+  background:linear-gradient(180deg,#F2BE58 0%,#DE9A2E 100%);box-shadow:0 8px 20px rgba(214,146,42,.32),inset 0 1px 0 rgba(255,255,255,.4);position:relative;overflow:hidden;transition:transform .1s,filter .15s}
+.btn::after{content:"";position:absolute;inset:0 auto 0 -40%;width:30%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:sh 3.2s ease-in-out infinite}
+@keyframes sh{0%,60%{left:-40%}100%{left:130%}}
+.btn:hover{filter:brightness(1.04)}.btn:active{transform:translateY(1px)}.btn[disabled]{opacity:.7;cursor:wait}.btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+.err{color:#C0392B;font-size:13px;min-height:18px;margin:2px 0 6px}
+.note{display:flex;gap:9px;align-items:flex-start;color:#8E8E93;font-size:12.5px;line-height:1.5;margin-top:18px}.note svg{flex:none;width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;margin-top:2px}
+.link{background:none;border:0;color:#8E6A1E;font:600 13px var(--font);cursor:pointer;margin-top:12px;width:100%}
+.foot{text-align:center;color:#8E8E93;font-size:12px;margin-top:26px}
+.hidden{display:none!important}
+@media (max-width:420px){.card{padding:24px 20px 22px}}
+@media (prefers-reduced-motion:reduce){.btn::after{animation:none;display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="logo" src="gx-logo.png" alt="GlobalXtreme">
+  <p class="eyebrow">WELCOME TO</p>
+  <h1>Helpdesk <span>Workspace</span></h1>
+  <form class="card" id="f1" autocomplete="on">
+    <h2>Welcome back</h2><p class="sub">Sign in with the username your supervisor gave you.</p>
+    <label for="u">Username</label>
+    <div class="fld"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><input id="u" name="username" autocomplete="username" placeholder="mis. Sita" required autofocus></div>
+    <label for="p">Password</label>
+    <div class="fld"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="p" name="password" type="password" autocomplete="current-password" required>
+      <button class="eye" type="button" data-eye="p" aria-label="Tampilkan password"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    <p class="err" id="e1" role="alert"></p>
+    <button class="btn" id="b1"><svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Log In</button>
+    <div class="note"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>Forgot your password? Contact the admin/CSO Supervisor to reset it.</span></div>
+  </form>
+  <form class="card hidden" id="f2">
+    <h2>Set your new password</h2><p class="sub">Kamu masih pakai password awal. Ganti sekarang supaya akunmu hanya kamu yang pakai.</p>
+    <label for="n1">New password (min. 6 karakter)</label>
+    <div class="fld"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="n1" type="password" autocomplete="new-password" minlength="6" required><button class="eye" type="button" data-eye="n1" aria-label="Tampilkan password"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    <label for="n2">Repeat new password</label>
+    <div class="fld"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="n2" type="password" autocomplete="new-password" minlength="6" required></div>
+    <p class="err" id="e2" role="alert"></p>
+    <button class="btn" id="b2">Save &amp; continue</button>
+    <button class="link" type="button" id="later">Nanti saja</button>
+  </form>
+  <p class="foot">Helpdesk Workspace · GlobalXtreme</p>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+const next = (() => { const n = new URLSearchParams(location.search).get('next') || '/'; return /^\/(?![\/\\])/.test(n) && !/^\/login/.test(n) ? n : '/'; })();
+const post = async b => { try { const r = await fetch('/api/login', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify(b) }); return { s: r.status, j: await r.json().catch(() => ({})) }; } catch (e) { return { s: 0, j: { detail: 'Tidak bisa terhubung ke server.' } }; } };
+document.addEventListener('click', e => { const b = e.target.closest('[data-eye]'); if (!b) return; const i = document.getElementById(b.dataset.eye); i.type = i.type === 'password' ? 'text' : 'password'; });
+let oldPw = '';
+/* sudah login? langsung masuk */
+fetch('/api/login', { cache: 'no-store', credentials: 'same-origin' }).then(r => r.json()).then(j => { if (j && (j.member || j.authed) && !(j.member && j.member.mustChange)) location.replace(next); }).catch(() => {});
+$('#f1').onsubmit = async e => { e.preventDefault(); const b = $('#b1'); b.disabled = true; $('#e1').textContent = '';
+  oldPw = $('#p').value; const r = await post({ member: 1, name: $('#u').value, password: oldPw }); b.disabled = false;
+  if (r.s === 200 && r.j.ok) { if (r.j.member && r.j.member.mustChange) { $('#f1').classList.add('hidden'); $('#f2').classList.remove('hidden'); $('#n1').focus(); } else location.replace(next); return; }
+  $('#e1').textContent = r.j.detail || 'Username atau password salah.'; $('#p').select(); };
+$('#f2').onsubmit = async e => { e.preventDefault(); if ($('#n1').value !== $('#n2').value) { $('#e2').textContent = 'Password baru tidak sama.'; return; }
+  const b = $('#b2'); b.disabled = true; const r = await post({ member: 1, change: { old: oldPw, new: $('#n1').value } }); b.disabled = false;
+  if (r.s === 200) location.replace(next); else $('#e2').textContent = r.j.detail || 'Gagal mengganti password.'; };
+$('#later').onclick = () => location.replace(next);
+</script>
+</body>
+</html>

@@ -34,6 +34,12 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') { res.statusCode = 405; return res.end(); }
   const b = await readBody(req);
   if (b.member) {
+    /* SPV login lewat form yang sama: username spv / putri / tri.retno + password dashboard SPV */
+    const un = String(b.name || '').toLowerCase().replace(/[._]+/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!b.change && !b.reset && ['spv', 'putri', 'putri izza', 'izza', 'tri retno', 'tri retno izza pramusthi', 'supervisor'].includes(un)) {
+      if (passOk(String(b.password || ''))) return J({ ok: true, spv: true }, 200, sessionCookie());
+      await new Promise(r => setTimeout(r, 700)); return J({ error: 'wrong-password', detail: 'Username atau password salah.' }, 401);
+    }
     if (!membersConfigured()) return J({ error: 'members-not-configured', detail: 'Login per orang belum aktif — SPV perlu mengisi GX_MEMBER_DEFAULT_PASSWORD di Vercel.' }, 503);
     try {
       if (b.reset) { if (!authed(req)) return J({ error: 'spv-login-required' }, 401); const m = await findMember(b.reset); if (!m || m.ambiguous) return J({ error: 'not-found' }, 404); await resetPassword(m.name); return J({ ok: true }); }
@@ -44,7 +50,7 @@ export default async function handler(req, res) {
         await setPassword(m, nw); return J({ ok: true }); }
       const m = await findMember(b.name); if (m && m.ambiguous) return J({ error: 'ambiguous', detail: 'Ada lebih dari satu orang dengan nickname ini — pakai nama lengkap.' }, 409);
       const c = m ? await checkPassword(m, String(b.password || '')) : { ok: false };
-      if (!m || !c.ok) { await new Promise(r => setTimeout(r, 700)); return J({ error: 'wrong-password', detail: 'Nickname atau password salah.' }, 401); }
+      if (!m || !c.ok) { await new Promise(r => setTimeout(r, 700)); return J({ error: 'wrong-password', detail: 'Username atau password salah.' }, 401); }
       return J({ ok: true, member: { ...m, mustChange: c.mustChange } }, 200, memberCookie(m));
     } catch (e) { return J({ error: 'db', detail: 'Database belum tersambung.' }, 500); }
   }

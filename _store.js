@@ -118,6 +118,19 @@ export async function saveSnapshot(p, title, auto) {
   return { ok: true, id: String(r.id), at: ms(r.created_at), title, auto: !!auto };
 }
 
+/* Perbarui snapshot yang sudah ada (ID & link viewer tetap sama) dengan isi report terbaru */
+export async function updateSnapshot(id, p, title) {
+  if (!/^\d{1,18}$/.test(String(id || ''))) throw new AppError('bad-id', 400, 'ID riwayat tidak valid.');
+  const old = must(await db().from('report_snapshots').select('id,title,auto').eq('id', id).maybeSingle());
+  if (!old) throw new AppError('not-found', 404, 'Riwayat tidak ditemukan.');
+  const ttl = String(title || old.title || 'Report').slice(0, 200), tmp = await saveSnapshot(p, ttl, old.auto);   // simpan dataset (dedupe) lewat RPC yang sama
+  const t = must(await db().from('report_snapshots').select('import_id').eq('id', tmp.id).maybeSingle());
+  const now = new Date().toISOString();
+  must(await db().from('report_snapshots').update({ import_id: t.import_id, settings: settingsOf(p.S), title: ttl, created_at: now }).eq('id', id));
+  must(await db().from('report_snapshots').delete().eq('id', tmp.id));
+  return { ok: true, id: String(id), at: ms(now), title: ttl, auto: !!old.auto, updated: true };
+}
+
 export async function listSnapshots() {
   const rows = must(await db().from('report_snapshots').select('id,created_at,title,auto,report_imports(size_bytes)').order('created_at', { ascending: false }).limit(100));
   return rows.map(x => ({ id: String(x.id), at: ms(x.created_at), title: x.title, auto: x.auto, size: x.report_imports ? x.report_imports.size_bytes : 0 }));

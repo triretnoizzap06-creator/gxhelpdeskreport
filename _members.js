@@ -18,21 +18,21 @@ const secret = () => { const s = envGet('SUPABASE_SERVICE_ROLE_KEY') || envGet('
 export const defaultPw = () => envGet('GX_MEMBER_DEFAULT_PASSWORD') || '';
 export const membersConfigured = () => !!(secret() && defaultPw());
 const sign = s => createHmac('sha256', secret()).update(s).digest('base64url');
-export function memberCookie(m) { const p = Buffer.from(JSON.stringify({ n: m.name, t: m.team, x: Date.now() + MAX_AGE * 1000 })).toString('base64url'); return `${MEMBER_COOKIE}=${p}.${sign(p)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${MAX_AGE}`; }
+export function memberCookie(m) { const p = Buffer.from(JSON.stringify({ n: m.name, t: m.team, k: m.nick || '', x: Date.now() + MAX_AGE * 1000 })).toString('base64url'); return `${MEMBER_COOKIE}=${p}.${sign(p)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${MAX_AGE}`; }
 export const clearMemberCookie = () => `${MEMBER_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
 /* sesi orang yang sedang login → { name, team } atau null */
 export function memberOf(req) {
   if (!secret()) return null; const c = cookies(req)[MEMBER_COOKIE]; if (!c || !c.includes('.')) return null;
   const [p, s] = c.split('.'); const a = Buffer.from(sign(p)), b = Buffer.from(String(s)); if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
-  try { const o = JSON.parse(Buffer.from(p, 'base64url').toString('utf8')); return o && o.n && o.x > Date.now() ? { name: o.n, team: o.t } : null; } catch (e) { return null; }
+  try { const o = JSON.parse(Buffer.from(p, 'base64url').toString('utf8')); return o && o.n && o.x > Date.now() ? { name: o.n, team: o.t, nick: o.k || String(o.n).split(' ')[0] } : null; } catch (e) { return null; }
 }
 async function doc(key) { const r = await db().from('gx_docs').select('data,revision').eq('key', key).maybeSingle(); if (r.error) throw r.error; return { data: (r.data && r.data.data) || {}, revision: r.data ? r.data.revision : null }; }
 /* cari nama lengkap di roster HD / AM (huruf besar-kecil & spasi diabaikan) */
 /* login pakai nickname (mis. "Sita"); nama lengkap juga diterima. Nickname kembar → wajib nama lengkap */
 export async function findMember(name) {
   const k = nkey(name); if (!k) return null; const R = await rosters();
-  const full = R.find(m => nkey(m.name) === k); if (full) return { name: full.name, team: full.team };
-  const nk = R.filter(m => nkey(m.nick) === k); if (nk.length === 1) return { name: nk[0].name, team: nk[0].team };
+  const full = R.find(m => nkey(m.name) === k); if (full) return { name: full.name, team: full.team, nick: full.nick };
+  const nk = R.filter(m => nkey(m.nick) === k); if (nk.length === 1) return { name: nk[0].name, team: nk[0].team, nick: nk[0].nick };
   if (nk.length > 1) return { ambiguous: true };
   return null;
 }

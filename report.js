@@ -9,9 +9,10 @@
 // POST /api/report?type=state    → body gzip { S, import_id } fills/settings; 409 if a newer import replaced it
 // POST /api/report?snap=1&title=…&auto=0|1 → body gzip { S, DS } save to history
 // POST /api/report?del=<id>      → delete a history snapshot
+// POST /api/report?snap=1&update=<id>&title=… → body gzip { S, DS } replace that snapshot (same id / viewer link)
 // POST /api/report?check=1       → password check only
 // PUBLISH_KEY set → every POST needs header x-publish-key. Not set → open mode (anyone using the site can save).
-import { AppError, configured, isOpen, keyOk, getMeta, getLatest, publishImport, saveState, saveSnapshot, listSnapshots, getSnapshot, deleteSnapshot, parseGzJson } from './_store.js';
+import { AppError, configured, isOpen, keyOk, getMeta, getLatest, publishImport, saveState, saveSnapshot, listSnapshots, getSnapshot, deleteSnapshot, parseGzJson, updateSnapshot } from './_store.js';
 
 const send = (res, status, body, headers = {}) => {
   res.statusCode = status;
@@ -46,6 +47,7 @@ export default async function handler(req, res) {
     if (!configured()) return json(res, { error: 'storage-not-configured', detail: 'SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY belum diisi di Vercel.' }, 501);
     if (q.has('del')) return json(res, await deleteSnapshot(q.get('del')));
     const p = parseGzJson(await readBody(req));
+    if (q.has('snap') && q.get('update')) return json(res, await updateSnapshot(q.get('update'), p, q.get('title') || ''));
     if (q.has('snap')) return json(res, await saveSnapshot(p, q.get('title') || 'Report', q.get('auto') === '1'));
     const type = q.get('type') || (p.DS ? 'import' : 'state');
     if (type === 'import') return json(res, await publishImport(p));

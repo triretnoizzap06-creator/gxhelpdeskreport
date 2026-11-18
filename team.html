@@ -197,11 +197,12 @@ let ME = ''; try { ME = localStorage.getItem('gx-team-me-' + TEAM) || ''; } catc
 /* ---------- login per orang (nama lengkap + password) ---------- */
 const AUTH = { mem: null, spv: false, cfg: false, members: [] };
 function needLogin() { if (AUTH.cfg) loginModal(); else { toast('Select your name first (top right)'); $('#me').focus(); } }
-async function loadAuth() { try { const r = await fetch('/api/login', { cache: 'no-store', credentials: 'same-origin' }); const j = await r.json(); AUTH.mem = j.member || null; AUTH.spv = !!j.authed; AUTH.cfg = !!j.membersConfigured; } catch (e) {} applyAuth(); }
+async function loadAuth() { try { const r = await fetch('/api/login', { cache: 'no-store', credentials: 'same-origin' }); const j = await r.json(); AUTH.mem = j.member || null; AUTH.spv = !!j.authed; AUTH.cfg = !!j.membersConfigured;
+    if (AUTH.cfg && !AUTH.mem && !AUTH.spv) { location.replace('/login?next=' + encodeURIComponent(location.pathname + location.search + location.hash)); return; } } catch (e) {} applyAuth(); }
 function applyAuth() {
   if (AUTH.mem) ME = AUTH.mem.name; else if (AUTH.spv) ME = 'SPV'; else if (AUTH.cfg) ME = '';
   const legacy = !(AUTH.cfg || AUTH.mem || AUTH.spv); $('#me').style.display = legacy ? '' : 'none'; $('#whoL').style.display = legacy ? '' : 'none';
-  $('#acct').innerHTML = AUTH.mem ? `<span class="acc">👤 <b>${esc(nick(ME))}</b>${AUTH.mem.team !== TEAM ? ` <small>· ${AUTH.mem.team === 'AM' ? 'AM' : 'Helpdesk'}</small>` : ''}</span><button class="btn" type="button" data-pwchg>🔑 Password</button><button class="btn" type="button" data-logout>Logout</button>`
+  $('#acct').innerHTML = AUTH.mem ? `<span class="acc">👤 <b>${esc(AUTH.mem.nick || nick(ME))}</b>${AUTH.mem.team !== TEAM ? ` <small>· ${AUTH.mem.team === 'AM' ? 'AM' : 'Helpdesk'}</small>` : ''}</span><button class="btn" type="button" data-pwchg>🔑 Password</button><button class="btn" type="button" data-logout>Logout</button>`
     : AUTH.spv ? `<span class="acc">⭐ <b>Putri Izza (SPV)</b></span>${AUTH.cfg ? '<button class="btn" type="button" data-login title="Login sebagai anggota tim (pakai nickname)">🔐 Login member</button>' : ''}` : AUTH.cfg ? '<button class="btn pri" type="button" data-login>🔐 Login</button>' : '';
   if (typeof render === 'function') { try { render(); renderDesks(); } catch (e) {} }
   if (AUTH.mem && AUTH.mem.mustChange && !applyAuth.asked) { applyAuth.asked = 1; setTimeout(() => pwModal(true), 400); }
@@ -218,7 +219,7 @@ async function loginModal() {
   el.onclick = e => { if (e.target === el || e.target.closest('[data-x]')) el.remove(); };
   el.querySelector('form').onsubmit = async e => { e.preventDefault(); const b = el.querySelector('button.pri'); b.disabled = true;
     const r = await jget('/api/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ member: 1, name: el.querySelector('[data-f=name]').value, password: el.querySelector('[data-f=pw]').value }) }); b.disabled = false;
-    if (r && r.status === 200) { el.remove(); AUTH.mem = r.j.member; toast('Hai ' + (AUTH.mem.name.split(' ')[0]) + ' 👋'); applyAuth(); loadDesk(); try { renderOffice(); } catch (er) {} }
+    if (r && r.status === 200) { el.remove(); AUTH.mem = r.j.member; toast('Hai ' + (AUTH.mem.nick || AUTH.mem.name.split(' ')[0]) + ' 👋'); applyAuth(); loadDesk(); try { renderOffice(); } catch (er) {} }
     else el.querySelector('.err').textContent = (r && r.j && r.j.detail) || 'Login gagal'; };
 }
 function pwModal(first) {
@@ -239,7 +240,7 @@ function pwModal(first) {
 document.addEventListener('click', async e => {
   if (e.target.closest('[data-login]')) return loginModal();
   if (e.target.closest('[data-pwchg]')) return pwModal(false);
-  if (e.target.closest('[data-logout]')) { await fetch('/api/login?logout=member', { credentials: 'same-origin' }).catch(() => {}); AUTH.mem = null; ME = ''; applyAuth(); toast('Kamu sudah logout'); try { renderOffice(); } catch (er) {} }
+  if (e.target.closest('[data-logout]')) { await fetch('/api/login?logout=member', { credentials: 'same-origin' }).catch(() => {}); location.replace(AUTH.spv ? location.href : '/login?next=' + encodeURIComponent(location.pathname)); }
 });
 $('#me').innerHTML = '<option value="">— select your name —</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${f === ME ? 'selected' : ''}>${esc(k)}</option>`).join('') + `<option value="SPV" ${ME === 'SPV' ? 'selected' : ''}>⭐ Putri Izza (SPV)</option>`;
 $('#me').onchange = e => { ME = e.target.value; try { localStorage.setItem('gx-team-me-' + TEAM, ME); } catch (er) {} render(); renderDesks(); };

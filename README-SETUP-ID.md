@@ -124,6 +124,12 @@ Di pengaturan Repeat Complaint (Import data → kartu Repeat Complaint): **Probl
 - **Traffic per Minute** juga dipisah: **Customer Support Traffic per Minute** dan **VIP Traffic per Minute**. Tile pertama = **Total case** periode (sama dengan total di Overview), bukan gabungan CS+VIP lagi.
 
 
+## Halaman Login (Helpdesk Workspace)
+- Begitu `GX_MEMBER_DEFAULT_PASSWORD` diisi, membuka **helpdeskreport.vercel.app** (Beranda) atau Dashboard Helpdesk / AM langsung diarahkan ke halaman **/login**.
+- Tim: username = **nickname** (mis. Sita, Bagas) + password. Login pertama → langsung diminta ganti password.
+- SPV: username **putri** (atau **spv** / **tri.retno**) + password dashboard SPV (`GX_DASH_PASSWORD`).
+- Tombol **Logout** ada di kanan atas Beranda dan Dashboard tim. Knowledge Base & link viewer report tetap bisa dibuka tanpa login.
+
 ## Login per orang (Dashboard Helpdesk / AM & Virtual Office)
 - Tiap anggota login pakai **nickname** (sesuai daftar 👥 Team, mis. Sita / Bagas; nama lengkap juga bisa) + password. Kalau ada nickname kembar, pakai nama lengkap. Password awal diisi SPV di **Vercel → Settings → Environment Variables → `GX_MEMBER_DEFAULT_PASSWORD`** (isi dengan password awal yang sudah kamu tentukan), lalu **Redeploy**. Password ini tidak ditulis di kode/ZIP.
 - Login pertama kali → muncul "Ganti password awal". Ganti kapan saja lewat tombol **🔑 Password**. Password baru disimpan sebagai hash (scrypt) di Supabase `gx_docs` `member-auth`.
@@ -144,6 +150,12 @@ Di pengaturan Repeat Complaint (Import data → kartu Repeat Complaint): **Probl
 ## Virtual Office 3D
 - Default tampil **3D 360°**: drag untuk memutar, Ctrl + scroll / pinch untuk zoom, tombol ⟲ ⟳ untuk putar 45°, panah untuk geser, **🌀 Vibe mode** untuk auto-rotate, **📍 Me** untuk fokus ke avatarmu. Tombol **🗺 2D** untuk kembali ke tampilan isometrik (pilihan tersimpan per browser). Kalau perangkat tidak mendukung 3D (WebGL), otomatis 2D.
 - 3D memakai three.js dari CDN (cdnjs / jsdelivr).
+
+## Helpdesk Report — History Weekly & Monthly
+- Tombol **History** → pilih jenis **📅 Weekly report** / **🗓 Monthly report** (otomatis ditebak dari periode) → **Save now**. Daftar dipisah per tab Weekly / Monthly / All.
+- **⟳ Update** di daftar = ganti isi snapshot itu dengan report saat ini. **ID & link viewer tetap sama**, jadi orang yang membuka link langsung melihat versi terbaru.
+- Saat membuka snapshot (bar kuning) lalu mengubah sesuatu → **⟳ Save changes to this snapshot**.
+- Save dengan judul (jenis + periode) yang sudah ada → ditawarkan untuk memperbarui, bukan membuat duplikat. Selesai Present juga otomatis memperbarui snapshot periode yang sama.
 
 ## Helpdesk Report — History lebih cepat
 - Link snapshot (`?view=1&snap=…`) langsung membuka snapshot tanpa mengunduh data terbaru dulu. Snapshot di-cache di browser (12 terakhir) dan di CDN Vercel, jadi dibuka kedua kalinya hampir instan.

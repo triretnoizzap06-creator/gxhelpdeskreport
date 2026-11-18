@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>GX CS Dashboard</title>
 <link rel="icon" href="mark.png">
+<style>html.gating body{visibility:hidden}.who{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600}.who button{border:1px solid rgba(127,127,127,.3);background:none;color:inherit;border-radius:8px;padding:5px 10px;font:inherit;font-size:12.5px;cursor:pointer}</style>
+<script>/* wajib login dulu (halaman /login) kalau login per orang aktif */
+(function(){var d=document.documentElement;d.classList.add('gating');var t=setTimeout(function(){d.classList.remove('gating')},3000);
+fetch('/api/login',{cache:'no-store',credentials:'same-origin'}).then(function(r){return r.json()}).then(function(j){window.GXUSER=j;
+  if(j&&j.membersConfigured&&!j.member&&!j.authed){location.replace('/login?next='+encodeURIComponent(location.pathname+location.search+location.hash));return}
+  clearTimeout(t);d.classList.remove('gating');var w=document.getElementById('who');if(w&&j&&(j.member||j.authed)){w.innerHTML='<span>'+(j.member?'👤 '+String(j.member.nick||j.member.name).replace(/[<>&]/g,''):'⭐ Putri Izza (SPV)')+'</span><button type="button" id="logoutBtn">Logout</button>';
+    document.getElementById('logoutBtn').onclick=function(){fetch('/api/login?logout=member',{credentials:'same-origin'}).finally(function(){location.href='/api/login?logout=1'})}}
+}).catch(function(){clearTimeout(t);d.classList.remove('gating')})})();</script>
 <script>(function(){try{var m=localStorage.getItem("gx-theme");if(m==="dark"||m==="light")document.documentElement.setAttribute("data-theme",m)}catch(e){}})()</script>
 <style>
 :root{
@@ -62,6 +70,7 @@ footer b{color:#E0A800;font-weight:600}
   <img class="logo lt" src="wordmark.png" alt="GlobalXtreme">
   <img class="logo dk" src="wordmark-white.png" alt="GlobalXtreme">
   <div class="sp"></div>
+  <span class="who" id="who"></span>
   <div class="lang" role="group" aria-label="Language">
     <button data-lang="id">ID</button><button data-lang="en">EN</button>
   </div>

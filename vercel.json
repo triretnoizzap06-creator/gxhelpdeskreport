@@ -41,6 +41,10 @@
       "use": "@vercel/static"
     },
     {
+      "src": "login.html",
+      "use": "@vercel/static"
+    },
+    {
       "src": "team.html",
       "use": "@vercel/static"
     },
@@ -169,6 +173,10 @@
     {
       "src": "/management-report/?",
       "dest": "/report-view.html"
+    },
+    {
+      "src": "/login/?",
+      "dest": "/login.html"
     },
     {
       "src": "/",

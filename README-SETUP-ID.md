@@ -113,10 +113,12 @@ Di pengaturan Repeat Complaint (Import data → kartu Repeat Complaint): **Probl
 - Baca & copy template terbuka untuk tim; ubah desk (foto/template) perlu password tim. Data disimpan di Supabase `gx_docs` (team-desk-hd / team-desk-am). Jangan simpan nomor HP / email customer di template.
 
 ## Update — traffic per jam & desk animasi
-- **Helpdesk Report:** slide "After Sales Traffic by Hour" dipecah jadi **Customer Support Traffic by Hour** (tiket CS saja) dan **VIP Traffic by Hour** (tiket VIP Group saja). Snapshot di **History** (dulu "Riwayat") yang dibuka ulang otomatis memakai 2 slide ini. Tool History sekarang berbahasa Inggris.
+- **Helpdesk Report:** slide "After Sales Traffic by Hour" dan "Traffic per Minute" dipecah jadi **Customer Support Traffic by Hour** (tiket CS saja) dan **VIP Traffic by Hour** (tiket VIP Group saja). Snapshot di **History** (dulu "Riwayat") yang dibuka ulang otomatis memakai 2 slide ini. Tool History sekarang berbahasa Inggris.
 - VIP Traffic by Hour butuh file VIP yang punya jam Created (export tiket). Kalau file VIP hanya berisi tanggal, slide menampilkan "Jam Created tidak tersedia".
 - **Desk animasi:** tiap anggota punya ilustrasi meja kantor beranimasi (foto di kursi, layar mengetik, kopi berasap, tanaman bergoyang, jam berjalan, jendela siang/sore/malam sesuai jam). Item meja dipilih di **✎ Profile → Desk items** (window, clock, shelf, lamp, coffee, plant, headset, cat, photo frame, sticky notes). Badge oranye di monitor = jumlah task terbuka. Animasi otomatis mati kalau perangkat memakai setting "reduce motion".
 - **Virtual Office (isometrik):** satu kantor 3D untuk Helpdesk, Account Manager, dan **SPV Room (Putri Izza)**. Avatar full-body (wajah = foto desk) duduk di mejanya, sesekali jalan ke pantry, printer, lounge, meeting room, atau mampir ke meja teman. Ada kucing kantor juga 🐱.
   - **☕ Break / 📅 Meeting / 💻 Working:** pilih nama di "I am", lalu klik status → avatar jalan ke sofa lounge / kursi meeting dan tetap di sana sampai kembali Working (otomatis kembali setelah 4 jam). Status terlihat oleh semua (disimpan di board tim).
   - **Putri Izza (SPV):** pilih "⭐ Putri Izza (SPV)" di "I am". Status & desk SPV hanya bisa diubah kalau sudah login SPV. Foto SPV di-upload dari desk SPV di Dashboard Helpdesk.
   - Warna garis meja: hijau = clear, oranye = ada task, merah = overdue, emas = SPV. Barang di meja (kopi, tanaman, lampu, kucing, frame, headset) mengikuti Desk items di Profile. ⏸ Pause menghentikan jalan-jalan.
+
+- **Traffic per Minute** juga dipisah: **Customer Support Traffic per Minute** dan **VIP Traffic per Minute**. Tile pertama = **Total case** periode (sama dengan total di Overview), bukan gabungan CS+VIP lagi.

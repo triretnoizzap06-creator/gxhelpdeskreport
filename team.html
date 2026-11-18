@@ -114,7 +114,7 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 .scene .spin{animation:spin 60s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
 .dk:hover .scene .typ{animation-duration:1.8s}
 @media (prefers-reduced-motion:reduce){.scene *{animation:none!important}}
-.office{margin-bottom:22px}.ofscroll{overflow-x:auto;border-radius:18px;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,#F8FAFC,#EEF2F7);border:1px solid var(--line)}.ofc{position:relative;min-width:860px}.ofsvg{display:block;width:100%;height:auto}
+.office{margin-bottom:22px}.ofscroll{overflow-x:auto;border-radius:18px;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,#F8FAFC,#EEF2F7);border:1px solid var(--line)}.ofc{position:relative;touch-action:pan-y;user-select:none;-webkit-user-select:none}.ofc.zoomed{cursor:grab}.ofc.zoomed:active{cursor:grabbing}.ofz{display:inline-flex;gap:6px;align-items:center}.ofz .btn{min-width:38px;padding:6px 10px}.ofz b{font-size:12px;min-width:42px;text-align:center;color:var(--muted)}.ofsvg{display:block;width:100%;height:auto}
 .ofh{font-size:12px;color:var(--muted);margin:6px 2px 0}.ofl{display:inline-flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}.ofl i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-left:6px}
 .ofbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
 #ofl [data-od]{cursor:pointer}.wkr{cursor:pointer}.wkr .lab{transition:opacity .2s}
@@ -141,7 +141,7 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
   <div class="hero"><div class="ic" id="heroIc">🎧</div><div><h1 id="title"></h1><p id="sub"></p></div>
     <label class="who">I am: <select id="me"></select><button class="btn" id="teamBtn" type="button" title="Add / remove team members">👥 Team</button></label></div>
   <section class="office"><div class="tools-h"><h2>Virtual Office</h2><span class="sp"></span><span class="ofl"><i style="background:#2F9E44"></i>Clear <i style="background:#E8590C"></i>Open tasks <i style="background:#E03131"></i>Overdue <i style="background:#D97706"></i>SPV</span><button class="btn" id="offPause" type="button">⏸ Pause</button></div>
-    <div class="ofbar" id="ofPres"></div><div class="ofscroll"><div class="ofc" id="ofc"></div></div><p class="ofh">Helpdesk, Account Manager &amp; Supervisor in one office — set ☕ Break or 📅 Meeting and your avatar walks there. Click a desk or person to open their desk.</p></section>
+    <div class="ofbar"><span id="ofPres" class="ofbar" style="margin:0"></span><span class="sp" style="flex:1"></span><span class="ofz"><button class="btn" id="ofZout" type="button" aria-label="Zoom out">−</button><b id="ofZoomL">100%</b><button class="btn" id="ofZin" type="button" aria-label="Zoom in">+</button><button class="btn" id="ofZfit" type="button">Fit</button><button class="btn" id="ofZme" type="button">📍 Me</button></span></div><div class="ofscroll"><div class="ofc" id="ofc"></div></div><p class="ofh">Helpdesk, Account Manager &amp; Supervisor in one office — set ☕ Break or 📅 Meeting and your avatar walks there. Click a desk or person to open their desk · zoom with + / −, Ctrl + scroll or pinch, drag to move around.</p></section>
   <section class="desks"><div class="tools-h"><h2>Desks</h2><span class="sp"></span><span style="font-size:12px;color:var(--muted)">Each person's own desk — photo, message templates, tasks &amp; notes.</span><button class="btn pri" id="myDesk" type="button">🪑 My desk</button></div><div class="dgrid" id="desks"></div></section>
   <div id="banner"></div>
   <div class="kpis" id="kpis"></div>
@@ -719,7 +719,7 @@ function avatarSvg(p) {
     <rect x="-9.5" y="-37" width="19" height="22" rx="6" fill="${spv ? '#9A3412' : '#1F2937'}"/><path d="M-4 -37l4 6 4-6" fill="none" stroke="#F5C518" stroke-width="2"/>
     <clipPath id="${id}"><circle cx="0" cy="-50" r="12"/></clipPath><circle cx="0" cy="-50" r="13.5" fill="${spv ? '#F5C518' : '#fff'}"/><circle cx="0" cy="-50" r="12" fill="#52525B"/>
     <text x="0" y="-46" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="system-ui,sans-serif">${esc(spv ? 'PI' : initials(p.name))}</text>
-    ${src ? `<image href="${esc(src)}" x="-12" y="-62" width="24" height="24" preserveAspectRatio="xMidYMin slice" clip-path="url(#${id})"/>` : ''}
+    ${src ? `<image href="${esc(src)}" x="-12" y="-62" width="24" height="24" preserveAspectRatio="xMidYMin slice" clip-path="url(#${id})" onerror="this.remove()"/>` : ''}
     ${hs ? '<path d="M-13 -51a13 13 0 0 1 26 0" fill="none" stroke="#111" stroke-width="2.4"/><rect x="-15" y="-54" width="4" height="8" rx="2" fill="#111"/><rect x="11" y="-54" width="4" height="8" rx="2" fill="#111"/>' : ''}
     ${spv ? '<path d="M-7 -66l3 4 4-6 4 6 3-4v6h-14z" fill="#F5C518" stroke="#B45309" stroke-width=".8"/>' : ''}</g></g>`; }
 /* ---------- layout ---------- */
@@ -739,7 +739,8 @@ function layout() {
   for (let x = 1; x < GW - 1; x += 3) F.push(`<polygon points="${pts([P2(x, 0, 14), P2(x + 2.4, 0, 14), P2(x + 2.4, 0, WH - 10), P2(x, 0, WH - 10)])}" fill="url(#ofsky)" stroke="#fff" stroke-width="3"/>`
     + (hr < 6 || hr >= 19 ? `<circle class="tw" cx="${P2(x + 1.2, 0, 60)[0]}" cy="${P2(x + 1.2, 0, 60)[1]}" r="1.4" fill="#fff"/>` : `<ellipse class="cloud" cx="${P2(x + .8, 0, 62)[0]}" cy="${P2(x + .8, 0, 62)[1]}" rx="9" ry="3.5" fill="#fff" opacity=".85"/>`));
   F.push(`<polygon points="${pts([P2(0, 0, WH), P2(GW, 0, WH), P2(GW, 0, WH + 6), P2(0, 0, WH + 6)])}" fill="#CBD5E1"/><polygon points="${pts([P2(0, 0, WH), P2(0, GH, WH), P2(0, GH, WH + 6), P2(0, 0, WH + 6)])}" fill="#D6C9B8"/>`);
-  { const a = P2(0, 2.2, 32), b = P2(0, 5.6, 32), c = P2(0, 5.6, 70), d = P2(0, 2.2, 70), t = P2(0, 5.35, 45); F.push(`<polygon points="${pts([a, b, c, d])}" fill="#1D1D1F" stroke="#F5C518" stroke-width="2"/><text transform="matrix(1,-.5,0,1,${t[0].toFixed(1)},${t[1].toFixed(1)})" font-size="15.5" font-weight="900" fill="#F5C518" font-family="system-ui,sans-serif">globalxtreme</text>`); }
+  { const a = P2(0, 1.4, 30), b = P2(0, 6, 30), c = P2(0, 6, 74), d = P2(0, 1.4, 74), t = P2(0, 5.72, 64);   // logo GlobalXtreme di dinding
+    F.push(`<polygon points="${pts([a, b, c, d])}" fill="#FFFFFF" stroke="#E4E4E7" stroke-width="2"/><polygon points="${pts([P2(0, 1.4, 30), P2(0, 6, 30), P2(0, 6, 33), P2(0, 1.4, 33)])}" fill="#F5C518"/><image href="gx-logo.png" width="138" height="23.8" transform="matrix(1,-.5,0,1,${t[0].toFixed(1)},${t[1].toFixed(1)})"/>`); }
   F.push(floorText(1.4, corY - .75, 'HELPDESK', '#B08900'), floorText(16.4, corY - .75, 'ACCOUNT MANAGER', '#4C55B8'), floorText(11.4, 1.1, 'SPV ROOM', '#B45309', 12), floorText(.6, B + .3, 'LOUNGE & PANTRY', '#64748B', 13), floorText(16.4, B + .3, 'MEETING ROOM', '#047857', 13));
   /* meja kerja */
   const people = [];
@@ -798,6 +799,7 @@ function renderOffice() {
   OF.sig = sig; OF.L = L; AVN = 0;
   const c = [P2(0, L.GH)[0] - 20, P2(L.GW, 0)[0] + 20, P2(0, 0, WH + 10)[1] - 30, P2(L.GW, L.GH)[1] + 30];
   L.S.sort((a, b) => a.d - b.d);
+  OF.vb0 = [c[0], c[2], c[1] - c[0], c[3] - c[2]]; if (!OF.view) OF.view = { s: innerWidth < 700 ? 2.2 : 1, cx: c[0] + (c[1] - c[0]) * (innerWidth < 700 ? (TEAM === 'AM' ? .72 : .3) : .5), cy: c[2] + (c[3] - c[2]) * (innerWidth < 700 ? .42 : .5) };
   box_.innerHTML = `<svg class="ofsvg" viewBox="${c[0]} ${c[2]} ${c[1] - c[0]} ${c[3] - c[2]}" aria-label="Virtual office"><g>${L.F.join('')}</g><g id="ofl">${L.S.map(x => x.s).join('')}</g></svg>`;
   const layer = box_.querySelector('#ofl'), els = [...layer.children]; OF.items = L.S.map((x, i) => ({ d: x.d, el: els[i] }));
   const old = new Map(OF.W.map(w => [w.p.tm + '|' + w.p.name, w])); OF.W = [];
@@ -808,7 +810,7 @@ function renderOffice() {
     OF.W.push(w); layer.appendChild(g); syncPresence(w); });
   if (!OF.cat) OF.cat = { x: 9.5, y: L.corY + .5, q: [], wait: 2 };
   { const g = document.createElementNS('http://www.w3.org/2000/svg', 'g'); g.setAttribute('class', 'cat'); g.innerHTML = '<g class="flip"><ellipse cx="0" cy="0" rx="9" ry="3" fill="#000" opacity=".15"/><ellipse cx="0" cy="-6" rx="9" ry="5.5" fill="#3F3F46"/><circle cx="-8" cy="-11" r="4.6" fill="#3F3F46"/><path d="M-12 -14l1-5 3 3zM-7 -14l1-5 2 4z" fill="#3F3F46"/><circle cx="-9.5" cy="-11" r=".9" fill="#FDE047"/><path class="ctail" d="M8 -7q8 -2 7 -12" stroke="#3F3F46" stroke-width="2.6" fill="none" stroke-linecap="round"/></g>'; layer.appendChild(g); OF.cat.g = g; }
-  if (TEAM === 'AM' && !OF.scrolled) { OF.scrolled = 1; const sc = box_.parentElement; sc.scrollLeft = sc.scrollWidth; }
+  applyView();
   drawLabels(); OF.W.forEach(place); place(OF.cat); start(); renderPresenceBar();
 }
 function drawLabels() { OF.W.forEach(w => { const ps = presenceOf(w.p.name), ic = ps === 'break' ? '☕ ' : ps === 'meet' ? '📅 ' : '', n = w.p.st.open && w.p.name !== 'SPV' ? ` · ${w.p.st.open}` : '', t = ic + w.p.nk + (w.p.name === 'SPV' ? ' · SPV' : '') + n, wd = t.length * 5.6 + 14;
@@ -847,6 +849,25 @@ function frame(t) {
       const pth = tgt && bfs(L, [Math.floor(c.x), Math.floor(c.y)], tgt); c.q = pth ? pth.slice(0, 12) : []; c.wait = 3 + Math.random() * 7; } c.g.classList.toggle('walking', c.q.length > 0); place(c); }
   start(); }
 function start() { if (!OF.raf) OF.raf = requestAnimationFrame(frame); }
+/* ---------- zoom & geser (tombol, Ctrl/⌘ + scroll, pinch, drag) ---------- */
+function applyView() { const v = OF.view, b = OF.vb0, svg = $('#ofc svg'); if (!v || !b || !svg) return; v.s = Math.max(1, Math.min(4, v.s));
+  const w = b[2] / v.s, h = b[3] / v.s; v.cx = Math.max(b[0] + w / 2, Math.min(b[0] + b[2] - w / 2, v.cx)); v.cy = Math.max(b[1] + h / 2, Math.min(b[1] + b[3] - h / 2, v.cy));
+  svg.setAttribute('viewBox', `${(v.cx - w / 2).toFixed(1)} ${(v.cy - h / 2).toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`); const z = $('#ofZoomL'); if (z) z.textContent = Math.round(v.s * 100) + '%'; $('#ofc').classList.toggle('zoomed', v.s > 1.01); }
+function svgPt(ev) { const svg = $('#ofc svg'), r = svg.getBoundingClientRect(), vb = svg.viewBox.baseVal; return [vb.x + (ev.clientX - r.left) / r.width * vb.width, vb.y + (ev.clientY - r.top) / r.height * vb.height]; }
+function zoomAt(f, pt) { const v = OF.view; if (!v) return; const s2 = Math.max(1, Math.min(4, v.s * f)), k = v.s / s2; if (pt) { v.cx = pt[0] + (v.cx - pt[0]) * k; v.cy = pt[1] + (v.cy - pt[1]) * k; } v.s = s2; applyView(); }
+{ const el = $('#ofc'), P = new Map(); let drag = null, moved = false, pinch = null;
+  el.addEventListener('wheel', e => { if (!(e.ctrlKey || e.metaKey)) return; e.preventDefault(); zoomAt(e.deltaY < 0 ? 1.15 : 1 / 1.15, svgPt(e)); }, { passive: false });
+  el.addEventListener('pointerdown', e => { P.set(e.pointerId, e); moved = false; if (P.size === 1) drag = { x: e.clientX, y: e.clientY, cx: OF.view.cx, cy: OF.view.cy };
+    if (P.size === 2) { const [a, b] = [...P.values()]; pinch = { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), s: OF.view.s }; drag = null; } });
+  el.addEventListener('pointermove', e => { if (!P.has(e.pointerId)) return; P.set(e.pointerId, e);
+    if (pinch && P.size === 2) { const [a, b] = [...P.values()], d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); OF.view.s = pinch.s * d / pinch.d; applyView(); moved = true; return; }
+    if (!drag || OF.view.s <= 1.01) return; const svg = $('#ofc svg'), r = svg.getBoundingClientRect(), k = OF.vb0[2] / OF.view.s / r.width, dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (Math.abs(dx) + Math.abs(dy) > 4) { moved = true; el.setPointerCapture && el.setPointerCapture(e.pointerId); } OF.view.cx = drag.cx - dx * k; OF.view.cy = drag.cy - dy * k; applyView(); });
+  const end = e => { P.delete(e.pointerId); if (P.size < 2) pinch = null; if (!P.size) drag = null; }; el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
+  el.addEventListener('click', e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+  el.addEventListener('dblclick', e => { e.preventDefault(); zoomAt(1.6, svgPt(e)); });
+  $('#ofZin').onclick = () => zoomAt(1.3); $('#ofZout').onclick = () => zoomAt(1 / 1.3); $('#ofZfit').onclick = () => { OF.view.s = 1; applyView(); };
+  $('#ofZme').onclick = () => { const w = OF.W.find(v => v.p.name === ME && (v.p.tm === TEAM || ME === 'SPV')); if (!w) { toast('Select your name first (I am)'); return; } const [X, Y] = P2(w.x, w.y); OF.view.s = Math.max(OF.view.s, 2.4); OF.view.cx = X; OF.view.cy = Y - 40; applyView(); }; }
 /* ---------- status bar ---------- */
 function renderPresenceBar() { const el = $('#ofPres'); if (!el) return; const me = ME, ps = me ? presenceOf(me) : '';
   el.innerHTML = me ? [['work', '💻 Working'], ['break', '☕ Break'], ['meet', '📅 Meeting']].map(([k, l]) => `<button class="chip" type="button" data-pres="${k}" aria-pressed="${ps === k}">${l}</button>`).join('') : '<span class="ofh" style="margin:0">Select your name (I am) to set Break / Meeting</span>'; }

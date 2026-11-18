@@ -100,6 +100,35 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 .tp .tph{display:flex;gap:6px;align-items:flex-start}.tp .tph b{flex:1;font-size:13.5px}.tp .tx{font-size:12.8px;color:#3F3F46;white-space:pre-wrap;line-height:1.45;max-height:118px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 75%,transparent)}
 .tp .tx.open{max-height:none;-webkit-mask-image:none}.tp .tf{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:auto}.tp .tf small{color:var(--muted);font-size:11px;margin-right:auto}
 .cbtn{background:var(--ink);color:#fff;border:0;border-radius:8px;padding:6px 12px;font-weight:700;font-size:12.5px;cursor:pointer}
+.dk .tl:empty{display:none}.dk{padding:0 0 12px!important}.dk::before{display:none}.dk .scene{width:100%;display:block;border-bottom:1px solid var(--line);margin-bottom:6px}.dk .em{z-index:1;background:#fff;border-radius:99px;padding:1px 5px;box-shadow:0 1px 3px rgba(0,0,0,.12)}.dk b,.dk .tl,.dk .st{padding:0 10px}
+.dsk-h .scene{width:300px;max-width:100%;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.10);flex:none}.pv .scene{width:100%;border-radius:12px;border:1px solid var(--line)}.pv{margin:4px 0 12px}
+.props{display:flex;flex-wrap:wrap;gap:6px}.pchip{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-size:12.5px}.pchip input{accent-color:#1D1D1F;margin:0}
+.scene .brth{animation:brth 4.5s ease-in-out infinite}@keyframes brth{50%{transform:translateY(.8px)}}
+.scene .stm{opacity:0;animation:stm 3s ease-in-out infinite}@keyframes stm{0%{opacity:0;transform:translateY(3px)}35%{opacity:.75}100%{opacity:0;transform:translateY(-9px)}}
+.scene .sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 5s ease-in-out infinite}@keyframes sway{50%{transform:rotate(4deg)}}
+.scene .typ{transform-box:fill-box;transform-origin:0 50%;animation:typ 3.6s steps(14) infinite}@keyframes typ{0%{transform:scaleX(0)}55%,100%{transform:scaleX(1)}}
+.scene .cur,.scene .tw{animation:blink 1.1s steps(1) infinite}@keyframes blink{50%{opacity:0}}
+.scene .tail{transform-box:fill-box;transform-origin:0% 100%;animation:tail 2.6s ease-in-out infinite}@keyframes tail{50%{transform:rotate(-16deg)}}
+.scene .glow{animation:glow 3.2s ease-in-out infinite}@keyframes glow{50%{opacity:.45}}
+.scene .cloud{animation:cloud 16s linear infinite}@keyframes cloud{from{transform:translateX(-26px)}to{transform:translateX(46px)}}
+.scene .spin{animation:spin 60s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.dk:hover .scene .typ{animation-duration:1.8s}
+@media (prefers-reduced-motion:reduce){.scene *{animation:none!important}}
+.office{margin-bottom:22px}.ofscroll{overflow-x:auto;border-radius:18px;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,#F8FAFC,#EEF2F7);border:1px solid var(--line)}.ofc{position:relative;min-width:860px}.ofsvg{display:block;width:100%;height:auto}
+.ofh{font-size:12px;color:var(--muted);margin:6px 2px 0}.ofl{display:inline-flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}.ofl i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-left:6px}
+.ofbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
+#ofl [data-od]{cursor:pointer}.wkr{cursor:pointer}.wkr .lab{transition:opacity .2s}
+.wkr .lg,.wkr .arm{transform-box:fill-box;transform-origin:50% 0}
+.wkr.walking .l1,.wkr.walking .a2{animation:swing .38s ease-in-out infinite alternate}.wkr.walking .l2,.wkr.walking .a1{animation:swing .38s ease-in-out infinite alternate-reverse}
+@keyframes swing{from{transform:rotate(-24deg)}to{transform:rotate(24deg)}}
+.wkr.walking .up{animation:bob2 .38s ease-in-out infinite alternate}@keyframes bob2{to{transform:translateY(-1.5px)}}
+.wkr.sit .legs{display:none}.wkr.sit .up{transform:translateY(9px)}.wkr.sit .avb>ellipse{display:none}
+.wkr:not(.walking):not(.sit) .up{animation:breathe 3s ease-in-out infinite}@keyframes breathe{50%{transform:translateY(.8px)}}
+.cat .ctail{transform-box:fill-box;transform-origin:0 100%;animation:tail 2.2s ease-in-out infinite}.cat.walking .flip{animation:bob2 .3s infinite alternate}
+.sway2{transform-box:fill-box;transform-origin:50% 100%;animation:sway 5s ease-in-out infinite}
+.ofsvg .cloud{animation:cloud2 14s ease-in-out infinite alternate}@keyframes cloud2{to{transform:translateX(14px)}}.ofsvg .tw{animation:blink 1.6s steps(1) infinite}
+.ofsteam{animation:stm 2.6s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.ofsvg *{animation:none!important}}
 .hint{font-size:12px;color:var(--muted);margin:2px 0 10px}.tp .tag{font-size:11px;padding:2px 8px}
 @media (max-width:640px){.dgrid{grid-template-columns:repeat(2,1fr)}.dsk-h{margin:-20px -16px 14px}.mdb{padding:20px 16px}}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1D1D1F;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:80;opacity:0;transition:opacity .2s}.toast.on{opacity:1}
@@ -111,6 +140,8 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 <main>
   <div class="hero"><div class="ic" id="heroIc">🎧</div><div><h1 id="title"></h1><p id="sub"></p></div>
     <label class="who">I am: <select id="me"></select><button class="btn" id="teamBtn" type="button" title="Add / remove team members">👥 Team</button></label></div>
+  <section class="office"><div class="tools-h"><h2>Virtual Office</h2><span class="sp"></span><span class="ofl"><i style="background:#2F9E44"></i>Clear <i style="background:#E8590C"></i>Open tasks <i style="background:#E03131"></i>Overdue <i style="background:#D97706"></i>SPV</span><button class="btn" id="offPause" type="button">⏸ Pause</button></div>
+    <div class="ofbar" id="ofPres"></div><div class="ofscroll"><div class="ofc" id="ofc"></div></div><p class="ofh">Helpdesk, Account Manager &amp; Supervisor in one office — set ☕ Break or 📅 Meeting and your avatar walks there. Click a desk or person to open their desk.</p></section>
   <section class="desks"><div class="tools-h"><h2>Desks</h2><span class="sp"></span><span style="font-size:12px;color:var(--muted)">Each person's own desk — photo, message templates, tasks &amp; notes.</span><button class="btn pri" id="myDesk" type="button">🪑 My desk</button></div><div class="dgrid" id="desks"></div></section>
   <div id="banner"></div>
   <div class="kpis" id="kpis"></div>
@@ -145,14 +176,14 @@ const CFG = CFGS[TEAM];
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const safeUrl = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : '';
-const nick = n => n === 'SPV' ? '⭐ SPV' : (CFG.roster.find(r => r[0] === n) || [, n])[1];
+const nick = n => n === 'SPV' ? '⭐ Putri (SPV)' : (CFG.roster.find(r => r[0] === n) || [, n])[1];
 const LINKSVG = '<svg viewBox="0 0 24 24"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
 function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2400); }
 document.title = CFG.title; document.body.classList.toggle('am', TEAM === 'AM');
 $('#title').textContent = CFG.title; $('#sub').textContent = CFG.sub; $('#heroIc').textContent = CFG.icon;
 $('#switch').textContent = TEAM === 'AM' ? '→ Dashboard Helpdesk' : '→ Dashboard AM'; $('#switch').href = TEAM === 'AM' ? '/dashboard-helpdesk' : '/dashboard-am';
 let ME = ''; try { ME = localStorage.getItem('gx-team-me-' + TEAM) || ''; } catch (e) {}
-$('#me').innerHTML = '<option value="">— select your name —</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${f === ME ? 'selected' : ''}>${esc(k)}</option>`).join('');
+$('#me').innerHTML = '<option value="">— select your name —</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${f === ME ? 'selected' : ''}>${esc(k)}</option>`).join('') + `<option value="SPV" ${ME === 'SPV' ? 'selected' : ''}>⭐ Putri Izza (SPV)</option>`;
 $('#me').onchange = e => { ME = e.target.value; try { localStorage.setItem('gx-team-me-' + TEAM, ME); } catch (er) {} render(); renderDesks(); };
 /* ======================= Tools & Access (editable by SPV; passwords stored server-side only) ======================= */
 const newId = () => 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -357,7 +388,7 @@ const PKEY = 'gx-preview-board-' + TEAM;
 function applyRoster() {
   const R = (BD.data.roster && BD.data.roster.length ? BD.data.roster : (BD.data.roster ? [] : DEF_ROSTER));
   CFG.roster = R.map(x => [x.name, x.nick || x.name.split(' ')[0]]);
-  $('#me').innerHTML = '<option value="">— select your name —</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${f === ME ? 'selected' : ''}>${esc(k)}</option>`).join('');
+  $('#me').innerHTML = '<option value="">— select your name —</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${f === ME ? 'selected' : ''}>${esc(k)}</option>`).join('') + `<option value="SPV" ${ME === 'SPV' ? 'selected' : ''}>⭐ Putri Izza (SPV)</option>`;
   $('#nTo').innerHTML = '<option value="">For: whole team</option><option value="SPV">For: ⭐ SPV (review / info)</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}">For: ${esc(k)}</option>`).join('');
   if (typeof renderDesks === 'function') renderDesks();
 }
@@ -476,7 +507,7 @@ async function loadDesk() {
 function localDesk(b) {
   const D = DK.data, me = D.desks[b.name] = D.desks[b.name] || { tpls: [] }, now = new Date().toISOString();
   if (b.op === 'photo') me.photo = b.photo;
-  else if (b.op === 'profile') Object.assign(me, { tagline: b.tagline, emoji: b.emoji, color: b.color || me.color });
+  else if (b.op === 'profile') Object.assign(me, { tagline: b.tagline, emoji: b.emoji, color: b.color || me.color, props: b.props || me.props });
   else if (b.op === 'tpl.add') me.tpls.unshift({ id: 'l' + Date.now().toString(36), title: b.title, cat: b.cat, text: b.text, at: now, updated_at: now, uses: 0 });
   else if (b.op === 'tpl.upd') { const y = me.tpls.find(z => z.id === b.id); if (y) Object.assign(y, { title: b.title, cat: b.cat, text: b.text, updated_at: now }); }
   else if (b.op === 'tpl.del') me.tpls = me.tpls.filter(z => z.id !== b.id);
@@ -490,10 +521,62 @@ async function dop(b, quiet) {
   if (r && r.status === 401) { DK.canEdit = false; if (DK.open) drawDesk(); }
   if (!quiet) toast((r && r.j && (r.j.detail || r.j.error)) || 'Save failed'); return false;
 }
+/* ---------- Animated office desk (SVG) — properti dipilih tiap orang di ✎ Profile ---------- */
+const PROPS = [['window', '🪟 Window'], ['clock', '🕒 Clock'], ['shelf', '📚 Shelf'], ['lamp', '💡 Lamp'], ['coffee', '☕ Coffee'], ['plant', '🌿 Plant'], ['headset', '🎧 Headset'], ['cat', '🐱 Cat'], ['frame', '🖼 Photo frame'], ['sticky', '🗒 Sticky notes']];
+const DEF_PROPS = TEAM === 'AM' ? ['window', 'clock', 'shelf', 'coffee', 'plant'] : ['window', 'clock', 'coffee', 'plant', 'headset'];
+let SCN = 0;
+function deskScene(n, o = {}) {
+  const d = deskOf(n), P = new Set(o.props || (Array.isArray(d.props) ? d.props : DEF_PROPS)), id = 'sc' + (++SCN), src = d.photo || 'photo-' + slug(n) + '.jpg', wall = o.color || dColor(n);
+  const now = new Date(), hr = now.getHours(), sky = hr >= 6 && hr < 17 ? 'day' : hr >= 17 && hr < 19 ? 'dusk' : 'night';
+  const open = (BD.data.tasks || []).filter(t => t.assignee === n && t.status !== 'DONE').length, nk = String(nick(n)).slice(0, 12);
+  const mA = now.getMinutes() * 6 + now.getSeconds() * .1, hA = (hr % 12) * 30 + now.getMinutes() * .5, sA = now.getSeconds() * 6;
+  const S = [];
+  S.push(`<defs><clipPath id="${id}h"><circle cx="122" cy="58" r="17"/></clipPath><clipPath id="${id}w"><rect x="18" y="14" width="50" height="36" rx="2"/></clipPath>
+    <linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <radialGradient id="${id}l" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#FFE9A8" stop-opacity=".9"/><stop offset="1" stop-color="#FFE9A8" stop-opacity="0"/></radialGradient></defs>
+    <rect width="240" height="150" fill="${esc(wall)}"/><rect width="240" height="100" fill="url(#${id}g)"/><rect y="132" width="240" height="18" fill="#000" opacity=".05"/>`);
+  if (P.has('window')) { const skyC = sky === 'day' ? '#BFE3FF' : sky === 'dusk' ? '#FFC58A' : '#1E2A4A';
+    S.push(`<g clip-path="url(#${id}w)"><rect x="18" y="14" width="50" height="36" fill="${skyC}"/>${sky === 'night'
+      ? `<circle cx="56" cy="24" r="5" fill="#FFF6C9"/><circle cx="58" cy="22.5" r="4.4" fill="${skyC}"/><circle class="tw" cx="28" cy="22" r=".9" fill="#fff"/><circle class="tw" style="animation-delay:.7s" cx="40" cy="30" r=".7" fill="#fff"/><circle class="tw" style="animation-delay:1.3s" cx="34" cy="18" r=".6" fill="#fff"/>`
+      : `<circle cx="${sky === 'day' ? 56 : 30}" cy="${sky === 'day' ? 24 : 44}" r="5" fill="${sky === 'day' ? '#FFD34E' : '#FF8A3D'}"/><g class="cloud"><ellipse cx="30" cy="30" rx="8" ry="3.2" fill="#fff" opacity=".9"/><ellipse cx="35" cy="28.4" rx="5" ry="3" fill="#fff" opacity=".9"/></g>`}</g>
+      <rect x="18" y="14" width="50" height="36" rx="2" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M43 14v36M18 32h50" stroke="#fff" stroke-width="1.6"/><rect x="15" y="50" width="56" height="3" rx="1" fill="#fff" opacity=".9"/>`); }
+  if (P.has('clock')) S.push(`<circle cx="160" cy="24" r="10.5" fill="#fff" stroke="#1D1D1F" stroke-width="1.6"/><circle cx="160" cy="24" r="1" fill="#1D1D1F"/>
+      <line x1="160" y1="24" x2="160" y2="18.5" stroke="#1D1D1F" stroke-width="1.6" stroke-linecap="round" transform="rotate(${hA} 160 24)"/>
+      <line x1="160" y1="24" x2="160" y2="16" stroke="#1D1D1F" stroke-width="1.1" stroke-linecap="round" transform="rotate(${mA} 160 24)"/>
+      <g transform="rotate(${sA} 160 24)"><line class="spin" style="transform-origin:160px 24px" x1="160" y1="25.5" x2="160" y2="15.5" stroke="#E8590C" stroke-width=".6"/></g>`);
+  if (P.has('shelf')) S.push(`<rect x="190" y="46" width="42" height="3" rx="1" fill="#8B6B4A"/><rect x="194" y="32" width="5" height="14" fill="#3B4CCA"/><rect x="199.5" y="34" width="4" height="12" fill="#F5C518"/><rect x="204" y="30" width="5" height="16" fill="#E8590C"/><rect x="210" y="36" width="4" height="10" fill="#34C759" transform="rotate(12 212 46)"/><circle cx="224" cy="42" r="4" fill="#fff"/><path d="M221 42q3-8 6 0" fill="#5BA35B"/>`);
+  if (P.has('lamp')) S.push(`<ellipse class="glow" cx="26" cy="92" rx="18" ry="22" fill="url(#${id}l)"/><path d="M20 100v-2h12v2z" fill="#1D1D1F"/><path d="M26 98l-6-24 12-8" stroke="#1D1D1F" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M27 62l12 4-4 8z" fill="#F5C518" stroke="#1D1D1F" stroke-width="1"/>`);
+  /* orang: badan seragam + foto */
+  S.push(`<g class="brth"><path d="M96 104q0-24 26-25q26 1 26 25z" fill="#1F2937"/><path d="M116 80l6 8 6-8" fill="none" stroke="#F5C518" stroke-width="2"/>
+      <circle cx="122" cy="58" r="18.5" fill="#fff"/><circle cx="122" cy="58" r="17" fill="#3F3F46"/><text x="122" y="62" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" font-family="system-ui,sans-serif">${esc(initials(n))}</text>
+      <image href="${esc(src)}" x="105" y="41" width="34" height="34" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id}h)"/>
+      ${P.has('headset') ? `<path d="M103 58a19 19 0 0 1 38 0" fill="none" stroke="#1D1D1F" stroke-width="2.6"/><rect x="100" y="54" width="5" height="11" rx="2.2" fill="#1D1D1F"/><rect x="139" y="54" width="5" height="11" rx="2.2" fill="#1D1D1F"/><path d="M102 64q2 10 12 9" fill="none" stroke="#1D1D1F" stroke-width="1.3"/><circle cx="115" cy="73" r="1.6" fill="#F5C518"/>` : ''}</g>`);
+  /* monitor + layar mengetik */
+  S.push(`<rect x="36" y="58" width="58" height="38" rx="3" fill="#1D1D1F"/><rect x="39" y="61" width="52" height="30" rx="1.5" fill="#0F172A"/>
+      <text x="42" y="68" font-size="4.6" font-weight="700" fill="#F5C518" font-family="system-ui,sans-serif">${esc(nk)}</text>
+      ${[0, 1, 2, 3].map(i => `<rect class="typ" style="animation-delay:${i * .9}s" x="42" y="${71 + i * 4.6}" width="${[38, 30, 42, 22][i]}" height="2" rx="1" fill="${i === 2 ? '#7DD3FC' : '#94A3B8'}"/>`).join('')}
+      <rect class="cur" x="66" y="84.4" width="1.4" height="3" fill="#fff"/>
+      ${open ? `<rect x="74" y="63" width="15" height="7" rx="3.5" fill="#E8590C"/><text x="81.5" y="68.2" text-anchor="middle" font-size="4.8" font-weight="800" fill="#fff" font-family="system-ui,sans-serif">${open > 99 ? '99+' : open}</text>` : ''}
+      <rect x="62" y="96" width="6" height="4" fill="#3F3F46"/><rect x="54" y="99" width="22" height="2" rx="1" fill="#3F3F46"/>
+      ${P.has('sticky') ? '<rect x="88" y="56" width="8" height="8" fill="#FDE047" transform="rotate(8 92 60)"/><rect x="33" y="84" width="7" height="7" fill="#F9A8D4" transform="rotate(-10 36 88)"/>' : ''}`);
+  /* meja */
+  S.push(`<rect x="104" y="96" width="36" height="4" rx="1" fill="#E4E4E7"/><path d="M107 97.4h30M107 98.8h30" stroke="#A1A1AA" stroke-width=".4" stroke-dasharray="1.2 .8"/>
+      <rect x="8" y="100" width="224" height="7" rx="2" fill="#D9B48A"/><rect x="12" y="107" width="216" height="36" fill="#B88A5E"/><rect x="12" y="107" width="216" height="2" fill="#000" opacity=".12"/>
+      <rect x="180" y="114" width="40" height="22" rx="2" fill="none" stroke="#9C7148" stroke-width="1"/><rect x="196" y="123" width="8" height="2" rx="1" fill="#7A5634"/>
+      <rect x="20" y="114" width="40" height="22" rx="2" fill="none" stroke="#9C7148" stroke-width="1"/><rect x="36" y="123" width="8" height="2" rx="1" fill="#7A5634"/>
+      <rect x="92" y="113" width="60" height="14" rx="2.5" fill="#1D1D1F"/><text x="122" y="122.6" text-anchor="middle" font-size="7" font-weight="800" fill="#F5C518" font-family="system-ui,sans-serif" letter-spacing=".3">${esc(nk)}</text>`);
+  if (P.has('frame')) S.push(`<g transform="rotate(-6 151 94)"><rect x="145" y="87" width="12" height="13" rx="1" fill="#fff" stroke="#8B6B4A" stroke-width="1.2"/><rect x="147" y="89" width="8" height="8" fill="#BFE3FF"/><path d="M147 97l3-4 2 2 3-3v5z" fill="#5BA35B"/></g>`);
+  if (P.has('coffee')) S.push(`<g><path class="stm" d="M164 84q-2-3 0-6t0-6" fill="none" stroke="#A1A1AA" stroke-width="1.1" stroke-linecap="round"/><path class="stm" style="animation-delay:1s" d="M168 84q-2-3 0-6t0-6" fill="none" stroke="#A1A1AA" stroke-width="1.1" stroke-linecap="round"/><path class="stm" style="animation-delay:2s" d="M172 84q-2-3 0-6t0-6" fill="none" stroke="#A1A1AA" stroke-width="1.1" stroke-linecap="round"/>
+      <rect x="161" y="86" width="14" height="14" rx="2.5" fill="#fff" stroke="#1D1D1F" stroke-width="1.1"/><path d="M175 89q5 0 5 4t-5 4" fill="none" stroke="#1D1D1F" stroke-width="1.1"/><rect x="161" y="91" width="14" height="3" fill="#F5C518"/></g>`);
+  if (P.has('cat')) S.push(`<g><path class="tail" d="M196 99q8-2 9-12" fill="none" stroke="#3F3F46" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="190" cy="94" rx="8" ry="6.5" fill="#52525B"/><circle cx="186" cy="85" r="5.5" fill="#52525B"/><path d="M181.5 82l1-5 3.5 3zM190.5 82l-1-5-3.5 3z" fill="#52525B"/><circle cx="184.4" cy="85" r=".9" fill="#FDE047"/><circle cx="188" cy="85" r=".9" fill="#FDE047"/></g>`);
+  if (P.has('plant')) S.push(`<g class="sway"><path d="M216 88q-10-6-12-16q9 3 12 16z" fill="#4C9A5B"/><path d="M216 88q9-7 9-18q-9 5-9 18z" fill="#5BB06C"/><path d="M216 88q-2-12 2-22q4 10-2 22z" fill="#3E8A4E"/></g><path d="M208 88h16l-2 12h-12z" fill="#D97757"/><rect x="207" y="87" width="18" height="3" rx="1" fill="#C0654A"/>`);
+  return `<svg class="scene ${o.big ? 'big' : ''}" viewBox="0 0 240 150" role="img" aria-label="${esc(nick(n))}'s desk">${S.join('')}</svg>`;
+}
 function renderDesks() {
+  try { if ($('#ofc')) renderOffice(); } catch (e) { if (!(e instanceof ReferenceError)) console.error(e); }
   const el = $('#desks'); if (!el) return; const T = BD.data.tasks || [];
   el.innerHTML = CFG.roster.map(([f, k]) => { const d = deskOf(f), open = T.filter(t => t.assignee === f && t.status !== 'DONE').length;
-    return `<div class="dk ${f === ME ? 'me' : ''}" data-desk="${esc(f)}" style="--dc:${esc(dColor(f))}" role="button" tabindex="0">${d.emoji ? `<span class="em">${esc(d.emoji)}</span>` : ''}${avatar(f)}<b>${esc(k)}${f === ME ? ' (me)' : ''}</b><div class="tl">${esc(d.tagline || '')}</div>
+    return `<div class="dk ${f === ME ? 'me' : ''}" data-desk="${esc(f)}" style="--dc:${esc(dColor(f))}" role="button" tabindex="0">${d.emoji ? `<span class="em">${esc(d.emoji)}</span>` : ''}${deskScene(f)}<b>${esc(k)}${f === ME ? ' (me)' : ''}</b><div class="tl">${esc(d.tagline || '')}</div>
       <div class="st"><span>💬 ${(d.tpls || []).length} template</span>${open ? `<span>📋 ${open} open</span>` : ''}</div></div>`; }).join('') || '<div class="empty">No members yet — add them via 👥 Team.</div>';
 }
 const fillVars = (tx, owner) => tx.replace(/\{nama\}/gi, DK.cust || '{nama}').replace(/\{agent\}/gi, nick(owner)).replace(/\{tanggal\}/gi, new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }));
@@ -506,7 +589,7 @@ function drawDesk() {
   const el = $('#deskMd'); if (!el) return; const n = DK.open, d = deskOf(n);
   const T = (BD.data.tasks || []).filter(t => t.assignee === n || (t.by === n && t.assignee === 'SPV')), S = (TASKS || []).filter(t => t.assignee === n);
   const N = (BD.data.notes || []).filter(x => x.to === n || x.by === n).sort((a, b) => String(b.at).localeCompare(String(a.at)));
-  el.innerHTML = `<div class="mdb dsk" style="--dc:${esc(dColor(n))}"><div class="dsk-h">${avatar(n, true)}<div><h3>${d.emoji ? esc(d.emoji) + ' ' : ''}${esc(nick(n))}'s desk</h3><p>${esc(n)}${d.tagline ? ' · ' + esc(d.tagline) : ''}</p></div><span class="sp"></span>
+  el.innerHTML = `<div class="mdb dsk" style="--dc:${esc(dColor(n))}"><div class="dsk-h">${deskScene(n, { big: 1 })}<div><h3>${d.emoji ? esc(d.emoji) + ' ' : ''}${esc(nick(n))}'s desk</h3><p>${esc(n)}${d.tagline ? ' · ' + esc(d.tagline) : ''}</p></div><span class="sp"></span>
       ${DK.canEdit ? `<label class="btn" style="cursor:pointer">📷 Photo<input type="file" accept="image/*" id="dPhoto" hidden></label><button class="btn" data-dprof type="button">✎ Profile</button>` : ''}<button class="btn" data-dx type="button">✕</button></div>
     ${DK.canEdit ? '' : `<form class="unl" id="dUnl">🔒 Enter the team password to edit desks (photo &amp; templates). Reading &amp; copying templates is open.<input type="password" id="dPw" placeholder="Team password" autocomplete="current-password"><button class="btn pri">Unlock</button></form>`}
     <div class="dtabs">${[['tpl', '💬 Templates · ' + (d.tpls || []).length], ['task', '📋 Tasks · ' + (T.filter(t => t.status !== 'DONE').length + S.filter(t => t.status !== 'DONE').length)], ['note', '🗒 Notes · ' + N.length]].map(([k, l]) => `<button class="chip" data-dtab="${k}" aria-pressed="${DK.tab === k}" type="button">${l}</button>`).join('')}</div>
@@ -548,17 +631,21 @@ function tplModal(t) {
 }
 function profModal() {
   const d = deskOf(DK.open), el = document.createElement('div'); el.className = 'md'; el.style.zIndex = 60;
-  el.innerHTML = `<form class="mdb" style="max-width:440px"><h3>✎ Desk profile — ${esc(nick(DK.open))}</h3>
+  el.innerHTML = `<form class="mdb" style="max-width:520px"><h3>✎ Desk profile — ${esc(nick(DK.open))}</h3>
     <div class="f"><label>Tagline / status</label><input data-f="tagline" maxlength="80" value="${esc(d.tagline || '')}" placeholder="e.g. Fast reply, slow coffee ☕"></div>
     <div class="f"><label>Emoji</label><input data-f="emoji" maxlength="8" value="${esc(d.emoji || '')}" placeholder="🐣"></div>
     <div class="f"><label>Desk color</label><div style="display:flex;gap:8px;flex-wrap:wrap">${COLORS.map(c => `<label style="cursor:pointer"><input type="radio" name="dc" value="${c}" ${dColor(DK.open) === c ? 'checked' : ''} hidden><span style="display:inline-block;width:30px;height:30px;border-radius:50%;background:${c};border:2px solid ${dColor(DK.open) === c ? '#1D1D1F' : '#E5E5EA'}"></span></label>`).join('')}</div></div>
+    <div class="f"><label>Desk items</label><div class="props">${PROPS.map(([k, l]) => `<label class="chip pchip"><input type="checkbox" value="${k}" ${(Array.isArray(d.props) ? d.props : DEF_PROPS).includes(k) ? 'checked' : ''}> ${l}</label>`).join('')}</div></div>
+    <div class="pv" id="pPrev"></div>
     ${d.photo ? '<p><button type="button" class="btn danger" data-rmph>Remove uploaded photo</button></p>' : ''}
     <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>Cancel</button><button class="btn pri">Save</button></div></form>`;
   document.body.appendChild(el);
-  el.onchange = e => { if (e.target.name === 'dc') el.querySelectorAll('[name=dc]').forEach(r => r.nextElementSibling.style.borderColor = r.checked ? '#1D1D1F' : '#E5E5EA'); };
+  const props = () => [...el.querySelectorAll('.props input:checked')].map(x => x.value), col = () => { const c = el.querySelector('[name=dc]:checked'); return c ? c.value : ''; };
+  const prev = () => { el.querySelector('#pPrev').innerHTML = deskScene(DK.open, { props: props(), color: col() || undefined }); }; prev();
+  el.onchange = e => { if (e.target.name === 'dc') el.querySelectorAll('[name=dc]').forEach(r => r.nextElementSibling.style.borderColor = r.checked ? '#1D1D1F' : '#E5E5EA'); prev(); };
   el.onclick = async e => { if (e.target === el || e.target.closest('[data-x]')) return el.remove(); if (e.target.closest('[data-rmph]') && await dop({ op: 'photo', name: DK.open, photo: '' })) el.remove(); };
   el.querySelector('form').onsubmit = async e => { e.preventDefault(); const c = el.querySelector('[name=dc]:checked');
-    if (await dop({ op: 'profile', name: DK.open, tagline: el.querySelector('[data-f=tagline]').value.trim(), emoji: el.querySelector('[data-f=emoji]').value.trim(), color: c ? c.value : '' })) el.remove(); };
+    if (await dop({ op: 'profile', name: DK.open, tagline: el.querySelector('[data-f=tagline]').value.trim(), emoji: el.querySelector('[data-f=emoji]').value.trim(), color: c ? c.value : '', props: props() })) el.remove(); };
 }
 function shrink(file) { return new Promise((ok, no) => { const img = new Image(), u = URL.createObjectURL(file);
   img.onload = () => { const S = 256, c = document.createElement('canvas'); c.width = c.height = S; const m = Math.min(img.width, img.height);
@@ -587,7 +674,195 @@ $('#desks').onclick = e => { const d = e.target.closest('[data-desk]'); if (d) o
 $('#desks').onkeydown = e => { const d = e.target.closest('[data-desk]'); if (d && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openDesk(d.dataset.desk); } };
 $('#myDesk').onclick = () => { if (!ME) { toast('Select your name first (top right)'); $('#me').focus(); return; } openDesk(ME); };
 addEventListener('keydown', e => { if (e.key === 'Escape' && DK.open && !document.querySelector('.md[style*="z-index"]')) closeDesk(); });
-load(); loadBoard(); loadDesk(); setInterval(() => { if (!document.hidden && !document.activeElement.matches('textarea,input') && !document.querySelector('.md')) { load(); loadBoard(); loadDesk(); } }, 60000);
+/* ================= Virtual Office — denah isometrik, semua tim + SPV, avatar jalan / break / meeting ================= */
+const OF = { other: { roster: null, tasks: [], desks: {}, presence: {} }, paused: false, sig: '', W: [], items: [], raf: 0, last: 0, next: 0, L: null };
+const OTHER = TEAM === 'AM' ? 'HD' : 'AM';
+try { OF.paused = localStorage.getItem('gx-office-pause') === '1'; } catch (e) {}
+const RM = matchMedia('(prefers-reduced-motion: reduce)');
+const SPVNAME = 'Putri Izza', SPVFULL = 'Tri Retno Izza Pramusthi';
+async function loadOther() {
+  const [b, d] = await Promise.all([jget('/api/todo?board=' + OTHER), jget('/api/todo?desk=' + OTHER)]);
+  if (b && b.status === 200 && b.j && b.j.board) { OF.other.roster = b.j.board.roster; OF.other.tasks = b.j.board.tasks || []; OF.other.presence = b.j.board.presence || {}; }
+  if (d && d.status === 200 && d.j && d.j.desk) OF.other.desks = d.j.desk.desks || {};
+  renderOffice();
+}
+const ownDesk = n => TEAM === 'HD' || n !== 'SPV' ? deskOf(n) : (OF.other.desks.SPV || {});
+function presenceOf(name) {   // status terbaru dari kedua board; kadaluarsa setelah 4 jam
+  const a = (BD.data.presence || {})[name], b = OF.other.presence[name], x = !a ? b : !b ? a : (a.at > b.at ? a : b);
+  return x && Date.now() - Date.parse(x.at) < 4 * 3600e3 ? x.s : 'work';
+}
+function teamPeople(tm) {
+  if (tm === TEAM) return CFG.roster.map(([name, nk]) => { const d = deskOf(name); return { name, nk, tm, photo: d.photo, props: d.props, tasks: BD.data.tasks || [] }; });
+  const R = OF.other.roster && OF.other.roster.length ? OF.other.roster : (OF.other.roster ? [] : CFGS[tm].roster.map(([name, nick]) => ({ name, nick })));
+  return R.map(x => { const d = OF.other.desks[x.name] || {}; return { name: x.name, nk: x.nick || x.name.split(' ')[0], tm, photo: d.photo, props: d.props, tasks: OF.other.tasks }; });
+}
+function stat(p) { const today = new Date().toISOString().slice(0, 10), T = (p.tasks || []).filter(t => t.assignee === p.name && t.status !== 'DONE');
+  return { open: T.length, late: T.some(t => t.due && t.due < today) }; }
+/* ---------- proyeksi isometrik ---------- */
+const TW = 64, TH = 32, WH = 96;
+const P2 = (x, y, z = 0) => [(x - y) * TW / 2, (x + y) * TH / 2 - z];
+const pts = a => a.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+const shade = (h, f) => { const n = parseInt(h.slice(1), 16), c = [n >> 16, n >> 8 & 255, n & 255].map(v => Math.max(0, Math.min(255, Math.round(f < 0 ? v * (1 + f) : v + (255 - v) * f)))); return '#' + c.map(v => v.toString(16).padStart(2, '0')).join(''); };
+function box(x, y, w, d, h, col, z = 0, extra = '') {
+  const A = P2(x, y, z + h), B = P2(x + w, y, z + h), C = P2(x + w, y + d, z + h), D = P2(x, y + d, z + h), B0 = P2(x + w, y, z), C0 = P2(x + w, y + d, z), D0 = P2(x, y + d, z);
+  return `<polygon points="${pts([D, C, C0, D0])}" fill="${shade(col, -.12)}"${extra}/><polygon points="${pts([C, B, B0, C0])}" fill="${shade(col, -.26)}"${extra}/><polygon points="${pts([A, B, C, D])}" fill="${col}"${extra}/>`; }
+const flat = (x, y, w, d, fill, z = 0, stroke = '', sw = 0) => `<polygon points="${pts([P2(x, y, z), P2(x + w, y, z), P2(x + w, y + d, z), P2(x, y + d, z)])}" fill="${fill}"${stroke ? ` stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round"` : ''}/>`;
+const floorText = (x, y, t, col, fs = 15) => { const [X, Y] = P2(x, y); return `<text transform="matrix(1,.5,-1,.5,${X.toFixed(1)},${Y.toFixed(1)})" font-size="${fs}" font-weight="800" letter-spacing="1.5" fill="${col}" font-family="system-ui,sans-serif">${esc(t)}</text>`; };
+function plantBig(x, y) { const [X, Y] = P2(x + .5, y + .5); return box(x + .2, y + .2, .6, .6, 18, '#E7E2DA') + `<g class="sway2"><ellipse cx="${X - 9}" cy="${Y - 34}" rx="11" ry="16" fill="#4C9A5B" transform="rotate(-25 ${X - 9} ${Y - 34})"/><ellipse cx="${X + 9}" cy="${Y - 36}" rx="11" ry="17" fill="#5BB06C" transform="rotate(25 ${X + 9} ${Y - 36})"/><ellipse cx="${X}" cy="${Y - 46}" rx="9" ry="17" fill="#3E8A4E"/></g>`; }
+/* ---------- avatar full body ---------- */
+let AVN = 0;
+function avatarSvg(p) {
+  const id = 'av' + (++AVN), src = p.photo || (p.name === 'SPV' ? '' : 'photo-' + slug(p.name) + '.jpg'), spv = p.name === 'SPV', hs = (p.props || (p.tm === 'HD' ? ['headset'] : [])).includes('headset');
+  return `<g class="avb"><ellipse cx="0" cy="0" rx="12" ry="4.5" fill="#000" opacity=".16"/>
+    <g class="legs"><rect class="lg l1" x="-6" y="-17" width="5" height="17" rx="2" fill="#27272A"/><rect class="lg l2" x="1" y="-17" width="5" height="17" rx="2" fill="#3F3F46"/></g>
+    <g class="up"><rect class="arm a1" x="-13" y="-35" width="5" height="16" rx="2.5" fill="${spv ? '#7C2D12' : '#111827'}"/><rect class="arm a2" x="8" y="-35" width="5" height="16" rx="2.5" fill="${spv ? '#7C2D12' : '#111827'}"/>
+    <rect x="-9.5" y="-37" width="19" height="22" rx="6" fill="${spv ? '#9A3412' : '#1F2937'}"/><path d="M-4 -37l4 6 4-6" fill="none" stroke="#F5C518" stroke-width="2"/>
+    <clipPath id="${id}"><circle cx="0" cy="-50" r="12"/></clipPath><circle cx="0" cy="-50" r="13.5" fill="${spv ? '#F5C518' : '#fff'}"/><circle cx="0" cy="-50" r="12" fill="#52525B"/>
+    <text x="0" y="-46" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="system-ui,sans-serif">${esc(spv ? 'PI' : initials(p.name))}</text>
+    ${src ? `<image href="${esc(src)}" x="-12" y="-62" width="24" height="24" preserveAspectRatio="xMidYMin slice" clip-path="url(#${id})"/>` : ''}
+    ${hs ? '<path d="M-13 -51a13 13 0 0 1 26 0" fill="none" stroke="#111" stroke-width="2.4"/><rect x="-15" y="-54" width="4" height="8" rx="2" fill="#111"/><rect x="11" y="-54" width="4" height="8" rx="2" fill="#111"/>' : ''}
+    ${spv ? '<path d="M-7 -66l3 4 4-6 4 6 3-4v6h-14z" fill="#F5C518" stroke="#B45309" stroke-width=".8"/>' : ''}</g></g>`; }
+/* ---------- layout ---------- */
+function layout() {
+  const HD = teamPeople('HD'), AM = teamPeople('AM'), rows = Math.max(2, Math.ceil(HD.length / 3), Math.ceil(AM.length / 3));
+  const corY = 3 * rows + 1, B = corY + 2, GW = 27, GH = B + 6, S = [], F = [], blocked = new Set(), blk = (x, y, w, d) => { for (let i = Math.floor(x); i < Math.ceil(x + w); i++) for (let j = Math.floor(y); j < Math.ceil(y + d); j++) blocked.add(i + ',' + j); };
+  const add = (x, y, w, d, svg, attrs = '') => S.push({ d: x + w / 2 + y + d / 2, s: `<g${attrs}>${svg}</g>` });
+  const hr = new Date().getHours(), sky = hr >= 6 && hr < 17 ? ['#9BD3FF', '#DFF1FF'] : hr >= 17 && hr < 19 ? ['#FF9E6B', '#FFD9A8'] : ['#0F1B3D', '#2B3A6B'];
+  /* lantai */
+  for (let x = 0; x < GW; x++) for (let y = 0; y < GH; y++) { const odd = (x + y) % 2, inHD = x >= 1 && x <= 10 && y < corY, inAM = x >= 16 && x <= 25 && y < corY, inSPV = x >= 11 && x <= 15 && y < corY - 1, inL = x <= 9 && y >= B, inM = x >= 16 && y >= B;
+    const c = inHD ? (odd ? '#EFD9B8' : '#EAD3AF') : inAM ? (odd ? '#E4E6F4' : '#DEE1F1') : inSPV ? (odd ? '#F6EAD0' : '#F2E3C4') : inL ? (odd ? '#F2EEE8' : '#ECE7DF') : inM ? (odd ? '#E8D3B4' : '#E3CCAA') : (odd ? '#D7DAE0' : '#D1D5DC');
+    F.push(flat(x, y, 1, 1, c)); }
+  /* dinding + jendela */
+  const wallY = [P2(0, 0), P2(GW, 0), P2(GW, 0, WH), P2(0, 0, WH)], wallX = [P2(0, 0), P2(0, GH), P2(0, GH, WH), P2(0, 0, WH)];
+  F.push(`<defs><linearGradient id="ofsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient></defs>`);
+  F.push(`<polygon points="${pts(wallX)}" fill="#EFE6DA"/><polygon points="${pts(wallY)}" fill="#E7EBF1"/>`);
+  for (let x = 1; x < GW - 1; x += 3) F.push(`<polygon points="${pts([P2(x, 0, 14), P2(x + 2.4, 0, 14), P2(x + 2.4, 0, WH - 10), P2(x, 0, WH - 10)])}" fill="url(#ofsky)" stroke="#fff" stroke-width="3"/>`
+    + (hr < 6 || hr >= 19 ? `<circle class="tw" cx="${P2(x + 1.2, 0, 60)[0]}" cy="${P2(x + 1.2, 0, 60)[1]}" r="1.4" fill="#fff"/>` : `<ellipse class="cloud" cx="${P2(x + .8, 0, 62)[0]}" cy="${P2(x + .8, 0, 62)[1]}" rx="9" ry="3.5" fill="#fff" opacity=".85"/>`));
+  F.push(`<polygon points="${pts([P2(0, 0, WH), P2(GW, 0, WH), P2(GW, 0, WH + 6), P2(0, 0, WH + 6)])}" fill="#CBD5E1"/><polygon points="${pts([P2(0, 0, WH), P2(0, GH, WH), P2(0, GH, WH + 6), P2(0, 0, WH + 6)])}" fill="#D6C9B8"/>`);
+  { const a = P2(0, 2.2, 32), b = P2(0, 5.6, 32), c = P2(0, 5.6, 70), d = P2(0, 2.2, 70), t = P2(0, 5.35, 45); F.push(`<polygon points="${pts([a, b, c, d])}" fill="#1D1D1F" stroke="#F5C518" stroke-width="2"/><text transform="matrix(1,-.5,0,1,${t[0].toFixed(1)},${t[1].toFixed(1)})" font-size="15.5" font-weight="900" fill="#F5C518" font-family="system-ui,sans-serif">globalxtreme</text>`); }
+  F.push(floorText(1.4, corY - .75, 'HELPDESK', '#B08900'), floorText(16.4, corY - .75, 'ACCOUNT MANAGER', '#4C55B8'), floorText(11.4, 1.1, 'SPV ROOM', '#B45309', 12), floorText(.6, B + .3, 'LOUNGE & PANTRY', '#64748B', 13), floorText(16.4, B + .3, 'MEETING ROOM', '#047857', 13));
+  /* meja kerja */
+  const people = [];
+  const station = (p, dx, dy, ring) => { const s = stat(p), c = p.name === 'SPV' ? '#D97706' : s.late ? '#E03131' : s.open ? '#E8590C' : '#2F9E44';
+    F.push(flat(dx - .35, dy - 1.4, 2.7, 2.55, c + '14', 0, c, 2.6));
+    const P = new Set(p.props || (p.tm === 'AM' ? ['coffee', 'plant'] : ['coffee', 'plant', 'headset']));
+    add(dx + .7, dy - .95, .6, .18, box(dx + .7, dy - .95, .6, .14, 26, '#3F3F46', 10) + box(dx + .72, dy - .78, .56, .5, 4, '#52525B', 10) + box(dx + .95, dy - .6, .1, .1, 10, '#71717A'), ` data-od="${esc(p.name)}" data-tm="${p.tm}"`);
+    let top = box(dx, dy, 2, .9, 4, '#C89B6D', 22) + box(dx + .05, dy + .1, .12, .7, 22, '#94693F') + box(dx + 1.83, dy + .1, .12, .7, 22, '#94693F') + box(dx + .1, dy + .72, 1.8, .08, 16, '#7C5A3A', 4);
+    top += box(dx + .08, dy + .2, .62, .07, 13, '#27272A', 29) + box(dx + 1.3, dy + .2, .62, .07, 13, '#27272A', 29) + box(dx + .36, dy + .27, .08, .08, 3, '#3F3F46', 26) + box(dx + 1.58, dy + .27, .08, .08, 3, '#3F3F46', 26) + box(dx + .75, dy + .45, .5, .2, 1.5, '#D4D4D8', 26);
+    if (P.has('coffee')) top += box(dx + 1.0, dy + .5, .14, .14, 7, '#FFFFFF', 26);
+    if (P.has('plant')) { const [X, Y] = P2(dx + 1.85, dy + .55, 26); top += box(dx + 1.75, dy + .45, .2, .2, 6, '#D97757', 26) + `<circle class="sway2" cx="${X}" cy="${Y - 13}" r="6" fill="#5BB06C"/>`; }
+    if (P.has('lamp')) top += box(dx + .02, dy + .5, .12, .12, 16, '#F5C518', 26);
+    if (P.has('cat')) { const [X, Y] = P2(dx + .35, dy + .55, 26); top += `<ellipse cx="${X}" cy="${Y - 4}" rx="8" ry="5" fill="#52525B"/><circle cx="${X - 6}" cy="${Y - 8}" r="4" fill="#52525B"/><path d="M${X - 9} ${Y - 11}l1-4 2 3M${X - 5} ${Y - 11}l1-4 1 3" stroke="#52525B" stroke-width="1.6" fill="#52525B"/>`; }
+    if (P.has('frame')) top += box(dx + .8, dy + .55, .16, .04, 9, '#FFFFFF', 26);
+    add(dx, dy, 2, .9, top, ` data-od="${esc(p.name)}" data-tm="${p.tm}"`); blk(dx, dy, 2, 1);
+    const seat = [dx + 1, dy - .55]; people.push({ ...p, home: seat, homeCell: [dx, dy - 1], st: s, ring: c }); };
+  HD.forEach((p, i) => station(p, 2 + (i % 3) * 3, 2 + Math.floor(i / 3) * 3));
+  AM.forEach((p, i) => station(p, 17 + (i % 3) * 3, 2 + Math.floor(i / 3) * 3));
+  station({ name: 'SPV', nk: SPVNAME, tm: TEAM, photo: ownDesk('SPV').photo, props: ownDesk('SPV').props || ['coffee', 'plant', 'frame'], tasks: [...(BD.data.tasks || []), ...OF.other.tasks].filter(t => t.assignee === 'SPV').map(t => ({ ...t, assignee: 'X' })) }, 12, 3);
+  F.push(`<polygon points="${pts([P2(11, 0, 0), P2(11, corY - 1, 0), P2(11, corY - 1, 38), P2(11, 0, 38)])}" fill="#BFE3FF" opacity=".28" stroke="#93C5FD" stroke-width="1.5"/>`);
+  add(11, corY - 1.2, 4.6, .1, box(11, corY - 1.15, 1.6, .08, 38, '#BFE3FF', 0, ' opacity=".35"') + box(13.4, corY - 1.15, 2.2, .08, 38, '#BFE3FF', 0, ' opacity=".35"')); blk(11, corY - 2, 2, 1); blk(14, corY - 2, 2, 1);
+  add(15.1, 1, .1, corY - 2, box(15.1, 1, .08, corY - 3, 38, '#BFE3FF', 0, ' opacity=".35"')); blk(15, 1, 1, corY - 2);
+  add(13.5, 1, .9, .5, box(14.4, .2, .5, 1.3, 50, '#A47148') + box(14.42, .3, .46, .3, 4, '#3B4CCA', 18) + box(14.42, .7, .46, .3, 4, '#E8590C', 30)); blk(14, 0, 1, 2);
+  add(1, 0, 1, 1, plantBig(.1, .1)); blk(0, 0, 1, 1); add(25, 0, 1, 1, plantBig(25.9, .1)); blk(25, 0, 2, 1);
+  /* lounge & pantry */
+  F.push(flat(1.5, B + 1.4, 6, 3.2, '#D9C6A5'), flat(1.7, B + 1.6, 5.6, 2.8, '#E8D9BE'));
+  add(1, B, 4, 1, box(.6, B + .05, 4.4, .9, 24, '#E2E8F0') + box(.9, B + .2, .7, .6, 18, '#1D1D1F', 24) + `<circle cx="${P2(1.25, B + .8, 34)[0]}" cy="${P2(1.25, B + .8, 34)[1]}" r="2.2" fill="#F5C518"/><path class="ofsteam" d="M${P2(1.25, B + .5, 46)[0]} ${P2(1.25, B + .5, 46)[1]}q-3 -6 0 -12" stroke="#94A3B8" stroke-width="2" fill="none"/>` + box(3.2, B + .2, .5, .5, 10, '#F5F5F4', 24) + box(4, B + .25, .5, .5, 6, '#60A5FA', 24)); blk(0, B, 5, 1);
+  add(6.2, B, .8, .8, box(6.2, B + .1, .7, .7, 34, '#BAE6FD') + box(6.25, B + .15, .6, .6, 8, '#38BDF8', 34)); blk(6, B, 1, 1);
+  add(8, B, 1, 1, box(8, B + .05, .9, .8, 60, '#F4F4F5') + box(8.02, B + .82, .86, .03, 2, '#A1A1AA', 32)); blk(8, B, 1, 1);
+  add(2, B + 3.4, 3.4, 1, box(2, B + 3.75, 3.4, .25, 26, '#3F6B5C') + box(2, B + 3.15, 3.4, .65, 12, '#4E8270') + box(1.8, B + 3.1, .25, .9, 20, '#3F6B5C') + box(5.35, B + 3.1, .25, .9, 20, '#3F6B5C')); blk(2, B + 3, 4, 1);
+  add(6, B + 2.1, 1, .8, box(6.05, B + 2.1, .9, .8, 12, '#A47148') + box(6.35, B + 2.3, .2, .2, 6, '#fff', 12)); blk(6, B + 2, 1, 1);
+  add(7.2, B + 2.6, 1, 1, plantBig(7.4, B + 3.6)); blk(7, B + 3, 2, 2);
+  /* printer + tanaman tengah */
+  add(11.2, B + .2, 1, .8, box(11.2, B + .2, 1, .8, 22, '#71717A') + box(11.35, B + .3, .7, .5, 3, '#F4F4F5', 22)); blk(11, B, 2, 1);
+  add(13.6, B + 3.6, 1, 1, plantBig(13.6, B + 4)); blk(13, B + 4, 2, 1);
+  /* meeting room */
+  F.push(flat(16, B, 10.9, 6, 'none', 0, '#3B82F6', 3));
+  add(18, B + 2, 6, 1.6, box(18, B + 2, 6, 1.6, 4, '#B07A47', 22) + box(18.4, B + 2.3, .2, 1, 22, '#7C5A3A') + box(23.4, B + 2.3, .2, 1, 22, '#7C5A3A') + box(19.3, B + 2.6, .5, .35, 2, '#64748B', 26) + box(21.5, B + 2.5, .5, .35, 2, '#64748B', 26)); blk(18, B + 2, 6, 2);
+  const mseats = []; for (let i = 0; i < 5; i++) { const x = 18.6 + i * 1.2; add(x, B + 1.2, .6, .5, box(x - .25, B + 1.05, .5, .12, 22, '#3F3F46', 10) + box(x - .23, B + 1.2, .46, .42, 4, '#52525B', 10)); mseats.push({ x, y: B + 1.45, cell: [Math.floor(x), B + 1], sit: 1, e: ['💬', '📊', '📝', '💡', '👍'][i] });
+    add(x, B + 4, .6, .5, box(x - .23, B + 3.95, .46, .42, 4, '#52525B', 10) + box(x - .25, B + 4.35, .5, .12, 22, '#3F3F46', 10)); mseats.push({ x, y: B + 4.15, cell: [Math.floor(x), B + 4], sit: 1, e: ['💬', '🤝', '📈', '✅', '☕'][i] }); }
+  add(25.3, B + 1, .2, 1.8, box(25.4, B + .9, .12, 2, 46, '#FFFFFF', 12) + box(25.42, B + 1.1, .1, .5, 2, '#3B82F6', 40) + box(25.42, B + 1.9, .1, .6, 2, '#E8590C', 30)); blk(25, B, 2, 4);
+  const lseats = [{ x: 2.7, y: B + 3.5, cell: [2, B + 2], sit: 1, e: '☕' }, { x: 3.7, y: B + 3.5, cell: [3, B + 2], sit: 1, e: '🍪' }, { x: 4.7, y: B + 3.5, cell: [4, B + 2], sit: 1, e: '😌' }];
+  const POI = [{ x: 1.3, y: B + 1.4, cell: [1, B + 1], e: '☕' }, { x: 6.5, y: B + 1.4, cell: [6, B + 1], e: '💧' }, { x: 8.4, y: B + 1.4, cell: [8, B + 1], e: '🧃' }, { x: 11.7, y: B + 1.5, cell: [11, B + 1], e: '🖨️' }, ...lseats, ...mseats.slice(0, 6)];
+  return { S, F, GW, GH, B, corY, people, blocked, POI, lseats, mseats };
+}
+/* ---------- path (BFS grid) ---------- */
+function bfs(L, a, b) { const key = c => c[0] + ',' + c[1], goal = key(b), prev = new Map([[key(a), null]]), q = [a];
+  while (q.length) { const c = q.shift(); if (key(c) === goal) break; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const n = [c[0] + dx, c[1] + dy], k = key(n);
+    if (n[0] < 0 || n[1] < 0 || n[0] >= L.GW || n[1] >= L.GH || prev.has(k) || (L.blocked.has(k) && k !== goal)) continue; prev.set(k, c); q.push(n); } }
+  if (!prev.has(goal)) return null; const out = []; let c = b; while (c) { out.unshift([c[0] + .5, c[1] + .5]); c = prev.get(key(c)); } return out; }
+/* ---------- render ---------- */
+function renderOffice() {
+  const box_ = $('#ofc'); if (!box_) return; const L = layout();
+  const sig = JSON.stringify([L.people.map(p => [p.name, p.tm, p.photo ? p.photo.length : 0, p.st, p.props]), L.GH]);
+  if (sig === OF.sig && box_.querySelector('svg')) { OF.L.people.forEach(q => { const w = OF.W.find(v => v.p.name === q.name && v.p.tm === q.tm); if (w) syncPresence(w); }); drawLabels(); renderPresenceBar(); return; }
+  OF.sig = sig; OF.L = L; AVN = 0;
+  const c = [P2(0, L.GH)[0] - 20, P2(L.GW, 0)[0] + 20, P2(0, 0, WH + 10)[1] - 30, P2(L.GW, L.GH)[1] + 30];
+  L.S.sort((a, b) => a.d - b.d);
+  box_.innerHTML = `<svg class="ofsvg" viewBox="${c[0]} ${c[2]} ${c[1] - c[0]} ${c[3] - c[2]}" aria-label="Virtual office"><g>${L.F.join('')}</g><g id="ofl">${L.S.map(x => x.s).join('')}</g></svg>`;
+  const layer = box_.querySelector('#ofl'), els = [...layer.children]; OF.items = L.S.map((x, i) => ({ d: x.d, el: els[i] }));
+  const old = new Map(OF.W.map(w => [w.p.tm + '|' + w.p.name, w])); OF.W = [];
+  L.people.forEach(p => { const g = document.createElementNS('http://www.w3.org/2000/svg', 'g'); g.setAttribute('class', 'wkr'); g.dataset.od = p.name; g.dataset.tm = p.name === 'SPV' ? TEAM : p.tm;
+    g.innerHTML = `<g class="flip">${avatarSvg(p)}</g><g class="lab"></g>`; const o = old.get(p.tm + '|' + p.name);
+    const w = { p, g, x: p.home[0], y: p.home[1], q: [], state: 'seat', sit: true, mode: 'work', wait: 0, face: 1 };
+    if (o && o.mode !== 'work') { w.mode = o.mode; w.x = o.x; w.y = o.y; w.sit = o.sit; w.state = o.state; w.dest = o.dest; }
+    OF.W.push(w); layer.appendChild(g); syncPresence(w); });
+  if (!OF.cat) OF.cat = { x: 9.5, y: L.corY + .5, q: [], wait: 2 };
+  { const g = document.createElementNS('http://www.w3.org/2000/svg', 'g'); g.setAttribute('class', 'cat'); g.innerHTML = '<g class="flip"><ellipse cx="0" cy="0" rx="9" ry="3" fill="#000" opacity=".15"/><ellipse cx="0" cy="-6" rx="9" ry="5.5" fill="#3F3F46"/><circle cx="-8" cy="-11" r="4.6" fill="#3F3F46"/><path d="M-12 -14l1-5 3 3zM-7 -14l1-5 2 4z" fill="#3F3F46"/><circle cx="-9.5" cy="-11" r=".9" fill="#FDE047"/><path class="ctail" d="M8 -7q8 -2 7 -12" stroke="#3F3F46" stroke-width="2.6" fill="none" stroke-linecap="round"/></g>'; layer.appendChild(g); OF.cat.g = g; }
+  if (TEAM === 'AM' && !OF.scrolled) { OF.scrolled = 1; const sc = box_.parentElement; sc.scrollLeft = sc.scrollWidth; }
+  drawLabels(); OF.W.forEach(place); place(OF.cat); start(); renderPresenceBar();
+}
+function drawLabels() { OF.W.forEach(w => { const ps = presenceOf(w.p.name), ic = ps === 'break' ? '☕ ' : ps === 'meet' ? '📅 ' : '', n = w.p.st.open && w.p.name !== 'SPV' ? ` · ${w.p.st.open}` : '', t = ic + w.p.nk + (w.p.name === 'SPV' ? ' · SPV' : '') + n, wd = t.length * 5.6 + 14;
+  w.g.querySelector('.lab').innerHTML = `<rect x="${-wd / 2}" y="-92" width="${wd}" height="15" rx="7.5" fill="${w.p.name === ME && w.p.tm === TEAM || (w.p.name === 'SPV' && ME === 'SPV') ? '#F5C518' : '#1D1D1F'}" opacity=".88"/><text x="0" y="-81.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="${w.p.name === ME && w.p.tm === TEAM || (w.p.name === 'SPV' && ME === 'SPV') ? '#1D1D1F' : '#fff'}" font-family="system-ui,sans-serif">${esc(t)}</text><g class="bub"></g>`; }); }
+function syncPresence(w) {   // break → sofa, meeting → kursi meeting, work → kembali ke meja
+  const m = presenceOf(w.p.name), L = OF.L; if (m === w.mode) return; w.mode = m;
+  if (m === 'work') { goHome(w); return; }
+  const pool = m === 'break' ? L.lseats : L.mseats, used = new Set(OF.W.filter(v => v !== w && v.dest).map(v => v.dest.x + ',' + v.dest.y)), d = pool.find(s => !used.has(s.x + ',' + s.y)) || pool[0];
+  goTo(w, d, true); }
+function goTo(w, d, stay) { const L = OF.L, from = [Math.floor(w.x), Math.floor(w.y)], path = bfs(L, from, d.cell); if (!path) return;
+  w.sit = false; w.state = 'walk'; w.dest = d; w.stay = stay; w.q = [...path, [d.x, d.y]]; }
+function goHome(w) { const L = OF.L, p = w.p, path = bfs(L, [Math.floor(w.x), Math.floor(w.y)], p.homeCell); w.dest = null; w.stay = false; w.sit = false; w.state = 'home';
+  w.q = path ? [...path, p.home] : [p.home]; }
+function bubble(w, e) { const b = w.g.querySelector('.bub'); if (!b) return; b.innerHTML = e ? `<rect x="10" y="-112" width="26" height="22" rx="9" fill="#fff" stroke="#E4E4E7"/><text x="23" y="-96" text-anchor="middle" font-size="13">${e}</text>` : ''; }
+function place(w) { const [X, Y] = P2(w.x, w.y); w.g.setAttribute('transform', `translate(${X.toFixed(1)},${Y.toFixed(1)})`);
+  const f = w.g.querySelector('.flip'); if (f) f.setAttribute('transform', `scale(${w.face},1)`); w.g.classList.toggle('walking', w.q && w.q.length > 0); w.g.classList.toggle('sit', !!w.sit);
+  const d = w.x + w.y + (w.sit ? .12 : .02), it = OF.items, i = it.findIndex(x => x.d > d), anchor = i < 0 ? null : it[i].el;
+  if (w.anchor !== anchor || !w.g.parentNode) { const layer = $('#ofl'); if (layer) { layer.insertBefore(w.g, anchor); w.anchor = anchor; } } }
+function step(w, dt, speed) { if (!w.q.length) return false; const [tx, ty] = w.q[0], dx = tx - w.x, dy = ty - w.y, dist = Math.hypot(dx, dy), mv = speed * dt;
+  const sx = (dx - dy); if (Math.abs(sx) > .01) w.face = sx < 0 ? -1 : 1;
+  if (dist <= mv) { w.x = tx; w.y = ty; w.q.shift(); } else { w.x += dx / dist * mv; w.y += dy / dist * mv; } return true; }
+function frame(t) {
+  OF.raf = 0; if (!OF.L || !$('#ofl')) return; const dt = Math.min(.05, (t - (OF.last || t)) / 1000); OF.last = t;
+  const live = !OF.paused && !RM.matches && !document.hidden;
+  for (const w of OF.W) {
+    if (w.q.length) { if (live || w.mode !== 'work') { step(w, live ? dt : 1, 2.3); place(w); } continue; }
+    if (w.state === 'walk') { w.state = 'there'; if (w.dest && w.dest.sit) w.sit = true; bubble(w, w.dest ? w.dest.e : ''); w.wait = w.stay ? Infinity : 4 + Math.random() * 6; place(w); }
+    else if (w.state === 'home') { w.state = 'seat'; w.sit = true; bubble(w, ''); place(w); }
+    else if (w.state === 'there' && w.wait !== Infinity) { w.wait -= dt; if (w.wait <= 0) { bubble(w, ''); goHome(w); } }
+  }
+  if (live && t > OF.next) { OF.next = t + 2600 + Math.random() * 3000; const seated = OF.W.filter(w => w.mode === 'work' && w.state === 'seat'), moving = OF.W.filter(w => w.mode === 'work' && w.state !== 'seat').length;
+    if (seated.length && moving < Math.max(2, Math.ceil(OF.W.length / 4))) { const w = seated[Math.floor(Math.random() * seated.length)];
+      if (Math.random() > (w.p.st.open >= 3 ? .65 : 0)) { const L = OF.L; let d; if (Math.random() < .3) { const m = L.people.filter(q => q.name !== w.p.name); if (m.length) { const q = m[Math.floor(Math.random() * m.length)]; d = { x: q.home[0] + 1.2, y: q.home[1] + .1, cell: [q.homeCell[0] + 2, q.homeCell[1]], e: ['💬', '🤝', '📎', '😄'][Math.floor(Math.random() * 4)] }; } }
+        if (!d) d = L.POI[Math.floor(Math.random() * L.POI.length)]; goTo(w, d, false); } } }
+  const c = OF.cat; if (c && c.g && live) { if (c.q.length) step(c, dt, .9); else if ((c.wait -= dt) <= 0) { const L = OF.L; let tgt; for (let k = 0; k < 20 && !tgt; k++) { const x = Math.floor(Math.random() * L.GW), y = Math.floor(Math.random() * L.GH); if (!L.blocked.has(x + ',' + y)) tgt = [x, y]; }
+      const pth = tgt && bfs(L, [Math.floor(c.x), Math.floor(c.y)], tgt); c.q = pth ? pth.slice(0, 12) : []; c.wait = 3 + Math.random() * 7; } c.g.classList.toggle('walking', c.q.length > 0); place(c); }
+  start(); }
+function start() { if (!OF.raf) OF.raf = requestAnimationFrame(frame); }
+/* ---------- status bar ---------- */
+function renderPresenceBar() { const el = $('#ofPres'); if (!el) return; const me = ME, ps = me ? presenceOf(me) : '';
+  el.innerHTML = me ? [['work', '💻 Working'], ['break', '☕ Break'], ['meet', '📅 Meeting']].map(([k, l]) => `<button class="chip" type="button" data-pres="${k}" aria-pressed="${ps === k}">${l}</button>`).join('') : '<span class="ofh" style="margin:0">Select your name (I am) to set Break / Meeting</span>'; }
+$('#ofPres').addEventListener('click', async e => { const b = e.target.closest('[data-pres]'); if (!b || !ME) return; const s = b.dataset.pres;
+  if (!BD.online) { (BD.data.presence = BD.data.presence || {})[ME] = { s, at: new Date().toISOString() }; try { localStorage.setItem(PKEY, JSON.stringify(BD.data)); } catch (er) {} }
+  else { const r = await jget('/api/todo?board=' + TEAM, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ op: 'presence', by: ME, status: s, defaultRoster: DEF_ROSTER }) });
+    if (!(r && r.status === 200 && r.j.board)) { toast((r && r.j && (r.j.detail || r.j.error)) || 'Save failed'); return; } BD.data = r.j.board; }
+  toast(s === 'break' ? 'Enjoy your break ☕' : s === 'meet' ? 'In a meeting 📅' : 'Back to work 💻'); renderOffice(); renderPresenceBar(); });
+$('#ofc').addEventListener('click', e => { const t = e.target.closest('[data-od]'); if (!t) return; const n = t.dataset.od;
+  if (n === 'SPV' && TEAM !== 'HD') { location.href = $('#switch').href.split('#')[0] + '#desk=SPV'; return; }
+  if (t.dataset.tm === TEAM || n === 'SPV') openDesk(n); else location.href = $('#switch').href.split('#')[0] + '#desk=' + encodeURIComponent(n); });
+$('#offPause').onclick = () => { OF.paused = !OF.paused; try { localStorage.setItem('gx-office-pause', OF.paused ? '1' : '0'); } catch (e) {} $('#offPause').textContent = OF.paused ? '▶ Walk' : '⏸ Pause'; };
+$('#offPause').textContent = OF.paused ? '▶ Walk' : '⏸ Pause';
+{ const m = /#desk=([^&]+)/.exec(location.hash); if (m) setTimeout(() => { const n = decodeURIComponent(m[1]); if (n === 'SPV' || CFG.roster.some(r => r[0] === n)) openDesk(n); }, 900); }
+loadOther();
+load(); loadBoard(); loadDesk(); setInterval(() => { if (!document.hidden && !document.activeElement.matches('textarea,input') && !document.querySelector('.md')) { load(); loadBoard(); loadDesk(); loadOther(); } }, 60000);
 </script>
 </body>
 </html>

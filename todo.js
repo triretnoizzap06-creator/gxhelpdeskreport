@@ -112,7 +112,7 @@ export default async function handler(req, res) {
       const team = String(q.get('board')).toUpperCase(); if (!TEAMS.includes(team)) return json(res, { error: 'bad-team' }, 400);
       const key = 'team-board-' + team.toLowerCase();
       const read = async () => { const row = must(await db().from('gx_docs').select('data,revision').eq('key', key).maybeSingle()); const d = (row && row.data) || {};
-        return { data: { roster: Array.isArray(d.roster) ? d.roster : null, tasks: Array.isArray(d.tasks) ? d.tasks : [], notes: Array.isArray(d.notes) ? d.notes : [] }, revision: row ? row.revision : null }; };
+        return { data: { roster: Array.isArray(d.roster) ? d.roster : null, tasks: Array.isArray(d.tasks) ? d.tasks : [], notes: Array.isArray(d.notes) ? d.notes : [], presence: d.presence && typeof d.presence === 'object' && !Array.isArray(d.presence) ? d.presence : {} }, revision: row ? row.revision : null }; };
       if (req.method === 'GET') { const r = await read(); return json(res, { board: r.data, revision: r.revision, canRoster: authed(req) || teamAuthed(req) }); }
       if (req.method !== 'POST') return json(res, { error: 'method' }, 405);
       const b = await readJson(req), op = str(b.op, 20), now = new Date().toISOString();
@@ -137,6 +137,8 @@ export default async function handler(req, res) {
         else if (op === 'note.seen') { const x = D.notes.find(y => y.id === b.id); if (x) { x.seen = true; if (b.reply != null) { x.spvReply = str(b.reply, 2000); x.spvAt = now; } } }
         else if (op === 'note.pin') { const x = D.notes.find(y => y.id === b.id); if (x) x.pinned = !x.pinned; }
         else if (op === 'note.del') D.notes = D.notes.filter(y => y.id !== b.id);
+        else if (op === 'presence') { const who = nm(b.by), st = String(b.status || ''); if (!who) err = 'Nama wajib.'; else if (!/^(work|break|meet)$/.test(st)) err = 'Status tidak valid.';
+          else { D.presence[who] = { s: st, at: now }; for (const k of Object.keys(D.presence)) if (Date.now() - Date.parse(D.presence[k].at) > 864e5) delete D.presence[k]; } }   // status Virtual Office
         else return json(res, { error: 'bad-op' }, 400);
         if (err) return json(res, { error: 'invalid', detail: err }, 400);
         /* batasi ukuran: task DONE > 90 hari & notes > 300 dibuang */
@@ -158,12 +160,14 @@ export default async function handler(req, res) {
       if (!can) return json(res, { error: 'team-login-required', detail: 'Masukkan password tim untuk mengubah desk.' }, 401);
       const b = await readJson(req), op = str(b.op, 20), now = new Date().toISOString(), who = str(b.name, 60).replace(/\s+/g, ' ').trim();
       if (!who) return json(res, { error: 'invalid', detail: 'Nama wajib.' }, 400);
+      if (who === 'SPV' && !authed(req)) return json(res, { error: 'spv-login-required', detail: 'Desk SPV hanya bisa diubah SPV.' }, 401);
       for (let t = 0; t < 6; t++) {
         const cur = await read(), D = cur.data, me = D.desks[who] = D.desks[who] || { tpls: [] }; me.tpls = Array.isArray(me.tpls) ? me.tpls : [];
         let err = null;
         const tplIn = x => ({ title: str(x.title, 120).trim(), cat: str(x.cat, 40).trim(), text: str(x.text, 4000) });
         if (op === 'photo') { const ph = String(b.photo || ''); if (ph && !/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(ph)) err = 'Format foto tidak valid.'; else if (ph.length > 150000) err = 'Foto terlalu besar.'; else me.photo = ph; }
-        else if (op === 'profile') { me.tagline = str(b.tagline, 80); me.emoji = str(b.emoji, 8); me.color = /^#[0-9a-f]{6}$/i.test(b.color || '') ? b.color : (me.color || ''); }
+        else if (op === 'profile') { me.tagline = str(b.tagline, 80); me.emoji = str(b.emoji, 8); me.color = /^#[0-9a-f]{6}$/i.test(b.color || '') ? b.color : (me.color || '');
+          if (Array.isArray(b.props)) me.props = [...new Set(b.props.map(String).filter(x => /^(window|clock|shelf|lamp|coffee|plant|headset|cat|frame|sticky)$/.test(x)))]; }
         else if (op === 'tpl.add') { const x = tplIn(b); if (!x.title || !x.text.trim()) err = 'Judul & isi template wajib.'; else if (me.tpls.length >= 200) err = 'Maks. 200 template per orang.'; else me.tpls.unshift({ id: randomUUID(), ...x, at: now, updated_at: now, uses: 0 }); }
         else if (op === 'tpl.upd') { const y = me.tpls.find(z => z.id === b.id); if (!y) err = 'Template tidak ditemukan.'; else { const x = tplIn(b); if (!x.title || !x.text.trim()) err = 'Judul & isi template wajib.'; else Object.assign(y, x, { updated_at: now }); } }
         else if (op === 'tpl.del') me.tpls = me.tpls.filter(z => z.id !== b.id);

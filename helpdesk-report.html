@@ -13,7 +13,7 @@ html.viewonly textarea[data-rcf],html.viewonly input[data-rcf],html.viewonly sel
 html.viewonly [draggable="true"]{cursor:default}
 .viewtag{display:none;font-size:12px;font-weight:700;color:#6E6E73;padding:6px 10px;border-radius:999px;background:rgba(0,0,0,.05)}
 html.viewonly .viewtag{display:inline-flex}
-/* viewer = deck saja: tanpa daftar slide (hide/unhide), tanpa periode / Riwayat / pengaturan tampilan */
+/* viewer = deck saja: tanpa daftar slide (hide/unhide), tanpa periode / History / pengaturan tampilan */
 html.viewonly .main{grid-template-columns:minmax(0,1fr)}
 html.viewonly #dashBtn,html.viewonly #side,html.viewonly #tools,html.viewonly #notice,html.viewonly #period,html.viewonly #pFrom,html.viewonly #pTo,html.viewonly .dmy,html.viewonly #histBtn,html.viewonly #printBtn,html.viewonly #hbBack,html.viewonly .seg,html.viewonly .mseg{display:none!important}
 html.viewonly .hist-banner em{display:none}
@@ -873,7 +873,7 @@ html.viewonly .mwc{display:flex}
   <input type="date" class="sel hidden" id="pFrom" aria-label="From date"><input type="date" class="sel hidden" id="pTo" aria-label="To date">
   <button class="btn sync" id="syncBtn" title="Data online"><i></i><span>Online</span></button>
   <button class="btn" id="viewLinkBtn" title="Salin link khusus lihat (viewer)">🔗 Viewer</button>
-  <button class="btn" id="histBtn" title="Riwayat report yang tersimpan">Riwayat</button>
+  <button class="btn" id="histBtn" title="Saved report history">History</button>
   <button class="btn" id="importBtn">Import data</button>
   <button class="btn" id="manageBtn">Customize Present</button>
   <button class="btn hide-m" id="editBtn">Edit text</button>
@@ -881,7 +881,7 @@ html.viewonly .mwc{display:flex}
   <span class="viewtag">👁 View only</span>
   <button class="btn pri" id="presentBtn">▶ Present</button>
 </header>
-<div class="hist-banner hidden" id="histBanner"><span>Melihat riwayat: <b id="hbTitle"></b> · disimpan <span id="hbAt"></span> · <em>perubahan di sini tidak disimpan</em></span><span class="hb-act"><button class="btn sm" id="hbRestore">Jadikan data utama</button><button class="btn sm pri" id="hbBack">Kembali ke data terbaru</button></span></div>
+<div class="hist-banner hidden" id="histBanner"><span>Viewing history: <b id="hbTitle"></b> · saved <span id="hbAt"></span> · <em>changes here are not saved</em></span><span class="hb-act"><button class="btn sm" id="hbRestore">Restore as main data</button><button class="btn sm pri" id="hbBack">Back to latest data</button></span></div>
 <div class="main">
   <nav class="side" id="side" aria-label="Slides"></nav>
   <section class="work">
@@ -921,8 +921,8 @@ html.viewonly .mwc{display:flex}
 </div>
 <div class="modal hidden" id="histModal" role="dialog" aria-modal="true" aria-labelledby="histTitle">
   <div class="dialog" style="width:min(720px,100%)">
-    <div class="dhead"><div><div class="eyebrow">Riwayat report</div><h2 id="histTitle">Riwayat</h2><div class="sub">Setiap selesai Present, kondisi report (data, periode, isian Repeat Complaint, edit teks) otomatis tersimpan di sini. Bisa juga disimpan manual.</div></div><button class="btn" data-close="histModal">Close</button></div>
-    <div class="hist-new"><input type="text" id="histName" class="sel" placeholder="Nama riwayat"><button class="btn pri" id="histSave">Simpan sekarang</button></div>
+    <div class="dhead"><div><div class="eyebrow">Report history</div><h2 id="histTitle">History</h2><div class="sub">Every time you finish Present, the report state (data, period, Repeat Complaint inputs, text edits) is saved here automatically. You can also save manually.</div></div><button class="btn" data-close="histModal">Close</button></div>
+    <div class="hist-new"><input type="text" id="histName" class="sel" placeholder="Snapshot name"><button class="btn pri" id="histSave">Save now</button></div>
     <div class="sub" id="histMsg" style="margin:6px 0 2px"></div>
     <div id="histList" class="hist-list"></div>
   </div>
@@ -1821,10 +1821,11 @@ const HH=h=>String(h).padStart(2,'0')+':00';
 const isNightH=h=>NIGHT.from>NIGHT.to?(h>=NIGHT.from||h<NIGHT.to):(h>=NIGHT.from&&h<NIGHT.to);
 const DAYH=[...Array(24).keys()].filter(h=>!isNightH(h)),NIGHTH=[...Array(24).keys()].filter(isNightH).sort((a,b)=>((a-NIGHT.from+24)%24)-((b-NIGHT.from+24)%24));
 const DOW=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'],DOWS=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
-let _TR=null,_TRk='';
-function trafficData(){
-  const lists=[C.cs&&C.cs.list,C.vip&&C.vip.list].filter(Boolean);const key=(C.short||'')+'|'+lists.map(l=>l.length).join(',');
-  if(_TR&&_TRk===key)return _TR;
+let _TR=null,_TRk='';const _TRM=new Map();
+/* src: undefined = CS + VIP gabungan · 'cs' = Customer Support saja · 'vip' = VIP saja */
+function trafficData(src){
+  const lists=(src==='cs'?[C.cs&&C.cs.list]:src==='vip'?[C.vip&&C.vip.list]:[C.cs&&C.cs.list,C.vip&&C.vip.list]).filter(Boolean);const key=(src||'all')+'|'+(C.short||'')+'|'+lists.map(l=>l.length).join(',');
+  if(_TRM.has(key))return _TRM.get(key);if(_TRM.size>12)_TRM.clear();
   const seen=new Set(),rows=[];let bad=0,midnight=0;
   for(const l of lists)for(const r of l){const k=r.ticket||(r.date+'|'+r.cid+'|'+r.problem);if(seen.has(k))continue;seen.add(k);
     if(r.date==null||!isFinite(r.date)){bad++;continue}const d=new Date(r.date);if(!d.getHours()&&!d.getMinutes()&&!d.getSeconds())midnight++;rows.push({d,h:d.getHours(),r})}
@@ -1843,7 +1844,7 @@ function trafficData(){
   days.forEach(t=>dowDays[new Date(t).getDay()]++);
   rows.forEach(x=>{const w=x.d.getDay();dowCount[w]++;heat[w][x.h]++});
   const perDate=days.map(t=>({day:t,day_:rows.filter(x=>dayStart(+x.d)===t&&!isNightH(x.h)).length,all:rows.filter(x=>dayStart(+x.d)===t).length}));
-  _TR={rows,bad,hasTime,days,nDays:days.length,byH,day,night,nightList,fullNights,dowCount,dowDays,heat,perDate,min:minD,max:maxD};_TRk=key;return _TR}
+  const R={rows,bad,hasTime,days,nDays:days.length,byH,day,night,nightList,fullNights,dowCount,dowDays,heat,perDate,min:minD,max:maxD};_TRM.set(key,R);return R}
 function areaChart(items,o={}){/* grafik area halus + angka di tiap titik (gaya monitoring traffic) */
   if(!items.length)return '<div class="empty">No data</div>';const n=items.length,max=Math.max(1,...items.map(x=>x.value)),step=Math.max(1,niceStepT(max)),top=Math.ceil(max*1.12/step)*step;
   const X=i=>(i+.5)/n*100,Y=v=>100-v/top*100,pts=items.map((x,i)=>[X(i),Y(x.value)]);
@@ -1862,27 +1863,27 @@ function hourStats(T,hours,total,nPeriods){
   return {items,sum,avgH,perHour,pk,lo}}
 const tierColor=(v,m)=>v>=m*1.25?'#E8590C':v>=m*.85?'#3B4CCA':'#AEB7F0';
 function tileTxt(tone,icon,label,text,foot){return `<div class="card tile sm t-${tone}" data-a><div class="ico">${ICON[icon]}</div><div style="min-width:0"><div class="tlab">${label}</div><div class="tval">${text}</div><div class="tfoot">${foot||''}</div></div></div>`}
-const trafficSrc=T=>`Sumber: tiket Customer Support + VIP · jam Created · ${rangeLabel(T.min,T.max)} · ${fInt(T.nDays)} hari`;
-function noTraffic(id,title){const T=C.cs||C.vip?trafficData():null;
-  if(!T)return head(id,'ops',title)+body(needCS());
+const trafficSrc=(T,src)=>`Sumber: tiket ${src==='cs'?'Customer Support':src==='vip'?'VIP Group':'Customer Support + VIP'} · jam Created · ${rangeLabel(T.min,T.max)} · ${fInt(T.nDays)} hari`;
+function noTraffic(id,title,src){const T=(src?C[src]:C.cs||C.vip)?trafficData(src):null;
+  if(!T)return head(id,'ops',title)+body(src==='vip'?needVIP():needCS());
   if(!T.hasTime)return head(id,'ops',title)+body(empty('Jam Created tidak tersedia','Kolom Created hanya berisi tanggal. Import ulang file yang punya kolom Created Time (atau Created At) supaya traffic per jam bisa dihitung.'));
   return null}
 
-function sTrafficHour(){const id='ops-hour',title='After Sales Traffic by Hour';const nt=noTraffic(id,title);if(nt)return nt;
-  const T=trafficData(),S_=hourStats(T,DAYH,T.rows.length,T.nDays),allAvg=T.rows.length/24;
+function sTrafficHour(src){const vip=src==='vip',id=vip?'ops-hour-vip':'ops-hour-cs',SEG=vip?'VIP':'Customer Support',title=SEG+' Traffic by Hour';const nt=noTraffic(id,title,src);if(nt)return nt;
+  const T=trafficData(src),S_=hourStats(T,DAYH,T.rows.length,T.nDays),allAvg=T.rows.length/24;
   const busy=DAYH.filter(h=>T.byH[h]>=S_.perHour*1.1),top3=[...S_.items].sort((a,b)=>b.v-a.v).slice(0,3),top3Share=pct(top3.reduce((s,x)=>s+x.v,0),S_.sum);
   /* jam mulai turun: jam pertama setelah peak yang turun di bawah rata-rata dan tetap di bawah */
   let decl=null;for(let i=DAYH.indexOf(S_.pk.h)+1;i<DAYH.length;i++){if(DAYH.slice(i).every(h=>T.byH[h]<S_.perHour)){decl=DAYH[i];break}}
-  const items=[...Array(24).keys()].map(h=>({label:String(h).padStart(2,'0'),full:`${HH(h)}–${String(h).padStart(2,'0')}:59 · ${fInt(T.byH[h])} case · ${fPct(pct(T.byH[h],T.rows.length),1)} dari semua case${isNightH(h)?' · Night Shift':''}`,value:T.byH[h],color:isNightH(h)?'#D9DCE3':tierColor(T.byH[h],S_.perHour)}));
-  const k=on(id,'kpi')?`<div class="tiles" style="--cols:4">${sm('y','list','Case jam Helpdesk',S_.sum,`${HH(DAYH[0])}–${HH(NIGHT.from)} · ${fPct(pct(S_.sum,T.rows.length),1)} dari total`)}${tileTxt('o','clock','Peak hour',`${HH(S_.pk.h)}`,`${fInt(S_.pk.v)} case · ${fPct(pct(S_.pk.v,S_.sum),1)} After Sales`)}${tileTxt('b','clock','Lowest hour',`${HH(S_.lo.h)}`,`${fInt(S_.lo.v)} case · ${fPct(pct(S_.lo.v,S_.sum),1)}`)}${sm('g','gauge','Avg case / hour',S_.avgH,`per jam per hari · ${DAYH.length} jam × ${fInt(T.nDays)} hari`,'d1')}</div>`:'';
+  const items=[...Array(24).keys()].map(h=>({label:String(h).padStart(2,'0'),full:`${HH(h)}–${String(h).padStart(2,'0')}:59 · ${fInt(T.byH[h])} case · ${fPct(pct(T.byH[h],T.rows.length),1)} dari case ${SEG}${isNightH(h)?' · Night Shift':''}`,value:T.byH[h],color:isNightH(h)?'#D9DCE3':tierColor(T.byH[h],S_.perHour)}));
+  const k=on(id,'kpi')?`<div class="tiles" style="--cols:4">${sm('y','list',vip?'Case VIP jam Helpdesk':'Case jam Helpdesk',S_.sum,`${HH(DAYH[0])}–${HH(NIGHT.from)} · ${fPct(pct(S_.sum,T.rows.length),1)} dari total`)}${tileTxt('o','clock','Peak hour',`${HH(S_.pk.h)}`,`${fInt(S_.pk.v)} case · ${fPct(pct(S_.pk.v,S_.sum),1)} ${SEG}`)}${tileTxt('b','clock','Lowest hour',`${HH(S_.lo.h)}`,`${fInt(S_.lo.v)} case · ${fPct(pct(S_.lo.v,S_.sum),1)}`)}${sm('g','gauge','Avg case / hour',S_.avgH,`per jam per hari · ${DAYH.length} jam × ${fInt(T.nDays)} hari`,'d1')}</div>`:'';
   const aItems=[...Array(24).keys()].map(h=>({label:String(h).padStart(2,'0'),full:items[h].full,value:T.byH[h],color:isNightH(h)?'#9AA0AE':tierColor(T.byH[h],S_.perHour),cls:(isNightH(h)?'dim ':'')+(h===S_.pk.h?'pk':'')}));
   const bands=[];if(NIGHT.from>NIGHT.to){bands.push([0,NIGHT.to,'Contact Center']);bands.push([NIGHT.from,24,'CC'])}
-  const chart=on(id,'chart')?`<div class="card fill1" data-a style="--f:1.7;display:flex;flex-direction:column"><div class="ctitle">Case masuk per jam (00–23) · total ${fInt(T.rows.length)} case · jam tim Helpdesk ${HH(NIGHT.to)}–${HH(NIGHT.from)}</div>${areaChart(aItems,{id,color:'#3B4CCA',bands})}<div class="legend"><span><i style="background:#E8590C"></i>Sibuk ≥ 125% rata-rata</span><span><i style="background:#3B4CCA"></i>Normal</span><span><i style="background:#AEB7F0"></i>Sepi</span><span><i style="background:#ECEEF3;border:1px solid #D9DCE3"></i>${HH(NIGHT.from)}–${HH(NIGHT.to)} back-up Contact Center</span></div></div>`:'';
-  const share=on(id,'share')?`<div class="card" data-a style="--f:.9;display:flex;flex-direction:column;overflow:hidden"><div class="ctitle">Top 5 jam · kontribusi ke After Sales</div>${hbars([...S_.items].sort((a,b)=>b.v-a.v).slice(0,5).map((x,j)=>({label:`${HH(x.h)}–${String(x.h).padStart(2,'0')}:59`,value:x.v,sv:fPct(pct(x.v,S_.sum),1),meta:`${f1(x.v/T.nDays)}/hari`,color:j?'#3B4CCA':'#E8590C'})),{style:'--hg:.55cqw;--bh:.45cqw'})}</div>`:'';
-  const h=hl(id,[`Case paling banyak masuk jam <b>${HH(S_.pk.h)}–${String(S_.pk.h).padStart(2,'0')}:59</b>: <b>${fInt(S_.pk.v)} case</b> (${fPct(pct(S_.pk.v,S_.sum),1)} After Sales, rata-rata ${f1(S_.pk.v/T.nDays)}/hari).`,
-    `Peak hour <b>${f1(S_.perHour?S_.pk.v/S_.perHour:0)}×</b> rata-rata jam After Sales dan <b>${f1(S_.lo.v?S_.pk.v/S_.lo.v:0)}×</b> jam tersepi (${HH(S_.lo.h)}). 3 jam tersibuk = <b>${fPct(top3Share,0)}</b> case.`,
+  const chart=on(id,'chart')?`<div class="card fill1" data-a style="--f:1.7;display:flex;flex-direction:column"><div class="ctitle">Case ${SEG} masuk per jam (00–23) · total ${fInt(T.rows.length)} case · jam tim Helpdesk ${HH(NIGHT.to)}–${HH(NIGHT.from)}</div>${areaChart(aItems,{id,color:vip?'#B8860B':'#3B4CCA',bands})}<div class="legend"><span><i style="background:#E8590C"></i>Sibuk ≥ 125% rata-rata</span><span><i style="background:#3B4CCA"></i>Normal</span><span><i style="background:#AEB7F0"></i>Sepi</span><span><i style="background:#ECEEF3;border:1px solid #D9DCE3"></i>${HH(NIGHT.from)}–${HH(NIGHT.to)} back-up Contact Center</span></div></div>`:'';
+  const share=on(id,'share')?`<div class="card" data-a style="--f:.9;display:flex;flex-direction:column;overflow:hidden"><div class="ctitle">Top 5 jam · kontribusi ke ${SEG}</div>${hbars([...S_.items].sort((a,b)=>b.v-a.v).slice(0,5).map((x,j)=>({label:`${HH(x.h)}–${String(x.h).padStart(2,'0')}:59`,value:x.v,sv:fPct(pct(x.v,S_.sum),1),meta:`${f1(x.v/T.nDays)}/hari`,color:j?'#3B4CCA':'#E8590C'})),{style:'--hg:.55cqw;--bh:.45cqw'})}</div>`:'';
+  const h=hl(id,[`Case paling banyak masuk jam <b>${HH(S_.pk.h)}–${String(S_.pk.h).padStart(2,'0')}:59</b>: <b>${fInt(S_.pk.v)} case</b> (${fPct(pct(S_.pk.v,S_.sum),1)} case ${SEG}, rata-rata ${f1(S_.pk.v/T.nDays)}/hari).`,
+    `Peak hour <b>${f1(S_.perHour?S_.pk.v/S_.perHour:0)}×</b> rata-rata jam ${SEG} ${S_.lo.v?`dan <b>${f1(S_.pk.v/S_.lo.v)}×</b> jam tersepi (${HH(S_.lo.h)})`:`· jam tersepi ${HH(S_.lo.h)} tanpa case`}. 3 jam tersibuk = <b>${fPct(top3Share,0)}</b> case.`,
     busy.length?`Jam sibuk: <b>${busy.map(h=>HH(h).slice(0,2)).join(', ')}</b>${decl!=null?` · traffic mulai menurun dari <b>${HH(decl)}</b>`:''} — coverage tim paling dibutuhkan di jam sibuk.`:'']);
-  return head(id,'ops',title,trafficSrc(T))+body(k+row(chart,share)+h)}
+  return head(id,'ops',title,trafficSrc(T,src))+body(k+row(chart,share)+h)}
 
 
 function sTrafficMinute(){const id='ops-min',title='Traffic per Minute';const nt=noTraffic(id,title);if(nt)return nt;
@@ -2080,7 +2081,8 @@ const SLIDES=[
  {id:'vip-hand-rank',g:'vip',t:'VIP Handling Agents — Ranked',r:()=>sRanked('vip','handler'),need:'vip',off:1,blocks:[['hl','Key highlights']]},
  {id:'rc-vip',g:'vip',t:'VIP Top 3 Repeat Complaints',r:()=>sRepeat('vip'),need:'rc',top3:'vip'},
  {id:'rc-vip-list',g:'vip',t:'VIP Other Repeat Complaints',r:()=>sRepeatList('vip'),need:'rc',blocks:[['hl','Key highlights']]},
- {id:'ops-hour',g:'ops',t:'After Sales Traffic by Hour',r:sTrafficHour,need:'cs',blocks:[['kpi','KPI tiles'],['chart','Hourly chart'],['share','Top hours'],['hl','Key highlights']]},
+ {id:'ops-hour-cs',g:'ops',t:'Customer Support Traffic by Hour',r:()=>sTrafficHour('cs'),need:'cs',blocks:[['kpi','KPI tiles'],['chart','Hourly chart'],['share','Top hours'],['hl','Key highlights']]},
+ {id:'ops-hour-vip',g:'ops',t:'VIP Traffic by Hour',r:()=>sTrafficHour('vip'),need:'vip',blocks:[['kpi','KPI tiles'],['chart','Hourly chart'],['share','Top hours'],['hl','Key highlights']]},
  {id:'ops-min',g:'ops',t:'Traffic per Minute',r:sTrafficMinute,need:'cs',blocks:[['kpi','KPI tiles'],['chart','Minute chart'],['hl','Key highlights']]},
  {id:'ops-days',g:'ops',t:'Traffic by Day & Hour',r:sTrafficDays,need:'cs',blocks:[['heat','Heatmap'],['dow','Average per day'],['hl','Key highlights']]},
  {id:'ops-night',g:'ops',t:'Night Shift Case Report',r:sNightShift,need:'cs',blocks:[['kpi','KPI tiles'],['chart','Hourly chart'],['nights','Per night'],['hl','Key highlights']]},
@@ -2236,7 +2238,7 @@ const DSINFO={cs:{t:'Customer Support data',tag:'HELPDESK CSO',d:'Export monitor
   vip:{t:'VIP Group data',tag:'VIP',d:'Export monitoring VIP Group. Boleh dikosongkan kalau file Customer Support punya kolom VIP flag — baris VIP diambil dari sana.'},
   rc:{t:'Repeat Complaint data',tag:'REPEAT',d:'Export Trouble Ticket Summary (CSV/XLSX), satu file untuk CS & VIP. Aturannya sama dengan web Repeat Complaint: filter Via Origin, ranking per CID (2+ tiket).'}};
 function renderImport(){
-  {const H=S.imports||[],L={cs:'Customer Support',vip:'VIP',rc:'Repeat Complaint'};$('#ihist').innerHTML=`<h3>Riwayat import</h3>${H.length?`<table class="tbl"><thead><tr><th>Waktu import</th><th>Data</th><th>File</th><th class="n">Baris</th><th>Periode data</th></tr></thead><tbody>${H.map((x,i)=>`<tr${i===0?' class="b"':''}><td>${hhmm(x.at)}</td><td>${L[x.k]||x.k}</td><td>${esc(x.name)}</td><td class="n">${fInt(x.rows)}</td><td class="mut">${x.from?ddmm(x.from)+' – '+ddmm(x.to):'—'}</td></tr>`).join('')}</tbody></table>`:'<div class="sub">Belum ada import.</div>'}<div class="sub" style="margin-top:6px">${typeof SY!=='undefined'&&SY.avail?'Data &amp; riwayat ini tersimpan online — semua yang membuka link melihat import terakhir.':'Penyimpanan online belum aktif (lihat README) — data &amp; riwayat ini hanya ada di browser ini.'}</div>`}
+  {const H=S.imports||[],L={cs:'Customer Support',vip:'VIP',rc:'Repeat Complaint'};$('#ihist').innerHTML=`<h3>Import history</h3>${H.length?`<table class="tbl"><thead><tr><th>Imported at</th><th>Data</th><th>File</th><th class="n">Baris</th><th>Data period</th></tr></thead><tbody>${H.map((x,i)=>`<tr${i===0?' class="b"':''}><td>${hhmm(x.at)}</td><td>${L[x.k]||x.k}</td><td>${esc(x.name)}</td><td class="n">${fInt(x.rows)}</td><td class="mut">${x.from?ddmm(x.from)+' – '+ddmm(x.to):'—'}</td></tr>`).join('')}</tbody></table>`:'<div class="sub">No imports yet.</div>'}<div class="sub" style="margin-top:6px">${typeof SY!=='undefined'&&SY.avail?'This data &amp; history is stored online — everyone opening the link sees the latest import.':'Online storage is not active yet (see README) — this data &amp; history only lives in this browser.'}</div>`}
   $('#dsgrid').innerHTML=['cs','vip','rc'].map(k=>{const ds=DS[k],F=FIELDS_OF(k),info=DSINFO[k];const miss=ds?F.filter(f=>f.req&&!ds.map[f.k]).map(f=>f.l):[];
     return `<div class="dscard"><div><span class="tag">${info.tag}</span></div><h3>${info.t}</h3><div class="sub">${info.d}</div>
      <div class="drop"><input type="file" accept=".csv,.xlsx,.xls" multiple data-file="${k}" aria-label="${info.t}"></div>
@@ -2567,42 +2569,42 @@ function syncInit(){
   if(location.protocol.startsWith('http')){syFetch(SY.api+'?meta=1',{cache:'no-store'}).then(r=>r.json()).then(j=>{if(typeof j.open==='boolean'){SY.open=j.open;SY.avail=true;SY.reason=!j.open&&!syKey()?'need-key':''}}).catch(()=>{}).finally(()=>syPull().then(()=>{SY.ready=true;syPill();if(syOwner()&&syIsDirty()&&syAuto())syPublish()}));setInterval(syMeta,20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)syMeta()})}
   else{SY.avail=false;SY.ready=true;syPill()}
 }
-/* ---------- Riwayat report (online bila aktif, kalau tidak di browser ini) ---------- */
+/* ---------- Report history (online bila aktif, kalau tidak di browser ini) ---------- */
 const HL='gxcs-hist-local';
 const anyData=()=>!!(DS.cs||DS.vip||DS.rc);
 const curTitle=()=>'Helpdesk Report · '+(C&&C.long||'');
 function snapPayload(){return {v:2,at:Date.now(),S:{...S,cur:undefined},DS:syDS()}}
 const hlGet=()=>{try{return JSON.parse(lsg(HL)||'[]')}catch(e){return []}},hlSet=a=>lss(HL,JSON.stringify(a.slice(0,30)));
-async function histSave(title,auto){if(!anyData()||VIEWING)return {ok:false,msg:'Belum ada data.'};title=(title||curTitle()).trim()||curTitle();
+async function histSave(title,auto){if(!anyData()||VIEWING)return {ok:false,msg:'No data yet.'};title=(title||curTitle()).trim()||curTitle();
   const p=snapPayload();
-  if(SY.avail&&syOwner()){try{const body=await gzip(JSON.stringify(p));const r=await syFetch(SY.api+'?snap=1&auto='+(auto?1:0)+'&title='+encodeURIComponent(title),{method:'POST',headers:{'x-publish-key':syKey(),'content-type':'application/octet-stream'},body});const j=await r.json().catch(()=>({}));if(r.ok&&j.ok)return {ok:true,online:true,msg:'Tersimpan online: '+title};}catch(e){}}
+  if(SY.avail&&syOwner()){try{const body=await gzip(JSON.stringify(p));const r=await syFetch(SY.api+'?snap=1&auto='+(auto?1:0)+'&title='+encodeURIComponent(title),{method:'POST',headers:{'x-publish-key':syKey(),'content-type':'application/octet-stream'},body});const j=await r.json().catch(()=>({}));if(r.ok&&j.ok)return {ok:true,online:true,msg:'Saved online: '+title};}catch(e){}}
   /* cadangan: simpan di browser ini */
   const id='L'+Date.now();let L=hlGet();
   if(auto)L=L.filter(x=>{const same=x.auto&&x.title===title&&Date.now()-x.at<3*3600e3;if(same)idbPut('hist:'+x.id,null);return !same});
   await idbPut('hist:'+id,p);L.unshift({id,at:p.at,title,auto:!!auto,local:1});L.slice(30).forEach(x=>idbPut('hist:'+x.id,null));hlSet(L);
-  return {ok:true,online:false,msg:'Tersimpan di browser ini: '+title}}
+  return {ok:true,online:false,msg:'Saved in this browser: '+title}}
 async function histItems(){let on=[];if(SY.avail){try{const r=await syFetch(SY.api+'?history=1',{cache:'no-store'});if(r.ok){const j=await r.json();on=(j.items||[]).map(x=>({...x,local:0}))}}catch(e){}}return [...on,...hlGet()].sort((a,b)=>b.at-a.at)}
 async function histLoad(it){if(it.local)return await idbGet('hist:'+it.id);const r=await syFetch(SY.api+'?snap='+encodeURIComponent(it.id),{cache:'no-store'});if(!r.ok)return null;return JSON.parse(await gunzip(new Uint8Array(await r.arrayBuffer())))}
 let HBK=null;
 function histApplyMem(p){S={...DEF_S(),...p.S,rc:{...DEF_RC,...(p.S.rc||{})},period:{...DEF_S().period,...(p.S.period||{})},cur:S.cur};for(const k of ['cs','vip','rc'])DS[k]=p.DS&&p.DS[k]||null;UNDO.length=0;REDO.length=0;syncPeriod();refresh(0)}
-async function histOpen(it){const p=await histLoad(it);if(!p||!p.S){$('#histMsg').textContent='Riwayat tidak bisa dibuka.';return}
+async function histOpen(it){const p=await histLoad(it);if(!p||!p.S){$('#histMsg').textContent='This snapshot could not be opened.';return}
   if(!VIEWING)HBK={S:JSON.parse(JSON.stringify(S)),DS:{...DS}};VIEWING=true;histApplyMem(p);HBK.item=it;HBK.p=p;
   $('#hbTitle').textContent=it.title;$('#hbAt').textContent=hhmm(it.at);$('#histBanner').classList.remove('hidden');document.body.classList.add('viewing-hist');closeModal('histModal')}
 function histBack(){if(!VIEWING)return;VIEWING=false;S=HBK.S;for(const k of ['cs','vip','rc'])DS[k]=HBK.DS[k];HBK=null;$('#histBanner').classList.add('hidden');document.body.classList.remove('viewing-hist');UNDO.length=0;REDO.length=0;syncPeriod();refresh(0);SIG=sigS()}
-async function histRestore(){if(!VIEWING||!HBK)return;if(!confirm('Jadikan riwayat "'+HBK.item.title+'" sebagai data utama? Data sekarang ikut disimpan dulu ke Riwayat.'))return;
+async function histRestore(){if(!VIEWING||!HBK)return;if(!confirm('Restore "'+HBK.item.title+'" as the main data? The current data will be saved to History first.'))return;
   const p=HBK.p,bk=HBK;VIEWING=false;S=bk.S;for(const k of ['cs','vip','rc'])DS[k]=bk.DS[k];
-  await histSave('Sebelum dipulihkan · '+hhmm(Date.now()),false).catch(()=>{});
+  await histSave('Before restore · '+hhmm(Date.now()),false).catch(()=>{});
   HBK=null;$('#histBanner').classList.add('hidden');document.body.classList.remove('viewing-hist');
   histApplyMem(p);lss(SY.kDs,'1');for(const k of ['cs','vip','rc'])await idbPut(k,DS[k]);save()}
-async function renderHist(){const el=$('#histList');el.innerHTML='<div class="sub">Memuat…</div>';const items=await histItems();const own=syOwner()||!SY.avail;
-  el.innerHTML=items.length?items.map((x,i)=>`<div class="hrow"><div class="hmain"><b>${esc(x.title)}</b><span class="mut">${hhmm(x.at)} · ${x.auto?'Otomatis (selesai Present)':'Manual'}${x.local?' · <em>hanya di browser ini</em>':''}${x.size?` · ${(x.size/1e6).toFixed(1)} MB`:''}</span></div><span class="hact"><button class="btn sm pri" data-hopen="${i}">Buka</button>${!x.local&&own?`<button class="btn sm" data-hlink="${i}" title="Salin link viewer untuk riwayat ini saja">🔗 Viewer</button>`:''}${own?`<button class="btn sm" data-hdel="${i}" title="Hapus riwayat">Hapus</button>`:''}</span></div>`).join(''):'<div class="sub">Belum ada riwayat. Riwayat otomatis tersimpan setiap selesai Present.</div>';
+async function renderHist(){const el=$('#histList');el.innerHTML='<div class="sub">Loading…</div>';const items=await histItems();const own=syOwner()||!SY.avail;
+  el.innerHTML=items.length?items.map((x,i)=>`<div class="hrow"><div class="hmain"><b>${esc(x.title)}</b><span class="mut">${hhmm(x.at)} · ${x.auto?'Auto (after Present)':'Manual'}${x.local?' · <em>this browser only</em>':''}${x.size?` · ${(x.size/1e6).toFixed(1)} MB`:''}</span></div><span class="hact"><button class="btn sm pri" data-hopen="${i}">Open</button>${!x.local&&own?`<button class="btn sm" data-hlink="${i}" title="Copy a viewer link for this snapshot only">🔗 Viewer</button>`:''}${own?`<button class="btn sm" data-hdel="${i}" title="Delete snapshot">Delete</button>`:''}</span></div>`).join(''):'<div class="sub">No history yet. A snapshot is saved automatically every time you finish Present.</div>';
   el.querySelectorAll('[data-hopen]').forEach(b=>b.onclick=()=>histOpen(items[+b.dataset.hopen]));
   el.querySelectorAll('[data-hlink]').forEach(b=>b.onclick=()=>{const it=items[+b.dataset.hlink];const u=location.origin+location.pathname+'?view=1&snap='+encodeURIComponent(it.id);
-    (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>{b.textContent='✓ Link disalin';setTimeout(()=>b.textContent='🔗 Viewer',2200)},()=>window.prompt('Salin link viewer riwayat ini:',u))});
-  el.querySelectorAll('[data-hdel]').forEach(b=>b.onclick=async()=>{const it=items[+b.dataset.hdel];if(!confirm('Hapus riwayat "'+it.title+'"?'))return;
+    (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>{b.textContent='✓ Link copied';setTimeout(()=>b.textContent='🔗 Viewer',2200)},()=>window.prompt('Copy this snapshot viewer link:',u))});
+  el.querySelectorAll('[data-hdel]').forEach(b=>b.onclick=async()=>{const it=items[+b.dataset.hdel];if(!confirm('Delete snapshot "'+it.title+'"?'))return;
     if(it.local){hlSet(hlGet().filter(x=>x.id!==it.id));await idbPut('hist:'+it.id,null)}else await syFetch(SY.api+'?del='+encodeURIComponent(it.id),{method:'POST',headers:{'x-publish-key':syKey()}});renderHist()})}
-function histInit(){$('#histBtn').onclick=()=>{$('#histName').value=curTitle();$('#histMsg').textContent=VIEWING?'Sedang melihat riwayat — kembali ke data terbaru untuk menyimpan.':'';openModal('histModal');renderHist()};
-  $('#histSave').onclick=async()=>{$('#histMsg').textContent='Menyimpan…';const r=await histSave($('#histName').value,false);$('#histMsg').textContent=r.msg;renderHist()};
+function histInit(){$('#histBtn').onclick=()=>{$('#histName').value=curTitle();$('#histMsg').textContent=VIEWING?'Viewing a snapshot — go back to the latest data to save.':'';openModal('histModal');renderHist()};
+  $('#histSave').onclick=async()=>{$('#histMsg').textContent='Saving…';const r=await histSave($('#histName').value,false);$('#histMsg').textContent=r.msg;renderHist()};
   $('#hbBack').onclick=histBack;$('#hbRestore').onclick=histRestore}
 (async()=>{for(const k of ['cs','vip','rc']){const d=await idbGet(k);if(d&&d.headers&&d.rows){d.map=d.map||{};let ch=0;if(k!=='rc'){const ren=mergeDateTime(d);for(const x in d.map)if(ren[d.map[x]]){d.map[x]=ren[d.map[x]];ch=1}if(Object.keys(ren).length)ch=1}const f=detect(d.headers,FIELDS_OF(k),d.rows);if(k!=='rc'&&f.inv&&d.map.inv!==f.inv){const j=d.headers.indexOf(d.map.inv);if(j<0||!d.rows.slice(0,5000).some(r=>isOutcomeVal(r[j]))){d.map.inv=f.inv;ch=1}}if(k==='rc'){if(d.map.uid&&!d.map.uidManual&&isMailCol(d.headers,d.rows,d.map.uid)){d.map.uid='';ch=1}if(fixRcUid(d.headers,d.rows,d.map))ch=1;if(!d.map.product){fixRcProduct(d.headers,d.rows,d.map);if(d.map.product)ch=1}if(!d.map.pkgx&&fixRcPkgExtra(d.headers,d.rows,d.map))ch=1}for(const x in f)if(!d.map[x]&&f[x]&&!(x==='uid'&&d.map.uidManual)&&!Object.values(d.map).includes(f[x])){d.map[x]=f[x];ch=1}if(ch)idbPut(k,d);DS[k]=d}}syncPeriod();refresh(0);SIG=sigS();syncInit();histInit()})();
 </script>
@@ -2652,7 +2654,7 @@ function histInit(){$('#histBtn').onclick=()=>{$('#histName').value=curTitle();$
   const id=q.get('snap');if(!id)return;
   document.documentElement.classList.add('snapview');
   let tries=0;const go=async()=>{tries++;if(typeof SY==='undefined'||SY.avail==null||SY.loading||SY.busy){if(tries<60)return setTimeout(go,250)}
-    try{const items=await histItems();const it=items.find(x=>String(x.id)===id)||{id,title:'Riwayat',at:Date.now()};await histOpen(it)}catch(e){console.error(e)}};
+    try{const items=await histItems();const it=items.find(x=>String(x.id)===id)||{id,title:'History',at:Date.now()};await histOpen(it)}catch(e){console.error(e)}};
   setTimeout(go,600);
 })();
 </script>

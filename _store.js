@@ -123,7 +123,9 @@ export async function updateSnapshot(id, p, title) {
   if (!/^\d{1,18}$/.test(String(id || ''))) throw new AppError('bad-id', 400, 'ID riwayat tidak valid.');
   const old = must(await db().from('report_snapshots').select('id,title,auto').eq('id', id).maybeSingle());
   if (!old) throw new AppError('not-found', 404, 'Riwayat tidak ditemukan.');
-  const ttl = String(title || old.title || 'Report').slice(0, 200), tmp = await saveSnapshot(p, ttl, old.auto);   // simpan dataset (dedupe) lewat RPC yang sama
+  /* PENTING: salinan sementara disimpan sebagai NON-auto. RPC gx_save_snapshot menghapus snapshot auto dengan judul sama
+     (≤ 3 jam) — kalau tmp dibuat auto, snapshot aslinya ikut terhapus (bug 18–19 Nov). */
+  const ttl = String(title || old.title || 'Report').slice(0, 200), tmp = await saveSnapshot(p, '__tmp_update__ ' + ttl, false);
   const t = must(await db().from('report_snapshots').select('import_id').eq('id', tmp.id).maybeSingle());
   const now = new Date().toISOString();
   must(await db().from('report_snapshots').update({ import_id: t.import_id, settings: settingsOf(p.S), title: ttl, created_at: now }).eq('id', id));

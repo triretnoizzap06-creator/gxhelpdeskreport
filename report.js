@@ -39,7 +39,8 @@ export default async function handler(req, res) {
       if (q.has('snap')) return bytes(res, await getSnapshot(q.get('snap')), { 'cache-control': 'public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400' });   // snapshot tidak pernah berubah → boleh di-cache CDN & browser
       const l = await getLatest();
       if (!l) return json(res, { error: 'empty', open: isOpen() }, 404);
-      return bytes(res, l.body, { 'x-published-at': String(l.at), 'x-import-id': String(l.import_id), 'x-revision': String(l.revision) });
+      const ver = q.get('v'), exact = ver && ver === String(l.at) + '-' + String(l.import_id);   // URL per versi → aman di-cache CDN
+      return bytes(res, l.body, { 'x-published-at': String(l.at), 'x-import-id': String(l.import_id), 'x-revision': String(l.revision), ...(exact ? { 'cache-control': 'public, max-age=3600, s-maxage=604800' } : {}) });
     }
     if (req.method !== 'POST') return json(res, { error: 'method-not-allowed' }, 405);
     if (!keyOk(req.headers['x-publish-key'])) return json(res, { error: 'unauthorized' }, 401);

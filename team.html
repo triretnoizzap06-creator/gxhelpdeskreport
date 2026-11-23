@@ -95,9 +95,18 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 .dsk-h h3{margin:0;font-size:22px}.dsk-h p{margin:3px 0 0;color:#52525B;font-size:13.5px}.dsk-h .sp{flex:1}
 .dtabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
 .tpbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.tpbar input{flex:1;min-width:160px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:var(--bg)}
-.tps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
-.tp{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;display:flex;flex-direction:column;gap:6px}.tp:hover{border-color:var(--y)}
-.tp .tph{display:flex;gap:6px;align-items:flex-start}.tp .tph b{flex:1;font-size:13.5px}.tp .tx{font-size:12.8px;color:#3F3F46;white-space:pre-wrap;line-height:1.45;max-height:118px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 75%,transparent)}
+.tps{columns:260px;column-gap:12px}.tps>*{break-inside:avoid;margin-bottom:12px}
+.tboard{margin-bottom:22px}.tbq{border:1px solid var(--line);border-radius:9px;padding:8px 11px;font:inherit;font-size:13px;min-width:200px;background:#fff}
+.notes{columns:250px;column-gap:14px}.notes>*{break-inside:avoid;margin-bottom:14px}
+.qn{display:flex;flex-direction:column;background:#FBF0A8;border-radius:6px;padding:12px 14px 10px;box-shadow:0 1px 2px rgba(0,0,0,.08),0 4px 12px rgba(160,130,0,.10);border:1px solid #F1DF7A}
+.qn header{display:flex;gap:6px;align-items:flex-start;margin-bottom:6px}.qn header b{flex:1;font-size:14.5px;line-height:1.3;color:#1D1D1F}
+.qn .qa{display:flex;gap:2px;opacity:.55}.qn:hover .qa{opacity:1}.qn .qa button{border:0;background:none;cursor:pointer;font-size:13px;padding:2px 4px;border-radius:5px}.qn .qa button:hover{background:rgba(0,0,0,.07)}
+.qn .qt{font-size:13px;line-height:1.55;color:#2C2C2E;white-space:pre-wrap;word-break:break-word}
+.qn footer{display:flex;gap:6px;align-items:center;margin-top:10px;font-size:11.5px;color:#6B5E1E}.qn .qw{flex:1}.qn .qc{background:rgba(0,0,0,.07);border-radius:99px;padding:1px 8px;font-weight:700}
+.qcopy{border:0;background:#1D1D1F;color:#fff;border-radius:7px;padding:4px 11px;font:700 12px inherit;font-family:inherit;cursor:pointer}
+.dstat{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 12px;font-size:12.5px}.dstat>b{color:var(--muted);margin-right:4px}.dstat .chip[disabled]{opacity:.55;cursor:default}.dstat .sp{flex:1}
+.tp{border:1px solid #F1DF7A;border-radius:6px;padding:12px;background:#FBF0A8;display:flex;flex-direction:column;gap:6px}.tp:hover{border-color:var(--y)}
+.tp .tph{display:flex;gap:6px;align-items:flex-start}.tp .tph b{flex:1;font-size:13.5px}.tp .tx{font-size:12.8px;color:#3F3F46;white-space:pre-wrap;line-height:1.5}
 .tp .tx.open{max-height:none;-webkit-mask-image:none}.tp .tf{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:auto}.tp .tf small{color:var(--muted);font-size:11px;margin-right:auto}
 .cbtn{background:var(--ink);color:#fff;border:0;border-radius:8px;padding:6px 12px;font-weight:700;font-size:12.5px;cursor:pointer}
 .dk .tl:empty{display:none}.dk{padding:0 0 12px!important}.dk::before{display:none}.dk .scene{width:100%;display:block;border-bottom:1px solid var(--line);margin-bottom:6px}.dk .em{z-index:1;background:#fff;border-radius:99px;padding:1px 5px;box-shadow:0 1px 3px rgba(0,0,0,.12)}.dk b,.dk .tl,.dk .st{padding:0 10px}
@@ -153,6 +162,8 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
     <label class="who"><span id="whoL">I am:</span> <select id="me"></select><span id="acct" class="acct"></span><button class="btn" id="teamBtn" type="button" title="Add / remove team members">👥 Team</button></label></div>
   <section class="office"><div class="tools-h"><h2>Virtual Office ✨</h2><span class="sp"></span><span class="ofl"><i style="background:#2F9E44"></i>All clear 😌 <i style="background:#E8590C"></i>Tasks open <i style="background:#E03131"></i>Overdue 😭 <i style="background:#D97706"></i>SPV</span><button class="btn" id="offPause" type="button">⏸ Pause</button></div>
     <div class="ofbar"><span id="ofPres" class="ofbar" style="margin:0"></span><span class="sp" style="flex:1"></span><span class="ofz"><span class="vseg"><button class="btn" type="button" data-view="3d">🧊 3D</button><button class="btn" type="button" data-view="2d">🗺 2D</button></span><button class="btn o3only" type="button" id="ofVibe" title="Auto-rotate">🌀 Vibe mode</button><button class="btn" id="ofZout" type="button" aria-label="Zoom out">−</button><b id="ofZoomL">100%</b><button class="btn" id="ofZin" type="button" aria-label="Zoom in">+</button><button class="btn" id="ofZfit" type="button">Fit</button><button class="btn" id="ofZme" type="button">📍 Me</button></span></div><div class="ofscroll"><div class="ofc" id="ofc"></div><div class="ofpad" aria-label="Kontrol peta"><button type="button" data-pan="0,-1" aria-label="Geser ke atas">▲</button><button type="button" data-pan="-1,0" aria-label="Geser ke kiri">◀</button><button type="button" data-pan="1,0" aria-label="Geser ke kanan">▶</button><button type="button" data-pan="0,1" aria-label="Geser ke bawah">▼</button><button type="button" class="z" id="ofZin2" aria-label="Zoom in">＋</button><button type="button" class="z" id="ofZout2" aria-label="Zoom out">－</button><button type="button" class="o3only r" data-rot="1" aria-label="Rotate left">⟲</button><button type="button" class="o3only r" data-rot="-1" aria-label="Rotate right">⟳</button></div></div><p class="ofh">Helpdesk, AM &amp; your SPV in one office 🏢 · drag to spin it 360°, Ctrl + scroll or pinch to zoom · click a desk or person to peek their desk · click the floor (or use arrow keys / WASD) to walk around 🕹️ · set ☕ break or 📅 meeting and your avatar heads there.</p></section>
+  <section class="tboard"><div class="tools-h"><h2>📝 Templates</h2><span class="sp"></span><input id="tbQ" type="search" placeholder="Search templates…" class="tbq"><button class="btn pri" id="tbNew" type="button">+ New note</button></div>
+    <div class="bar" id="tbWho" style="margin-bottom:12px"></div><div class="notes" id="tboard"></div></section>
   <section class="desks"><div class="tools-h"><h2>Desks</h2><span class="sp"></span><span style="font-size:12px;color:var(--muted)">Each person's own desk — photo, message templates, tasks &amp; notes.</span><button class="btn pri" id="myDesk" type="button">🪑 My desk</button></div><div class="dgrid" id="desks"></div></section>
   <div id="banner"></div>
   <div class="kpis" id="kpis"></div>
@@ -582,6 +593,26 @@ async function dop(b, quiet) {
   if (r && r.status === 401) { DK.canEdit = false; if (DK.open) drawDesk(); }
   if (!quiet) toast((r && r.j && (r.j.detail || r.j.error)) || 'Save failed'); return false;
 }
+/* ---------- Templates board (gaya sticky notes — semua template terlihat sekaligus) ---------- */
+const TB = { who: null, q: '' };
+function renderTboard() {
+  const el = $('#tboard'); if (!el) return; const R = CFG.roster.map(([f, k]) => [f, k]).concat(DK.data.desks.SPV ? [['SPV', 'Putri (SPV)']] : []);
+  if (TB.who == null) TB.who = AUTH.mem && R.some(r => r[0] === AUTH.mem.name) ? AUTH.mem.name : '*';
+  $('#tbWho').innerHTML = [['*', 'All'], ...R].map(([f, k]) => `<button class="chip" type="button" data-tbw="${esc(f)}" aria-pressed="${TB.who === f}">${f === '*' ? '🗂 All' : esc(k)}${f !== '*' ? ` <small>${(deskOf(f).tpls || []).length}</small>` : ''}</button>`).join('');
+  const q = TB.q.toLowerCase(), L = [];
+  R.forEach(([f]) => { if (TB.who !== '*' && TB.who !== f) return; (deskOf(f).tpls || []).forEach(t => { if (!q || (t.title + ' ' + t.text + ' ' + (t.cat || '')).toLowerCase().includes(q)) L.push({ t, f }); }); });
+  L.sort((a, b) => (b.t.uses || 0) - (a.t.uses || 0) || String(b.t.updated_at || '').localeCompare(String(a.t.updated_at || '')));
+  el.innerHTML = L.length ? L.map(({ t, f }) => `<article class="qn" data-qn="${esc(t.id)}" data-own="${esc(f)}"><header><b>${esc(t.title)}</b>${canDesk(f) ? `<span class="qa"><button type="button" data-qed title="Edit">✎</button><button type="button" data-qdel title="Delete">🗑</button></span>` : ''}</header>
+      <div class="qt">${esc(t.text)}</div><footer>${t.cat ? `<span class="qc">${esc(t.cat)}</span>` : ''}<span class="qw">${TB.who === '*' ? '👤 ' + esc(f === 'SPV' ? 'Putri' : nick(f)) : ''}${t.uses ? ` · copied ${t.uses}×` : ''}</span><button type="button" class="qcopy" data-qcopy>Copy</button></footer></article>`).join('')
+    : `<div class="empty" style="grid-column:1/-1">${q ? 'No template matches.' : 'No templates yet — click <b>+ New note</b> to add your quick replies.'}</div>`;
+}
+$('#tbWho').addEventListener('click', e => { const b = e.target.closest('[data-tbw]'); if (b) { TB.who = b.dataset.tbw; renderTboard(); } });
+$('#tbQ').addEventListener('input', e => { TB.q = e.target.value; renderTboard(); });
+$('#tbNew').onclick = () => { const own = TB.who !== '*' ? TB.who : ME; if (!own) return needLogin(); if (!canDesk(own)) { toast('You can only add templates to your own desk'); return; } tplModal(null, own); };
+$('#tboard').addEventListener('click', async e => { const c = e.target.closest('[data-qn]'); if (!c) return; const f = c.dataset.own, t = (deskOf(f).tpls || []).find(x => x.id === c.dataset.qn); if (!t) return;
+  if (e.target.closest('[data-qcopy]')) { const tx = fillVars(t.text, f); try { await navigator.clipboard.writeText(tx); toast('Copied ✓'); } catch (er) { prompt('Copy:', tx); } if (canDesk(f)) dop({ op: 'tpl.use', name: f, id: t.id }, true); return; }
+  if (e.target.closest('[data-qed]')) return tplModal(t, f);
+  if (e.target.closest('[data-qdel]') && confirm('Delete template "' + t.title + '"?')) return dop({ op: 'tpl.del', name: f, id: t.id }); });
 /* ---------- Animated office desk (SVG) — properti dipilih tiap orang di ✎ Profile ---------- */
 const PROPS = [['window', '🪟 Window'], ['clock', '🕒 Clock'], ['shelf', '📚 Shelf'], ['lamp', '💡 Lamp'], ['coffee', '☕ Coffee'], ['plant', '🌿 Plant'], ['headset', '🎧 Headset'], ['cat', '🐱 Cat'], ['frame', '🖼 Photo frame'], ['sticky', '🗒 Sticky notes'], ['books', '📘 Books'], ['trophy', '🏆 Trophy'], ['duck', '🐤 Rubber duck']];
 const DESKS = [['oak', 'Oak', '#C89B6D'], ['walnut', 'Walnut', '#8B5E3C'], ['white', 'White', '#F4F4F5'], ['black', 'Black', '#3F3F46'], ['pink', 'Pink', '#F6C6CF']], CHAIRS = ['#3F3F46', '#1D4ED8', '#B91C1C', '#15803D', '#F5C518', '#7C3AED', '#F472B6'];
@@ -635,6 +666,7 @@ function deskScene(n, o = {}) {
   return `<svg class="scene ${o.big ? 'big' : ''}" viewBox="0 0 240 150" role="img" aria-label="${esc(nick(n))}'s desk">${S.join('')}</svg>`;
 }
 function renderDesks() {
+  try { renderTboard(); } catch (e) {}
   try { if ($('#ofc')) renderOffice(); } catch (e) { if (!(e instanceof ReferenceError)) console.error(e); }
   const el = $('#desks'); if (!el) return; const T = BD.data.tasks || [];
   el.innerHTML = CFG.roster.map(([f, k]) => { const d = deskOf(f), open = T.filter(t => t.assignee === f && t.status !== 'DONE').length;
@@ -649,11 +681,15 @@ function openDesk(name) { DK.open = name; DK.tab = 'tpl'; DK.q = ''; DK.cat = ''
 function closeDesk() { const el = $('#deskMd'); if (el) el.remove(); DK.open = null; }
 function drawDesk() {
   const el = $('#deskMd'); if (!el) return; const n = DK.open, d = deskOf(n);
-  const T = (BD.data.tasks || []).filter(t => t.assignee === n || (t.by === n && t.assignee === 'SPV')), S = (TASKS || []).filter(t => t.assignee === n);
-  const N = (BD.data.notes || []).filter(x => x.to === n || x.by === n).sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  const both = k => [...(BD.data[k] || []).map(x => ({ ...x, _tm: TEAM })), ...((OF.other[k === 'tasks' ? 'tasks' : 'notes'] || []).map(x => ({ ...x, _tm: OTHER })))];   // riwayat dari kedua subdivisi (mis. setelah pindah tim)
+  const T = both('tasks').filter(t => t.assignee === n || (t.by === n && t.assignee === 'SPV')), S = (TASKS || []).filter(t => t.assignee === n);
+  const N = both('notes').filter(x => x.to === n || x.by === n).sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  const ps = presenceOf(n), canPs = !!((AUTH.mem && AUTH.mem.name === n) || AUTH.spv || (!AUTH.cfg && ME === n));
   el.innerHTML = `<div class="mdb dsk" style="--dc:${esc(dColor(n))}"><div class="dsk-h">${deskScene(n, { big: 1 })}<div><h3>${d.emoji ? esc(d.emoji) + ' ' : ''}${esc(nick(n))}'s desk</h3><p>${esc(n)}${d.tagline ? ' · ' + esc(d.tagline) : ''}</p></div><span class="sp"></span>
       ${canDesk(DK.open) ? `<label class="btn" style="cursor:pointer">📷 Photo<input type="file" accept="image/*" id="dPhoto" hidden></label><button class="btn" data-dprof type="button">🎨 Customize</button>` : ''}<button class="btn" data-dx type="button">✕</button></div>
     ${canDesk(DK.open) ? '' : (AUTH.cfg && !AUTH.mem ? `<div class="unl">🔐 Login pakai nickname-mu untuk mengubah desk milikmu (foto, template, tampilan meja). Membaca &amp; copy template tetap terbuka. <button class="btn pri" type="button" data-login>Login</button></div>` : AUTH.mem ? `<div class="unl" style="background:var(--grbg)">👀 Ini desk ${esc(nick(DK.open))} — kamu bisa baca &amp; copy template, dan <b>+ My desk</b> untuk menyalinnya ke desk-mu.</div>` : `<form class="unl" id="dUnl">🔒 Enter the team password to edit desks (photo &amp; templates). Reading &amp; copying templates is open.<input type="password" id="dPw" placeholder="Team password" autocomplete="current-password"><button class="btn pri">Unlock</button></form>`)}
+    <div class="dstat"><b>Status</b>${Object.entries(PRES).map(([k, [i, t]]) => `<button class="chip" type="button" data-dps="${k}" aria-pressed="${ps === k}" ${canPs ? '' : 'disabled'}>${i} ${t}</button>`).join('')}
+      ${AUTH.spv && n !== 'SPV' ? `<span class="sp"></span><button class="btn" type="button" data-dtransfer title="Pindahkan ke subdivisi lain — riwayat task & notes tetap ada">🔁 Pindah ke ${OTHER === 'AM' ? 'Account Manager' : 'Helpdesk'}</button>` : ''}</div>
     <div class="dtabs">${[['tpl', '💬 Templates · ' + (d.tpls || []).length], ['task', '📋 Tasks · ' + (T.filter(t => t.status !== 'DONE').length + S.filter(t => t.status !== 'DONE').length)], ['note', '🗒 Notes · ' + N.length]].map(([k, l]) => `<button class="chip" data-dtab="${k}" aria-pressed="${DK.tab === k}" type="button">${l}</button>`).join('')}</div>
     <div id="dBody"></div></div>`;
   const u = el.querySelector('#dUnl'); if (u) u.onsubmit = async e => { e.preventDefault(); const pw = el.querySelector('#dPw').value; if (!pw) return;
@@ -665,7 +701,7 @@ function drawDesk() {
       ${cats.length ? `<div class="bar" style="margin-bottom:10px"><button class="chip" data-tcat="" aria-pressed="${!DK.cat}" type="button">All</button>${cats.map(c => `<button class="chip" data-tcat="${esc(c)}" aria-pressed="${DK.cat === c}" type="button">${esc(c)}</button>`).join('')}</div>` : ''}
       <p class="hint">Click <b>Copy</b> and paste into the chat. Variables: <code>{nama}</code> customer name, <code>{agent}</code> ${esc(nick(n))}, <code>{tanggal}</code> today. Don't save customer phone numbers / emails in templates.</p><div class="tps" id="tps"></div>`;
     drawTpls(); }
-  else if (DK.tab === 'task') { const row = (t, src) => `<div class="card ${t.status === 'DONE' ? 'done' : ''}"><div class="ch"><div class="ti">${esc(t.title)}</div></div><div class="meta"><span class="tag">${src}</span><span class="tag">${esc(t.status)}</span>${t.assignee === 'SPV' ? '<span class="tag spv">⭐ Sent to SPV</span>' : ''}${t.due ? `<span class="tag">Due ${fmtD(t.due)}</span>` : ''}</div>${t.spvReply ? `<div class="spvr"><b>⭐ SPV:</b> ${esc(t.spvReply)}</div>` : ''}</div>`;
+  else if (DK.tab === 'task') { const row = (t, src) => `<div class="card ${t.status === 'DONE' ? 'done' : ''}"><div class="ch"><div class="ti">${esc(t.title)}</div></div><div class="meta"><span class="tag">${src}</span>${t._tm && t._tm !== TEAM ? `<span class="tag">📁 ${t._tm === 'AM' ? 'dari AM' : 'dari Helpdesk'}</span>` : ''}<span class="tag">${esc(t.status)}</span>${t.assignee === 'SPV' ? '<span class="tag spv">⭐ Sent to SPV</span>' : ''}${t.due ? `<span class="tag">Due ${fmtD(t.due)}</span>` : ''}</div>${t.spvReply ? `<div class="spvr"><b>⭐ SPV:</b> ${esc(t.spvReply)}</div>` : ''}</div>`;
     const all = [...S.map(t => row(t, 'From SPV')), ...T.map(t => row(t, t.assignee === 'SPV' ? 'Review request' : 'Team task'))];
     B.innerHTML = all.length ? all.join('') : '<div class="empty" style="padding:18px">No tasks for this person.</div>'; }
   else B.innerHTML = N.length ? N.map(x => `<div class="nt ${x.to === 'SPV' ? 'tospv' : ''}"><div class="nh"><b>${esc(x.by ? nick(x.by) : '—')}</b>${x.to ? ` → <b>${esc(nick(x.to))}</b>` : ''} · ${fmtT(x.at)}</div><div class="tx">${esc(x.text)}</div>${x.spvReply ? `<div class="spvr"><b>⭐ SPV:</b> ${esc(x.spvReply)}</div>` : ''}</div>`).join('') : '<div class="empty" style="padding:18px">No notes yet.</div>';
@@ -677,10 +713,10 @@ function drawTpls() {
       <div class="tf"><small>${t.uses ? `copied ${t.uses}×` : ''}</small><button class="ib2" data-tmore type="button" title="Show all">⤢</button>${canDesk(DK.open) ? `<button class="ib2" data-tedit type="button" title="Edit">✎</button><button class="ib2" data-tdel type="button" title="Delete">🗑</button>` : ''}${(DK.canEdit || AUTH.mem) && ME && ME !== n ? '<button class="ib" data-tclone type="button" title="Copy to my desk">+ My desk</button>' : ''}<button class="cbtn" data-tcopy type="button">Copy</button></div></div>`).join('')
     : `<div class="empty" style="padding:18px;grid-column:1/-1">${(d.tpls || []).length ? 'No template matches.' : 'No templates yet.' + (canDesk(DK.open) ? ' Click <b>+ Template</b> to add your quick replies.' : '')}</div>`;
 }
-function tplModal(t) {
+function tplModal(t, owner) { owner = owner || DK.open;
   const el = document.createElement('div'); el.className = 'md'; el.style.zIndex = 60;
   const cats = [...new Set(Object.values(DK.data.desks).flatMap(d => (d.tpls || []).map(x => x.cat)).filter(Boolean))];
-  el.innerHTML = `<form class="mdb"><h3>${t ? 'Edit template' : 'New template'} — ${esc(nick(DK.open))}</h3>
+  el.innerHTML = `<form class="mdb"><h3>${t ? 'Edit template' : 'New template'} — ${esc(nick(owner))}</h3>
     <div class="f"><label>Title</label><input data-f="title" maxlength="120" required value="${esc(t ? t.title : '')}" placeholder="e.g. Greeting pagi / Info gangguan / Reminder billing"></div>
     <div class="f"><label>Category (optional)</label><input data-f="cat" maxlength="40" list="tcats" value="${esc(t ? t.cat : '')}" placeholder="Greeting / Gangguan / Billing / Closing"><datalist id="tcats">${cats.map(c => `<option>${esc(c)}</option>`).join('')}</datalist></div>
     <div class="f"><label>Message — {nama} = customer name, {agent} = your name, {tanggal} = today</label><textarea data-f="text" rows="9" maxlength="4000" required>${esc(t ? t.text : '')}</textarea></div>
@@ -689,7 +725,7 @@ function tplModal(t) {
   el.onclick = e => { if (e.target === el || e.target.closest('[data-x]')) el.remove(); };
   el.querySelector('form').onsubmit = async e => { e.preventDefault(); const v = k => el.querySelector(`[data-f="${k}"]`).value;
     if (!v('title').trim() || !v('text').trim()) return;
-    if (await dop({ op: t ? 'tpl.upd' : 'tpl.add', name: DK.open, id: t && t.id, title: v('title').trim(), cat: v('cat').trim(), text: v('text') })) el.remove(); };
+    if (await dop({ op: t ? 'tpl.upd' : 'tpl.add', name: owner, id: t && t.id, title: v('title').trim(), cat: v('cat').trim(), text: v('text') })) el.remove(); };
 }
 function profModal() {
   const d = deskOf(DK.open), el = document.createElement('div'); el.className = 'md'; el.style.zIndex = 60;
@@ -724,6 +760,10 @@ async function deskChange(e) {
 async function deskClick(e) {
   const el = $('#deskMd'); if (e.target === el || e.target.closest('[data-dx]')) return closeDesk();
   const tb = e.target.closest('[data-dtab]'); if (tb) { DK.tab = tb.dataset.dtab; return drawDesk(); }
+  const dp = e.target.closest('[data-dps]'); if (dp && !dp.disabled) { if (await setPresence(DK.open, TEAM, dp.dataset.dps)) { toast(nick(DK.open) + ': ' + PRES[dp.dataset.dps].join(' ')); renderOffice(); renderPresenceBar(); drawDesk(); } return; }
+  if (e.target.closest('[data-dtransfer]')) { const n = DK.open, to = OTHER; if (!confirm(`Pindahkan ${nick(n)} ke ${to === 'AM' ? 'Account Manager' : 'Helpdesk'}?\n\nDesk, foto & template ikut pindah. Task & catatan lama tetap tersimpan sebagai riwayat.`)) return;
+    const r = await jget('/api/todo?board=' + TEAM, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ op: 'roster.transfer', name: n, to, by: 'SPV', defaultRoster: DEF_ROSTER }) });
+    if (r && r.status === 200) { closeDesk(); toast('🔁 ' + nick(n) + ' sekarang di ' + (to === 'AM' ? 'Account Manager' : 'Helpdesk')); await Promise.all([loadBoard(), loadDesk(), loadOther()]); } else toast((r && r.j && (r.j.detail || r.j.error)) || 'Gagal memindahkan'); return; }
   const tc = e.target.closest('[data-tcat]'); if (tc) { DK.cat = tc.dataset.tcat; return drawDesk(); }
   if (e.target.closest('[data-dprof]')) return profModal();
   if (e.target.closest('[data-tadd]')) return tplModal(null);
@@ -753,9 +793,20 @@ async function loadOther() {
   renderOffice();
 }
 const ownDesk = n => TEAM === 'HD' || n !== 'SPV' ? deskOf(n) : (OF.other.desks.SPV || {});
-function presenceOf(name) {   // status terbaru dari kedua board; kadaluarsa setelah 4 jam
-  const a = (BD.data.presence || {})[name], b = OF.other.presence[name], x = !a ? b : !b ? a : (a.at > b.at ? a : b);
-  return x && Date.now() - Date.parse(x.at) < 4 * 3600e3 ? x.s : 'work';
+/* status: break/meeting kadaluarsa 4 jam · izin/sick/cuti berlaku sampai akhir hari itu */
+const PRES = { work: ['💻', 'Locked in'], break: ['☕', 'On break'], meet: ['📅', 'In a meeting'], izin: ['📝', 'Excused'], sick: ['🤒', 'Sick'], cuti: ['🏝', 'On leave'] }, AWAY = new Set(['izin', 'sick', 'cuti']);
+function presenceOf(name) {
+  const a = (BD.data.presence || {})[name], b = OF.other.presence[name], x = !a ? b : !b ? a : (a.at > b.at ? a : b); if (!x || !PRES[x.s]) return 'work';
+  if (AWAY.has(x.s)) return new Date(x.at).toDateString() === new Date().toDateString() ? x.s : 'work';
+  return Date.now() - Date.parse(x.at) < 4 * 3600e3 ? x.s : 'work';
+}
+async function setPresence(name, tm, s) {   // diri sendiri, atau siapa saja kalau SPV
+  const self = name === ME, bt = name === 'SPV' ? TEAM : (tm || TEAM);
+  if (!BD.online) { (BD.data.presence = BD.data.presence || {})[name] = { s, at: new Date().toISOString() }; try { localStorage.setItem(PKEY, JSON.stringify(BD.data)); } catch (er) {} return true; }
+  const body = { op: 'presence', by: self ? ME : 'SPV', status: s, ...(self ? {} : { for: name }), defaultRoster: bt === TEAM ? DEF_ROSTER : CFGS[bt].roster.map(([n, k]) => ({ name: n, nick: k })) };
+  const r = await jget('/api/todo?board=' + bt, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  if (r && r.status === 401) { needLogin(); return false; } if (!(r && r.status === 200 && r.j.board)) { toast((r && r.j && (r.j.detail || r.j.error)) || 'Save failed'); return false; }
+  if (bt === TEAM) BD.data = r.j.board; else OF.other.presence = r.j.board.presence || {}; return true;
 }
 function teamPeople(tm) {
   if (tm === TEAM) return CFG.roster.map(([name, nk]) => { const d = deskOf(name); return { name, nk, tm, photo: d.photo, props: d.props, dk: d.dk, ch: d.ch, sc: d.sc, tasks: BD.data.tasks || [] }; });
@@ -1010,9 +1061,9 @@ function renderOffice3D(L) {
 function place3d(w) {
   const o = w.obj; if (!o) return; o.position.set(w.x, w.sit ? .02 : 0, w.y); const ud = o.userData;
   if (w.q && w.q.length) { const [tx, ty] = w.q[0], dx = tx - w.x, dy = ty - w.y; if (Math.abs(dx) + Math.abs(dy) > .01) w.rot = Math.atan2(dx, dy); } else if (w.sit && w.state === 'seat') w.rot = 0;
-  o.rotation.y = w.rot != null ? w.rot : 0; if (ud.legs) { ud.legs.visible = !w.sit; ud.up.position.y = w.sit ? -.04 : 0; } }
+  o.rotation.y = w.rot != null ? w.rot : 0; if (ud.legs) { ud.legs.visible = !w.sit && !w.away; ud.up.visible = !w.away; ud.up.position.y = w.sit ? -.04 : 0; } }
 function bubble3d(w, e) { const b = w.obj && w.obj.userData.bub; if (!b) return; if (!e) { b.visible = false; return; } if (b.material.map) b.material.map.dispose(); b.material.map = emojiTex(e); b.material.needsUpdate = true; b.visible = true; }
-function labels3d() { OF.W.forEach(w => { const ps = presenceOf(w.p.name), ic = ps === 'break' ? '☕ ' : ps === 'meet' ? '📅 ' : '', n = w.p.st.open && w.p.name !== 'SPV' ? ` · ${w.p.st.open}` : '', t = ic + w.p.nk + (w.p.name === 'SPV' ? ' · SPV' : '') + n;
+function labels3d() { OF.W.forEach(w => { const ps = presenceOf(w.p.name), ic = ps !== 'work' ? PRES[ps][0] + ' ' : '', n = w.p.st.open && w.p.name !== 'SPV' ? ` · ${w.p.st.open}` : '', t = ic + w.p.nk + (w.p.name === 'SPV' ? ' · SPV' : '') + (AWAY.has(ps) ? ' · ' + PRES[ps][1] : n);
   const s = w.obj && w.obj.userData.lab; if (!s || s.userData.t === t + w.me) return; s.userData.t = t + w.me; if (s.material.map) s.material.map.dispose(); const tx = labelTex(t, w.me); s.material.map = tx; s.material.needsUpdate = true; s.scale.set(tx.userData.w / 48 * .3, .3, 1); }); }
 function tick3d(t, dt) {
   if (!O3.ren || !O3.vis) return; const T = t / 1000;
@@ -1060,10 +1111,12 @@ function renderOffice2D() {
   applyView();
   drawLabels(); OF.W.forEach(place); place(OF.cat); start(); renderPresenceBar();
 }
-function drawLabels() { if (OF.is3d) return labels3d(); OF.W.forEach(w => { const ps = presenceOf(w.p.name), ic = ps === 'break' ? '☕ ' : ps === 'meet' ? '📅 ' : '', n = w.p.st.open && w.p.name !== 'SPV' ? ` · ${w.p.st.open}` : '', t = ic + w.p.nk + (w.p.name === 'SPV' ? ' · SPV' : '') + n, wd = t.length * 5.6 + 14;
+function drawLabels() { if (OF.is3d) return labels3d(); OF.W.forEach(w => { const ps = presenceOf(w.p.name), ic = ps !== 'work' ? PRES[ps][0] + ' ' : '', n = w.p.st.open && w.p.name !== 'SPV' ? ` · ${w.p.st.open}` : '', t = ic + w.p.nk + (w.p.name === 'SPV' ? ' · SPV' : '') + (AWAY.has(ps) ? ' · ' + PRES[ps][1] : n), wd = t.length * 5.6 + 14;
   w.g.querySelector('.lab').innerHTML = `<rect x="${-wd / 2}" y="-92" width="${wd}" height="15" rx="7.5" fill="${w.p.name === ME && w.p.tm === TEAM || (w.p.name === 'SPV' && ME === 'SPV') ? '#F5C518' : '#1D1D1F'}" opacity=".88"/><text x="0" y="-81.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="${w.p.name === ME && w.p.tm === TEAM || (w.p.name === 'SPV' && ME === 'SPV') ? '#1D1D1F' : '#fff'}" font-family="system-ui,sans-serif">${esc(t)}</text><g class="bub"></g>`; }); }
 function syncPresence(w) {   // break → sofa, meeting → kursi meeting, work → kembali ke meja
-  const m = presenceOf(w.p.name), L = OF.L; if (m === w.mode || (m === 'work' && w.mode === 'manual')) return; w.mode = m;
+  const m = presenceOf(w.p.name), L = OF.L; if (m === w.mode || (m === 'work' && w.mode === 'manual')) return; const wasAway = AWAY.has(w.mode); w.mode = m;
+  if (AWAY.has(m)) { w.q = []; w.dest = null; w.x = w.p.home[0]; w.y = w.p.home[1]; w.sit = true; w.state = 'away'; setAway(w, true); place(w); return; }   // izin / sick / cuti → kursi kosong
+  if (wasAway) setAway(w, false);
   if (m === 'work') { goHome(w); return; }
   const pool = m === 'break' ? L.lseats : L.mseats, used = new Set(OF.W.filter(v => v !== w && v.dest).map(v => v.dest.x + ',' + v.dest.y)), d = pool.find(s => !used.has(s.x + ',' + s.y)) || pool[0];
   goTo(w, d, true); }
@@ -1072,6 +1125,8 @@ function goTo(w, d, stay) { const L = OF.L, from = [Math.floor(w.x), Math.floor(
 function goHome(w) { const L = OF.L, p = w.p, path = bfs(L, [Math.floor(w.x), Math.floor(w.y)], p.homeCell); w.dest = null; w.stay = false; w.sit = false; w.state = 'home';
   w.q = path ? [...path, p.home] : [p.home]; }
 function bubble(w, e) { if (OF.is3d) return bubble3d(w, e); const b = w.g.querySelector('.bub'); if (!b) return; b.innerHTML = e ? `<rect x="10" y="-112" width="26" height="22" rx="9" fill="#fff" stroke="#E4E4E7"/><text x="23" y="-96" text-anchor="middle" font-size="13">${e}</text>` : ''; }
+function setAway(w, on) { w.away = on; if (w.obj) { const u = w.obj.userData; if (u.up) { u.up.visible = !on; u.legs.visible = !on && !w.sit; } }
+  if (w.g) { const b = w.g.querySelector('.avb'); if (b) b.style.display = on ? 'none' : ''; } }
 function place(w) { if (OF.is3d) return place3d(w); const [X, Y] = P2(w.x, w.y); w.g.setAttribute('transform', `translate(${X.toFixed(1)},${Y.toFixed(1)})`);
   const f = w.g.querySelector('.flip'); if (f) f.setAttribute('transform', `scale(${w.face || 1},1)`); w.g.classList.toggle('walking', w.q && w.q.length > 0); w.g.classList.toggle('sit', !!w.sit);
   const d = w.x + w.y + (w.sit ? .12 : .02), it = OF.items, i = it.findIndex(x => x.d > d), anchor = i < 0 ? null : it[i].el;
@@ -1138,16 +1193,11 @@ document.addEventListener('click', e => { const v = e.target.closest('[data-view
   if (e.target.closest('#ofVibe') && O3.ctl) { O3.ctl.autoRotate = !O3.ctl.autoRotate; viewBtns(); toast(O3.ctl.autoRotate ? 'Vibe mode on 🌀' : 'Vibe mode off'); } });
 /* ---------- status bar ---------- */
 function renderPresenceBar() { const el = $('#ofPres'); if (!el) return; const me = ME, ps = me ? presenceOf(me) : '';
-  el.innerHTML = me ? [['work', '💻 Locked in'], ['break', '☕ On break'], ['meet', '📅 In a meeting']].map(([k, l]) => `<button class="chip" type="button" data-pres="${k}" aria-pressed="${ps === k}">${l}</button>`).join('') + (AUTH.mem || AUTH.spv ? '<button class="chip" type="button" data-home title="Walk back to your desk">🪑 Back to desk</button>' : '')
+  el.innerHTML = me ? Object.entries(PRES).map(([k, [i, t]]) => [k, i + ' ' + t]).map(([k, l]) => `<button class="chip" type="button" data-pres="${k}" aria-pressed="${ps === k}">${l}</button>`).join('') + (AUTH.mem || AUTH.spv ? '<button class="chip" type="button" data-home title="Walk back to your desk">🪑 Back to desk</button>' : '')
     : AUTH.cfg ? '<button class="btn pri" type="button" data-login>🔐 Log in to enter the office</button>' : '<span class="ofh" style="margin:0">Select your name (I am) to set Break / Meeting</span>'; }
 $('#ofPres').addEventListener('click', async e => { const b = e.target.closest('[data-pres]'); if (!b || !ME) return; const s = b.dataset.pres;
-  const bt = AUTH.mem ? AUTH.mem.team : TEAM;   // status disimpan di board tim orang itu
-  if (!BD.online) { (BD.data.presence = BD.data.presence || {})[ME] = { s, at: new Date().toISOString() }; try { localStorage.setItem(PKEY, JSON.stringify(BD.data)); } catch (er) {} }
-  else { const r = await jget('/api/todo?board=' + bt, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ op: 'presence', by: ME, status: s, defaultRoster: bt === TEAM ? DEF_ROSTER : CFGS[bt].roster.map(([name, nick]) => ({ name, nick })) }) });
-    if (r && r.status === 401) { needLogin(); return; }
-    if (!(r && r.status === 200 && r.j.board)) { toast((r && r.j && (r.j.detail || r.j.error)) || 'Save failed'); return; }
-    if (bt === TEAM) BD.data = r.j.board; else OF.other.presence = r.j.board.presence || {}; }
-  toast(s === 'break' ? 'Break mode on — go touch some grass ☕' : s === 'meet' ? 'In a meeting 📅 — do not disturb' : 'Back to locking in 💻'); renderOffice(); renderPresenceBar(); });
+  if (!(await setPresence(ME, AUTH.mem ? AUTH.mem.team : TEAM, s))) return;
+  toast({ break: 'Break mode on — go touch some grass ☕', meet: 'In a meeting 📅 — do not disturb', work: 'Back to locking in 💻', izin: 'Excused for today 📝 — your seat stays empty', sick: 'Get well soon 🤒 — rest up!', cuti: 'Enjoy your leave 🏝 — see you when you’re back' }[s]); renderOffice(); renderPresenceBar(); });
 $('#ofc').addEventListener('click', e => { const t = e.target.closest('[data-od]'); if (!t) return; const n = t.dataset.od;
   if (n === 'SPV' && TEAM !== 'HD') { location.href = $('#switch').href.split('#')[0] + '#desk=SPV'; return; }
   if (t.dataset.tm === TEAM || n === 'SPV') openDesk(n); else location.href = $('#switch').href.split('#')[0] + '#desk=' + encodeURIComponent(n); });

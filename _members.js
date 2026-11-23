@@ -9,7 +9,7 @@ import { db } from './_store.js';
 export const MEMBER_COOKIE = 'gx_member';
 /* roster bawaan (sama dengan team.html) dipakai kalau roster tim belum pernah diubah */
 export const DEF = { HD: ['Kadek Arisita Dhyana Putri', 'Gede Dimas Pery Narendra', 'Bayu Sukma Ramadhan', 'A.A Ngurah Kiyana Adhisa Oka Pertama', 'Nilma Syahrani'], AM: ['Ni Kadek Desi Mirayani', 'Aulia Sevi Diana', 'Devin Bagaskara'] };
-const DEF_NICK = { 'Kadek Arisita Dhyana Putri': 'Sita', 'Gede Dimas Pery Narendra': 'Dimas', 'Bayu Sukma Ramadhan': 'Bayu', 'A.A Ngurah Kiyana Adhisa Oka Pertama': 'Oka', 'Nilma Syahrani': 'Rani', 'Ni Kadek Desi Mirayani': 'Desi', 'Aulia Sevi Diana': 'Sevia', 'Devin Bagaskara': 'Bagas' };
+export const DEF_NICK = { 'Kadek Arisita Dhyana Putri': 'Sita', 'Gede Dimas Pery Narendra': 'Dimas', 'Bayu Sukma Ramadhan': 'Bayu', 'A.A Ngurah Kiyana Adhisa Oka Pertama': 'Oka', 'Nilma Syahrani': 'Rani', 'Ni Kadek Desi Mirayani': 'Desi', 'Aulia Sevi Diana': 'Sevia', 'Devin Bagaskara': 'Bagas' };
 /* roster tim (nama lengkap + nickname) dari Supabase, atau bawaan kalau belum pernah diubah */
 async function rosters() { const out = []; for (const team of ['HD', 'AM']) { const d = (await doc('team-board-' + team.toLowerCase())).data;
   (Array.isArray(d.roster) && d.roster.length ? d.roster.map(x => ({ name: x.name, nick: x.nick || DEF_NICK[x.name] || x.name.split(' ')[0] })) : DEF[team].map(n => ({ name: n, nick: DEF_NICK[n] || n.split(' ')[0] }))).forEach(m => out.push({ ...m, team })); } return out; }

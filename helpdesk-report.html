@@ -2537,7 +2537,11 @@ function syApply(p,at,imp){SY.loading=true;try{const cur=S.cur;S={...DEF_S(),...
     for(const k of ['cs','vip','rc']){DS[k]=p.DS&&p.DS[k]||null;idbPut(k,DS[k])}
     try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}SIG=sigS();lss(SY.kBase,String(at||p.at||Date.now()));lss(SY.kImp,String(imp||p.import_id||''));lss(SY.kDirty,null);lss(SY.kDs,null);
     UNDO.length=0;REDO.length=0;syncPeriod();renderImport&&renderImport();refresh(0)}finally{SY.loading=false}syPill('ok','')}
-async function syPull(force){if(VIEWING)return false;try{const r=await syFetch(SY.api,{cache:'no-store'});
+async function syPull(force){if(VIEWING)return false;try{
+    /* cek versi dulu (kecil & cepat): kalau data di browser sudah versi yang sama, tidak perlu unduh ulang 15+ MB */
+    let ver='';try{const m=await (await syFetch(SY.api+'?meta=1',{cache:'no-store'})).json();if(typeof m.open==='boolean'){SY.open=m.open;SY.avail=true}
+      if(m&&!m.empty&&m.at){ver=m.at+'-'+m.import_id;if(!force&&m.at===syBase()&&String(m.import_id)===syImp()&&(DS.cs||DS.vip||DS.rc)){SY.avail=true;syPill();return false}}}catch(e){}
+    const r=await syFetch(SY.api+(ver?'?v='+encodeURIComponent(ver):''),ver?{}:{cache:'no-store'});
     const ct=r.headers.get('content-type')||'';
     if(!/octet-stream/.test(ct)||!r.ok){const j=/json/.test(ct)?await r.json().catch(()=>({})):{};
       if(r.status===404&&j.error==='empty'){SY.avail=true;if(typeof j.open==='boolean'){SY.open=j.open;SY.reason=!j.open&&!syKey()?'need-key':''}lss(SY.kImp,null);syPill();return false}
@@ -2589,23 +2593,33 @@ function inferKind(t){t=String(t||'');if(/weekly|mingguan|\bw\d\b|week/i.test(t)
   if(d.length>=2)return Math.abs(d[d.length-1]-d[0])/864e5+1<=10?'weekly':'monthly';
   const r=new RegExp('(\\d{1,2})\\s*[–-]\\s*(\\d{1,2})\\s+('+MON_ID+')','i').exec(t);if(r)return Math.abs(+r[2]-+r[1])+1<=10?'weekly':'monthly';
   return new RegExp('\\b('+MON_ID+')\\b','i').test(t)?'monthly':'weekly'}
+/* Monthly 1 – akhir bulan → tampil "Oktober 2026" */
+const monName=d=>d.toLocaleDateString('id-ID',{month:'long',year:'numeric'}).replace(/^./,c=>c.toUpperCase());
+const isFullMonth=(a,b)=>a&&b&&a.getDate()===1&&a.getMonth()===b.getMonth()&&a.getFullYear()===b.getFullYear()&&new Date(+b+864e5).getDate()===1;
+function fullMonthOf(t){t=String(t||'');const d=[...t.matchAll(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/g)].map(m=>new Date(+m[3],+m[2]-1,+m[1]));
+  if(d.length>=2&&isFullMonth(d[0],d[d.length-1]))return monName(d[0]);
+  const EN=['january','february','march','april','may','june','july','august','september','october','november','december'],ID=['januari','februari','maret','april','mei','juni','juli','agustus','september','oktober','november','desember'];
+  const m=/([a-z]+)\s+(\d{1,2})\s*[–-]\s*(\d{1,2}),?\s*(\d{4})/i.exec(t);if(m){let i=EN.indexOf(m[1].toLowerCase());if(i<0)i=ID.indexOf(m[1].toLowerCase());if(i>=0){const a=new Date(+m[4],i,+m[2]),b=new Date(+m[4],i,+m[3]);if(isFullMonth(a,b))return monName(a)}}
+  return ''}
+function showTitle(t){const b=bareTitle(t),k=kindOf(t);if(k==='monthly'){const m=fullMonthOf(b);if(m){const sfx=(/\(([^)]*)\)\s*$/.exec(b)||[])[0];return m+(sfx?' '+sfx:'')}}return b.replace(/^Helpdesk Report · /,k==='weekly'?'Weekly Report · ':'Monthly Report · ')}
+const curFullMonth=()=>{try{const a=new Date(+C.a),b=new Date(+C.b);return isFullMonth(a,b)?monName(a):''}catch(e){return ''}};
 const kindOf=t=>{const m=/^\[(weekly|monthly)\]\s*/i.exec(t||'');return m?m[1].toLowerCase():inferKind(t)};
 const bareTitle=t=>String(t||'').replace(/^\[(weekly|monthly)\]\s*/i,'');
 /* jenis report langsung dibaca dari periode data yang di-import: ≤ 10 hari = Weekly, lebih = Monthly */
 function guessKind(){try{if(C&&C.a!=null&&C.b!=null){const d=Math.round((+C.b-+C.a)/864e5)+1;return d<=10?'weekly':'monthly'}}catch(e){}return 'monthly'}
-const kindTitle=(k,name)=>(k=k||guessKind(),'['+k+'] ')+(String(name||'').trim()||(k?KINDS[k]+' · ':'Helpdesk Report · ')+(C&&C.long||''));
+const kindTitle=(k,name)=>(k=k||guessKind(),'['+k+'] ')+(String(name||'').trim()||(k==='monthly'&&curFullMonth()?curFullMonth():(k?KINDS[k]+' · ':'Helpdesk Report · ')+(C&&C.long||'')));
 async function snapPost(p,q){const body=await gzip(JSON.stringify(p));const r=await syFetch(SY.api+'?snap=1'+q,{method:'POST',headers:{'x-publish-key':syKey(),'content-type':'application/octet-stream'},body});const j=await r.json().catch(()=>({}));return r.ok&&j.ok?j:null}
 /* perbarui snapshot online yang sudah ada (ID & link viewer tetap) */
 async function histUpdate(it,p,title){if(!(SY.avail&&syOwner())||it.local)return {ok:false,msg:'Only online snapshots can be updated (login SPV / publish key).'};
   const j=await snapPost(p||snapPayload(),'&update='+encodeURIComponent(it.id)+'&title='+encodeURIComponent(title||it.title)).catch(()=>null);
-  if(!j)return {ok:false,msg:'Update failed — try again.'};SNAPMEM.forEach((v,k)=>{if(k.startsWith('snapc:'+it.id+':'))SNAPMEM.delete(k)});return {ok:true,online:true,msg:'Updated: '+bareTitle(j.title),at:j.at}}
+  if(!j)return {ok:false,msg:'Update failed — try again.'};SNAPMEM.forEach((v,k)=>{if(k.startsWith('snapc:'+it.id+':'))SNAPMEM.delete(k)});return {ok:true,online:true,msg:'Updated: '+showTitle(j.title),at:j.at}}
 async function histSave(title,auto,kind){if(!anyData()||VIEWING)return {ok:false,msg:'No data yet.'};if(kind===undefined)kind=guessKind();title=kindTitle(kind,bareTitle(title));
   const p=snapPayload();
   if(SY.avail&&syOwner()){try{
     /* sudah ada riwayat dengan judul (periode + jenis) yang sama → perbarui, bukan bikin baru */
     const ex=(await histItems()).find(x=>!x.local&&x.title===title);
-    if(ex&&(auto||confirm('"'+bareTitle(title)+'" sudah ada di History. Perbarui dengan data terbaru? (link viewer tetap sama)'))){const u=await histUpdate(ex,p,title);if(u.ok)return u}
-    else{const j=await snapPost(p,'&auto='+(auto?1:0)+'&title='+encodeURIComponent(title)).catch(()=>null);if(j)return {ok:true,online:true,msg:'Saved online: '+bareTitle(title)}}}catch(e){}}
+    if(ex&&(auto||confirm('"'+showTitle(title)+'" sudah ada di History. Perbarui dengan data terbaru? (link viewer tetap sama)'))){const u=await histUpdate(ex,p,title);if(u.ok)return u}
+    else{const j=await snapPost(p,'&auto='+(auto?1:0)+'&title='+encodeURIComponent(title)).catch(()=>null);if(j)return {ok:true,online:true,msg:'Saved online: '+showTitle(title)}}}catch(e){}}
   /* cadangan: simpan di browser ini */
   const id='L'+Date.now();let L=hlGet();
   if(auto)L=L.filter(x=>{const same=x.auto&&x.title===title&&Date.now()-x.at<3*3600e3;if(same)idbPut('hist:'+x.id,null);return !same});
@@ -2624,7 +2638,7 @@ let HBK=null;
 function histApplyMem(p){S={...DEF_S(),...p.S,rc:{...DEF_RC,...(p.S.rc||{})},period:{...DEF_S().period,...(p.S.period||{})},cur:S.cur};for(const k of ['cs','vip','rc'])DS[k]=p.DS&&p.DS[k]||null;UNDO.length=0;REDO.length=0;syncPeriod();refresh(0)}
 async function histOpen(it){histBusy(true);let p;try{p=await histLoad(it)}finally{histBusy(false)}if(!p||!p.S){$('#histMsg').textContent='This snapshot could not be opened.';return}
   if(!VIEWING)HBK={S:JSON.parse(JSON.stringify(S)),DS:{...DS}};VIEWING=true;histApplyMem(p);HBK.item=it;HBK.p=p;
-  $('#hbTitle').textContent=(/^\[(weekly|monthly)\]/i.test(it.title)?KINDS[kindOf(it.title)]+' — ':'')+bareTitle(it.title).replace(/^(Weekly|Monthly) Report · /,'');$('#hbAt').textContent=hhmm(it.at);$('#hbUpdate').classList.toggle('hidden',!!(it.local||!(SY.avail&&syOwner())));$('#histBanner').classList.remove('hidden');document.body.classList.add('viewing-hist');closeModal('histModal')}
+  $('#hbTitle').textContent=(kindOf(it.title)==='monthly'?'Monthly Report — ':'Weekly Report — ')+showTitle(it.title).replace(/^(Weekly|Monthly) Report · /,'');$('#hbAt').textContent=hhmm(it.at);$('#hbUpdate').classList.toggle('hidden',!!(it.local||!(SY.avail&&syOwner())));$('#histBanner').classList.remove('hidden');document.body.classList.add('viewing-hist');closeModal('histModal')}
 function histBack(){if(!VIEWING)return;VIEWING=false;S=HBK.S;for(const k of ['cs','vip','rc'])DS[k]=HBK.DS[k];HBK=null;$('#histBanner').classList.add('hidden');document.body.classList.remove('viewing-hist');UNDO.length=0;REDO.length=0;syncPeriod();refresh(0);SIG=sigS()}
 async function histRestore(){if(!VIEWING||!HBK)return;if(!confirm('Restore "'+HBK.item.title+'" as the main data? The current data will be saved to History first.'))return;
   const p=HBK.p,bk=HBK;VIEWING=false;S=bk.S;for(const k of ['cs','vip','rc'])DS[k]=bk.DS[k];
@@ -2635,7 +2649,7 @@ let HTAB=lsg('gxcs-htab')||'weekly';
 async function renderHist(){const el=$('#histList');el.innerHTML='<div class="sub">Loading…</div>';const all=await histItems();const own=syOwner()||!SY.avail;
   if(HTAB==='other')HTAB='all';const cnt=k=>all.filter(x=>k==='all'||kindOf(x.title)===k).length,items=all.filter(x=>HTAB==='all'||kindOf(x.title)===HTAB);
   $('#histTabs').innerHTML=[['weekly','📅 Weekly report'],['monthly','🗓 Monthly report'],['all','All']].map(([k,l])=>`<button class="htab${HTAB===k?' on':''}" data-htab="${k}">${l} <span>${cnt(k)}</span></button>`).join('');
-  el.innerHTML=items.length?items.map((x,i)=>{const k=kindOf(x.title);return `<div class="hrow"><div class="hmain"><b><span class="hkind ${k}">${k==='weekly'?'Weekly':'Monthly'}</span>${esc(bareTitle(x.title))}</b><span class="mut">${hhmm(x.at)} · ${x.auto?'Auto (after Present)':'Manual'}${x.local?' · <em>this browser only</em>':''}${x.size?` · ${(x.size/1e6).toFixed(1)} MB`:''}</span></div><span class="hact"><button class="btn sm pri" data-hopen="${i}">Open</button>${!x.local&&own?`<button class="btn sm" data-hlink="${i}" title="Copy a viewer link for this snapshot only">🔗 Viewer</button><button class="btn sm" data-hupd="${i}" title="Replace this snapshot with the current report (viewer link stays the same)">⟳ Update</button>`:''}${own?`<button class="btn sm" data-hdel="${i}" title="Delete snapshot">Delete</button>`:''}</span></div>`}).join(''):`<div class="sub">No ${HTAB==='all'?'':HTAB+' '}snapshots yet. Choose the type above the list and click Save now — a snapshot is also saved automatically every time you finish Present.</div>`;
+  el.innerHTML=items.length?items.map((x,i)=>{const k=kindOf(x.title);return `<div class="hrow"><div class="hmain"><b><span class="hkind ${k}">${k==='weekly'?'Weekly':'Monthly'}</span>${esc(showTitle(x.title))}</b><span class="mut">${hhmm(x.at)} · ${x.auto?'Auto (after Present)':'Manual'}${x.local?' · <em>this browser only</em>':''}${x.size?` · ${(x.size/1e6).toFixed(1)} MB`:''}</span></div><span class="hact"><button class="btn sm pri" data-hopen="${i}">Open</button>${!x.local&&own?`<button class="btn sm" data-hlink="${i}" title="Copy a viewer link for this snapshot only">🔗 Viewer</button><button class="btn sm" data-hupd="${i}" title="Replace this snapshot with the current report (viewer link stays the same)">⟳ Update</button>`:''}${own?`<button class="btn sm" data-hdel="${i}" title="Delete snapshot">Delete</button>`:''}</span></div>`}).join(''):`<div class="sub">No ${HTAB==='all'?'':HTAB+' '}snapshots yet. Choose the type above the list and click Save now — a snapshot is also saved automatically every time you finish Present.</div>`;
   el.querySelectorAll('[data-hopen]').forEach(b=>b.onclick=()=>histOpen(items[+b.dataset.hopen]));
   el.querySelectorAll('[data-hlink]').forEach(b=>b.onclick=()=>{const it=items[+b.dataset.hlink];const u=location.origin+location.pathname+'?view=1&snap='+encodeURIComponent(it.id);
     (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>{b.textContent='✓ Link copied';setTimeout(()=>b.textContent='🔗 Viewer',2200)},()=>window.prompt('Copy this snapshot viewer link:',u))});
@@ -2643,7 +2657,7 @@ async function renderHist(){const el=$('#histList');el.innerHTML='<div class="su
     if(!confirm('Replace "'+bareTitle(it.title)+'" with the current report?\nThe viewer link stays the same and shows the new version.'))return;b.disabled=true;$('#histMsg').textContent='Updating…';const r=await histUpdate(it);$('#histMsg').textContent=r.msg;renderHist()});
   el.querySelectorAll('[data-hdel]').forEach(b=>b.onclick=async()=>{const it=items[+b.dataset.hdel];if(!confirm('Delete snapshot "'+bareTitle(it.title)+'"?'))return;
     if(it.local){hlSet(hlGet().filter(x=>x.id!==it.id));await idbPut('hist:'+it.id,null)}else await syFetch(SY.api+'?del='+encodeURIComponent(it.id),{method:'POST',headers:{'x-publish-key':syKey()}});renderHist()})}
-function histInit(){const defName=k=>(k?KINDS[k]+' · ':'Helpdesk Report · ')+(C&&C.long||'');
+function histInit(){const defName=k=>k==='monthly'&&curFullMonth()?curFullMonth():(k?KINDS[k]+' · ':'Helpdesk Report · ')+(C&&C.long||'');
   $('#histBtn').onclick=()=>{const k=guessKind();$('#histKind').value=k;setTimeout(()=>{if(!VIEWING&&!$('#histMsg').textContent)$('#histMsg').textContent='Detected from the imported data: '+(k==='weekly'?'📅 Weekly report':'🗓 Monthly report')+' ('+(C&&C.long||'')+').'},0);$('#histName').value=defName(k);$('#histName').dataset.auto='1';$('#histMsg').textContent=VIEWING?'Viewing a snapshot — use "Save changes to this snapshot" on the yellow bar, or go back to the latest data to save a new one.':'';HTAB=k;openModal('histModal');renderHist()};
   $('#histKind').onchange=()=>{if($('#histName').dataset.auto==='1')$('#histName').value=defName($('#histKind').value)};$('#histName').oninput=()=>{$('#histName').dataset.auto=''};
   $('#histSave').onclick=async()=>{$('#histMsg').textContent='Saving…';const k=$('#histKind').value;const r=await histSave($('#histName').value,false,k);$('#histMsg').textContent=r.msg;if(k){HTAB=k;lss('gxcs-htab',k)}renderHist()};

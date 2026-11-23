@@ -23,7 +23,7 @@
 import { randomUUID } from 'node:crypto';
 import { AppError, configured, db, dbError } from './_store.js';
 import { authed, teamAuthed } from './_auth.js';
-import { memberOf, DEF as MDEF } from './_members.js';
+import { memberOf, DEF as MDEF, DEF_NICK } from './_members.js';
 import { syncStep, searchPages, notionConfigured, ROOT, SOURCE, clean as nclean } from './_notion.js';
 
 const STATUS = ['NOT STARTED', 'PLAN', 'IN PROGRESS', 'DONE'];
@@ -123,7 +123,25 @@ export default async function handler(req, res) {
       const b = await readJson(req), op = str(b.op, 20), now = new Date().toISOString();
       const nm = v => str(v, 60).replace(/\s+/g, ' ').trim(), spv = authed(req), mem = memberOf(req);
       if (mem && nm(b.by) !== 'SPV') b.by = mem.name;   // sudah login per orang → tercatat atas nama orang itu (tidak bisa mengaku orang lain)
-      if (op === 'presence' && !(mem && nm(b.by) === mem.name) && !(spv && nm(b.by) === 'SPV')) return json(res, { error: 'member-login-required', detail: 'Login pakai nickname-mu dulu untuk set status.' }, 401);
+      const forWho = spv && b.for ? nm(b.for) : '';   // SPV boleh mengatur status siapa saja
+      if (op === 'presence' && !forWho && !(mem && nm(b.by) === mem.name) && !(spv && nm(b.by) === 'SPV')) return json(res, { error: 'member-login-required', detail: 'Login pakai nickname-mu dulu untuk set status.' }, 401);
+      /* pindah subdivisi (Helpdesk ⇄ AM) — riwayat task/notes tetap di board lama, desk (foto, template) ikut pindah */
+      if (op === 'roster.transfer') {
+        if (!spv) return json(res, { error: 'spv-login-required', detail: 'Hanya SPV yang bisa memindahkan anggota.' }, 401);
+        const to = String(b.to || '').toUpperCase(), name = nm(b.name); if (!TEAMS.includes(to) || to === team || !name) return json(res, { error: 'invalid', detail: 'Tujuan tidak valid.' }, 400);
+        const docOf = async k => { const row = must(await db().from('gx_docs').select('data,revision').eq('key', k).maybeSingle()); return { d: (row && row.data) || {}, rev: row ? row.revision : null }; };
+        const saveDoc = async (k, fn) => { for (let t = 0; t < 6; t++) { const { d, rev } = await docOf(k); const r0 = fn(d); if (r0 === false) return false; const r = must(await db().rpc('gx_doc_save', { p_key: k, p_data: d, p_revision: rev })); if (!r || !r.conflict) return true; } throw new Error('busy'); };
+        const rosterOf = (d, tm) => Array.isArray(d.roster) && d.roster.length ? d.roster : (MDEF[tm] || []).map(n => ({ name: n, nick: DEF_NICK[n] || n.split(' ')[0] }));
+        let moved = null; const log = { name, from: team, to, at: now, by: 'SPV' };
+        const ok = await saveDoc('team-board-' + team.toLowerCase(), d => { const R = rosterOf(d, team), x = R.find(y => y.name === name); if (!x) return false; moved = x; d.roster = R.filter(y => y.name !== name); (d.transfers = d.transfers || []).unshift(log);
+          d.notes = Array.isArray(d.notes) ? d.notes : []; d.notes.unshift({ id: randomUUID(), by: 'SPV', to: '', text: `🔁 ${x.nick || name} pindah ke ${to === 'AM' ? 'Account Manager' : 'Helpdesk'}. Task & catatan lama tetap tersimpan di sini.`, at: now, pinned: false }); });
+        if (!ok) return json(res, { error: 'not-found', detail: 'Anggota tidak ditemukan di tim ini.' }, 404);
+        await saveDoc('team-board-' + to.toLowerCase(), d => { const R = rosterOf(d, to); if (!R.some(y => y.name === name)) R.push({ name, nick: moved.nick || name.split(' ')[0] }); d.roster = R; (d.transfers = d.transfers || []).unshift(log);
+          d.notes = Array.isArray(d.notes) ? d.notes : []; d.notes.unshift({ id: randomUUID(), by: 'SPV', to: '', text: `👋 Welcome ${moved.nick || name}! Pindahan dari ${team === 'AM' ? 'Account Manager' : 'Helpdesk'}.`, at: now, pinned: false }); });
+        let desk = null; await saveDoc('team-desk-' + team.toLowerCase(), d => { const x = d.desks && d.desks[name]; if (!x) return false; desk = JSON.parse(JSON.stringify(x)); x.movedTo = to; x.movedAt = now; });
+        if (desk) { delete desk.movedTo; await saveDoc('team-desk-' + to.toLowerCase(), d => { d.desks = d.desks || {}; d.desks[name] = { ...desk, ...(d.desks[name] || {}), tpls: [...(desk.tpls || []), ...((d.desks[name] || {}).tpls || [])].filter((t, i, a) => a.findIndex(z => z.id === t.id) === i) }; }); }
+        const cur = await read(); return json(res, { board: cur.data, revision: cur.revision, transferred: log });
+      }
       if (nm(b.by) === 'SPV' && !spv) return json(res, { error: 'spv-login-required', detail: 'Hanya SPV yang bisa menulis sebagai SPV.' }, 401);
       if (op === 'note.seen' && !spv) return json(res, { error: 'spv-login-required' }, 401);
       if (/^roster\./.test(op) && !authed(req) && !teamAuthed(req)) return json(res, { error: 'team-login-required', detail: 'Masukkan password tim untuk mengubah anggota.' }, 401);
@@ -131,7 +149,7 @@ export default async function handler(req, res) {
         const cur = await read(), D = cur.data;
         /* roster bawaan baru disimpan saat anggota diubah — operasi lain (task, notes, status) tidak boleh mengosongkan roster */
         if (!D.roster && /^roster\./.test(op)) { const dr = Array.isArray(b.defaultRoster) ? b.defaultRoster.slice(0, 40).map(x => ({ name: nm(x && x.name), nick: nm(x && x.nick) })).filter(x => x.name) : [];
-          D.roster = dr.length ? dr : (MDEF[team] || []).map(name => ({ name, nick: name.split(' ')[0] })); }
+          D.roster = dr.length ? dr : (MDEF[team] || []).map(name => ({ name, nick: DEF_NICK[name] || name.split(' ')[0] })); }
         let err = null;
         if (op === 'roster.add') { const name = nm(b.name), nick = nm(b.nick) || name.split(' ')[0]; if (name.length < 2) err = 'Nama minimal 2 huruf.'; else if (D.roster.some(x => x.name.toLowerCase() === name.toLowerCase())) err = 'Nama sudah ada.'; else D.roster.push({ name, nick }); }
         else if (op === 'roster.del') { const name = nm(b.name); D.roster = D.roster.filter(x => x.name !== name); }
@@ -146,8 +164,8 @@ export default async function handler(req, res) {
         else if (op === 'note.seen') { const x = D.notes.find(y => y.id === b.id); if (x) { x.seen = true; if (b.reply != null) { x.spvReply = str(b.reply, 2000); x.spvAt = now; } } }
         else if (op === 'note.pin') { const x = D.notes.find(y => y.id === b.id); if (x) x.pinned = !x.pinned; }
         else if (op === 'note.del') D.notes = D.notes.filter(y => y.id !== b.id);
-        else if (op === 'presence') { const who = nm(b.by), st = String(b.status || ''); if (!who) err = 'Nama wajib.'; else if (!/^(work|break|meet)$/.test(st)) err = 'Status tidak valid.';
-          else { D.presence[who] = { s: st, at: now }; for (const k of Object.keys(D.presence)) if (Date.now() - Date.parse(D.presence[k].at) > 864e5) delete D.presence[k]; } }   // status Virtual Office
+        else if (op === 'presence') { const who = forWho || nm(b.by), st = String(b.status || ''); if (!who) err = 'Nama wajib.'; else if (!/^(work|break|meet|izin|sick|cuti)$/.test(st)) err = 'Status tidak valid.';
+          else { D.presence[who] = { s: st, at: now, by: forWho ? 'SPV' : who }; for (const k of Object.keys(D.presence)) if (Date.now() - Date.parse(D.presence[k].at) > 864e5) delete D.presence[k]; } }   // status Virtual Office
         else return json(res, { error: 'bad-op' }, 400);
         if (err) return json(res, { error: 'invalid', detail: err }, 400);
         /* batasi ukuran: task DONE > 90 hari & notes > 300 dibuang */

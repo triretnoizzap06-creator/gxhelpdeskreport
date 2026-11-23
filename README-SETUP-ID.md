@@ -163,3 +163,11 @@ Di pengaturan Repeat Complaint (Import data → kartu Repeat Complaint): **Probl
 ## Quiz — Bank soal & refresh
 - Quiz → (login SPV) **📝 Bank soal**: pilih set, cari, **✎ edit**, **🗑 hapus**, **+ Soal baru** (bisa untuk halaman Notion baru yang belum punya soal). Tersimpan di Knowledge Base, langsung dipakai latihan & sesi live baru.
 - **↻ Refresh soal** di Bank soal = muat ulang soal terbaru. Di halaman sesi live, **↻ Refresh soal** mengganti soal sesi itu dengan soal terbaru (selama belum ada peserta yang mengerjakan).
+
+## Update — History restore, status, templates board, transfer
+- **Bug History hilang sudah diperbaiki.** Update snapshot otomatis dulu membuat salinan sementara yang ikut terhapus oleh pembersihan auto-save. Sekarang salinan sementara disimpan sebagai non-auto lalu dihapus setelah update. Snapshot yang hilang sudah dipulihkan dari cache browser (#33 Weekly 09–15 Nov 2026, #34 Oktober 2026 versi 7 Nov).
+- **Nama Monthly Report**: kalau rentangnya tanggal 1 sampai akhir bulan, judulnya otomatis "Oktober 2026", "September 2026", dst.
+- **Loading lebih cepat**: halaman cek `?meta=1` dulu; data hanya diunduh kalau ada import baru. Snapshot & data terbaru di-cache CDN per versi.
+- **Status**: Locked in, On break, In a meeting, Excused (izin), Sick, On leave (cuti). SPV bisa klik desk siapa pun untuk ganti status/profil. Excused/Sick/On leave berlaku sampai akhir hari itu (avatar tidak tampil di office).
+- **Templates board**: semua template tampil sebagai sticky note (seperti Quick Notes) — filter per orang, search, Copy, edit.
+- **Transfer subdivisi** (SPV): buka desk → "🔁 Pindah ke …". Orangnya pindah roster, desk/template/foto ikut, task & catatan lama tetap ada di board asal dan tetap terlihat di desk-nya.

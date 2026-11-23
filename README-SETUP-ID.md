@@ -171,3 +171,5 @@ Di pengaturan Repeat Complaint (Import data → kartu Repeat Complaint): **Probl
 - **Status**: Locked in, On break, In a meeting, Excused (izin), Sick, On leave (cuti). SPV bisa klik desk siapa pun untuk ganti status/profil. Excused/Sick/On leave berlaku sampai akhir hari itu (avatar tidak tampil di office).
 - **Templates board**: semua template tampil sebagai sticky note (seperti Quick Notes) — filter per orang, search, Copy, edit.
 - **Transfer subdivisi** (SPV): buka desk → "🔁 Pindah ke …". Orangnya pindah roster, desk/template/foto ikut, task & catatan lama tetap ada di board asal dan tetap terlihat di desk-nya.
+- **No. tiket di Repeat Complaint** sekarang tampil sebagai Ticket ID GX-CSC (mis. GX-CSC-20261119224804). Export RC hanya punya TCK-…, jadi dicocokkan ke data CS/VIP lewat kolom *CRM Ticket Number* (cadangan: CID + tanggal yang sama). Kalau tiketnya tidak ada di data CS/VIP yang di-import, tetap tampil TCK-….
+- **Urutan Top 3 Repeat Complaint**: Weekly (≤10 hari) → tiket terbaru dulu lalu terbanyak; Monthly → repeat terbanyak. Pilihan manual Top 3 tetap diprioritaskan.

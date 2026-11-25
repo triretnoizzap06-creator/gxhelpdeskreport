@@ -193,3 +193,4 @@ Di pengaturan Repeat Complaint (Import data → kartu Repeat Complaint): **Probl
 - Materi di atas tampil versi rapi; **versi lengkap Notion** (selalu terbaru setelah ⟳ Sinkronkan) bisa dibuka di bagian bawah materi.
 - **Organisasi GX**: quiz di database ditambah jadi 48 soal (head & jobdesk semua divisi + org chart CSO).
 - **Quiz — Podium Kemenangan** Top 3 (animasi + confetti) di layar host & hasil peserta; tombol **🏆 Podium** layar penuh untuk diproyeksikan, dan otomatis muncul saat sesi ditutup.
+- **Quiz tanpa password**: siapa pun yang buka Knowledge Base bisa latihan & ikut live quiz (cukup PIN + nama). Membuat/menutup sesi, approve peserta & edit bank soal tetap khusus login SPV. Anggota yang login dengan username juga bisa buka dashboard VIP tanpa password tim.

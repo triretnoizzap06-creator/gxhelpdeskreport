@@ -17,7 +17,7 @@
 // Approval disimpan di gx_docs (key quiz-join-<pin>) → tidak perlu tabel baru.
 import { randomInt, randomUUID } from 'node:crypto';
 import { AppError, configured, db, dbError } from './_store.js';
-import { authed, teamAuthed } from './_auth.js';
+import { authed } from './_auth.js';
 
 const json = (res, obj, status = 200) => { res.statusCode = status; res.setHeader('content-type', 'application/json'); res.setHeader('cache-control', 'no-store'); res.end(JSON.stringify(obj)); };
 const must = ({ data, error }) => { if (error) throw dbError(error); return data; };
@@ -61,7 +61,7 @@ export default async function handler(req, res) {
     if (!configured()) return json(res, { error: 'storage-not-configured' }, 501);
     const code = str(q.get('code'), 8).toUpperCase();
     /* Quiz dikunci: wajib password tim (GX_TEAM_PASSWORD) atau login SPV — Knowledge Base tetap terbuka */
-    if (!authed(req) && !teamAuthed(req)) return json(res, { error: 'team-login-required', detail: 'Quiz dikunci — masukkan password tim.' }, 401);
+    /* Quiz terbuka tanpa password (permintaan SPV). Aksi host — buat/tutup sesi, approve, edit bank soal — tetap wajib login SPV di bawah. */
 
     if (req.method === 'GET' && code) {
       if (!okCode(code)) return json(res, { error: 'bad-code' }, 400);

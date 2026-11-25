@@ -237,7 +237,7 @@ export default async function handler(req, res) {
     /* ---------- Dashboard VIP: 4 sub-dashboard (Masterlist VIP, Masterlist Intracity, Billing Reminder 25, DIA Outstanding)
        — tim (GX_TEAM_PASSWORD) atau SPV. Data di gx_docs; sync = server mengambil .xlsx dari Google Sheets ("Anyone with the link"). ---------- */
     if (q.get('vip') != null) {
-      if (!authed(req) && !teamAuthed(req)) return json(res, { error: 'team-login-required' }, 401);
+      if (!authed(req) && !teamAuthed(req) && !memberOf(req)) return json(res, { error: 'team-login-required' }, 401);
       const VIPDOC = { vip: 'vip-masterlist', intracity: 'vip-intracity', billing25: 'vip-billing25', dia: 'vip-dia' };
       const sec = VIPDOC[q.get('s')] ? q.get('s') : 'vip', key = VIPDOC[sec];
       if (req.method === 'GET' && q.get('sync')) {   // ambil file Google Sheets terbaru (hanya ID spreadsheet, URL dibangun di server)
@@ -274,7 +274,7 @@ export default async function handler(req, res) {
     if (req.method === 'GET' && q.get('secrets')) {
       const team = q.get('secrets');
       if (!TEAMS.includes(team)) return json(res, { error: 'bad-team' }, 400);
-      if (!authed(req) && !teamAuthed(req)) return json(res, { error: 'team-login-required' }, 401);
+      if (!authed(req) && !teamAuthed(req) && !memberOf(req)) return json(res, { error: 'team-login-required' }, 401);
       const row = must(await db().from('gx_docs').select('data').eq('key', 'team-secrets').maybeSingle());
       return json(res, { secrets: (row && row.data && row.data[team]) || {} });
     }

@@ -201,7 +201,7 @@ const API = {
 const joinUrl = code => new URL('/knowledge-base#quiz?c=' + code, location.href).href;   // QR membuka tab Quiz di Knowledge Base
 const EMBED = new URLSearchParams(location.search).has('embed'); if (EMBED) document.body.classList.add('embed');
 function lockScreen() {
-  app.innerHTML = `<div class="lock"><div class="ic">🔒</div><h1>Quiz dikunci</h1><p class="lead" style="margin:0">Masukkan password tim untuk membuka quiz. Materi Knowledge Base tetap bisa dibaca tanpa password.</p>
+  app.innerHTML = `<div class="lock"><div class="ic">🔒</div><h1>Quiz dikunci</h1><p class="lead" style="margin:0"><a href="/login?next=%2Fknowledge-base%23quiz" target="_top" style="font-weight:700">Login dengan username kamu</a> untuk membuka quiz, atau masukkan password tim. Materi Knowledge Base tetap bisa dibaca tanpa password.</p>
     <form id="lkF"><input type="password" id="lkPw" placeholder="Password tim" autocomplete="current-password" autofocus><button class="btn y">Buka</button></form>
     <p style="font-size:12.5px;color:var(--muted);margin:14px 0 0">SPV? <a href="#" id="lkSpv">Login SPV</a></p>
     <form id="spvF" method="post" action="/api/login" class="hidden" target="_top"><input type="hidden" name="next" value="/knowledge-base#quiz"><input type="password" name="password" placeholder="Password dashboard SPV"><button class="btn pri">Login</button></form></div>`;
@@ -210,7 +210,7 @@ function lockScreen() {
     if (r && r.ok) { toast('Quiz terbuka ✓'); route(); } else toast(r && r.status === 503 ? 'Password tim belum diatur di server (GX_TEAM_PASSWORD)' : 'Password salah'); };
   $('#lkSpv').onclick = e => { e.preventDefault(); $('#spvF').classList.remove('hidden'); $('#lkF').classList.add('hidden'); $('#spvF input[type=password]').focus(); };
 }
-async function unlocked() { if (!ONLINE) return true; try { const r = await fetch('/api/login', { cache: 'no-store', credentials: 'same-origin' }); const j = await r.json(); return !!(j && (j.team || j.authed)); } catch (e) { return true; } }
+async function unlocked() { if (!ONLINE) return true; try { const r = await fetch('/api/login', { cache: 'no-store', credentials: 'same-origin' }); const j = await r.json(); return !!(j && (j.team || j.authed || j.member)); } catch (e) { return true; } }
 
 /* ======================= HOME ======================= */
 function home() {
@@ -404,7 +404,7 @@ function practice(set, n) { const all = questions(set); if (!all.length) return 
 function go(qs) { const keep = EMBED ? (qs ? qs + '&embed=1' : '?embed=1') : qs; history.pushState(null, '', location.pathname + keep); route(); }
 async function route() {
   clearInterval(poll); cancelAnimationFrame(timerRaf); HOSTCODE = null; HOSTTICK = null; document.querySelectorAll('.modal').forEach(m => m.remove());
-  if (!(await unlocked())) return lockScreen();
+  /* quiz terbuka tanpa password */
   const p = new URLSearchParams(location.search);
   if (p.get('c')) return joinScreen(p.get('c').toUpperCase());
   if (p.get('host')) return host(p.get('host').toUpperCase());

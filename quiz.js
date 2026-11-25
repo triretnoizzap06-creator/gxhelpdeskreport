@@ -13,7 +13,8 @@
 //   DELETE /api/quiz?code=ABC123          → hapus sesi + hasil
 //   GET  /api/quiz?code=ABC123&joins=1    → daftar peserta + status approval
 //   POST /api/quiz { approve:{ code, player } } / { reject:{ code, player } } / { approveAll: code } / { allowRetry:{ code, player } }
-//   GET  /api/quiz?code=ABC123&results=1  → hasil + jawaban tiap peserta untuk review SPV
+//   GET  /api/quiz?code=ABC123&results=1  → hasil + jawaban tiap peserta untuk review & pembahasan SPV
+//   GET  /api/quiz?code=ABC123&progress=1 → progres live peserta (SPV) · POST { progress:{ code, token, answers } } dari HP peserta
 // Approval disimpan di gx_docs (key quiz-join-<pin>) → tidak perlu tabel baru.
 import { randomInt, randomUUID } from 'node:crypto';
 import { AppError, configured, db, dbError } from './_store.js';
@@ -52,6 +53,8 @@ async function mutateJoin(c, fn) {   // baca → ubah → simpan dengan cek revi
   }
   throw new AppError('busy', 503, 'Server sibuk, coba lagi.');
 }
+/* progres live per peserta: gx_docs key quiz-prog-<pin>-<nama> (satu dokumen per peserta → tidak saling bentrok) */
+const progKey = (c, n) => 'quiz-prog-' + c.toLowerCase() + '-' + nkey(n).replace(/[^a-z0-9]+/g, '_').slice(0, 40);
 const pubQ = s => (s.questions || []).map(x => ({ q: x.q, o: x.o }));
 const board = async code => must(await db().from('gx_quiz_results').select('player,score,correct,total,duration_ms,created_at').eq('code', code).order('score', { ascending: false }).order('duration_ms', { ascending: true }).limit(200)) || [];
 
@@ -74,6 +77,11 @@ export default async function handler(req, res) {
         const p = Object.values(J.players).find(x => x.token === tok);
         if (!p) return json(res, { error: 'not-joined' }, 404);
         return json(res, { status: p.status, player: p.name, session: p.status === 'approved' ? { ...info, questions: pubQ(s) } : info });
+      }
+      if (q.get('progress')) {   // SPV memantau progres peserta yang sedang mengerjakan
+        if (!authed(req)) return json(res, { error: 'login-required' }, 401);
+        const rows = must(await db().from('gx_docs').select('key,data').like('key', 'quiz-prog-' + code.toLowerCase() + '-%')) || [];
+        return json(res, { progress: rows.map(r => r.data).filter(Boolean) });
       }
       if (q.get('joins') || q.get('results')) {
         if (!authed(req)) return json(res, { error: 'login-required' }, 401);
@@ -105,6 +113,19 @@ export default async function handler(req, res) {
         });
         if (out.error) return json(res, { error: 'name-taken', detail: 'Nama ini sudah dipakai peserta lain di sesi ini — pakai nama lain.' }, 409);
         return json(res, { status: out.status, token: out.token, player: out.player });
+      }
+      /* ---------- progres per soal (dikirim HP peserta setiap menjawab) — skor dihitung server, hanya terlihat SPV ---------- */
+      if (b.progress && typeof b.progress === 'object') {
+        const c = str(b.progress.code, 8).toUpperCase(); if (!okCode(c)) return json(res, { error: 'bad-code' }, 400);
+        const s = must(await db().from('gx_quiz_sessions').select('questions,timer_s,status').eq('code', c).maybeSingle());
+        if (!s || s.status !== 'open') return json(res, { ok: false });
+        const tok = str(b.progress.token, 60), J = (await getJoin(c)).data, me = Object.values(J.players).find(x => x.token === tok);
+        if (!me || me.status !== 'approved') return json(res, { ok: false });
+        const Q = s.questions || [], A = (Array.isArray(b.progress.answers) ? b.progress.answers : []).slice(0, Q.length);
+        let correct = 0, score = 0, ms = 0;
+        A.forEach((a, i) => { const ch = Number.isInteger(a && a.c) ? a.c : null, t = Math.max(0, Math.min(s.timer_s * 1000, Math.round(+(a && a.ms) || s.timer_s * 1000))), ok = ch != null && ch === Q[i].a; if (ok) correct++; score += points(ok, t, s.timer_s); ms += t; });
+        must(await db().rpc('gx_doc_save', { p_key: progKey(c, me.name), p_data: { name: me.name, i: A.length, n: Q.length, correct, score, ms, at: new Date().toISOString() }, p_revision: null }));
+        return json(res, { ok: true });
       }
       /* ---------- pemain kirim jawaban (wajib sudah di-approve SPV) ---------- */
       if (b.code && b.player != null && Array.isArray(b.answers)) {
@@ -176,6 +197,7 @@ export default async function handler(req, res) {
       if (!okCode(code)) return json(res, { error: 'bad-code' }, 400);
       must(await db().from('gx_quiz_sessions').delete().eq('code', code));
       await db().from('gx_docs').delete().eq('key', joinKey(code));
+      await db().from('gx_docs').delete().like('key', 'quiz-prog-' + code.toLowerCase() + '-%');
       return json(res, { ok: true });
     }
     return json(res, { error: 'method' }, 405);

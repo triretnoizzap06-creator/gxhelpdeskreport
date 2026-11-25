@@ -114,6 +114,28 @@ body.embed .top{display:none}body.embed main{padding-top:14px}
 @media (prefers-reduced-motion:reduce){.pd-st,.pd-av,.pd-cr,.pd-conf i{animation:none!important}.pd-conf{display:none}}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .podium{background:linear-gradient(180deg,#2A2310,#161618);border-color:#4A3D14}:root:not([data-theme="light"]) .pd-ttl{color:#FFD866}}
 :root[data-theme="dark"] .podium{background:linear-gradient(180deg,#2A2310,#161618);border-color:#4A3D14}:root[data-theme="dark"] .pd-ttl{color:#FFD866}
+
+/* progres live & pembahasan */
+.prog{background:var(--soft,#F5F5F7);border-radius:12px;padding:10px 12px;margin:4px 0 12px}.pg-h{display:flex;gap:8px;align-items:baseline;font-size:13px}.pg-h span{color:var(--muted)}.pg-h .sp{flex:1}
+.pg-bar{height:8px;border-radius:999px;background:var(--line);overflow:hidden;margin-top:6px}.pg-bar i{display:block;height:100%;background:linear-gradient(90deg,#F5C518,#34C759);border-radius:999px;transition:width .6s}
+.pg-r{margin-top:6px;max-width:320px}.pg-r small{display:block;font-size:11.5px;color:var(--muted);margin-top:3px}.pg-r small b{color:var(--ink)}.pg-r.done .pg-bar i{background:#34C759}
+.bhs .bhs-in{width:min(980px,96vw);max-height:94vh;overflow:auto;background:var(--card,#fff);border-radius:22px;padding:20px 22px}
+.bhs-top{display:flex;gap:10px;align-items:center}.bhs-top small{display:block;font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--muted)}.bhs-top b{font-size:18px}.bhs-top .sp{flex:1}.bhs-nm{font-size:12.5px;color:var(--muted);display:flex;gap:5px;align-items:center}
+.bhs-q{font-size:clamp(18px,2.4vw,26px);font-weight:800;line-height:1.35;margin:16px 0 14px}
+.bhs-o{display:grid;gap:10px}.bo{border:2px solid var(--line);border-radius:14px;padding:10px 12px}.bo.ok{border-color:#34C759;background:rgba(52,199,89,.08)}.bo.none{border-style:dashed}
+.bo-t{display:flex;gap:10px;align-items:center;font-size:15px}.bo-t .tx{flex:1}.bo-t b{font-size:20px;font-weight:900}.bo.ok .bo-t .tx::after{content:"  ✓";color:#1E8E3E;font-weight:900}
+.bo-bar{height:10px;border-radius:999px;background:var(--line);overflow:hidden;margin-top:8px}.bo-bar i{display:block;height:100%;border-radius:999px;transition:width .5s}
+.bo-bar.t0 i{background:#E21B3C}.bo-bar.t1 i{background:#1368CE}.bo-bar.t2 i{background:#D89E00}.bo-bar.t3 i{background:#26890C}.bo.ok .bo-bar i{background:#34C759}
+.bo-nm{font-size:12.5px;color:var(--muted);margin-top:6px}
+.bhs-k{margin-top:14px;background:var(--soft,#F5F5F7);border-radius:12px;padding:12px 14px;font-size:14.5px}.bhs-k p{margin:6px 0 0;color:var(--muted);line-height:1.5}
+.bhs-who{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-top:10px}.bw{border-radius:12px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px}.bw>b{flex-basis:100%;font-size:13.5px}
+.bw.bad{background:rgba(229,72,77,.08);border:1px solid rgba(229,72,77,.35)}.bw.bad>b{color:#C62828}.bw.ok{background:rgba(52,199,89,.08);border:1px solid rgba(52,199,89,.35)}.bw.ok>b{color:#1E8E3E}
+.bw span{background:var(--card,#fff);border:1px solid var(--line);border-radius:999px;padding:3px 10px}.bw span i{font-style:normal;color:var(--muted);font-size:12px}.bw em{color:var(--muted);font-size:12.5px}
+@media (max-width:640px){.bhs-who{grid-template-columns:1fr}}
+.bhs-nav{display:flex;gap:10px;align-items:center;margin-top:16px}.bhs-dots{flex:1;display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.bhs-dots button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--card,#fff);color:var(--ink);font:700 11.5px var(--font,inherit);cursor:pointer}.bhs-dots button.hard{border-color:#E5484D;color:#C62828}.bhs-dots button.on{background:#1D1D1F;color:#fff;border-color:#1D1D1F}
+.bhs-leg{font-size:11.5px;color:var(--muted);margin-top:8px;text-align:center}.bhs-leg .hard{color:#C62828;font-weight:700}
+@media (max-width:640px){.bhs-nav{flex-wrap:wrap}.bhs-dots{order:3;flex-basis:100%}}
 </style>
 </head>
 <body>
@@ -184,6 +206,8 @@ const API = {
     const s = LOCAL.get(code); const p = s && Object.values(s.joins || {}).find(x => x.token === token); if (!p) return { status: 404, j: { error: 'not-joined' } };
     return { status: 200, j: { status: p.status, player: p.name, session: p.status === 'approved' ? { ...s, questions: s.questions.map(x => ({ q: x.q, o: x.o })) } : { ...s, questions: undefined, n: s.questions.length } } };
   },
+  async progress(code) { const r = await call('?code=' + code + '&progress=1'); return r && r.status === 200 ? (r.j.progress || []) : []; },
+  sendProgress(code, token, answers) { call('', { method: 'POST', body: JSON.stringify({ progress: { code, token, answers } }) }).catch(() => {}); },
   async joins(code) { const r = await call('?code=' + code + '&joins=1'); if (r) return r; const s = LOCAL.get(code); return { status: 200, j: { players: Object.values((s && s.joins) || {}) } }; },
   async decide(code, player, act) {
     const body = act === 'all' ? { approveAll: code } : { [act]: { code, player } }; const r = await call('', { method: 'POST', body: JSON.stringify(body) }); if (r) return r;
@@ -253,12 +277,12 @@ async function host(code) {
   app.innerHTML = `<p style="margin:0 0 14px"><button class="btn sm" data-home>← Semua sesi</button></p><h1>${esc(s.title || 'Live quiz')}</h1><p class="lead">${esc(SETNAME[s.set_key] || '')} · ${s.n ?? s.questions.length} soal · ${s.timer_s} detik per soal</p>
     <div class="host"><div class="pin"><small>SCAN ATAU MASUKKAN PIN</small><div class="code">${esc(code)}</div><div class="qr" id="qr"></div><div class="url">${esc(url)}</div>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px"><button class="btn sm" id="cpy">Salin link</button><button class="btn sm" id="tog">${s.status === 'open' ? 'Tutup sesi' : 'Buka lagi'}</button><button class="btn sm" id="qref" title="Ganti soal sesi ini dengan bank soal terbaru (sebelum ada peserta mulai)">↻ Refresh soal</button><button class="btn sm danger" id="del">Hapus</button></div></div>
-      <div><div class="lb"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Leaderboard</b><span id="cnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span><button class="btn sm y" id="podBtn" title="Tampilkan podium layar penuh">🏆 Podium</button><span class="pill ${s.status}">${s.status === 'open' ? 'Live' : 'Ditutup'}</span></div><div id="pod"></div><div id="lb"></div><div style="font-size:12px;color:var(--muted);margin-top:8px">Klik nama peserta untuk review jawabannya.</div></div>
+      <div><div class="lb"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Leaderboard</b><span id="cnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span><button class="btn sm" id="bhsBtn" title="Bahas soal satu per satu: sebaran jawaban, kunci & penjelasan">📖 Bahas soal</button><button class="btn sm y" id="podBtn" title="Tampilkan podium layar penuh">🏆 Podium</button><span class="pill ${s.status}">${s.status === 'open' ? 'Live' : 'Ditutup'}</span></div><div id="prog" class="prog hidden"></div><div id="pod"></div><div id="lb"></div><div style="font-size:12px;color:var(--muted);margin-top:8px">Klik nama peserta untuk review jawabannya.</div></div>
       <div class="appr"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Peserta & approval</b><span id="pcnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span><button class="btn sm y hidden" id="apAll">Approve semua</button></div><div id="ap"></div>
       <div style="font-size:12px;color:var(--muted);margin-top:8px">Peserta baru bisa mulai mengerjakan setelah kamu approve.</div></div></div></div>`;
   try { const qr = qrcode(0, 'M'); qr.addData(url); qr.make(); $('#qr').innerHTML = qr.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); const sv = $('#qr svg'); sv.style.width = '230px'; sv.style.height = '230px'; } catch (e) { $('#qr').innerHTML = '<div class="msg">QR tidak bisa dimuat — bagikan link/PIN.</div>'; }
   $('#cpy').onclick = async () => { try { await navigator.clipboard.writeText(url); toast('Link disalin ✓'); } catch (e) { prompt('Salin link:', url); } };
-  $('#tog').onclick = async () => { const closing = s.status === 'open'; await API.setStatus(code, closing); if (closing) { const B = await API.board(code); host(code); podiumFull(B, s.title); } else host(code); };
+  $('#tog').onclick = async () => { const closing = s.status === 'open'; await API.setStatus(code, closing); if (closing) { const B = await API.board(code); host(code); podiumFull(B, s.title, code); } else host(code); };
   $('#del').onclick = async () => { if (confirm('Hapus sesi ' + code + ' beserta semua hasilnya?')) { await API.del(code); go(''); } };
   $('#qref').onclick = async () => { await loadBank(); const all = questions(s.set_key), n = s.n ?? (s.questions || []).length; if (!all.length) return toast('Set ini belum punya soal');
     if (!confirm(`Ganti soal sesi ${code} dengan ${Math.min(n || all.length, all.length)} soal terbaru dari bank soal?`)) return;
@@ -266,15 +290,60 @@ async function host(code) {
   $('#apAll').onclick = async () => { await API.decide(code, '', 'all'); tick(); };
   const ST = { pending: 'Menunggu approval', approved: 'Sedang mengerjakan', done: 'Selesai', rejected: 'Ditolak' };
   let LASTB = []; PODSIG = '';
-  $('#podBtn').onclick = async () => { const B = await API.board(code); podiumFull(B, s.title); };
-  const tick = async () => { const [B, Jr] = await Promise.all([API.board(code), API.joins(code)]); const el = $('#lb'); if (!el) return; $('#cnt').textContent = B.length + ' selesai'; LASTB = B; paintPodium($('#pod'), B);
+  $('#podBtn').onclick = async () => { const B = await API.board(code); podiumFull(B, s.title, code); };
+  $('#bhsBtn').onclick = () => discuss(code, s.title);
+  let PG = {}, AUTO_POD = LS.get('gx-quiz-pod', {})[code] || false;
+  const tick = async () => { const [B, Jr, PR] = await Promise.all([API.board(code), API.joins(code), API.progress(code)]); PG = {}; PR.forEach(p => { PG[String(p.name).toLowerCase()] = p; }); const el = $('#lb'); if (!el) return; $('#cnt').textContent = B.length + ' selesai'; LASTB = B; paintPodium($('#pod'), B);
     el.innerHTML = B.length ? B.map((x, i) => `<div class="lbr click" data-rv="${esc(x.player)}" title="Review jawaban"><span class="rk">${i + 1}</span><div><b>${esc(x.player)}</b><span>${x.correct}/${x.total} benar · ${fmtS(x.duration_ms)}</span></div><span class="sc">${x.score}</span></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Belum ada yang selesai.</div>';
     const P = (Jr && Jr.status === 200 && Jr.j.players) || [], pend = P.filter(p => p.status === 'pending');
     $('#pcnt').textContent = P.length ? `${P.length} peserta · ${pend.length} menunggu` : ''; $('#apAll').classList.toggle('hidden', pend.length < 2);
     const order = { pending: 0, approved: 1, done: 2, rejected: 3 };
-    $('#ap').innerHTML = P.length ? P.slice().sort((a, b) => order[a.status] - order[b.status]).map(p => `<div class="apr"><div><b>${esc(p.name)}</b><span class="s"><span class="pill ${p.status}">${ST[p.status] || p.status}</span> · daftar ${new Date(p.at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span></div><div class="acts">${p.status === 'pending' ? `<button class="btn sm y" data-dec="approve" data-p="${esc(p.name)}">Approve</button><button class="btn sm danger" data-dec="reject" data-p="${esc(p.name)}">Tolak</button>` : p.status === 'rejected' ? `<button class="btn sm" data-dec="approve" data-p="${esc(p.name)}">Approve</button>` : p.status === 'done' ? `<button class="btn sm" data-rv="${esc(p.name)}">Review</button><button class="btn sm" data-dec="allowRetry" data-p="${esc(p.name)}">Izinkan ulang</button>` : ''}</div></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Menunggu peserta… minta tim scan QR di HP.</div>'; };
+    $('#ap').innerHTML = P.length ? P.slice().sort((a, b) => order[a.status] - order[b.status]).map(p => `<div class="apr"><div><b>${esc(p.name)}</b><span class="s"><span class="pill ${p.status}">${ST[p.status] || p.status}</span> · daftar ${new Date(p.at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>${progRow(p, PG[String(p.name).toLowerCase()], B)}</div><div class="acts">${p.status === 'pending' ? `<button class="btn sm y" data-dec="approve" data-p="${esc(p.name)}">Approve</button><button class="btn sm danger" data-dec="reject" data-p="${esc(p.name)}">Tolak</button>` : p.status === 'rejected' ? `<button class="btn sm" data-dec="approve" data-p="${esc(p.name)}">Approve</button>` : p.status === 'done' ? `<button class="btn sm" data-rv="${esc(p.name)}">Review</button><button class="btn sm" data-dec="allowRetry" data-p="${esc(p.name)}">Izinkan ulang</button>` : ''}</div></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Menunggu peserta… minta tim scan QR di HP.</div>';
+    const act = P.filter(p => p.status === 'approved'), done = P.filter(p => p.status === 'done'), pr = $('#prog');
+    if (pr) { pr.classList.toggle('hidden', !act.length && !done.length); const tot = act.length + done.length, avg = tot ? Math.round((done.length * 100 + act.reduce((t, p) => { const g = PG[String(p.name).toLowerCase()]; return t + (g ? g.i / g.n * 100 : 0); }, 0)) / tot) : 0;
+      pr.innerHTML = `<div class="pg-h"><b>Progres live</b><span>${done.length}/${tot} selesai · ${act.length} sedang mengerjakan</span><span class="sp"></span><b>${avg}%</b></div><div class="pg-bar"><i style="width:${avg}%"></i></div>`; }
+    if (!AUTO_POD && B.length && !act.length && !P.some(p => p.status === 'pending') && done.length) { AUTO_POD = true; LS.set('gx-quiz-pod', { ...LS.get('gx-quiz-pod', {}), [code]: true }); toast('Semua peserta selesai 🎉'); podiumFull(B, s.title, code); } };
   HOSTCODE = code; HOSTTICK = tick;
   tick(); clearInterval(poll); poll = setInterval(() => { if (!$('#lb')) return clearInterval(poll); if (!document.hidden) tick(); }, 3000);
+}
+
+/* progres per peserta (sisi SPV) */
+function progRow(p, g, B) {
+  if (p.status === 'done') { const x = (B || []).find(z => z.player.toLowerCase() === String(p.name).toLowerCase()); return x ? `<div class="pg-r done"><div class="pg-bar"><i style="width:100%"></i></div><small>✓ ${x.correct}/${x.total} benar · ${x.score} poin</small></div>` : ''; }
+  if (p.status !== 'approved') return '';
+  if (!g) return `<div class="pg-r"><div class="pg-bar"><i style="width:0"></i></div><small>Belum menjawab soal pertama</small></div>`;
+  const pc = Math.round(g.i / g.n * 100), ago = Math.round((Date.now() - new Date(g.at)) / 1000);
+  return `<div class="pg-r"><div class="pg-bar"><i style="width:${pc}%"></i></div><small>Soal ${g.i}/${g.n} · <b>${g.correct} benar</b> · ${g.score} poin${ago > 90 ? ` · <span style="color:var(--bad,#C62828)">diam ${Math.round(ago / 60)} mnt</span>` : ''}</small></div>`;
+}
+/* ===== Bahas soal (SPV): satu soal per layar — sebaran jawaban, kunci, penjelasan & siapa memilih apa ===== */
+async function discuss(code, title, at) {
+  const r = await API.results(code); if (!r || r.status !== 200) return toast(r && r.j.error === 'login-required' ? 'Login SPV dulu' : 'Gagal memuat hasil');
+  const Q = r.j.questions || [], R = r.j.results || []; if (!Q.length) return toast('Soal tidak ditemukan');
+  if (!R.length) return toast('Belum ada peserta yang selesai');
+  let i = Math.max(0, Math.min(Q.length - 1, at || 0)), names = false;
+  const m = document.createElement('div'); m.className = 'modal bhs';
+  const stats = k => { const q = Q[k], cnt = q.o.map(() => []), none = []; R.forEach(x => { const a = (x.answers || [])[k] || {}; if (a.c == null || !cnt[a.c]) none.push(x.player); else cnt[a.c].push(x.player); }); return { q, cnt, none, ok: cnt[q.a].length }; };
+  const draw = () => { const { q, cnt, none, ok } = stats(i), n = R.length, pct = v => n ? Math.round(v / n * 100) : 0;
+    const hard = Q.map((_, k) => stats(k).ok / n);
+    m.innerHTML = `<div class="bhs-in"><div class="bhs-top"><div><small>📖 PEMBAHASAN · ${esc(title || 'Live quiz')}</small><b>Soal ${i + 1} / ${Q.length}</b></div><span class="sp"></span><label class="bhs-nm"><input type="checkbox" id="bhNm" ${names ? 'checked' : ''}> tampilkan nama</label><button class="btn sm" data-x>Tutup</button></div>
+      <div class="bhs-q">${esc(q.q)}</div>
+      <div class="bhs-o">${q.o.map((o, j) => `<div class="bo ${j === q.a ? 'ok' : ''}"><div class="bo-t"><span class="sh">${SHAPES[j % 4]}</span><span class="tx">${esc(o)}</span><b>${cnt[j].length}</b></div><div class="bo-bar t${j % 4}"><i style="width:${pct(cnt[j].length)}%"></i></div>${names && cnt[j].length ? `<div class="bo-nm">${cnt[j].map(esc).join(', ')}</div>` : ''}</div>`).join('')}
+        ${none.length ? `<div class="bo none"><div class="bo-t"><span class="sh">⏱</span><span class="tx">Tidak menjawab / waktu habis</span><b>${none.length}</b></div>${names ? `<div class="bo-nm">${none.map(esc).join(', ')}</div>` : ''}</div>` : ''}</div>
+      <div class="bhs-k"><b>✓ Jawaban benar: ${esc(q.o[q.a])}</b> — ${ok}/${n} peserta (${pct(ok)}%) menjawab benar${q.e ? `<p>${esc(q.e)}</p>` : ''}</div>
+      ${(() => { const wrong = q.o.flatMap((o, j) => j === q.a ? [] : cnt[j].map(nm => [nm, o])), right = cnt[q.a];
+        return `<div class="bhs-who"><div class="bw bad"><b>✗ Salah (${wrong.length + none.length})</b>${wrong.length || none.length ? wrong.map(([nm, o]) => `<span title="Memilih: ${esc(o)}">${esc(nm)} <i>→ ${esc(o.length > 38 ? o.slice(0, 36) + '…' : o)}</i></span>`).join('') + none.map(nm => `<span>${esc(nm)} <i>→ tidak menjawab</i></span>`).join('') : '<em>Semua benar 🎉</em>'}</div>
+          <div class="bw ok"><b>✓ Benar (${right.length})</b>${right.length ? right.map(nm => `<span>${esc(nm)}</span>`).join('') : '<em>Belum ada</em>'}</div></div>`; })()}
+      <div class="bhs-nav"><button class="btn" id="bhP" ${i ? '' : 'disabled'}>← Sebelumnya</button><div class="bhs-dots">${hard.map((h, k) => `<button class="${k === i ? 'on' : ''} ${h < .5 ? 'hard' : ''}" data-bq="${k}" title="Soal ${k + 1}: ${Math.round(h * 100)}% benar">${k + 1}</button>`).join('')}</div><button class="btn pri" id="bhN">${i < Q.length - 1 ? 'Berikutnya →' : '🏆 Podium'}</button></div>
+      <div class="bhs-leg"><span class="hard">merah</span> = kurang dari 50% peserta menjawab benar — fokus dibahas</div></div>`;
+  };
+  const go = k => { i = k; draw(); };
+  m.onclick = async e => { if (e.target === m || e.target.closest('[data-x]')) { m.remove(); document.removeEventListener('keydown', key); return; }
+    const d = e.target.closest('[data-bq]'); if (d) return go(+d.dataset.bq);
+    if (e.target.closest('#bhP') && i) return go(i - 1);
+    if (e.target.closest('#bhN')) { if (i < Q.length - 1) return go(i + 1); m.remove(); document.removeEventListener('keydown', key); podiumFull(await API.board(code), title, code); } };
+  m.onchange = e => { if (e.target.id === 'bhNm') { names = e.target.checked; draw(); } };
+  const key = e => { if (!document.body.contains(m)) return document.removeEventListener('keydown', key); if (e.key === 'ArrowRight' && i < Q.length - 1) go(i + 1); else if (e.key === 'ArrowLeft' && i) go(i - 1); else if (e.key === 'Escape') { m.remove(); document.removeEventListener('keydown', key); } };
+  document.addEventListener('keydown', key); draw(); document.body.appendChild(m);
 }
 
 /* review jawaban peserta (sisi SPV) */
@@ -338,6 +407,7 @@ function answer(c) {
   if (G.locked) return; G.locked = true; cancelAnimationFrame(timerRaf);
   const ms = Math.min(G.timer * 1000, Math.round(performance.now() - G.t0)), q = G.qs[G.i];
   G.answers.push({ c, ms });
+  if (G.mode === 'live' && G.token) API.sendProgress(G.code, G.token, G.answers);   // SPV bisa memantau progres live
   document.querySelectorAll('.tile').forEach(t => { const j = +t.dataset.c; t.disabled = true; if (G.mode === 'practice') { if (j === q.a) t.classList.add('right'); else t.classList.add('dim'); } else { if (j === c) t.classList.add('pick'); else t.classList.add('dim'); } });
   const last = G.i === G.qs.length - 1, nextBtn = `<span class="sp"></span><button class="btn pri" id="nx">${last ? 'Lihat hasil' : 'Soal berikutnya →'}</button>`;
   if (G.mode === 'practice') {
@@ -390,9 +460,9 @@ function podiumHtml(B, me, big) {
 }
 let PODSIG = '';
 function paintPodium(el, B, me) { if (!el) return; const sig = (B || []).slice(0, 3).map(x => x.player + ':' + x.score).join('|'); if (sig === PODSIG && el.innerHTML) return; PODSIG = sig; el.innerHTML = podiumHtml(B, me); }
-function podiumFull(B, title) {
-  const m = document.createElement('div'); m.className = 'modal pdm'; m.innerHTML = `<div class="pdm-in"><button class="btn sm" data-x style="position:absolute;top:14px;right:14px">Tutup</button><div class="pdm-t">${esc(title || 'Live quiz')}</div>${podiumHtml(B, null, true) || '<div class="msg">Belum ada peserta yang selesai.</div>'}${(B || []).length > 3 ? `<div class="pdm-rest">${B.slice(3, 10).map((x, i) => `<span><b>${i + 4}</b> ${esc(x.player)} · ${x.score}</span>`).join('')}</div>` : ''}</div>`;
-  m.onclick = e => { if (e.target === m || e.target.closest('[data-x]')) m.remove(); }; document.body.appendChild(m);
+function podiumFull(B, title, code) {
+  const m = document.createElement('div'); m.className = 'modal pdm'; m.innerHTML = `<div class="pdm-in"><button class="btn sm" data-x style="position:absolute;top:14px;right:14px">Tutup</button><div class="pdm-t">${esc(title || 'Live quiz')}</div>${code && IS_SPV ? `<button class="btn sm" data-bahas style="position:absolute;top:14px;left:14px">📖 Bahas soal</button>` : ''}${podiumHtml(B, null, true) || '<div class="msg">Belum ada peserta yang selesai.</div>'}${(B || []).length > 3 ? `<div class="pdm-rest">${B.slice(3, 10).map((x, i) => `<span><b>${i + 4}</b> ${esc(x.player)} · ${x.score}</span>`).join('')}</div>` : ''}</div>`;
+  m.onclick = e => { if (e.target.closest('[data-bahas]')) { m.remove(); return discuss(code, title); } if (e.target === m || e.target.closest('[data-x]')) m.remove(); }; document.body.appendChild(m);
 }
 function historyHtml(set) {
   const H = LS.get('gx-quiz-history', []).filter(h => h.set === set).slice(0, 8);

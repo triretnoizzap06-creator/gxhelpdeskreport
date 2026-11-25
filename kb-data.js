@@ -1459,3 +1459,429 @@ S('ticketing-guide', [
   ['Customer hanya bilang "internetnya bermasalah" tanpa detail lain. Apa yang kamu lakukan sebelum memilih problem type?', ['Probing lebih dulu', 'Memilih problem Other', 'Memilih Slow access', 'Memilih Mass-Problem'], 0, 'Probing dulu: apakah tidak bisa dipakai sama sekali, lambat, atau sering terputus. Hindari Other bila ada pilihan yang lebih spesifik.'],
 ]);
 })();
+
+/* ============================ INTERNET PACKAGE (Notion: Basic Knowledge → Service Plans) — set quiz terpisah ============================ */
+window.KB_CATS.push(['paket', 'Internet Package', 'Paket Lite, Lite+, Signature, Dedicated Internet Access, Intracity, SLA & Priority Service']);
+window.KB_MATERI.push({ id: 'internet-package', cat: 'paket', curated: true, title: 'GlobalXtreme Internet Package', src: N('1509b0fbceac80728123e7057b23490c'),
+  summary: 'Semua paket internet GX: Lite, Lite+, Signature, Dedicated Internet Access, Intracity Partnership, SLA, request teknisi & Priority Service Scoring.',
+  body: `> Semua harga **belum termasuk PPN 11%**. Isi materi ini ikut halaman Notion (authored by Choirul) setiap kali disinkronkan.
+## 1. Paket Lite (Home Internet)
+- **Untuk**: pengguna rumahan — streaming, browsing, gaming.
+- Data **Unlimited**, **Dynamic IP**, instalasi mulai **IDR 300.000**.
+- **300 Mbps – IDR 300.000/bulan** · **500 Mbps – IDR 500.000/bulan**.
+## 2. Paket Lite+
+- **Untuk**: rumahan yang butuh **IP publik** — remote access, CCTV, game online (PS5).
+- Data Unlimited, **Static Public IP via DHCP**, instalasi mulai **IDR 300.000**.
+- **300 Mbps – IDR 700.000/bulan** · **500 Mbps – IDR 1.000.000/bulan**.
+## 3. Paket Signature (Business Internet)
+- **Garansi bandwidth 100%** lewat koneksi kabel, data Unlimited, **prioritas layanan** di atas Lite & Lite+, Static Public IP via DHCP, instalasi mulai **IDR 300.000**.
+- **100 Mbps – IDR 1.000.000** · **200 Mbps – IDR 2.000.000** · **400 Mbps – IDR 4.000.000** · **800 Mbps – IDR 8.000.000** · **1 Gbps – IDR 10.000.000 (max)** per bulan.
+- Cocok untuk bisnis IT, e-commerce, keuangan.
+## 4. Dedicated Internet Access / DIA (Highest Business Internet)
+- Garansi bandwidth 100% **eksklusif 1:1**, data Unlimited, **prioritas layanan tertinggi**.
+- **Public IP Subnet (NAT)** — IP dikelola customer (hosting server, aplikasi).
+- Instalasi mulai **IDR 1.000.000** (infrastruktur lebih bagus).
+- Paket custom: **min. 100 Mbps, Rp75.000/Mbps** → 100 Mbps = **Rp7.500.000**.
+- Benefit tambahan: **Dedicated WhatsApp Group** & **realtime fiber optic monitoring**.
+- Cocok untuk industri, pemerintah, coworking space.
+## 5. Intracity Partnership (update Februari 2026)
+- Berlaku mulai **03 Februari 2026** untuk pemasangan / PO baru Partner Intracity Nusanet; harga belum termasuk PPN 11%.
+- **Shared Intracity**: 100 Mbps **Rp300.000** · 300 Mbps **Rp500.000** (flat + 11%) · Additional VLAN **Rp500.000** (1 VLAN ID) · Custom **Rp5.000/Mbps** (konfirmasi ke Head terkait).
+- Setup fee Shared: **In Coverage Rp300.000** (0–300 m ke ODP) · **Out Coverage Rp500.000** (301–500 m ke ODP).
+- **Dedicated Intracity**: 1 Gbps **Rp8.000.000** flat · Additional VLAN **included** · dedicated 1 core OLT → customer & custom Rp5.000/Mbps perlu konfirmasi Head terkait.
+- Setup fee Dedicated: **In Coverage Rp1.500.000** (0–300 m, ADSS 6 core) · **Out Coverage pre-negotiated** (301–500 m).
+- Ketentuan: hanya untuk pelanggan / PO baru; existing customer dengan masa aktif **≥12 bulan** bisa request perubahan paket lewat CS.
+## 6. Overview SLA & request teknisi
+- **Lite / Lite+**: SLA **Best Effort** · request teknisi **100K/visit**.
+- **Signature**: SLA **98%** (kompensasi **free upgrade**) · **free visit sekali sebulan** (Senin–Sabtu 08.00–17.00).
+- **DIA**: SLA **99,5%** (restitusi potongan di tagihan bulan berikutnya) · **unlimited free visit**.
+- **Intracity (Partnership)**: SLA **96%** (restitusi di tagihan berikutnya) · customer side di-handle **Partnership**.
+## 7. Priority Service Scoring (internal)
+- Kriteria: **Package type**, **Recurring Fee** (harga dasar non pajak/bulan), **Payment Term** (Monthly/Quarterly/Semester/Annual), **Lifespan** (lama berlangganan).
+- **VIP**: bebas menentukan jadwal kunjungan · **Unlimited Free**.
+- **Highest**: lompati **4 antrean** penjadwalan · free visit sekali sebulan.
+- **High**: lompati **2 antrean** · free visit sekali sebulan.
+- **Normal / Low**: antre sesuai waktu pengisian form keluhan · **100K/visit**.`,
+  quiz: [] });
+(() => {
+const mix = (seed, n) => { let h = 2166136261; for (const c of seed) h = Math.imul(h ^ c.charCodeAt(0), 16777619); const p = [...Array(n).keys()]; for (let i = n - 1; i > 0; i--) { h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0; const j = h % (i + 1); [p[i], p[j]] = [p[j], p[i]]; } return p; };
+const m = window.KB_MATERI.find(x => x.id === 'internet-package');
+m.quiz = [
+  ['Customer rumahan cuma butuh internet cepat untuk streaming & browsing, tanpa kebutuhan IP publik. Paket apa yang paling pas?', ['Lite', 'Lite+', 'Signature', 'Dedicated Internet Access'], 0, 'Lite = home internet, Dynamic IP, cocok untuk kebutuhan harian.'],
+  ['Berapa harga Lite 300 Mbps per bulan (sebelum PPN)?', ['IDR 300.000', 'IDR 500.000', 'IDR 700.000', 'IDR 1.000.000'], 0, 'Lite 300 Mbps = IDR 300.000/bulan, Lite 500 Mbps = IDR 500.000/bulan.'],
+  ['Customer mau pasang CCTV yang bisa diakses dari luar rumah dan main PS5 online. Paket rumahan apa yang kamu sarankan?', ['Lite+', 'Lite', 'Signature 100 Mbps', 'Shared Intracity'], 0, 'Lite+ memberi Static Public IP via DHCP untuk remote access, CCTV & game online.'],
+  ['Berapa harga Lite+ 500 Mbps per bulan?', ['IDR 1.000.000', 'IDR 700.000', 'IDR 500.000', 'IDR 2.000.000'], 0, 'Lite+ 300 Mbps = IDR 700.000, Lite+ 500 Mbps = IDR 1.000.000.'],
+  ['Apa perbedaan utama IP pada paket Lite dibanding Lite+?', ['Lite memakai Dynamic IP, Lite+ memakai Static Public IP via DHCP', 'Lite memakai Static IP, Lite+ memakai Dynamic IP', 'Keduanya memakai Public IP Subnet', 'Lite+ tidak mendapat IP publik'], 0, 'Lite = Dynamic IP; Lite+ = Static Public IP (via DHCP).'],
+  ['Semua harga paket di materi Internet Package belum termasuk…', ['PPN 11%', 'PPN 10%', 'Biaya materai', 'Biaya router'], 0, 'Semua harga belum termasuk PPN 11%.'],
+  ['Biaya instalasi paket Lite, Lite+ dan Signature mulai dari…', ['IDR 300.000', 'IDR 100.000', 'IDR 500.000', 'IDR 1.000.000'], 0, 'Instalasi Lite/Lite+/Signature mulai IDR 300.000; DIA mulai IDR 1.000.000.'],
+  ['Customer bisnis e-commerce butuh bandwidth yang dijamin 100% dan prioritas layanan, budget ±2 juta/bulan. Paket apa yang cocok?', ['Signature 200 Mbps', 'Lite+ 500 Mbps', 'Lite 500 Mbps', 'Shared Intracity 300 Mbps'], 0, 'Signature = garansi bandwidth 100% + priority service; 200 Mbps = IDR 2.000.000/bulan.'],
+  ['Berapa harga Signature 1 Gbps per bulan?', ['IDR 10.000.000 (max)', 'IDR 8.000.000', 'IDR 4.000.000', 'IDR 7.500.000'], 0, 'Signature 1 Gbps = IDR 10.000.000/bulan (max). 800 Mbps = IDR 8.000.000.'],
+  ['Berapa harga Signature 400 Mbps per bulan?', ['IDR 4.000.000', 'IDR 2.000.000', 'IDR 8.000.000', 'IDR 10.000.000'], 0, 'Signature: 100 Mbps 1 jt, 200 Mbps 2 jt, 400 Mbps 4 jt, 800 Mbps 8 jt, 1 Gbps 10 jt.'],
+  ['SLA paket Signature adalah 98%. Kalau SLA tidak tercapai, kompensasinya apa?', ['Free upgrade', 'Restitusi potongan di tagihan berikutnya', 'Refund tunai', 'Tidak ada kompensasi'], 0, 'Signature: SLA 98% dengan kompensasi free upgrade.'],
+  ['Customer Signature minta teknisi datang hari Minggu jam 10.00 dan bilang free visit-nya belum dipakai bulan ini. Apa yang benar?', ['Free visit Signature berlaku Senin–Sabtu 08.00–17.00, jadi hari Minggu tidak termasuk', 'Free visit berlaku setiap hari 24 jam', 'Signature tidak punya free visit', 'Signature dapat unlimited free visit'], 0, 'Signature: free visit sekali sebulan, Senin–Sabtu 08.00–17.00.'],
+  ['Customer coworking space butuh koneksi eksklusif 1:1, Public IP Subnet, dan layanan prioritas tertinggi. Paket apa?', ['Dedicated Internet Access (DIA)', 'Signature 1 Gbps', 'Lite+ 500 Mbps', 'Shared Intracity'], 0, 'DIA = bandwidth dijamin eksklusif 1:1, Public IP Subnet (NAT), top priority service.'],
+  ['Customer minta DIA 100 Mbps. Berapa harga per bulannya sesuai skema custom?', ['Rp7.500.000', 'Rp10.000.000', 'Rp1.000.000', 'Rp5.000.000'], 0, 'DIA minimal 100 Mbps × Rp75.000/Mbps = Rp7.500.000.'],
+  ['Berapa bandwidth minimum untuk paket DIA?', ['100 Mbps', '50 Mbps', '300 Mbps', '1 Gbps'], 0, 'DIA bisa dikustom dengan minimal 100 Mbps.'],
+  ['Biaya instalasi DIA mulai dari…', ['IDR 1.000.000', 'IDR 300.000', 'IDR 1.500.000', 'Gratis'], 0, 'DIA instalasi mulai IDR 1.000.000 karena infrastrukturnya lebih bagus.'],
+  ['Benefit tambahan apa yang hanya didapat customer DIA?', ['Dedicated WhatsApp Group & realtime fiber optic monitoring', 'Free upgrade otomatis tiap tahun', 'Router mesh gratis', 'Diskon PPN'], 0, 'DIA mendapat Dedicated WhatsApp Group dan realtime FO monitoring.'],
+  ['SLA DIA 99,5%. Kalau tidak tercapai, kompensasinya…', ['Restitusi pemotongan di tagihan bulan berikutnya', 'Free upgrade', 'Free visit tambahan', 'Voucher pulsa'], 0, 'DIA: SLA 99,5% dengan restitusi di tagihan bulan berikutnya.'],
+  ['Customer Lite meminta teknisi datang untuk cek perangkat di rumahnya (customer side). Berapa biayanya?', ['100K per visit', 'Gratis sekali sebulan', 'Unlimited free', '300K per visit'], 0, 'Lite & Lite+ (Best Effort): request teknisi customer side 100K/visit.'],
+  ['SLA untuk paket Lite dan Lite+ adalah…', ['Best Effort', '98%', '99,5%', '96%'], 0, 'Lite & Lite+ tidak punya SLA persentase — Best Effort.'],
+  ['Mulai kapan skema harga baru Partner Intracity Nusanet berlaku?', ['03 Februari 2026', '01 Januari 2026', '01 Maret 2026', '17 Agustus 2026'], 0, 'Berlaku mulai 03 Februari 2026 untuk pemasangan / PO baru.'],
+  ['Partner minta Shared Intracity 300 Mbps. Berapa harga per bulannya?', ['Rp500.000 + 11%', 'Rp300.000 + 11%', 'Rp1.000.000', 'Rp8.000.000'], 0, 'Shared Intracity: 100 Mbps Rp300.000, 300 Mbps Rp500.000 (flat + 11%).'],
+  ['Lokasi partner berjarak 420 meter dari ODP dan mengambil Shared Intracity. Berapa setup fee-nya?', ['Rp500.000 (Out Coverage)', 'Rp300.000 (In Coverage)', 'Rp1.500.000', 'Pre-negotiated'], 0, 'Shared: In Coverage 0–300 m Rp300.000, Out Coverage 301–500 m Rp500.000.'],
+  ['Partner minta bandwidth Shared Intracity custom 150 Mbps. Apa yang harus dilakukan?', ['Hitung Rp5.000/Mbps dan konfirmasi dulu ke Head terkait', 'Langsung tolak karena tidak ada di daftar', 'Pakai harga 100 Mbps', 'Pakai harga DIA Rp75.000/Mbps'], 0, 'Custom Rp5.000/Mbps, tapi permintaan custom perlu dikonfirmasi ke Head terkait.'],
+  ['Berapa harga Dedicated Intracity 1 Gbps per bulan?', ['Rp8.000.000 flat', 'Rp10.000.000', 'Rp7.500.000', 'Rp5.000.000'], 0, 'Dedicated Intracity 1 Gbps = Rp8.000.000 flat charge, VLAN terpisah sudah included.'],
+  ['Setup fee Dedicated Intracity untuk lokasi In Coverage (0–300 m ke ODP) adalah…', ['Rp1.500.000', 'Rp300.000', 'Rp500.000', 'Gratis'], 0, 'Dedicated Intracity In Coverage Rp1.500.000 (ADSS 6 core); Out Coverage pre-negotiated.'],
+  ['Additional VLAN pada Shared Intracity dikenakan…', ['Rp500.000 per VLAN ID', 'Gratis / included', 'Rp300.000', 'Rp5.000/Mbps'], 0, 'Shared: Additional VLAN Rp500.000 (1 VLAN ID). Pada Dedicated Intracity VLAN terpisah sudah included.'],
+  ['Customer Intracity existing (aktif 14 bulan) ingin pindah ke skema harga baru. Bisa?', ['Bisa — existing dengan masa aktif ≥12 bulan boleh request perubahan paket lewat CS', 'Tidak bisa sama sekali, hanya untuk PO baru', 'Bisa tanpa syarat apa pun', 'Harus terminasi dulu'], 0, 'Skema baru untuk PO baru; existing ≥12 bulan bisa request perubahan paket melalui CS.'],
+  ['SLA untuk Intracity (Partnership) adalah…', ['96%', '98%', '99,5%', 'Best Effort'], 0, 'Intracity: SLA 96% dengan restitusi di tagihan berikutnya; customer side di-handle Partnership.'],
+  ['Mana yang BUKAN kriteria Priority Service Scoring?', ['Jumlah komplain bulan lalu', 'Package type', 'Payment Term', 'Lifespan'], 0, 'Kriteria: Package type, Recurring Fee, Payment Term, Lifespan.'],
+  ['Customer dengan tipe Highest mengajukan jadwal perbaikan. Apa keuntungannya di antrean?', ['Melompati 4 antrean penjadwalan', 'Melompati 2 antrean penjadwalan', 'Bebas menentukan jadwal', 'Ikut antrean biasa'], 0, 'Highest lompat 4 antrean, High lompat 2, VIP bebas menentukan jadwal.'],
+  ['Customer tipe VIP minta jadwal kunjungan di jam yang dia pilih sendiri. Bagaimana responsnya?', ['Bisa — VIP bebas menentukan jadwal kunjungan & unlimited free', 'Tidak bisa, harus ikut antrean', 'Bisa, tapi kena 100K/visit', 'Hanya bisa sekali sebulan'], 0, 'VIP memiliki kebebasan menentukan jadwal kunjungan secara fleksibel, unlimited free.'],
+  ['Recurring Fee dalam Priority Service Scoring dihitung dari…', ['Harga dasar paket non pajak per bulan', 'Total tagihan termasuk PPN', 'Biaya instalasi', 'Jumlah tunggakan'], 0, 'Recurring Fee = harga dasar paket non pajak per bulan.'],
+].map(([q, o, a, e]) => { const p = mix('internet-package' + q, o.length); return { q, o: p.map(i => o[i]), a: p.indexOf(a), e }; });
+})();
+
+/* ============================ ORGANISASI GX — isi materi & quiz disimpan di database (Knowledge Base → materi tambahan) supaya bisa diupdate SPV tanpa deploy ============================ */
+window.KB_CATS.push(['org', 'Organisasi GX', 'Struktur divisi GlobalXtreme, PIC tiap divisi & org chart Customer Service Division']);
+
+/* ============================ UPDATE 25 Nov 2026 — materi "curated" (isi rapi tampil utama, versi lengkap Notion bisa dibuka di bawahnya) ============================
+   TMRW Labs (set quiz sendiri) · BOD/DIA/Intracity · Basic Technical Knowledge (+ animasi ISP side vs Customer side) · TV Transvision (2 halaman digabung) · Observation Q3 */
+window.KB_CATS.push(['tmrw', 'TMRW Labs', 'Wi-Fi Marketing platform: product knowledge, customer journey, operational flow & FAQ dashboard']);
+(() => {
+const mix = (seed, n) => { let h = 2166136261; for (const c of seed) h = Math.imul(h ^ c.charCodeAt(0), 16777619); const p = [...Array(n).keys()]; for (let i = n - 1; i > 0; i--) { h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0; const j = h % (i + 1); [p[i], p[j]] = [p[j], p[i]]; } return p; };
+const QZ = (id, arr) => arr.map(([q, o, a, e]) => { const p = mix(id + q, o.length); return { q, o: p.map(i => o[i]), a: p.indexOf(a), e }; });
+const put = m => { const L = window.KB_MATERI, i = L.findIndex(x => x.id === m.id); if (i >= 0) L[i] = { ...L[i], ...m }; else L.push(m); };
+const FIG = 'https://tmrwlabsonboarding.figma.site/';
+
+/* ---------------- TMRW LABS (3 materi, 1 set quiz) ---------------- */
+put({ id: 'tmrw-labs', cat: 'tmrw', curated: true, title: 'TMRW Labs — Product Knowledge', src: N('1dc9b0fbceac80239dfafa416a80f065'),
+  summary: 'Apa itu TMRW Labs, value proposition, 7 kapabilitas produk, integrasi, mobile app, case study & paket harga.',
+  body: `> Sumber: Notion **TMRW Labs** + **TMRW Labs Full Onboarding & Operational Guide** (${FIG}).
+## Apa itu TMRW Labs?
+- Platform **Wi-Fi Marketing**: koneksi Wi-Fi publik/tamu diubah jadi **data pelanggan & peluang marketing**.
+- 4 fungsi: **Collect** data tamu saat login Wi-Fi · **Automate** kampanye personal lintas channel · **Analyze** perilaku pelanggan real-time · **Improve** retensi & customer lifetime value.
+- Target industri: **Hospitality, F&B, Retail, Fitness & Wellness, Entertainment, Co-working, Education, Service Businesses**.
+- Alur nilai: Wi-Fi Connection → Customer Data → Customer Insights → Personalized Marketing → Repeat Visits → Customer Lifetime Value.
+## Value proposition (6 alasan)
+- **Data-Driven Marketing** · **Automated Campaigns** · **Customer Retention** (deteksi loyal & churn) · **ROI Tracking** · **Easy Integration** (marketing, POS, e-commerce) · **No Hardware Cost** — setup Basic bisa pakai infrastruktur Wi-Fi yang sudah ada.
+## 7 kapabilitas produk
+1. **Custom Wi-Fi Login Page** — portal branded drag-and-drop; bisa gambar/video/promo; login Email / Google / Facebook / One-Click; custom form field; redirect ke landing page pilihan.
+2. **Automated Data Collection** — Name, Email, Phone, Gender, Location + custom questions; terhubung Mailchimp, Klaviyo, HubSpot, WhatsApp Business.
+3. **Dashboard & Analytics** — total & daily/weekly visits, new vs repeat visitor, rata-rata durasi kunjungan, repeat rate, segmentasi, **churn prediction**; real-time, export, filter, custom report.
+4. **Marketing Automation** — trigger → aksi: *First Visit* → Welcome Email · *Repeat Visit* → Loyalty Offer · *Birthday* → Greeting + Discount · *30 Days Inactive* → Win-Back Campaign. Channel: Google Ads, Meta, TikTok, Mailchimp, WhatsApp Business, SMS, Retargeting.
+5. **POS & E-commerce Integration** — POS: Abacus, Quinos, Toast, Square (+ custom); E-commerce: Shopify, WooCommerce, Magento.
+6. **Loyalty & Ads Manager** — custom audience, retargeting, ad spend & ROI tracking, A/B testing (Google Ads, Meta, TikTok); loyalty point (mis. Yotpo).
+7. **Mobile Application** — monitoring real-time, **VIP Arrival Notification**, analytics on-the-go, akses support langsung.
+## Case study — 4 Degree Projects, Bali
+- **+35% repeat visit** dalam 6 bulan setelah deploy.
+- Kampanye ulang tahun otomatis (email + kode diskon) ROI tertinggi.
+- Tier loyal terdeteksi otomatis — staf tahu tamu VIP saat datang.
+## Paket harga
+- **Basic** — Rp1.200.000/bln (tahunan **Rp996.000/bln, hemat 17%**) · Wi-Fi Login + Basic Data Collection.
+- **Pro (Most Popular)** — Rp3.000.000/bln (tahunan **Rp2.490.000/bln**) · Marketing Automation + Customer Segmentation + Integrations.
+- **Enterprise** — Custom · Full Features + Dedicated Support + Dedicated TMRW Agent.
+- **Gratis 30 hari** setelah deploy, tagihan bulanan mulai **bulan ke-2**; biaya hardware/instalasi bisa berlaku; harga belum termasuk pajak 11%.
+> Cek ulang commercial terms terbaru sebelum menginformasikan harga ke customer.
+## Pricing conversation — value dulu, baru harga
+1. Pahami kebutuhan customer → 2. Jelaskan value → 3. Tawarkan demo / online meeting (Calendly) → 4. Rekomendasikan paket → 5. Jelaskan biaya tambahan → 6. Tawarkan harga tahunan → 7. Tawarkan trial 30 hari.`,
+  quiz: QZ('tmrw-labs', [
+    ['Pemilik kafe ingin mengumpulkan data tamu lewat Wi-Fi lalu mengirim promo otomatis. Produk apa yang paling tepat?', ['TMRW Labs', 'Lite+', 'Dedicated Internet Access', 'Transvision'], 0, 'TMRW Labs = Wi-Fi Marketing platform: data tamu dari login Wi-Fi + kampanye otomatis.'],
+    ['Data apa saja yang bisa dikumpulkan otomatis lewat login Wi-Fi TMRW Labs?', ['Name, Email, Phone, Gender, Location + custom questions', 'Nomor KTP & alamat rumah', 'Password media sosial', 'Nomor kartu kredit'], 0, 'Data dasar: name, email, phone, gender, location, plus custom questions.'],
+    ['Customer tidak pernah datang lagi selama 30 hari. Automation apa yang berjalan?', ['Win-Back Campaign', 'Welcome Email', 'Loyalty Offer', 'Birthday Greeting'], 0, 'Trigger 30 Days Inactive → Win-Back Campaign.'],
+    ['Tamu datang untuk kedua kalinya. Automation apa yang dipicu?', ['Loyalty Offer', 'Welcome Email', 'Win-Back Campaign', 'Survey kepuasan'], 0, 'Repeat Visit → Loyalty Offer; First Visit → Welcome Email.'],
+    ['Berapa harga TMRW Labs Pro bila customer ambil langganan tahunan?', ['Rp2.490.000/bulan', 'Rp3.000.000/bulan', 'Rp996.000/bulan', 'Custom'], 0, 'Pro: Rp3.000.000/bln bulanan atau Rp2.490.000/bln tahunan (hemat 17%).'],
+    ['Paket Basic bulanan Rp1.200.000. Berapa per bulan kalau tahunan?', ['Rp996.000', 'Rp1.000.000', 'Rp1.080.000', 'Rp2.490.000'], 0, 'Basic tahunan Rp996.000/bln (−17%).'],
+    ['Fitur apa yang hanya ada di paket Enterprise?', ['Dedicated TMRW Agent & dedicated support', 'Wi-Fi Login', 'Marketing Automation', 'Customer Segmentation'], 0, 'Enterprise: full features + dedicated support + dedicated TMRW Agent.'],
+    ['Customer baru deploy TMRW Labs hari ini. Kapan tagihan bulanan pertama dimulai?', ['Bulan ke-2 (30 hari pertama gratis)', 'Hari ini juga', 'Setelah 3 bulan', 'Setelah kontrak tahunan selesai'], 0, 'Ada 30-day free period setelah deploy; billing bulanan mulai bulan ke-2.'],
+    ['Menurut Pricing Conversation Framework, apa yang dilakukan SEBELUM menyebut harga?', ['Memahami kebutuhan dan menjelaskan value', 'Langsung kirim price list', 'Menawarkan diskon tahunan', 'Meminta pembayaran DP'], 0, 'Lead with value before price: pahami kebutuhan → jelaskan value → demo → baru rekomendasi paket.'],
+    ['Restoran ingin tahu kapan tamu VIP datang. Fitur apa yang menjawab?', ['VIP Arrival Notification di Mobile App', 'Custom Wi-Fi Login Page', 'Form Builder', 'POS Integration'], 0, 'Mobile app mengirim notifikasi saat pelanggan VIP datang kembali.'],
+    ['Case study 4 Degree Projects Bali mencatat kenaikan repeat visit berapa persen dalam 6 bulan?', ['35%', '17%', '50%', '62%'], 0, 'Repeat visit naik 35% dalam 6 bulan setelah deploy.'],
+    ['Mana yang termasuk integrasi POS TMRW Labs?', ['Abacus, Quinos, Toast, Square', 'Shopify, WooCommerce, Magento', 'Mailchimp, Klaviyo, HubSpot', 'Google Ads, Meta, TikTok'], 0, 'POS: Abacus, Quinos, Toast, Square; e-commerce: Shopify, WooCommerce, Magento.'],
+    ['Kenapa paket Basic disebut "No Hardware Cost"?', ['Setup Basic bisa memakai infrastruktur Wi-Fi yang sudah ada', 'Router dipinjamkan gratis selamanya', 'Biaya hardware ditanggung GlobalXtreme', 'Basic tidak membutuhkan internet'], 0, 'Basic setup bisa menggunakan infrastruktur Wi-Fi existing; biaya hardware/instalasi tetap bisa berlaku sesuai survey.'],
+  ]) });
+
+put({ id: 'tmrw-journey', cat: 'tmrw', curated: true, title: 'TMRW Labs — Customer Journey & Operational Flow', src: FIG, alsoSrc: [],
+  summary: 'Peran TMRW Agent, kualifikasi GX vs non-GX, alur survey → proforma → payment → deployment, dedicated group, Gorgias & ticketing.',
+  body: `> Prinsip: **One Customer. One TMRW Agent. One Continuous Journey.**
+## Customer journey (9 tahap)
+1. Identification → 2. Demo / Qualification → 3. Site Survey → 4. Quotation → 5. Payment → 6. Deployment → 7. Go-Live → 8. Onboarding → 9. Post-Sale
+## TMRW Agent — single customer-facing PIC
+- Handle customer masuk, kualifikasi kebutuhan, jelaskan produk & paket, **kirim video demo**.
+- Identifikasi **GlobalXtreme existing vs non-GlobalXtreme**, kumpulkan data, **buat ticket**, koordinasi demo/survey, booking online meeting, follow-up & update progress.
+- **TMRW Labs Support: +62 817-9114-392** · 08.00–20.00 WITA · weekdays.
+## GlobalXtreme existing vs Non-GlobalXtreme
+- **GX existing**: data ada di **GxOne** → verifikasi info → kirim demo video → **site survey bisa optional** bila data cukup (jalur lebih cepat).
+- **Non-GX**: belum ada di GxOne → kumpulkan info venue & PIC → demo/survey → **site survey wajib**.
+## Site survey & proses teknis
+1. **TMRW Agent** membuat ticket survey & memantau statusnya.
+2. **CTSO** convert **Ticket → Work Order**, assign teknisi.
+3. **Teknisi** survey → laporan hasil + **hardware requirement**.
+4. TMRW Agent follow-up customer (jadwal & hasil survey).
+## Proforma, payment & deployment
+- **Proforma Invoice**: hasil survey → TMRW Agent request lewat **Ticketing** → **Billing** terbitkan proforma → customer.
+- **Payment**: customer kirim **bukti transfer** → TMRW Agent → Ticketing → **Finance verifikasi**.
+- **Deployment**: TMRW Agent buat **Deployment Ticket** → CTSO → WO → teknisi deploy → hasil ke TMRW Agent → customer.
+## Dedicated group
+- Saat ini: **Dedicated TMRW Labs Group** existing masih aktif dan dikelola TMRW Agent (komunikasi, follow-up, payment, jadwal & hasil deployment).
+- Model ke depan: **Dedicated Group hanya untuk Enterprise**; customer **Basic & Pro lewat Gorgias + Ticketing**.
+## Future operating model
+- Setelah CRM GlobalXtreme & TMRW Labs dipisah: TMRW Agent tetap **single customer PIC** dari akuisisi sampai post-deployment; tim internal (CTSO, Teknisi, Billing, Finance) eksekusi lewat Gorgias & Ticketing.
+## Roles & responsibilities
+- **TMRW Agent** (customer-facing): PIC utama, kualifikasi, ticket, follow-up survey, request proforma, follow-up payment, koordinasi deployment, Gorgias Live Chat, WhatsApp Support, kelola dedicated group.
+- **CTSO**: convert Ticket → WO, assign teknisi, koordinasi teknis.
+- **Technician**: site survey, laporan hardware requirement, deployment, laporan hasil teknis.
+- **Billing**: terbitkan Proforma Invoice. **Finance**: verifikasi pembayaran.
+## Gorgias, Ticketing & CRM
+- **Gorgias** (omnichannel): Live Chat, WhatsApp Support, komunikasi customer.
+- **Ticketing**: Site Survey, Work Order, Proforma Invoice Request, Payment Verification, Deployment.
+- Prinsip: *Centralized Communication · Clear Ownership · Traceable Workflow.*`,
+  quiz: QZ('tmrw-journey', [
+    ['Siapa single customer-facing PIC untuk customer TMRW Labs dari akuisisi sampai post-deployment?', ['TMRW Agent', 'CTSO', 'Teknisi', 'Billing'], 0, 'One Customer. One TMRW Agent. One Continuous Journey.'],
+    ['Calon customer TMRW Labs adalah pelanggan GlobalXtreme existing. Apa keuntungannya?', ['Data sudah ada di GxOne sehingga site survey bisa optional', 'Tidak perlu bayar 30 hari pertama ditambah diskon', 'Tidak perlu demo sama sekali', 'Langsung deploy tanpa ticket'], 0, 'GX existing: data di GxOne, survey bisa optional jika data cukup — jalur kualifikasi lebih cepat.'],
+    ['Calon customer bukan pelanggan GlobalXtreme. Bagaimana site survey-nya?', ['Wajib dilakukan', 'Optional', 'Tidak perlu', 'Cukup video call'], 0, 'Non-GX: kumpulkan info venue & PIC, site survey wajib.'],
+    ['Siapa yang mengubah ticket survey menjadi Work Order dan assign teknisi?', ['CTSO', 'TMRW Agent', 'Finance', 'Billing'], 0, 'CTSO: convert Ticket → WO, assign Technician.'],
+    ['Setelah survey selesai, siapa yang menerbitkan Proforma Invoice?', ['Billing (atas request TMRW Agent lewat Ticketing)', 'Finance', 'Teknisi', 'CTSO'], 0, 'TMRW Agent request proforma lewat Ticketing → Billing menerbitkan.'],
+    ['Customer sudah transfer. Siapa yang memverifikasi pembayaran?', ['Finance', 'Billing', 'CTSO', 'TMRW Labs Support'], 0, 'Bukti transfer dikirim TMRW Agent lewat Ticketing → Finance verifikasi.'],
+    ['Apa yang dilaporkan teknisi setelah site survey?', ['Hasil survey dan hardware requirement', 'Invoice final', 'Kontrak berlangganan', 'Password dashboard'], 0, 'Technician: conduct survey, report survey results & hardware requirements.'],
+    ['Pada model ke depan, siapa yang masih mendapat Dedicated Group?', ['Hanya customer Enterprise', 'Semua customer', 'Customer Basic', 'Customer Pro dan Enterprise'], 0, 'Dedicated Group direservasi untuk Enterprise; Basic & Pro lewat Gorgias + Ticketing.'],
+    ['Channel omnichannel yang dipakai untuk live chat & WhatsApp support TMRW Labs adalah…', ['Gorgias', 'Qiscus', 'Maxchat', 'Tawk.to'], 0, 'Gorgias: Live Chat, WhatsApp Support, customer communication.'],
+    ['Jam operasional TMRW Labs Support adalah…', ['08.00–20.00 WITA, weekdays', '24 jam setiap hari', '09.00–17.00 WITA, Senin–Sabtu', '08.00–17.00 WITA, weekend saja'], 0, 'TMRW Labs Support +62 817-9114-392, 08.00–20.00 WITA, weekdays.'],
+    ['Urutan customer journey TMRW Labs yang benar adalah…', ['Identification → Demo → Site Survey → Quotation → Payment → Deployment → Go-Live', 'Payment → Survey → Demo → Deployment', 'Deployment → Survey → Payment → Demo', 'Demo → Deployment → Payment → Survey'], 0, '9 tahap: Identification, Demo/Qual., Site Survey, Quotation, Payment, Deployment, Go-Live, Onboarding, Post-Sale.'],
+    ['Untuk deployment, siapa yang membuat Deployment Ticket?', ['TMRW Agent', 'Customer', 'Finance', 'Teknisi'], 0, 'TMRW Agent membuat Deployment Ticket lalu koordinasi CTSO → WO → teknisi.'],
+  ]) });
+
+put({ id: 'tmrw-faq', cat: 'tmrw', curated: true, title: 'TMRW Labs — FAQ Dashboard & Portal', src: FIG,
+  summary: 'Jawaban pertanyaan customer soal dashboard, data Wi-Fi, portal & banner, form, redirect, integrasi, analytics dan pengaturan.',
+  body: `## A. Umum & dashboard
+- Dashboard untuk kelola portal, data, konten promo & analisa perilaku pelanggan — **semua di satu tempat**.
+- Akses diberikan ke tim yang perlu: **Marcom, Operations (per lokasi), Director/Leadership**; level akses bisa disesuaikan.
+- Tambah user: **User Management** → isi username, nama, email → undangan dikirim ke email → user login setelah menerima undangan.
+## B. Data pelanggan & Wi-Fi
+- Data default: **Name, Email, Country**; bisa tambah custom question (mis. ulang tahun, menu favorit).
+- Field wajib bisa dihapus/dibuat optional. Custom question: **Add Field** → tipe text, checkbox, atau date.
+- Data tersimpan di dashboard, bisa diekspor, dan dikirim ke email marketing / Google Ads / Meta Ads.
+- **Staf jangan pakai Wi-Fi tamu** — staf akan terhitung repeat visitor dan membuat analytics tidak akurat.
+## C. Portal & konten
+- Bisa menampilkan hero image, konten promo, video branding, form data, custom question, banner terjadwal.
+- **Save Change** = simpan draft (belum tampil) · **Publish** = langsung tayang di portal.
+- Batas file: **gambar (PNG/SVG) maks 5 MB, video maks 50 MB**; format bebas, rasio **16:9** disarankan untuk banner.
+- Banner bisa dijadwalkan **per tanggal** (mis. tgl 1–15) atau **per jam** (mis. menu lunch 11.00–13.00) lalu kembali ke default; bisa per lokasi atau semua lokasi.
+## D. Form, event & review
+- **Form Builder** untuk registrasi event atau review/feedback — dari template atau dari nol; input text, checkbox, date picker, custom.
+- Hasil form: jumlah yang membuka, yang submit, dan jawaban per customer; bisa dibagikan via link atau diunduh.
+- Tampil review di platform eksternal: **belum terkonfirmasi** — cek dulu ke TMRW Labs.
+## E. Redirect setelah connect Wi-Fi
+- Default ke portal TMRW Labs (form data); bisa diubah ke **URL apa pun** — website, promo page, atau langsung ke **Google Review**.
+## F. Integrasi
+- Belum terintegrasi default; **custom integration** tersedia (CRM / sistem customer).
+- Email marketing: email terkumpul otomatis masuk ke tool seperti Mailchimp.
+- **Google Ads**: custom audience untuk retargeting + analitik performa iklan (spend, attribution, CPA).
+- **Meta Ads**: data (nama, email, no. HP) dicocokkan untuk tahu apakah customer pernah melihat iklan sebelum datang.
+- 3 cara audience iklan: export manual, integrasi otomatis, segmentasi perilaku.
+- **Direct attribution** = datang karena melihat iklan (terbukti lewat data matching) · **Indirect** = datang lewat channel lain (mis. word of mouth).
+## G. Analytics & reporting
+- Data: Wi-Fi analytics, data customer, booking (jika aktif), sales (jika POS terintegrasi), performa iklan, hasil form/review; bisa diekspor & difilter.
+- **Repeat visitor** = connect/submit lebih dari sekali dan dikenali dari riwayat koneksi.
+## H. Pengaturan fitur
+- Data collection bisa dimatikan → portal tetap tampil, customer bisa langsung connect tanpa isi form.
+- Booking request bisa dimatikan → customer melewati langkah booking.
+- Jawaban custom question tampil di dashboard.
+## I. Troubleshooting & support
+- Kendala dashboard → **TMRW Labs Support +62 817-9114-392** (08.00–20.00 WITA, weekdays); TMRW Agent bisa bantu koordinasi.
+- Setelah dapat akses: login dengan email undangan, eksplor fitur, hubungi TMRW Labs bila ada yang kurang jelas.`,
+  quiz: QZ('tmrw-faq', [
+    ['Customer bertanya: data apa yang dikumpulkan secara default di portal Wi-Fi?', ['Name, Email, Country', 'Name, KTP, Alamat', 'Email saja', 'Nomor HP dan password'], 0, 'Default: Name, Email, Country; custom question bisa ditambah.'],
+    ['Customer sudah edit banner tapi belum muncul di portal. Kenapa?', ['Baru di-Save Change, belum di-Publish', 'File terlalu kecil', 'Banner hanya muncul besok', 'Harus restart router'], 0, 'Save Change = draft; Publish = tayang di portal.'],
+    ['Berapa batas ukuran video untuk portal TMRW Labs?', ['50 MB', '5 MB', '100 MB', '10 MB'], 0, 'Gambar PNG/SVG maks 5 MB, video maks 50 MB.'],
+    ['Kenapa staf tidak boleh memakai Wi-Fi tamu?', ['Staf terhitung repeat visitor sehingga analytics jadi tidak akurat', 'Wi-Fi tamu lebih lambat', 'Staf tidak punya email', 'Melanggar kontrak internet'], 0, 'Aktivitas staf membuat repeat visitor terlihat tinggi padahal bukan pelanggan.'],
+    ['Restoran ingin banner menu lunch hanya tampil jam 11.00–13.00. Bisa?', ['Bisa — banner dijadwalkan berdasarkan waktu lalu kembali ke default', 'Tidak bisa, banner hanya per tanggal', 'Bisa, tapi harus ganti manual setiap hari', 'Hanya untuk paket Enterprise'], 0, 'Banner bisa time-based atau date-based, lalu kembali otomatis ke default.'],
+    ['Setelah connect Wi-Fi, bisakah tamu langsung diarahkan ke halaman Google Review?', ['Bisa, redirect bisa ke URL apa pun termasuk Google Review', 'Tidak bisa', 'Hanya ke website TMRW Labs', 'Hanya untuk paket Pro'], 0, 'Landing page redirect bisa diubah ke URL apa pun, termasuk Google Review.'],
+    ['Bagaimana cara menambah user baru ke dashboard?', ['User Management → isi username, nama, email → user menerima undangan email', 'Kirim password lewat WhatsApp', 'Minta CTSO membuat akun', 'Daftar ulang paket'], 0, 'TMRW Labs mengirim invite ke email; user login setelah menerima.'],
+    ['Apa yang dimaksud direct attribution?', ['Customer datang karena melihat iklan, dibuktikan lewat data matching', 'Customer datang karena rekomendasi teman', 'Customer datang tanpa connect Wi-Fi', 'Customer membayar langsung'], 0, 'Direct = karena iklan (data matching Meta); indirect = channel lain.'],
+    ['Customer ingin tamu bisa connect tanpa mengisi form. Apa solusinya?', ['Matikan data collection — portal tetap tampil, tamu langsung connect', 'Hapus portal', 'Matikan Wi-Fi', 'Tidak bisa diubah'], 0, 'Data collection bisa dimatikan; portal tetap tampil tanpa form.'],
+    ['Customer bertanya apakah review bisa tampil di platform eksternal. Jawaban yang tepat?', ['Belum terkonfirmasi — perlu dicek ke TMRW Labs', 'Bisa otomatis ke semua platform', 'Tidak mungkin sama sekali', 'Hanya bisa di Instagram'], 0, 'Berdasarkan onboarding, review dikumpulkan di platform; tampilan eksternal belum dikonfirmasi.'],
+    ['Seorang tamu dihitung repeat visitor ketika…', ['Connect/submit lebih dari sekali dan dikenali dari riwayat koneksi', 'Mengisi form sekali', 'Membuka website', 'Membeli lebih dari Rp100.000'], 0, 'Repeat visitor dikenali dari riwayat koneksi.'],
+  ]) });
+
+/* ---------------- TV TRANSVISION — 2 halaman Notion digabung jadi 1 materi ---------------- */
+put({ id: 'tv-transvision', cat: 'teknis', curated: true, title: 'TV Transvision — Add-On & Troubleshooting', src: N('2d69b0fbceac801e8367ff2d0ad96c80'), alsoSrc: [N('1e59b0fbceac8051b8a3fa63d22cbb0e')],
+  summary: 'Layanan add-on TV (discontinued untuk langganan baru): syarat, harga & deposit, plus SOP kendala — cek administrasi dulu, teknis ke CTSO.',
+  body: `> Transvision **tidak dijual lagi untuk langganan baru** — materi ini untuk pelanggan existing.
+## 1. Tentang layanan
+- Layanan **TV tambahan (add-on)** untuk pelanggan internet GlobalXtreme, sistem kabel atau wireless.
+- Syarat: wajib berlangganan internet GX & status **aktif** (tidak suspend / tunggakan).
+- Pembayaran **anniversary (prabayar)** 3/6/12 bulan mengikuti periode internet — internet 6 bulan di muka → TV juga 6 bulan.
+- **Minimal kontrak 6 bulan**; berhenti sebelum kontrak selesai → deposit & sisa paket **tidak dikembalikan**.
+## 2. Harga & deposit
+- **Deposit Box TV Rp500.000** — kembali saat berhenti bila sudah min. 6 bulan & perangkat baik.
+- **Basic** Rp80.000 (Rp88.800 incl. PPN) · **Standard** Rp130.000 (Rp144.300) · **Advanced** Rp220.000 (Rp244.200) per bulan.
+- Total awal = (harga paket + PPN) × jumlah bulan + deposit. Contoh Standard 6 bulan: (144.300 × 6) + 500.000 = **Rp1.365.800**.
+- Permintaan dulu lewat **formulir PandaDoc** + salinan **ID Card**.
+## 3. SOP kendala — pengecekan awal (wajib)
+- Pastikan administrasi aman: customer sudah **bayar / top up** (koordinasi **Team Leader Unni/Tiyo** bila perlu).
+- Administrasi aman tapi masih bermasalah → kemungkinan **bug sistem Transvision** atau **STB** (mis. status RP masih terlihat).
+## 4. Sudah bayar tapi TV belum bisa
+1. CC/CSO konfirmasi status top up ke Team Leader.
+2. TL kirim **SS bukti top up**.
+3. Minta customer mencoba lagi.
+4. Masih gagal → **Open Ticket ke CTSO** + lampirkan SS bukti top up; troubleshooting lanjutan oleh CTSO.
+## 5. Kendala teknis
+- Login–logout, penyesuaian **tanggal & jam STB**, bug sistem → **SEMUA langsung ke CTSO**, tidak ditangani di level CC/CSO.
+## 6. Case berulang → migrasi Postpaid
+- Boleh disarankan bila pembayaran lancar tapi Transvision sering terputus.
+- **Wajib penjadwalan teknisi H-1** sebelum masa langganan berakhir.
+- Edukasi wajib: terminasi diajukan **minimal 1 bulan sebelumnya** — kalau tidak, tetap ditagih; pastikan customer paham & setuju.`,
+  quiz: QZ('tv-transvision', [
+    ['Customer baru minta pasang TV Transvision. Respons yang tepat?', ['Layanan sudah tidak tersedia untuk langganan baru', 'Kirim form PandaDoc', 'Minta deposit Rp500.000', 'Buat WO instalasi'], 0, 'Transvision discontinued untuk new subscriptions.'],
+    ['Berapa minimal kontrak TV Transvision?', ['6 bulan', '3 bulan', '12 bulan', '1 bulan'], 0, 'Minimal kontrak 6 bulan.'],
+    ['Berapa deposit Box TV?', ['Rp500.000', 'Rp300.000', 'Rp1.000.000', 'Tidak ada'], 0, 'Deposit Rp500.000, kembali bila sudah min. 6 bulan & perangkat baik.'],
+    ['Paket Standard 6 bulan — berapa total pembayaran awal termasuk deposit?', ['Rp1.365.800', 'Rp1.280.000', 'Rp865.800', 'Rp1.500.000'], 0, '(Rp144.300 × 6) + Rp500.000 = Rp1.365.800.'],
+    ['Harga paket TV Advanced per bulan sebelum PPN?', ['Rp220.000', 'Rp244.200', 'Rp130.000', 'Rp80.000'], 0, 'Basic 80.000 · Standard 130.000 · Advanced 220.000 (sebelum PPN).'],
+    ['Customer bilang sudah top up tapi TV masih tidak bisa. Langkah pertama CC/CSO?', ['Konfirmasi status top up ke Team Leader (Unni/Tiyo)', 'Langsung ganti STB', 'Refund', 'Tutup ticket'], 0, 'Konfirmasi top up ke TL, TL kirim SS bukti top up.'],
+    ['Sudah ada bukti top up dan customer sudah coba lagi tapi masih gagal. Lalu?', ['Open Ticket ke CTSO + lampirkan SS bukti top up', 'Minta customer bayar lagi', 'Jadwalkan Wiredown', 'Tunggu 3 hari'], 0, 'Masih gagal → OT ke CTSO dengan SS bukti top up.'],
+    ['Customer minta dipandu setting jam & tanggal STB. Siapa yang menangani?', ['CTSO', 'CC/CSO', 'Billing', 'Sales'], 0, 'Semua kendala teknis Transvision langsung ke CTSO.'],
+    ['Pembayaran lancar tapi Transvision sering terputus. Apa yang boleh disarankan?', ['Migrasi ke sistem Postpaid', 'Berhenti berlangganan', 'Ganti paket internet', 'Tambah deposit'], 0, 'Case berulang boleh disarankan migrasi Postpaid.'],
+    ['Kapan teknisi dijadwalkan untuk migrasi Postpaid?', ['H-1 sebelum masa langganan berakhir', 'Setelah masa langganan habis', 'H+7', 'Tidak perlu teknisi'], 0, 'Migrasi Postpaid wajib disertai penjadwalan teknisi H-1.'],
+    ['Setelah Postpaid, terminasi harus diajukan…', ['Minimal 1 bulan sebelumnya', 'Kapan saja', '1 minggu sebelumnya', 'Tidak bisa terminasi'], 0, 'Tanpa pemberitahuan 1 bulan sebelumnya tetap ditagih.'],
+    ['Customer berhenti di bulan ke-4 dari kontrak 6 bulan. Deposit & sisa paket?', ['Tidak dikembalikan', 'Dikembalikan penuh', 'Deposit saja yang kembali', 'Dialihkan ke tagihan internet'], 0, 'Berhenti sebelum kontrak selesai: deposit & sisa paket tidak dikembalikan.'],
+  ]) });
+
+/* ---------------- BOD, DIA & INTRACITY (update Notion 23 Nov 2026) ---------------- */
+put({ id: 'bod-dia-intracity', curated: true, quiz: QZ('bod-dia-intracity', [
+    ['Customer Signature 200 Mbps minta naik ke 400 Mbps hanya untuk event 3 hari. Layanan apa yang ditawarkan?', ['Bandwidth on Demand (BOD)', 'Upgrade paket permanen', 'Dedicated Internet Access', 'Lite+'], 0, 'BOD = penambahan bandwidth sementara untuk event, promo, meeting online.'],
+    ['Rumus harga BOD per hari adalah…', ['(Harga paket ÷ jumlah hari dalam bulan) + 50%', 'Harga paket ÷ 30', 'Harga paket × 2', 'Rp75.000 per Mbps'], 0, 'BOD = (harga paket / jumlah hari 1 bulan) + 50%.'],
+    ['Signature 400 Mbps Rp4.440.000 (incl. pajak), bulan 31 hari, BOD 3 hari. Totalnya?', ['Rp644.514', 'Rp429.676', 'Rp214.838', 'Rp1.332.000'], 0, '4.440.000 ÷ 31 = 143.225 → +50% = 214.838/hari → ×3 = Rp644.514.'],
+    ['Email permohonan BOD ditujukan ke…', ['Billing Helpdesk & NA', 'Sales & Marketing', 'CTSO saja', 'Head CS'], 0, 'Subject "GX BALI – Permohonan BOD Akun ID [xxxxx]" ke Billing Helpdesk & NA.'],
+    ['Setelah NA selesai memproses BOD, bagaimana CS memastikan limiter sudah sesuai?', ['Cek menu Check ONU di GX-One', 'Tanya customer speedtest saja', 'Tunggu invoice', 'Cek di Qiscus'], 0, 'Cek ulang limiter lewat menu Check ONU (GX-One).'],
+    ['Pelanggan DIA mendapat BOD gratis berapa kali per bulan?', ['2 kali', '1 kali', '3 kali', 'Tidak ada'], 0, 'DIA free 2x/bulan; durasi maks. 3 hari per permintaan.'],
+    ['Customer 300 Mbps minta BOD. Kapasitas total maksimal setelah BOD adalah…', ['1 Gbps total (termasuk 300 Mbps existing)', '1,3 Gbps', '300 Mbps + 1 Gbps', 'Tidak terbatas'], 0, 'Total kapasitas setelah BOD maks. 1 Gbps termasuk paket existing.'],
+    ['Customer minta sewa router untuk event. Bagaimana responsnya?', ['GlobalXtreme tidak menyewakan router — arahkan ke pihak ketiga (mis. my.monis.rent)', 'Pinjamkan router kantor', 'Tambahkan biaya di invoice BOD', 'Buat WO pemasangan router'], 0, 'GX tidak menyediakan sewa router; arahkan ke pihak ketiga.'],
+    ['BOD Intracity gratis untuk total maksimal berapa hari per bulan?', ['3 hari (akumulasi dalam sebulan)', '3 hari per pengajuan', '7 hari', 'Tidak terbatas untuk semua'], 0, 'Batas 3 hari dihitung akumulasi per bulan, bukan per pengajuan.'],
+    ['Permintaan BOD Intracity akan membuat total bulan ini jadi 5 hari. Apa yang dilakukan tim?', ['Jangan approve langsung — eskalasi ke PIC Intracity (Putri)', 'Langsung approve', 'Tolak permintaan', 'Charge otomatis tanpa konfirmasi'], 0, 'Lebih dari 3 hari → konfirmasi PIC Intracity, yang lalu minta approval Head Sales.'],
+    ['Pelanggan Intracity mana yang BOD gratisnya tidak terbatas hari?', ['CNI', 'Semua Intracity', 'Pelanggan DIA', 'Tidak ada'], 0, 'Pengecualian: BOD Intracity khusus CNI free tidak terbatas hari.'],
+    ['Untuk BOD Intracity, besaran bandwidth-nya…', ['Bisa disesuaikan sampai batas kapasitas ONU pelanggan', 'Harus sama dengan paket aktif', 'Maksimal 100 Mbps', 'Hanya kelipatan 300 Mbps'], 0, 'Bandwidth BOD Intracity tidak harus mengikuti paket aktif — hingga kapasitas ONU.'],
+    ['Harga DIA per Mbps (belum pajak) adalah…', ['Rp75.000', 'Rp5.000', 'Rp25.000', 'Rp100.000'], 0, 'DIA Rp75.000/Mbps; Intracity Rp5.000/Mbps.'],
+    ['Customer retail pindah ke DIA. Apa yang diperlukan selain aktivasi NA?', ['Kunjungan teknisi untuk konfigurasi IP di sisi pelanggan', 'Ganti nomor akun', 'Tidak ada', 'Deposit router'], 0, 'Perubahan retail ↔ DIA perlu kunjungan teknisi untuk konfigurasi IP.'],
+    ['Siapa yang menyiapkan proposal penawaran DIA bila diperlukan?', ['SPV Customer Service', 'Billing Helpdesk', 'NA', 'Teknisi'], 0, 'SPV CS menyiapkan & mengirim proposal penawaran resmi; kontrak oleh tim Administrasi.'],
+  ]),
+  body: `## 1. Bandwidth on Demand (BOD)
+- **Penambahan bandwidth sementara** untuk event, promo, meeting online, dll. Hanya untuk **pelanggan existing**; setelah periode selesai bandwidth **kembali otomatis** ke paket semula.
+- Rumus: **(Harga paket ÷ jumlah hari dalam 1 bulan) + 50%** per hari.
+- Contoh Signature 400 Mbps Rp4.440.000 (incl. pajak), 3 hari: 4.440.000 ÷ 31 = 143.225 → +50% = 214.838/hari → × 3 = **Rp644.514**.
+## Alur BOD
+1. **Email** ke **Billing Helpdesk & NA** — subject *GX BALI – Permohonan BOD Akun ID [xxxxx]*: akun, paket, periode, total biaya (incl. PPN).
+2. **Invoice**: copy subject email → ticket GXOne ke Billing Helpdesk; report invoice muncul di ticket.
+3. **NA**: ticket baru **Send to NA** — remarks *"Mohon bantu proses permintaan BOD"* + subject email → otomatis masuk grup Telegram **CTSO–NA**.
+4. Cek ulang limiter lewat **Check ONU (GX-One)**.
+5. Info customer + lampirkan invoice; pastikan lunas sesuai jatuh tempo. Periode selesai → email penghentian BOD + ticket NA kembalikan ke paket normal.
+## Ketentuan
+- **DIA: free 2x/bulan** · **Intracity: free 1x/bulan** · maks. **3 hari per permintaan** · total kapasitas setelah BOD **maks. 1 Gbps** (termasuk paket existing — 300 Mbps → maks. 1 Gbps total, bukan +1 Gbps).
+- GlobalXtreme **tidak menyewakan router** → arahkan ke pihak ketiga, mis. https://my.monis.rent/
+## 2. BOD Intracity
+- Gratis dengan total **maks. 3 hari per bulan (akumulasi)** — **khusus CNI free tidak terbatas hari**.
+- Lebih dari 3 hari → berpotensi **charge**; bandwidth BOD bisa disesuaikan **sampai kapasitas ONU** pelanggan.
+- Harga Intracity **Rp5.000/Mbps** (belum pajak) — contoh 400 Mbps × Rp5.000 = Rp2.000.000 → **Rp2.220.000 incl. PPN 11%**.
+## Approval & alur pengajuan BOD Intracity
+1. Customer mengajukan → 2. cek histori BOD bulan berjalan → 3. total ≤ 3 hari: proses tanpa biaya.
+4. Akan > 3 hari: **jangan approve langsung** — eskalasi ke **PIC Intracity (Putri)** → 5. PIC koordinasi **Head Sales** terkait (approval & biaya) → 6. lanjut setelah disetujui.
+- Pengecualian/kebijakan khusus hanya dengan persetujuan Head Sales yang menangani customer.
+## 3. Dedicated Internet Access (DIA)
+- Akses **dedicated 1:1** tanpa sharing, top priority service — untuk perusahaan, instansi pemerintah, hotel.
+- Harga **Rp75.000/Mbps** (belum pajak) — 100 Mbps = **Rp7.500.000/bulan**.
+- Alur: analisis kebutuhan → **penawaran oleh SPV CS** (bila perlu) → persetujuan & **kontrak oleh Administrasi** → **aktivasi NA** (retail ↔ DIA perlu **kunjungan teknisi** untuk konfigurasi IP) → **invoice Billing Helpdesk** & monitoring SLA.` });
+
+/* ---------------- BASIC TECHNICAL KNOWLEDGE + animasi ISP side vs Customer side ---------------- */
+put({ id: 'basic-technical', curated: true, title: 'Basic Technical Knowledge — ISP Side vs Customer Side', summary: 'Perjalanan internet dari NAP sampai HP pelanggan, batas tanggung jawab ISP vs customer, dan istilah perangkat FO yang wajib dipahami CS.',
+  body: `## Peta koneksi — klik perangkat & coba simulasi gangguan
+@anim isp-customer
+## ISP side vs Customer side
+- **ISP side** = semua jalur dari internet sampai **ONU**: NAP → OLT (NOC) → Joint Closure/Dome → ODC + Splitter → FDB → drop cable → OTB → ONU. Tanggung jawab GlobalXtreme; perbaikan Wiredown / Upgrading **tanpa biaya**.
+- **Customer side** = mulai dari **port LAN ONU** ke dalam: kabel UTP, router, access point/mesh, dan perangkat pengguna. Kunjungan customer side paket Best Effort **Rp100.000/visit** (Signature free visit 1x/bulan, DIA unlimited).
+- Cara cepat membedakan: **ONU LOS merah / mati padahal listrik normal → ISP side**. **ONU online tapi port Down, router hang, WiFi lemah di satu ruangan → customer side**.
+## Jaringan inti
+- **NAP (Network Access Point)** — "terminal pusat" tempat jaringan internet besar bertemu & bertukar data (ISP A ke server di ISP B lewat NAP).
+- **ISP** — perusahaan penyedia internet (GlobalXtreme, Indihome, Biznet, First Media): menghubungkan ke internet global + layanan IP publik, hosting, domain.
+- **Fiber Optic** — kabel kaca/plastik halus yang menghantar data dengan **cahaya**: cepat, jarak jauh tanpa kehilangan sinyal, tahan gangguan listrik.
+## Distribusi fiber (ISP side)
+- **Joint Closure (JC)** — pelindung sambungan antar kabel FO di jalur utama dari air, debu, tekanan; menjaga agar tidak loss.
+- **Dome** — joint closure berbentuk kubah untuk sambungan **outdoor** (tahan air, panas, lembap).
+- **ODC (Optical Distribution Cabinet)** — lemari pembagi kabel dari **feeder** ke beberapa jalur distribusi; memudahkan pemeliharaan & pengujian.
+- **Splitter** — membagi satu sinyal optik ke banyak output tanpa mengubah kualitas (sistem **PON**).
+- **FDB (Fiber Distribution Box) / Terminal Port** — kotak pembagi dari kabel utama ke kabel rumah pelanggan.
+- **Pigtail** — potongan FO pendek berkonektor untuk menyambung ke OTB/ONU.
+- **OTB (Optical Termination Box)** — terminasi FO luar ke dalam rumah; melindungi pigtail & patch cord; ada **gulungan untuk menjaga power FO**.
+- **ONU (Optical Network Unit)** — box di rumah pelanggan yang **mengubah cahaya jadi data** dan terhubung ke main router.
+## Customer side
+- **UTP** — kabel tembaga dipilin **tanpa pelindung** (komputer, router, switch). **STP** — dengan **shield** untuk area banyak gangguan listrik (pabrik).
+- **Router** — membagi koneksi ke banyak perangkat & memberi IP (LAN → internet). **Access Point** — memancarkan WiFi untuk area luas.
+- **Switch** mengirim data hanya ke perangkat tujuan (efisien) · **Hub** mengirim ke semua port (kurang efisien).
+## Alat teknisi
+- **Joinkit** — perlengkapan sambung (pelindung sambungan, pigtail, sleeve).
+- **Fusion Splicer** — menyambung serat secara permanen dengan panas listrik; loss sangat kecil.
+- **Cleaver** — memotong serat agar rata sebelum splicing.
+- **OTDR** — mengukur kualitas, panjang & **lokasi titik putus/redaman** fiber.`,
+  quiz: QZ('basic-technical', [
+    ['Lampu LOS ONU merah padahal listrik di rumah customer normal. Masalah ini ada di sisi mana?', ['ISP side', 'Customer side', 'Perangkat HP customer', 'Router customer'], 0, 'LOS merah = cahaya tidak sampai ke ONU → jalur FO (ISP side) → Wiredown/FO maintenance.'],
+    ['ONU online (hijau) tapi status port Down. Di sisi mana masalahnya?', ['Customer side — UTP ONU ke router', 'ISP side — kabel FO putus', 'OLT', 'NAP'], 0, 'Port Down = kabel UTP ONU–router lepas/rusak → customer side.'],
+    ['Batas akhir tanggung jawab GlobalXtreme (ISP side) ada di…', ['ONU (port LAN ONU)', 'Router customer', 'FDB di tiang', 'Laptop customer'], 0, 'ISP side sampai ONU; dari port LAN ONU ke dalam = customer side.'],
+    ['Customer paket Lite minta teknisi karena router-nya sering hang. Biayanya?', ['Rp100.000/visit (customer side)', 'Gratis (ISP side)', 'Unlimited free', 'Rp300.000'], 0, 'Router = customer side; Lite/Lite+ Best Effort kena Rp100.000/visit.'],
+    ['Kabel drop dari FDB ke rumah putus. Biaya perbaikannya?', ['Tanpa biaya — ISP side (Wiredown)', 'Rp100.000/visit', 'Customer beli kabel sendiri', 'Tergantung paket'], 0, 'Drop cable sampai ONU termasuk ISP side; visit Wiredown/Upgrading tanpa biaya.'],
+    ['Perangkat di rumah pelanggan yang mengubah sinyal cahaya menjadi data adalah…', ['ONU', 'Router', 'ODC', 'Switch'], 0, 'ONU mengubah sinyal cahaya fiber menjadi sinyal data, lalu ke router.'],
+    ['Alat untuk mendeteksi lokasi titik putus pada kabel fiber adalah…', ['OTDR', 'Cleaver', 'Splitter', 'Pigtail'], 0, 'OTDR mengukur panjang, kualitas & lokasi gangguan fiber.'],
+    ['Lemari distribusi yang membagi kabel feeder ke beberapa jalur distribusi adalah…', ['ODC', 'OTB', 'FDB', 'Dome'], 0, 'ODC = Optical Distribution Cabinet.'],
+    ['Kotak di tiang yang membagi kabel utama ke kabel tiap rumah (terminal port) adalah…', ['FDB', 'OTB', 'Joint Closure', 'NAP'], 0, 'FDB (Fiber Distribution Box) disebut juga Terminal Port.'],
+    ['Alat yang membagi satu sinyal optik ke banyak pelanggan pada sistem PON adalah…', ['Splitter', 'Splicer', 'Switch', 'Access Point'], 0, 'Splitter membagi sinyal optik tanpa mengubah kualitas.'],
+    ['Apa fungsi gulungan kabel di dalam OTB?', ['Menjaga power fiber optic sesuai ketentuan', 'Hiasan agar rapi saja', 'Menyimpan kabel cadangan untuk tetangga', 'Mempercepat WiFi'], 0, 'OTB punya gulungan untuk mendapatkan power FO sesuai ketentuan.'],
+    ['Perbedaan switch dan hub adalah…', ['Switch mengirim data hanya ke perangkat tujuan; hub ke semua port', 'Hub lebih cepat dari switch', 'Switch tanpa kabel', 'Sama saja'], 0, 'Switch lebih efisien karena hanya ke port tujuan.'],
+    ['Kabel LAN dengan pelindung (shield) untuk area pabrik yang banyak gangguan listrik adalah…', ['STP', 'UTP', 'Fiber optic', 'Pigtail'], 0, 'STP = Shielded Twisted Pair; UTP tanpa pelindung.'],
+    ['Wadah sambungan FO berbentuk kubah untuk area outdoor disebut…', ['Dome', 'ODC', 'OTB', 'FDB'], 0, 'Dome = closure kubah, melindungi sambungan dari air, panas, kelembapan.'],
+    ['Alat untuk menyambung dua serat optik secara permanen dengan panas listrik adalah…', ['Fusion Splicer', 'Cleaver', 'OTDR', 'Joinkit'], 0, 'Fusion splicer melelehkan ujung serat (fusi) — loss sangat kecil.'],
+    ['WiFi customer lemah hanya di kamar lantai 2, perangkat di lantai 1 normal. Ini kemungkinan…', ['Customer side — jangkauan router/AP, edukasi atau perangkat tambahan', 'ISP side — kabel FO putus', 'Gangguan OLT', 'Mass-Problem'], 0, 'Jaringan sampai ONU normal; jangkauan WiFi adalah customer side.'],
+  ]) });
+
+/* ---------------- OBSERVATION — poin observasi terbaru (Helpdesk Performance Report Q3 2026) ---------------- */
+put({ id: 'observation-hd-am', curated: true, title: 'Observation Helpdesk & Account Manager (Poin Q3 2026)', summary: '10 poin observasi Helpdesk & 10 poin Account Manager sesuai Helpdesk Performance Report Q3 2026, cara penilaian & link.',
+  body: `> Poin di bawah sama dengan **Helpdesk Performance Report Q3 2026 → Observation**. Dinilai **2 kasus per bulan**, 10 kriteria, maks **100 poin** per kasus; bobot Observation **30%** di Best Employee.
+## 10 poin observasi — Helpdesk
+1. Menganalisis complaint dan menentukan tindak lanjut berdasarkan **riwayat case/tiket** dengan tepat.
+2. Memastikan setiap tindakan pada case, **termasuk broadcast**, berjalan sesuai prosedur dan menindaklanjuti kendala/proses yang belum berhasil hingga tuntas.
+3. Memastikan **UID/CID terisi di Customer Properties Qiscus** setiap melakukan broadcast.
+4. Memastikan informasi yang diberikan **akurat, valid, dan sesuai SOP**.
+5. Update case di **GX Connect** jelas, tanpa typo, istilah mudah dipahami semua pihak, dan mengikuti **interval update 3 jam**.
+6. Membuat tiket dengan informasi & detail kebutuhan customer yang **lengkap dan akurat** sesuai prosedur.
+7. Memastikan seluruh **detail, klasifikasi, dan closing update** case terisi lengkap tanpa terlewat.
+8. **Monitoring H+1** untuk case **No Resp BC 2** dan **No Resp After Connected**; hasil investigasi & status case selalu diperbarui.
+9. Case **lingering atau hard complaint segera dieskalasi** ke tim terkait.
+10. Setiap percakapan ditangani optimal **< 5 menit**; bila delay karena overload wajib **acknowledgment** & info keterlambatan, serta **kirim CSAT** di setiap case yang ditangani end-to-end solved.
+## 10 poin observasi — Account Manager
+1. Menganalisis kebutuhan & kendala customer secara tepat serta memberi solusi yang sesuai.
+2. **Memverifikasi identitas customer** sebelum memberi informasi pribadi/sensitif terkait akun & layanan.
+3. Berkomunikasi **personal, natural, dan empatik** tanpa terkesan memakai template.
+4. Menangani setiap case **sesuai SOP** dan prosedur yang berlaku.
+5. Memenuhi **SLA response/update < 5 menit**; delay karena overload → wajib acknowledgment & info keterlambatan.
+6. Menyebut **nama customer secara natural minimal 3 kali** dalam percakapan.
+7. Membuat tiket dengan informasi & detail kebutuhan customer yang lengkap dan akurat.
+8. **Proaktif** mengantisipasi kebutuhan customer dan memberi solusi/informasi yang relevan.
+9. Mengawal kebutuhan customer **end-to-end**, termasuk koordinasi & follow-up dengan tim terkait hingga tuntas.
+10. Percakapan ditangani optimal (< 5 menit atau pemberitahuan proaktif saat overload) dan **kirim CSAT** di setiap case end-to-end.
+## Link
+- **Penilaian Observation (Observation Audit Helpdesk Responses)**: https://docs.google.com/spreadsheets/d/1QdHBsPjKp_2Ma_9ZmKvl_CIRajAccSKI923Ep9R3FAU/edit?gid=1289126939#gid=1289126939
+- **Kualifikasi Observasi Helpdesk**: https://digest-role-07712888.figma.site/
+- Skor & poin per orang: **Helpdesk Performance Report** (klik Observation).`,
+  quiz: QZ('observation-hd-am', [
+    ['Observation menyumbang berapa persen skor Best Employee?', ['30%', '20%', '50%', '10%'], 0, 'Bobot Observation 30% (Productivity 50%, Attendance 20%).'],
+    ['Berapa kasus per bulan yang diobservasi untuk tiap agent?', ['2 kasus', '1 kasus', '5 kasus', '10 kasus'], 0, 'Observation dinilai dari 2 kasus per bulan, 10 kriteria, maks 100 poin.'],
+    ['Helpdesk melakukan broadcast di Qiscus. Data apa yang wajib dipastikan terisi?', ['UID/CID di Customer Properties Qiscus', 'Nomor KTP customer', 'Email pribadi agent', 'Nama teknisi'], 0, 'Poin HD #3: UID/CID wajib terisi di Customer Properties setiap broadcast.'],
+    ['Berapa interval update case di GX Connect menurut poin observasi Helpdesk?', ['Setiap 3 jam', 'Setiap 15 menit', 'Sekali sehari', 'Setiap 6 jam'], 0, 'Poin HD #5: update jelas, tanpa typo, interval 3 jam.'],
+    ['Case No Resp BC 2 dan No Resp After Connected harus dimonitor kapan?', ['H+1', 'H+3', 'Hari yang sama saja', 'Tidak perlu dimonitor'], 0, 'Poin HD #8: monitoring H+1 dan status/investigasi selalu diperbarui.'],
+    ['Ada hard complaint yang mulai lingering. Sesuai poin observasi, apa yang dilakukan?', ['Segera eskalasi ke tim terkait', 'Tunggu customer menghubungi lagi', 'Tutup case', 'Kirim template saja'], 0, 'Poin HD #9: lingering/hard complaint segera dieskalasi.'],
+    ['Chat masuk saat antrean sedang overload sehingga balasan akan > 5 menit. Apa yang wajib dilakukan?', ['Kirim acknowledgment dan info keterlambatan ke customer', 'Diamkan sampai sempat', 'Tutup chat', 'Alihkan ke email'], 0, 'SLA < 5 menit; saat overload wajib acknowledgment & info delay.'],
+    ['Kapan CSAT wajib dikirim?', ['Setiap case yang ditangani end-to-end (solved)', 'Hanya untuk customer VIP', 'Sebulan sekali', 'Hanya jika customer minta'], 0, 'Poin #10 HD & AM: kirim CSAT di setiap case end-to-end.'],
+    ['Account Manager sebaiknya menyebut nama customer minimal berapa kali secara natural?', ['3 kali', '1 kali', '5 kali', 'Tidak perlu'], 0, 'Poin AM #6: minimal 3 kali secara natural.'],
+    ['Customer VIP menanyakan detail tagihan & data akun. Apa yang dilakukan AM sebelum memberi info?', ['Verifikasi identitas customer', 'Langsung kirim detail', 'Minta customer datang ke kantor', 'Teruskan ke Billing tanpa membalas'], 0, 'Poin AM #2: verifikasi identitas sebelum memberi informasi pribadi/sensitif.'],
+    ['Menurut poin AM #3, gaya komunikasi yang diharapkan adalah…', ['Personal, natural, dan empatik tanpa terkesan template', 'Formal kaku dengan template', 'Singkat tanpa sapaan', 'Selalu memakai bahasa Inggris'], 0, 'AM: personal, natural, empatik — tidak terkesan template.'],
+    ['Mengawal kebutuhan customer end-to-end termasuk…', ['Koordinasi dan follow-up dengan tim terkait hingga tuntas', 'Hanya membuat tiket', 'Hanya membalas chat pertama', 'Menunggu customer menanyakan progress'], 0, 'Poin AM #9: end-to-end termasuk koordinasi & follow-up hingga tuntas.'],
+  ]) });
+})();

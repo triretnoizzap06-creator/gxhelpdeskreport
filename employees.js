@@ -50,6 +50,14 @@ function clean(b) {
   return row;
 }
 
+const EXIT = new Set(['resigned', 'cut', 'eoc']);
+function exitOf(x) {
+  if (!x || typeof x !== 'object' || !EXIT.has(String(x.status))) return null;
+  const date = x.date === '' || x.date == null ? null : String(x.date);
+  if (!isDate(date)) throw new AppError('bad-payload', 400, 'Tanggal keluar tidak valid (format YYYY-MM-DD).');
+  return { type: 'exit', status: String(x.status), date, note: String(x.note || '').trim().slice(0, 200), at: new Date().toISOString() };
+}
+
 export default async function handler(req, res) {
   const q = new URL(req.url, 'http://x').searchParams;
   try {
@@ -85,6 +93,15 @@ export default async function handler(req, res) {
     if (r.error) {
       if (r.error.code === '23505') return json(res, { error: 'duplicate', detail: 'Nama karyawan sudah ada.' }, 409);
       throw dbError(r.error);
+    }
+    /* status keluar (Resigned / Cut / End of Contract) disimpan sebagai entri {type:'exit'} di contract_history (tanpa perlu kolom baru).
+       Disimpan sesudah update utama supaya tidak tertimpa trigger riwayat kontrak. Karyawan arsip tetap ada → riwayat performance tidak hilang. */
+    if (body.exit !== undefined) {
+      const ex = exitOf(body.exit), hist = (Array.isArray(r.data.contract_history) ? r.data.contract_history : []).filter(x => !x || x.type !== 'exit');
+      const next = ex ? hist.concat([ex]) : hist;
+      const u = await db().from('hd_employees').update({ contract_history: next, ...(ex ? { active: false } : {}) }).eq('id', r.data.id).select(COLS).maybeSingle();
+      if (u.error) throw dbError(u.error);
+      if (u.data) r = u;
     }
     return json(res, { ok: true, item: r.data });
   } catch (e) {

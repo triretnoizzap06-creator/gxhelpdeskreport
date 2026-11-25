@@ -137,6 +137,27 @@ pre.ncode{background:#111827;color:#E5E7EB;border-radius:10px;padding:12px 14px;
 .pcard{display:flex;align-items:center;gap:10px;margin:8px 0;padding:11px 14px;border:1px solid var(--line);border-radius:11px;text-decoration:none!important;color:inherit!important;background:var(--card)}.pcard:hover{border-color:var(--line-h);background:var(--chip)}.pcard .sp{flex:1}.pcard .pi{font-size:17px}.pcard .pa{color:var(--muted)}
 .skel{padding:14px 0}.skel i{display:block;height:12px;border-radius:6px;background:var(--line);margin:12px 0;animation:sk 1.2s ease-in-out infinite}@keyframes sk{50%{opacity:.45}}
 @media (max-width:600px){.doc{padding:4px 14px 14px}.quiz{padding:14px}.reader h1{font-size:21px}}
+/* ISP vs Customer side animation */
+.isp-anim{margin:16px 0 20px;border:1px solid var(--line);border-radius:16px;padding:14px 14px 12px;background:var(--card)}
+.ia-top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px}.ia-tag{font-size:11.5px;font-weight:800;letter-spacing:.04em;padding:4px 10px;border-radius:999px}
+.ia-tag.isp{background:#FFF3D6;color:#8A5A00}.ia-tag.cus{background:#E3F0FF;color:#0B4F9C}.ia-tag.sm{font-size:10.5px;padding:2px 8px;margin-left:4px}
+.ia-scroll{overflow-x:auto}.isp-anim svg{width:100%;min-width:720px;height:auto;display:block}
+.ia-bg.isp{fill:#FFF8E6;stroke:#F2C14E;stroke-width:1.2}.ia-bg.cus{fill:#EEF6FF;stroke:#8DBBF0;stroke-width:1.2}
+.ia-dem{stroke:#C62828;stroke-width:2.2;stroke-dasharray:6 5}.ia-demt{font:700 10.5px var(--font);fill:#C62828;text-anchor:middle}
+.ia-fo{stroke:#E0A21B;stroke-width:5;fill:none;stroke-linecap:round}.ia-utp{stroke:#3B82F6;stroke-width:5;fill:none;stroke-dasharray:2 7;stroke-linecap:round}
+.pl.isp{fill:#FFD54A;filter:drop-shadow(0 0 4px #FFC107)}.pl.cus{fill:#60A5FA;filter:drop-shadow(0 0 4px #3B82F6)}
+.ia-n{cursor:pointer;outline:none}.ia-n circle{fill:#fff;stroke-width:2.4;transition:transform .2s;transform-box:fill-box;transform-origin:center}.ia-n.isp circle{stroke:#E0A21B}.ia-n.cus circle{stroke:#3B82F6}
+.ia-n:hover circle,.ia-n:focus circle,.ia-n.sel circle{transform:scale(1.12);stroke-width:3.4}.ia-n .ic{font-size:22px;text-anchor:middle}.ia-n .lb{font:600 11px var(--font);fill:var(--ink);text-anchor:middle}
+.ia-x{display:none}.ia-x circle{fill:#C62828}.ia-x path{stroke:#fff;stroke-width:2.6}.ia-led{fill:#22C55E;stroke:#fff;stroke-width:2}
+.isp-anim.brk-isp .s2,.isp-anim.brk-isp .s3,.isp-anim.brk-cus .s3{display:none}.isp-anim.brk-isp .xi,.isp-anim.brk-cus .xc{display:block}
+.isp-anim.brk-isp .ia-led{fill:#EF4444;animation:blink .8s steps(2) infinite}.isp-anim.brk-isp .ia-n[data-ian=fdb],.isp-anim.brk-isp .ia-n[data-ian=otb],.isp-anim.brk-isp .ia-n[data-ian=onu],.isp-anim.brk-isp .ia-n.cus,.isp-anim.brk-cus .ia-n.cus{opacity:.38}
+@keyframes blink{50%{opacity:.2}}
+.ia-ctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;font-size:12.5px;color:var(--muted)}.ia-ctl button{border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:999px;padding:5px 11px;font:600 12.5px var(--font);cursor:pointer}.ia-ctl button.on{background:#1D1D1F;color:#fff;border-color:#1D1D1F}
+.ia-info{margin-top:10px;font-size:13.5px;line-height:1.55;background:var(--soft);border-radius:10px;padding:10px 12px;min-height:58px}.ia-info .mut{color:var(--muted)}.ia-info b.isp{color:#8A5A00}.ia-info b.cus{color:#0B4F9C}
+@media (prefers-reduced-motion:reduce){.ia-pl{display:none}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .isp-anim{} :root:not([data-theme="light"]) .ia-bg.isp{fill:#2A2210;stroke:#8A6A1E} :root:not([data-theme="light"]) .ia-bg.cus{fill:#0F1E33;stroke:#2F5C94} :root:not([data-theme="light"]) .ia-n circle{fill:#1C1C1F} :root:not([data-theme="light"]) .ia-tag.isp{background:#3A2E10;color:#FFD866} :root:not([data-theme="light"]) .ia-tag.cus{background:#102A4A;color:#9CC8FF} :root:not([data-theme="light"]) .ia-info b.isp{color:#FFD866} :root:not([data-theme="light"]) .ia-info b.cus{color:#9CC8FF} :root:not([data-theme="light"]) .ia-ctl button.on{background:#F5F5F7;color:#111;border-color:#F5F5F7}}
+:root[data-theme="dark"] .ia-bg.isp{fill:#2A2210;stroke:#8A6A1E} :root[data-theme="dark"] .ia-bg.cus{fill:#0F1E33;stroke:#2F5C94} :root[data-theme="dark"] .ia-n circle{fill:#1C1C1F} :root[data-theme="dark"] .ia-tag.isp{background:#3A2E10;color:#FFD866} :root[data-theme="dark"] .ia-tag.cus{background:#102A4A;color:#9CC8FF} :root[data-theme="dark"] .ia-info b.isp{color:#FFD866} :root[data-theme="dark"] .ia-info b.cus{color:#9CC8FF} :root[data-theme="dark"] .ia-ctl button.on{background:#F5F5F7;color:#111;border-color:#F5F5F7}
+details.nfull{margin:18px 0 4px;border:1px solid var(--line);border-radius:12px;padding:0 14px}details.nfull>summary{cursor:pointer;padding:11px 0;font-size:13.5px;display:flex;gap:6px;flex-wrap:wrap;align-items:baseline}details.nfull>summary span{color:var(--muted);font-size:12px}details.nfull .nbody{padding-bottom:12px}
 </style>
 </head>
 <body>
@@ -147,7 +168,7 @@ pre.ncode{background:#111827;color:#E5E7EB;border-radius:10px;padding:12px 14px;
 </header>
 <main>
   <div id="home">
-    <div class="hero"><h1>Knowledge Base</h1><p>Materi tim Helpdesk Customer Support & Account Manager — dikelompokkan per Info Helpdesk, Administrasi, Teknis, SDM & Schedule, serta Handling & Kebijakan. Quiz ada di tab <b>🎯 Quiz</b> (dikunci password tim).</p></div>
+    <div class="hero"><h1>Knowledge Base</h1><p>Materi tim Helpdesk Customer Support & Account Manager — dikelompokkan per Info Helpdesk, Administrasi, Teknis, Internet Package, Organisasi GX, SDM & Schedule, serta Handling & Kebijakan. Quiz ada di tab <b>🎯 Quiz</b> (dikunci password tim).</p></div>
     <div id="banner"></div><div id="nbar"></div>
     <input class="search" id="q" type="search" placeholder="Cari materi, SOP, template… (mis. grace, BOD, power ONU, tanggal 25)" aria-label="Cari knowledge base">
     <div class="bar"><div class="tabs" id="chips"></div><span class="sp"></span><button class="btn" id="edBtn" style="display:none">✎ Edit</button><button class="btn" id="loginBtn" style="display:none">🔒 Login SPV untuk edit</button><span id="saveState" style="font-size:12px;color:var(--muted)"></span></div>
@@ -187,7 +208,9 @@ const DEF_CATS = window.KB_CATS || [], BASE = window.KB_MATERI || [];
 let CATS = DEF_CATS;
 const AM_IDS = ['flow-account-manager', 'masterlist-vip', 'inv-vip-25', 'upgrade-vip', 'tools-akses', 'observation-hd-am', 'bod-dia-intracity', 'sop-grace'];
 let CATNAME = Object.fromEntries(CATS.map(c => [c[0], c[1]]));
-function applyCats() { CATS = Array.isArray(KB.data.cats) && KB.data.cats.length ? KB.data.cats : DEF_CATS; CATNAME = Object.fromEntries(CATS.map(c => [c[0], c[1]])); }
+/* kategori tersimpan + kategori bawaan baru (mis. Internet Package) yang belum ada di daftar tersimpan */
+const mergeCats = (saved, def) => Array.isArray(saved) && saved.length ? saved.concat(def.filter(d => !saved.some(c => c[0] === d[0]))) : def;
+function applyCats() { CATS = mergeCats(KB.data.cats, DEF_CATS); CATNAME = Object.fromEntries(CATS.map(c => [c[0], c[1]])); }
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const safeUrl = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : '';
@@ -202,7 +225,8 @@ function materi() {
   const L = BASE.map(x => over[x.id] ? { ...x, ...over[x.id], quiz: over[x.id].quiz || x.quiz } : { ...x }).concat((m.added || []).map(x => ({ ...x })));
   NTMID = new Map();
   if (NT.on) {   // materi yang sumbernya halaman Notion → isinya ikut Notion; halaman Notion baru otomatis jadi materi
-    L.forEach(x => { const k = nid(x.src); if (k && NT.pages[k]) { x.notion = k; x.edited = NT.pages[k].e; if (!NTMID.has(k)) NTMID.set(k, x.id); } });
+    L.forEach(x => { const k = nid(x.src); if (k && NT.pages[k]) { x.notion = k; x.edited = NT.pages[k].e; if (!NTMID.has(k)) NTMID.set(k, x.id); }
+      (x.alsoSrc || []).forEach(u => { const k2 = nid(u); if (k2 && NT.pages[k2]) { if (!NTMID.has(k2)) NTMID.set(k2, x.id); if (!x.notion) { x.notion = k2; x.edited = NT.pages[k2].e; } else if (String(NT.pages[k2].e) > String(x.edited)) x.edited = NT.pages[k2].e; } }); });
     for (const [id, p] of Object.entries(NT.pages)) { if (id === NT.root || NTMID.has(id)) continue; const mid = 'n-' + id; NTMID.set(id, mid); if (!p.n) continue;   // halaman kosong / hanya berisi sub-halaman
       const o = over[mid] || {}; L.push({ id: mid, notion: id, cat: o.cat || guessCat(id), title: o.title || p.t, summary: o.summary != null && o.summary !== '' ? o.summary : String(p.x || '').replace(/\s+/g, ' ').trim().slice(0, 170), body: '', src: p.u, quiz: o.quiz || [], icon: p.i, edited: p.e }); }
   }
@@ -246,6 +270,52 @@ function embedSrc(u) {
   if ((m = u.match(/^https:\/\/(?:www\.)?canva\.com\/design\/([\w-]+)\/([\w-]+)\//))) return [`https://www.canva.com/design/${m[1]}/${m[2]}/view?embed`, '', 'Canva'];
   return null;
 }
+
+/* ===== Animasi ISP side vs Customer side (dipakai di materi lewat baris "@anim isp-customer") ===== */
+const ISPN = {
+  nap: ['🌐', 'NAP / Internet', 'isp', 'Titik pertemuan jaringan internet besar; data dari ISP lain lewat sini.', 'Gangguan di sini = gangguan besar (Mass-Problem). Ditangani NOC/NA.'],
+  olt: ['🏢', 'OLT · NOC', 'isp', 'Perangkat pusat di sisi GlobalXtreme yang mengirim sinyal cahaya ke pelanggan.', 'OLT power low/high → koordinasi NA via Telegram.'],
+  jc: ['🧰', 'Joint Closure / Dome', 'isp', 'Pelindung sambungan kabel FO di jalur utama (Dome = versi kubah outdoor).', 'Sambungan rusak/basah → redaman → FO Maintenance / Backbone.'],
+  odc: ['🗄️', 'ODC + Splitter', 'isp', 'Lemari distribusi: kabel feeder dibagi ke beberapa jalur; splitter membagi sinyal ke banyak pelanggan (PON).', 'Gangguan → banyak pelanggan satu area down → cek Mass-Problem.'],
+  fdb: ['📦', 'FDB (Terminal Port)', 'isp', 'Kotak di tiang yang membagi kabel utama ke kabel tiap rumah (drop cable).', 'Masalah FDB → update WAG Harian Pekerjaan FDB, tim Upgrading.'],
+  otb: ['🔌', 'Drop cable + OTB', 'isp', 'Kabel dari FDB masuk rumah, berakhir di OTB (terminasi + gulungan power FO).', 'Kabel putus / tertekuk → LOS merah → Wiredown (tanpa biaya).'],
+  onu: ['📶', 'ONU (box putih GX)', 'isp', 'Batas akhir tanggung jawab GlobalXtreme: mengubah cahaya jadi data. Perangkat milik/dipasang GX.', 'ONU off / LOS merah dengan listrik normal → FO maintenance. Power ONU low/high → ticket Dispatcher (Wiredown).'],
+  utp: ['〰️', 'Kabel UTP (LAN)', 'cus', 'Kabel tembaga dari port LAN ONU ke router pelanggan.', 'ONU online tapi port Down = UTP lepas/rusak → customer side.'],
+  rtr: ['🛜', 'Router pelanggan', 'cus', 'Membagi koneksi & memberi IP ke perangkat. Setting WiFi/SSID ada di sini.', 'Router hang/rusak, setting salah → customer side (visit Rp100.000 untuk paket Best Effort).'],
+  ap: ['📡', 'Access Point / Mesh', 'cus', 'Memperluas sinyal WiFi di area besar.', 'Sinyal lemah di ruangan tertentu → edukasi / perangkat tambahan pelanggan.'],
+  dev: ['💻', 'HP · Laptop · TV', 'cus', 'Perangkat pengguna.', 'Hanya 1 perangkat bermasalah sementara lainnya normal → kemungkinan besar di perangkat itu sendiri.'],
+};
+function ispAnim() {
+  const X = { nap: 46, olt: 132, jc: 218, odc: 304, fdb: 390, otb: 476, onu: 562, utp: 655, rtr: 748, ap: 840, dev: 930 }, Y = 128;
+  const node = k => { const [ic, nm, side] = ISPN[k]; return `<g class="ia-n ${side}" data-ian="${k}" tabindex="0" role="button" aria-label="${esc(nm)}"><circle cx="${X[k]}" cy="${Y}" r="27"/><text x="${X[k]}" y="${Y + 8}" class="ic">${ic}</text><text x="${X[k]}" y="${Y + 50}" class="lb">${esc(nm.split(' (')[0].split(' · ')[0].split(' / ')[0])}</text></g>`; };
+  const pulses = (path, cls, n, dur) => [...Array(n).keys()].map(i => `<circle r="5" class="pl ${cls}"><animateMotion dur="${dur}s" repeatCount="indefinite" begin="${(i * dur / n).toFixed(2)}s" path="${path}"/></circle>`).join('');
+  const p1 = `M${X.nap},${Y} L347,${Y}`, p2 = `M347,${Y} L${X.onu},${Y}`, p3 = `M${X.onu},${Y} L${X.dev},${Y}`;
+  return `<figure class="isp-anim" data-isp><div class="ia-top"><span class="ia-tag isp">ISP SIDE · tanggung jawab GlobalXtreme</span><span class="ia-tag cus">CUSTOMER SIDE · perangkat & jaringan pelanggan</span></div>
+  <div class="ia-scroll"><svg viewBox="0 0 980 215" role="img" aria-label="Alur koneksi dari internet sampai perangkat pelanggan, dibagi ISP side dan customer side">
+    <rect x="8" y="64" width="601" height="126" rx="16" class="ia-bg isp"/><rect x="613" y="64" width="360" height="126" rx="16" class="ia-bg cus"/>
+    <line x1="611" y1="40" x2="611" y2="200" class="ia-dem"/><text x="611" y="32" class="ia-demt">BATAS TANGGUNG JAWAB · port LAN ONU</text>
+    <path d="${p1} ${p2.replace('M', 'L')}" class="ia-fo"/><path d="${p3}" class="ia-utp"/>
+    <g class="ia-pl s1">${pulses(p1, 'isp', 4, 2.4)}</g><g class="ia-pl s2">${pulses(p2, 'isp', 3, 1.8)}</g><g class="ia-pl s3">${pulses(p3, 'cus', 4, 2.4)}</g>
+    ${Object.keys(X).map(node).join('')}
+    <g class="ia-x xi"><circle cx="347" cy="${Y}" r="13"/><path d="M340,${Y - 7} l14,14 M354,${Y - 7} l-14,14"/></g>
+    <g class="ia-x xc"><circle cx="608" cy="${Y}" r="13"/><path d="M601,${Y - 7} l14,14 M615,${Y - 7} l-14,14"/></g>
+    <circle cx="${X.onu + 19}" cy="${Y - 19}" r="6" class="ia-led"/>
+  </svg></div>
+  <div class="ia-ctl"><span>Simulasi:</span><button type="button" data-iasim="ok" class="on">✅ Normal</button><button type="button" data-iasim="isp">✂️ Kabel FO putus (ISP side)</button><button type="button" data-iasim="cus">🔌 UTP lepas (Customer side)</button></div>
+  <div class="ia-info" aria-live="polite">${ispInfo('ok')}</div></figure>`;
+}
+function ispInfo(k) {
+  if (k === 'ok') return `<b>Normal</b> — cahaya mengalir dari internet → OLT → jalur FO → ONU (lampu hijau), lalu data lewat UTP → router → WiFi → perangkat. <span class="mut">Klik perangkat mana pun untuk lihat fungsinya.</span>`;
+  if (k === 'isp') return `<b class="isp">ISP side — kabel FO putus.</b> Cahaya berhenti sebelum FDB, <b>ONU LOS merah</b> dan semua perangkat offline. Cek apakah 1 pelanggan atau 1 area (Mass-Problem) → <b>ticket Wiredown / FO Maintenance, tanpa biaya</b>.`;
+  if (k === 'cus') return `<b class="cus">Customer side — UTP ONU→router lepas.</b> ONU tetap <b>online (hijau)</b>, tapi status port <b>Down</b> dan router tidak dapat internet. Pandu pelanggan cek kabel LAN; kalau perlu kunjungan → <b>visit customer side (Rp100.000 untuk Lite/Lite+)</b>.`;
+  const [ic, nm, side, fn, iss] = ISPN[k]; return `<b>${ic} ${esc(nm)}</b> <span class="ia-tag sm ${side}">${side === 'isp' ? 'ISP side' : 'Customer side'}</span><br>${esc(fn)}<br><span class="mut">Kalau bermasalah:</span> ${esc(iss)}`;
+}
+document.addEventListener('click', e => {
+  const n = e.target.closest('[data-ian]'), sm = e.target.closest('[data-iasim]'); if (!n && !sm) return; const f = e.target.closest('[data-isp]'); if (!f) return;
+  if (n) { f.querySelectorAll('.ia-n').forEach(g => g.classList.toggle('sel', g === n)); f.querySelector('.ia-info').innerHTML = ispInfo(n.dataset.ian); return; }
+  const k = sm.dataset.iasim; f.classList.remove('brk-isp', 'brk-cus'); if (k !== 'ok') f.classList.add('brk-' + k); f.querySelectorAll('[data-iasim]').forEach(b => b.classList.toggle('on', b === sm)); f.querySelectorAll('.ia-n').forEach(g => g.classList.remove('sel')); f.querySelector('.ia-info').innerHTML = ispInfo(k);
+});
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('[data-ian]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
 function embedHtml(u, title) {
   u = safeUrl(u); if (!u) return '';
   let host = ''; try { host = new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return ''; }
@@ -261,6 +331,7 @@ function md(src) {
     const l = raw.trim(); if (!l) { close(); return; }
     let m;
     if ((m = l.match(/^@embed\s+(\S+)(?:\s*\|\s*(.+))?$/i))) { close(); out.push(embedHtml(m[1], m[2] && m[2].trim())); }
+    else if (/^@anim\s+isp-customer\s*$/i.test(l)) { close(); out.push(ispAnim()); }
     else if ((m = l.match(/^##\s+(.*)/))) { close(); out.push(`<h3>${inline(m[1])}</h3>`); }
     else if ((m = l.match(/^>\s?(.*)/))) { close(); out.push(`<div class="note">${inline(m[1])}</div>`); }
     else if ((m = l.match(/^-\s+(.*)/))) { if (list !== 'ul') { close(); out.push('<ul>'); list = 'ul'; } out.push(`<li>${inline(m[1])}</li>`); }
@@ -418,15 +489,19 @@ function renderRead(id) {
   if (!x) { location.hash = ''; return; }
   const list = M.filter(m => m.cat === x.cat), i = list.indexOf(x), prev = list[i - 1], next = list[i + 1];
   QZ = { id, ans: {}, done: false };
-  const src = safeUrl(x.src);
+  const src = safeUrl(x.src), live = !!(x.notion && NT.on && !x.curated);
+  /* materi "curated": isi rapi dari KB tampil utama; versi lengkap Notion (selalu terbaru) bisa dibuka di bawah */
+  const nIds = x.curated ? [x.src, ...(x.alsoSrc || [])].map(nid).filter(k => k && NT.on && NT.pages[k]) : [];
   $('#read').innerHTML = `<div class="crumb"><button class="btn sm" data-back>← Semua materi</button><span class="pill c-${x.cat}">${esc(CATNAME[x.cat] || x.cat)}</span></div>
     <div class="rhead"><h1>${esc(x.title)}</h1>${KB.canEdit ? `<button class="btn sm" data-medit="${esc(x.id)}" style="margin-top:10px">✎ Edit materi</button>` : KB.online ? '<button class="btn sm" data-login style="margin-top:10px">🔒 Login SPV untuk edit</button>' : ''}</div>${x.summary ? `<p class="lead">${esc(x.summary)}</p>` : ''}
     ${x.notion && NT.on ? `<div class="nmeta"><span>Diupdate ${esc(fdate(NT.pages[x.notion].e))}${(() => { const s = sectionOf(x.notion); return s && s !== x.notion ? ` · ${esc(NT.pages[s].t)}` : ''; })()}</span><span class="sp"></span>${NT.configured ? `<button class="syncb${NT.busy ? ' spin' : ''}" data-nsync ${NT.busy ? 'disabled' : ''} title="Ambil update terbaru"><span class="si">⟳</span>${NT.busy ? 'Menyinkronkan…' : 'Sinkronkan'}</button>` : ''}</div>` : ''}
-    <div class="rgrid"><article class="doc${x.notion && NT.on ? ' ndoc' : ''}">${x.notion && NT.on ? '<div class="skel"><i></i><i></i><i style="width:60%"></i><i></i><i style="width:75%"></i></div>' : md(x.body)}${src && !(x.notion && NT.on) ? `<a class="srcl" href="${esc(src)}" target="_blank" rel="noopener">${LSVG}Buka sumber asli</a>` : ''}</article><nav class="toc hidden" id="toc"></nav></div>
+    <div class="rgrid"><article class="doc${live ? ' ndoc' : ''}">${live ? '<div class="skel"><i></i><i></i><i style="width:60%"></i><i></i><i style="width:75%"></i></div>' : md(x.body)}${nIds.map(k => `<details class="nfull" data-nfull="${esc(k)}"><summary>📄 Versi lengkap di Notion — <b>${esc(NT.pages[k].t || 'Notion')}</b><span>diupdate ${esc(fdate(NT.pages[k].e))}</span></summary><div class="nbody"><div class="skel"><i></i><i></i><i style="width:60%"></i></div></div></details>`).join('')}${src && !live ? `<a class="srcl" href="${esc(src)}" target="_blank" rel="noopener">${LSVG}Buka sumber asli</a>` : ''}</article><nav class="toc hidden" id="toc"></nav></div>
     ${(x.quiz || []).length && CATNAME[x.cat] ? `<section class="quiz"><h2>Quiz ${esc(CATNAME[x.cat])}</h2><p class="qsub">Soal dari materi ini masuk ke quiz kategori <b>${esc(CATNAME[x.cat])}</b> — latihan sendiri pakai timer, atau ikut live quiz dari SPV.</p><a class="btn pri" href="#quiz?set=${esc(x.cat)}">🔒 Latihan quiz ${esc(CATNAME[x.cat])} →</a> <a class="btn" href="#quiz">Masukkan PIN live quiz</a><p class="qsub" style="margin:10px 0 0">Quiz dikunci password tim.</p></section>` : ''}
     <div class="nav2">${prev ? `<button class="btn" data-open="${esc(prev.id)}">← ${esc(prev.title)}</button>` : '<span></span>'}${next ? `<button class="btn" data-open="${esc(next.id)}">${esc(next.title)} →</button>` : ''}</div>`;
   window.scrollTo(0, 0); buildToc();
-  if (x.notion && NT.on) notionPage(x.notion).then(pg => { if (!location.hash.endsWith(encodeURIComponent(id)) && !location.hash.endsWith(id)) return; const a = $('#read article.doc'); if (!a) return;
+  $('#read').querySelectorAll('details.nfull').forEach(d => d.addEventListener('toggle', () => { if (!d.open || d.dataset.ok) return; d.dataset.ok = 1;
+    notionPage(d.dataset.nfull).then(pg => { d.querySelector('.nbody').innerHTML = blocksHtml(pg.b) || '<p style="color:var(--muted)">Kosong.</p>'; }).catch(() => { d.querySelector('.nbody').innerHTML = '<p style="color:var(--muted)">Belum tersinkron — klik ⟳ Sinkronkan.</p>'; delete d.dataset.ok; }); }));
+  if (live) notionPage(x.notion).then(pg => { if (!location.hash.endsWith(encodeURIComponent(id)) && !location.hash.endsWith(id)) return; const a = $('#read article.doc'); if (!a) return;
       a.innerHTML = blocksHtml(pg.b) || '<p style="color:var(--muted)">Halaman ini masih kosong.</p>'; buildToc(); })
     .catch(() => { const a = $('#read article.doc'); if (a) a.innerHTML = x.body ? md(x.body) : `<p>Isi belum tersinkron — klik ⟳ Sinkronkan. <a href="${esc(safeUrl(x.src))}" target="_blank" rel="noopener">Buka sumber ↗</a></p>`; buildToc(); });
 }

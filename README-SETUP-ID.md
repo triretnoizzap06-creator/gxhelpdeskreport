@@ -171,5 +171,25 @@ Di pengaturan Repeat Complaint (Import data → kartu Repeat Complaint): **Probl
 - **Status**: Locked in, On break, In a meeting, Excused (izin), Sick, On leave (cuti). SPV bisa klik desk siapa pun untuk ganti status/profil. Excused/Sick/On leave berlaku sampai akhir hari itu (avatar tidak tampil di office).
 - **Templates board**: semua template tampil sebagai sticky note (seperti Quick Notes) — filter per orang, search, Copy, edit.
 - **Transfer subdivisi** (SPV): buka desk → "🔁 Pindah ke …". Orangnya pindah roster, desk/template/foto ikut, task & catatan lama tetap ada di board asal dan tetap terlihat di desk-nya.
-- **No. tiket di Repeat Complaint** sekarang tampil sebagai Ticket ID GX-CSC (mis. GX-CSC-20261119224804). Export RC hanya punya TCK-…, jadi dicocokkan ke data CS/VIP lewat kolom *CRM Ticket Number* (cadangan: CID + tanggal yang sama). Kalau tiketnya tidak ada di data CS/VIP yang di-import, tetap tampil TCK-….
+- **No. tiket di Repeat Complaint** memakai nomor TCK-… dari export Trouble Ticket. Ticket ID GX-CSC tampil lengkap di tabel detail tiket AFR.
 - **Urutan Top 3 Repeat Complaint**: Weekly (≤10 hari) → tiket terbaru dulu lalu terbanyak; Monthly → repeat terbanyak. Pilihan manual Top 3 tetap diprioritaskan.
+- **Arrival Time** tidak dihitung sebagai repeat complaint (CS & VIP), walaupun aturan problem yang dikeluarkan sudah pernah diubah.
+- **Top issue categories → "Other"**: kalau "Other" masuk ranking, highlights otomatis menampilkan rincian singkatnya (kategori terbanyak + tema isi tiket dari kata kunci deskripsi), di slide CS dan VIP.
+
+## Knowledge Base & Quiz — Internet Package, Basic Knowledge, Organisasi GX
+- **Internet Package** (Notion: Basic Knowledge → Service Plans) jadi materi rapi + **set quiz terpisah** (33 soal): Lite, Lite+, Signature, DIA, Intracity, SLA, Priority Service Scoring. Isinya tetap ikut Notion saat ⟳ Sinkronkan.
+- **TMRW Labs** & **Transvision TV** (sebelumnya halaman Notion mentah tanpa quiz) sekarang materi rapi di kategori Teknis, masing-masing dengan quiz.
+- **Organisasi GX** (set quiz terpisah, 28 soal) disimpan di **database** (doc `knowledge-base` → materi tambahan), dari slide *Divisi GX* + **CSO Workspace → Organizational Chart** + update: Pak Angga 3 sub divisi (Aktivasi, Regular, Dismantle), Head Legal 2 orang (Bapak Artis & Surya Sugiana, S.H.). Update kalau ada perubahan PIC/agent lewat **Edit** di materi tsb — tidak perlu deploy.
+- CSO Workspace & Google Slides butuh login kantor, jadi tidak bisa di-crawl otomatis dari server; Notion publik tetap sinkron otomatis.
+- Kategori baru dari kode sekarang selalu muncul walaupun daftar kategori pernah disimpan di database.
+
+## Update 25 Nov 2026 — Directory archive, KB, Quiz podium
+- **Helpdesk Employee Directory**: Edit → *Employment status* = Active / **Resigned** / **Cut** / **End of Contract** (+ last working day). Yang keluar otomatis pindah ke **🗄 Archived** di bawah grid, tidak muncul di reminder ulang tahun/kontrak, tapi datanya tetap ada. Helpdesk Performance Report tidak terpengaruh (data per periode tetap utuh). Status disimpan di `contract_history` (tidak perlu migrasi tabel). Bisa diaktifkan lagi kapan saja.
+- **Observation** (KB): 10 poin Helpdesk & 10 poin AM disamakan dengan Helpdesk Performance Report Q3 2026 + 12 soal quiz.
+- **TMRW Labs** jadi set quiz sendiri (36 soal, 3 materi): Product Knowledge, Customer Journey & Operational Flow, FAQ Dashboard — dari Notion + TMRW Labs Onboarding Guide (figma site).
+- **BOD/DIA/Intracity** diperbarui sesuai Notion terbaru (BOD Intracity akumulasi 3 hari, CNI unlimited, approval PIC Intracity → Head Sales) + 15 soal.
+- **Basic Technical Knowledge**: animasi interaktif **ISP side vs Customer side** (klik perangkat, simulasi FO putus vs UTP lepas) + 16 soal.
+- **TV Transvision**: 2 halaman Notion (Add-On + Troubleshooting) digabung jadi 1 materi + 12 soal.
+- Materi di atas tampil versi rapi; **versi lengkap Notion** (selalu terbaru setelah ⟳ Sinkronkan) bisa dibuka di bagian bawah materi.
+- **Organisasi GX**: quiz di database ditambah jadi 48 soal (head & jobdesk semua divisi + org chart CSO).
+- **Quiz — Podium Kemenangan** Top 3 (animasi + confetti) di layar host & hasil peserta; tombol **🏆 Podium** layar penuh untuk diproyeksikan, dan otomatis muncul saat sesi ditutup.

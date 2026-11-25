@@ -91,6 +91,29 @@ body.embed .top{display:none}body.embed main{padding-top:14px}
 .qmo{display:flex;gap:8px;align-items:center;margin:5px 0}.qmo input[type=radio]{flex:none;width:18px;height:18px;accent-color:#16A34A}
 .modal .box{background:var(--bg);width:min(860px,100%);max-height:92vh;overflow:auto;border-radius:18px;padding:18px}
 @media (max-width:760px){.host{grid-template-columns:1fr}.tiles{grid-template-columns:1fr}.tile{min-height:64px;padding:14px}.qbox{padding:20px 14px;min-height:90px}main{padding:18px 14px 50px}.top{padding:10px 14px}}
+/* podium */
+.podium{position:relative;overflow:hidden;border-radius:16px;background:linear-gradient(180deg,#FFF9E6,#FFFFFF);border:1px solid #F3E2A9;padding:14px 10px 0;margin:6px 0 14px}
+.pd-ttl{text-align:center;font-weight:800;font-size:14px;letter-spacing:.04em;color:#7A5B00;margin-bottom:24px}
+.pd-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:end;margin-top:8px}
+.pd{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0}.pd.empty{visibility:hidden}
+.pd-av{position:relative;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;background:#8E8E93;box-shadow:0 6px 16px rgba(0,0,0,.12);animation:pdpop .5s cubic-bezier(.2,1.4,.4,1) both}
+.p1 .pd-av{width:64px;height:64px;background:linear-gradient(135deg,#F5C518,#E09A00);font-size:18px}.p2 .pd-av{background:linear-gradient(135deg,#C7CBD1,#8E949C)}.p3 .pd-av{background:linear-gradient(135deg,#E3A06B,#B8692F)}
+.pd-av i{position:absolute;right:-6px;bottom:-4px;font-style:normal;font-size:20px}.pd-cr{position:absolute;top:-22px;font-size:22px;animation:pdcr 1.6s ease-in-out infinite}
+.pd-nm{font-weight:700;font-size:13.5px;margin-top:8px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pd-sc{font-weight:800;font-size:15px}.pd-sc small{font-weight:600;color:var(--muted);font-size:11px}
+.pd-st{width:100%;margin-top:6px;border-radius:12px 12px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:8px;color:#fff;transform-origin:bottom;animation:pdgrow .8s cubic-bezier(.2,.9,.3,1) both}
+.pd-st span{font-size:26px;font-weight:900;line-height:1}.pd-st small{font-size:10.5px;opacity:.9;margin-top:4px}
+.p1 .pd-st{height:118px;background:linear-gradient(180deg,#F5C518,#D99A00);animation-delay:.35s}.p2 .pd-st{height:86px;background:linear-gradient(180deg,#B9BEC6,#8A9099);animation-delay:.15s}.p3 .pd-st{height:64px;background:linear-gradient(180deg,#D99560,#A75E28);animation-delay:.5s}
+.pd.me .pd-nm{color:#0A84FF}.pd.me .pd-av{outline:3px solid #0A84FF;outline-offset:2px}
+.pd-conf{position:absolute;inset:0;pointer-events:none}.pd-conf i{position:absolute;top:-12px;left:var(--x);width:7px;height:12px;background:var(--c);border-radius:2px;transform:rotate(var(--r));animation:pdfall 2.6s ease-in var(--d) both}
+@keyframes pdgrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}@keyframes pdpop{from{transform:scale(0)}to{transform:scale(1)}}@keyframes pdcr{50%{transform:translateY(-4px) rotate(-8deg)}}
+@keyframes pdfall{0%{transform:translateY(0) rotate(var(--r));opacity:1}100%{transform:translateY(340px) rotate(calc(var(--r) + 540deg));opacity:0}}
+.podium.big{padding:24px 18px 0;max-width:720px;margin:0 auto}.podium.big .pd-ttl{font-size:22px;margin-bottom:44px}.podium.big .pd-av{width:84px;height:84px;font-size:22px}.podium.big .p1 .pd-av{width:104px;height:104px;font-size:28px}
+.podium.big .pd-nm{font-size:19px}.podium.big .pd-sc{font-size:22px}.podium.big .p1 .pd-st{height:220px}.podium.big .p2 .pd-st{height:160px}.podium.big .p3 .pd-st{height:118px}.podium.big .pd-st span{font-size:44px}.podium.big .pd-cr{font-size:34px;top:-34px}
+.pdm .pdm-in{position:relative;width:min(900px,96vw);background:var(--card,#fff);border-radius:22px;padding:28px 18px 22px}.pdm-t{text-align:center;font-weight:800;font-size:15px;color:var(--muted);margin-bottom:8px}
+.pdm-rest{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px;font-size:14px}.pdm-rest span{background:var(--soft,#F5F5F7);border-radius:999px;padding:5px 12px}
+@media (prefers-reduced-motion:reduce){.pd-st,.pd-av,.pd-cr,.pd-conf i{animation:none!important}.pd-conf{display:none}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .podium{background:linear-gradient(180deg,#2A2310,#161618);border-color:#4A3D14}:root:not([data-theme="light"]) .pd-ttl{color:#FFD866}}
+:root[data-theme="dark"] .podium{background:linear-gradient(180deg,#2A2310,#161618);border-color:#4A3D14}:root[data-theme="dark"] .pd-ttl{color:#FFD866}
 </style>
 </head>
 <body>
@@ -230,19 +253,21 @@ async function host(code) {
   app.innerHTML = `<p style="margin:0 0 14px"><button class="btn sm" data-home>← Semua sesi</button></p><h1>${esc(s.title || 'Live quiz')}</h1><p class="lead">${esc(SETNAME[s.set_key] || '')} · ${s.n ?? s.questions.length} soal · ${s.timer_s} detik per soal</p>
     <div class="host"><div class="pin"><small>SCAN ATAU MASUKKAN PIN</small><div class="code">${esc(code)}</div><div class="qr" id="qr"></div><div class="url">${esc(url)}</div>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px"><button class="btn sm" id="cpy">Salin link</button><button class="btn sm" id="tog">${s.status === 'open' ? 'Tutup sesi' : 'Buka lagi'}</button><button class="btn sm" id="qref" title="Ganti soal sesi ini dengan bank soal terbaru (sebelum ada peserta mulai)">↻ Refresh soal</button><button class="btn sm danger" id="del">Hapus</button></div></div>
-      <div><div class="lb"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Leaderboard</b><span id="cnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span><span class="pill ${s.status}">${s.status === 'open' ? 'Live' : 'Ditutup'}</span></div><div id="lb"></div><div style="font-size:12px;color:var(--muted);margin-top:8px">Klik nama peserta untuk review jawabannya.</div></div>
+      <div><div class="lb"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Leaderboard</b><span id="cnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span><button class="btn sm y" id="podBtn" title="Tampilkan podium layar penuh">🏆 Podium</button><span class="pill ${s.status}">${s.status === 'open' ? 'Live' : 'Ditutup'}</span></div><div id="pod"></div><div id="lb"></div><div style="font-size:12px;color:var(--muted);margin-top:8px">Klik nama peserta untuk review jawabannya.</div></div>
       <div class="appr"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Peserta & approval</b><span id="pcnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span><button class="btn sm y hidden" id="apAll">Approve semua</button></div><div id="ap"></div>
       <div style="font-size:12px;color:var(--muted);margin-top:8px">Peserta baru bisa mulai mengerjakan setelah kamu approve.</div></div></div></div>`;
   try { const qr = qrcode(0, 'M'); qr.addData(url); qr.make(); $('#qr').innerHTML = qr.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); const sv = $('#qr svg'); sv.style.width = '230px'; sv.style.height = '230px'; } catch (e) { $('#qr').innerHTML = '<div class="msg">QR tidak bisa dimuat — bagikan link/PIN.</div>'; }
   $('#cpy').onclick = async () => { try { await navigator.clipboard.writeText(url); toast('Link disalin ✓'); } catch (e) { prompt('Salin link:', url); } };
-  $('#tog').onclick = async () => { await API.setStatus(code, s.status === 'open'); host(code); };
+  $('#tog').onclick = async () => { const closing = s.status === 'open'; await API.setStatus(code, closing); if (closing) { const B = await API.board(code); host(code); podiumFull(B, s.title); } else host(code); };
   $('#del').onclick = async () => { if (confirm('Hapus sesi ' + code + ' beserta semua hasilnya?')) { await API.del(code); go(''); } };
   $('#qref').onclick = async () => { await loadBank(); const all = questions(s.set_key), n = s.n ?? (s.questions || []).length; if (!all.length) return toast('Set ini belum punya soal');
     if (!confirm(`Ganti soal sesi ${code} dengan ${Math.min(n || all.length, all.length)} soal terbaru dari bank soal?`)) return;
     const r = await API.refresh(code, prepare(all, n || all.length)); if (r.status === 200) { toast('Soal sesi diperbarui ✓'); host(code); } else toast(r.j.detail || 'Gagal memperbarui soal'); };
   $('#apAll').onclick = async () => { await API.decide(code, '', 'all'); tick(); };
   const ST = { pending: 'Menunggu approval', approved: 'Sedang mengerjakan', done: 'Selesai', rejected: 'Ditolak' };
-  const tick = async () => { const [B, Jr] = await Promise.all([API.board(code), API.joins(code)]); const el = $('#lb'); if (!el) return; $('#cnt').textContent = B.length + ' selesai';
+  let LASTB = []; PODSIG = '';
+  $('#podBtn').onclick = async () => { const B = await API.board(code); podiumFull(B, s.title); };
+  const tick = async () => { const [B, Jr] = await Promise.all([API.board(code), API.joins(code)]); const el = $('#lb'); if (!el) return; $('#cnt').textContent = B.length + ' selesai'; LASTB = B; paintPodium($('#pod'), B);
     el.innerHTML = B.length ? B.map((x, i) => `<div class="lbr click" data-rv="${esc(x.player)}" title="Review jawaban"><span class="rk">${i + 1}</span><div><b>${esc(x.player)}</b><span>${x.correct}/${x.total} benar · ${fmtS(x.duration_ms)}</span></div><span class="sc">${x.score}</span></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Belum ada yang selesai.</div>';
     const P = (Jr && Jr.status === 200 && Jr.j.players) || [], pend = P.filter(p => p.status === 'pending');
     $('#pcnt').textContent = P.length ? `${P.length} peserta · ${pend.length} menunggu` : ''; $('#apAll').classList.toggle('hidden', pend.length < 2);
@@ -343,17 +368,31 @@ async function result(res) {
     <div class="big" style="margin-top:10px">${res.score}</div><div style="color:var(--muted);font-weight:700">poin${res.player ? ' · ' + esc(res.player) : ''}</div>
     <div class="kp"><div><b>${res.correct}/${res.total}</b><span>Benar</span></div><div><b>${fmtS(res.duration_ms)}</b><span>Total waktu</span></div>${res.rank ? `<div><b>#${res.rank}</b><span>dari ${res.players} peserta</span></div>` : ''}</div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px"><button class="btn pri" id="toRv">Review jawaban</button>${res.mode === 'practice' ? `<button class="btn" data-prac="${res.set}" data-n="${res.total}">Ulangi latihan</button>` : ''}<button class="btn" data-home>Quiz lain</button></div></div>
-    ${res.mode === 'live' ? '<div class="lb" style="margin-bottom:16px"><div style="display:flex;align-items:baseline;gap:10px"><b style="font-size:17px">Leaderboard</b><span style="font-size:12.5px;color:var(--muted)">update otomatis saat peserta lain selesai</span></div><div id="lb"></div></div>' : historyHtml(res.set)}
+    ${res.mode === 'live' ? '<div class="lb" style="margin-bottom:16px"><div style="display:flex;align-items:baseline;gap:10px"><b style="font-size:17px">Leaderboard</b><span style="font-size:12.5px;color:var(--muted)">update otomatis saat peserta lain selesai</span></div><div id="pod"></div><div id="lb"></div></div>' : historyHtml(res.set)}
     <div id="rv"><div class="h2">Review jawaban</div>${res.review.map((q, i) => `<div class="rv"><span class="pts">${q.c === q.a ? '+' + q.p : '0'}</span><div class="qt">${i + 1}. ${esc(q.q)}</div>
       ${q.o.map((o, j) => `<div class="o ${j === q.a ? 'ok' : j === q.c ? 'bad' : ''}">${j === q.a ? '✓ ' : j === q.c ? '✗ ' : ''}${esc(o)}</div>`).join('')}
       ${q.c == null ? '<div class="ex"><b>Tidak dijawab (waktu habis).</b></div>' : ''}<div class="ex">${esc(q.e)}${q.src ? ` <i>— ${esc(q.src)}</i>` : ''}</div></div>`).join('')}</div></div>`;
   $('#toRv').onclick = () => $('#rv').scrollIntoView({ behavior: 'smooth' });
   if (res.mode === 'live') {
-    const tick = async () => { const B = await API.board(res.code), el = $('#lb'); if (!el) return clearInterval(poll);
+    PODSIG = ''; const tick = async () => { const B = await API.board(res.code), el = $('#lb'); if (!el) return clearInterval(poll); paintPodium($('#pod'), B, res.player);
       el.innerHTML = B.slice(0, 20).map((x, i) => `<div class="lbr ${x.player.toLowerCase() === (res.player || '').toLowerCase() ? 'me' : ''}"><span class="rk">${i + 1}</span><div><b>${esc(x.player)}</b><span>${x.correct}/${x.total} benar · ${fmtS(x.duration_ms)}</span></div><span class="sc">${x.score}</span></div>`).join(''); };
     tick(); clearInterval(poll); poll = setInterval(() => { if (!document.hidden) tick(); }, 4000);
   }
   window.scrollTo(0, 0);
+}
+/* ===== Podium kemenangan (Top 3) — tampil di host, hasil peserta, dan layar penuh untuk diproyeksikan ===== */
+function podiumHtml(B, me, big) {
+  const T = (B || []).slice(0, 3); if (!T.length) return '';
+  const ini = n => String(n || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+  const slot = (x, place) => x ? `<div class="pd p${place}${me && x.player.toLowerCase() === me.toLowerCase() ? ' me' : ''}"><div class="pd-av"><span>${esc(ini(x.player))}</span><i>${['🥇', '🥈', '🥉'][place - 1]}</i>${place === 1 ? '<b class="pd-cr">👑</b>' : ''}</div><div class="pd-nm">${esc(x.player)}</div><div class="pd-sc">${x.score} <small>poin</small></div><div class="pd-st"><span>${place}</span><small>${x.correct}/${x.total} · ${fmtS(x.duration_ms)}</small></div></div>` : '<div class="pd empty"></div>';
+  const conf = [...Array(big ? 46 : 24).keys()].map(i => `<i style="--x:${(i * 37) % 100}%;--d:${(i % 7) * .18}s;--c:${['#F5C518', '#34C759', '#0A84FF', '#FF375F', '#AF52DE', '#FF9F0A'][i % 6]};--r:${(i * 53) % 360}deg"></i>`).join('');
+  return `<div class="podium${big ? ' big' : ''}"><div class="pd-conf" aria-hidden="true">${conf}</div><div class="pd-ttl">🏆 Podium Kemenangan</div><div class="pd-row">${slot(T[1], 2)}${slot(T[0], 1)}${slot(T[2], 3)}</div></div>`;
+}
+let PODSIG = '';
+function paintPodium(el, B, me) { if (!el) return; const sig = (B || []).slice(0, 3).map(x => x.player + ':' + x.score).join('|'); if (sig === PODSIG && el.innerHTML) return; PODSIG = sig; el.innerHTML = podiumHtml(B, me); }
+function podiumFull(B, title) {
+  const m = document.createElement('div'); m.className = 'modal pdm'; m.innerHTML = `<div class="pdm-in"><button class="btn sm" data-x style="position:absolute;top:14px;right:14px">Tutup</button><div class="pdm-t">${esc(title || 'Live quiz')}</div>${podiumHtml(B, null, true) || '<div class="msg">Belum ada peserta yang selesai.</div>'}${(B || []).length > 3 ? `<div class="pdm-rest">${B.slice(3, 10).map((x, i) => `<span><b>${i + 4}</b> ${esc(x.player)} · ${x.score}</span>`).join('')}</div>` : ''}</div>`;
+  m.onclick = e => { if (e.target === m || e.target.closest('[data-x]')) m.remove(); }; document.body.appendChild(m);
 }
 function historyHtml(set) {
   const H = LS.get('gx-quiz-history', []).filter(h => h.set === set).slice(0, 8);
@@ -389,7 +428,7 @@ async function loadBank() {   // ambil ulang materi + soal terbaru dari server (
     const M = (j.data && j.data.materi) || {}, over = M.over || {}; HIDDEN = new Set(M.hidden || []);
     MAT = BASE.map(x => over[x.id] ? { ...x, ...over[x.id], quiz: over[x.id].quiz || x.quiz } : x).concat(M.added || [])
       .concat(Object.entries(over).filter(([id, v]) => id.startsWith('n-') && (v.quiz || []).length).map(([id, v]) => ({ id, title: v.title || 'Materi Notion', cat: v.cat || 'umum', ...v })));
-    if (j.data && Array.isArray(j.data.cats) && j.data.cats.length) { CATS = j.data.cats; setSets(); }
+    if (j.data && Array.isArray(j.data.cats) && j.data.cats.length) { const D = window.KB_CATS || []; CATS = j.data.cats.concat(D.filter(d => !j.data.cats.some(c => c[0] === d[0]))); setSets(); }
     return true; } catch (e) { return false; }
 }
 async function loadNotionTitles() { try { const r = await fetch('/api/todo?kb=notion', { cache: 'no-store' }); if (r.ok) { const j = await r.json(); QB.npages = j.pages || {}; } } catch (e) {} }

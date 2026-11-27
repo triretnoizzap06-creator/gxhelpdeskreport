@@ -85,6 +85,36 @@ function clean(t) {
 }
 const must = ({ data, error }) => { if (error) throw dbError(error); return data; };
 
+/* ---------- roster: pindah tim / arsip + jadwal (gx_docs team-roster-schedule) ---------- */
+const docOf = async k => { const row = must(await db().from('gx_docs').select('data,revision').eq('key', k).maybeSingle()); return { d: (row && row.data) || {}, rev: row ? row.revision : null }; };
+const saveDoc = async (k, fn) => { for (let t = 0; t < 6; t++) { const { d, rev } = await docOf(k); const r0 = fn(d); if (r0 === false) return false; const r = must(await db().rpc('gx_doc_save', { p_key: k, p_data: d, p_revision: rev })); if (!r || !r.conflict) return true; } throw new AppError('busy', 503, 'Server sibuk, coba lagi.'); };
+const rosterOf = (d, tm) => Array.isArray(d.roster) && d.roster.length ? d.roster : (MDEF[tm] || []).map(n => ({ name: n, nick: DEF_NICK[n] || n.split(' ')[0] }));
+const TEAM_L = t => t === 'AM' ? 'Account Manager' : 'Helpdesk';
+async function rosterMove(team, name, to, reason, by) {
+  const now = new Date().toISOString(); let moved = null; const log = { name, from: team, to: to || 'ARCHIVE', reason: reason || '', at: now, by };
+  const ok = await saveDoc('team-board-' + team.toLowerCase(), d => { const R = rosterOf(d, team), x = R.find(y => y.name === name); if (!x) return false; moved = x; d.roster = R.filter(y => y.name !== name);
+    (d.transfers = Array.isArray(d.transfers) ? d.transfers : []).unshift(log);
+    if (!to) { d.archived = (Array.isArray(d.archived) ? d.archived : []).filter(y => y.name !== name); d.archived.unshift({ name, nick: x.nick || name.split(' ')[0], at: now, reason: reason || '' }); }
+    d.notes = Array.isArray(d.notes) ? d.notes : [];
+    d.notes.unshift({ id: randomUUID(), by: 'SPV', to: '', text: to ? `🔁 ${x.nick || name} pindah ke ${TEAM_L(to)}. Task & catatan lama tetap tersimpan di sini.` : `🗄 ${x.nick || name} diarsipkan${reason ? ' — ' + reason : ''}. Task, catatan & riwayatnya tetap tersimpan.`, at: now, pinned: false }); });
+  if (!ok) return null;
+  if (!to) { await saveDoc('team-desk-' + team.toLowerCase(), d => { const x = d.desks && d.desks[name]; if (!x) return false; x.archived = true; x.archivedAt = now; }); return log; }
+  await saveDoc('team-board-' + to.toLowerCase(), d => { const R = rosterOf(d, to); if (!R.some(y => y.name === name)) R.push({ name, nick: moved.nick || name.split(' ')[0] }); d.roster = R; (d.transfers = Array.isArray(d.transfers) ? d.transfers : []).unshift(log);
+    d.notes = Array.isArray(d.notes) ? d.notes : []; d.notes.unshift({ id: randomUUID(), by: 'SPV', to: '', text: `👋 Welcome ${moved.nick || name}! Pindahan dari ${TEAM_L(team)}.`, at: now, pinned: false }); });
+  let desk = null; await saveDoc('team-desk-' + team.toLowerCase(), d => { const x = d.desks && d.desks[name]; if (!x) return false; desk = JSON.parse(JSON.stringify(x)); x.movedTo = to; x.movedAt = now; });
+  if (desk) { delete desk.movedTo; await saveDoc('team-desk-' + to.toLowerCase(), d => { d.desks = d.desks || {}; d.desks[name] = { ...desk, ...(d.desks[name] || {}), tpls: [...(desk.tpls || []), ...((d.desks[name] || {}).tpls || [])].filter((t, i, a) => a.findIndex(z => z.id === t.id) === i) }; }); }
+  return log;
+}
+const SCHED = 'team-roster-schedule';
+const readSchedule = async () => { const { d } = await docOf(SCHED); return { list: Array.isArray(d.list) ? d.list : [], done: Array.isArray(d.done) ? d.done : [] }; };
+const saveSchedule = sc => saveDoc(SCHED, d => { d.list = sc.list; d.done = (sc.done || d.done || []).slice(0, 50); });
+const todayWita = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
+async function runSchedule() {
+  const sc = await readSchedule(), due = sc.list.filter(x => x.at <= todayWita()); if (!due.length) return;
+  for (const x of due) { try { await rosterMove(x.team, x.name, x.to === 'ARCHIVE' ? null : x.to, x.reason, 'SPV (jadwal ' + x.at + ')'); } catch (e) { continue; } sc.done.unshift({ ...x, ranAt: new Date().toISOString() }); }
+  sc.list = sc.list.filter(x => !due.includes(x)); await saveSchedule(sc);
+}
+
 export default async function handler(req, res) {
   const q = new URL(req.url, 'http://x').searchParams;
   try {
@@ -117,30 +147,33 @@ export default async function handler(req, res) {
       const team = String(q.get('board')).toUpperCase(); if (!TEAMS.includes(team)) return json(res, { error: 'bad-team' }, 400);
       const key = 'team-board-' + team.toLowerCase();
       const read = async () => { const row = must(await db().from('gx_docs').select('data,revision').eq('key', key).maybeSingle()); const d = (row && row.data) || {};
-        return { data: { roster: Array.isArray(d.roster) ? d.roster : null, tasks: Array.isArray(d.tasks) ? d.tasks : [], notes: Array.isArray(d.notes) ? d.notes : [], presence: d.presence && typeof d.presence === 'object' && !Array.isArray(d.presence) ? d.presence : {} }, revision: row ? row.revision : null }; };
-      if (req.method === 'GET') { const r = await read(); return json(res, { board: r.data, revision: r.revision, canRoster: authed(req) || teamAuthed(req) }); }
+        return { data: { roster: Array.isArray(d.roster) ? d.roster : null, tasks: Array.isArray(d.tasks) ? d.tasks : [], notes: Array.isArray(d.notes) ? d.notes : [], presence: d.presence && typeof d.presence === 'object' && !Array.isArray(d.presence) ? d.presence : {}, transfers: Array.isArray(d.transfers) ? d.transfers.slice(0, 100) : [], archived: Array.isArray(d.archived) ? d.archived.slice(0, 100) : [] }, revision: row ? row.revision : null }; };
+      if (req.method === 'GET') { await runSchedule(); const r = await read(), sc = await readSchedule(); return json(res, { board: r.data, revision: r.revision, canRoster: authed(req) || teamAuthed(req), schedule: sc.list.filter(x => x.team === team || x.to === team) }); }
       if (req.method !== 'POST') return json(res, { error: 'method' }, 405);
       const b = await readJson(req), op = str(b.op, 20), now = new Date().toISOString();
       const nm = v => str(v, 60).replace(/\s+/g, ' ').trim(), spv = authed(req), mem = memberOf(req);
       if (mem && nm(b.by) !== 'SPV') b.by = mem.name;   // sudah login per orang → tercatat atas nama orang itu (tidak bisa mengaku orang lain)
       const forWho = spv && b.for ? nm(b.for) : '';   // SPV boleh mengatur status siapa saja
       if (op === 'presence' && !forWho && !(mem && nm(b.by) === mem.name) && !(spv && nm(b.by) === 'SPV')) return json(res, { error: 'member-login-required', detail: 'Login pakai nickname-mu dulu untuk set status.' }, 401);
-      /* pindah subdivisi (Helpdesk ⇄ AM) — riwayat task/notes tetap di board lama, desk (foto, template) ikut pindah */
-      if (op === 'roster.transfer') {
-        if (!spv) return json(res, { error: 'spv-login-required', detail: 'Hanya SPV yang bisa memindahkan anggota.' }, 401);
-        const to = String(b.to || '').toUpperCase(), name = nm(b.name); if (!TEAMS.includes(to) || to === team || !name) return json(res, { error: 'invalid', detail: 'Tujuan tidak valid.' }, 400);
-        const docOf = async k => { const row = must(await db().from('gx_docs').select('data,revision').eq('key', k).maybeSingle()); return { d: (row && row.data) || {}, rev: row ? row.revision : null }; };
-        const saveDoc = async (k, fn) => { for (let t = 0; t < 6; t++) { const { d, rev } = await docOf(k); const r0 = fn(d); if (r0 === false) return false; const r = must(await db().rpc('gx_doc_save', { p_key: k, p_data: d, p_revision: rev })); if (!r || !r.conflict) return true; } throw new Error('busy'); };
-        const rosterOf = (d, tm) => Array.isArray(d.roster) && d.roster.length ? d.roster : (MDEF[tm] || []).map(n => ({ name: n, nick: DEF_NICK[n] || n.split(' ')[0] }));
-        let moved = null; const log = { name, from: team, to, at: now, by: 'SPV' };
-        const ok = await saveDoc('team-board-' + team.toLowerCase(), d => { const R = rosterOf(d, team), x = R.find(y => y.name === name); if (!x) return false; moved = x; d.roster = R.filter(y => y.name !== name); (d.transfers = d.transfers || []).unshift(log);
-          d.notes = Array.isArray(d.notes) ? d.notes : []; d.notes.unshift({ id: randomUUID(), by: 'SPV', to: '', text: `🔁 ${x.nick || name} pindah ke ${to === 'AM' ? 'Account Manager' : 'Helpdesk'}. Task & catatan lama tetap tersimpan di sini.`, at: now, pinned: false }); });
-        if (!ok) return json(res, { error: 'not-found', detail: 'Anggota tidak ditemukan di tim ini.' }, 404);
-        await saveDoc('team-board-' + to.toLowerCase(), d => { const R = rosterOf(d, to); if (!R.some(y => y.name === name)) R.push({ name, nick: moved.nick || name.split(' ')[0] }); d.roster = R; (d.transfers = d.transfers || []).unshift(log);
-          d.notes = Array.isArray(d.notes) ? d.notes : []; d.notes.unshift({ id: randomUUID(), by: 'SPV', to: '', text: `👋 Welcome ${moved.nick || name}! Pindahan dari ${team === 'AM' ? 'Account Manager' : 'Helpdesk'}.`, at: now, pinned: false }); });
-        let desk = null; await saveDoc('team-desk-' + team.toLowerCase(), d => { const x = d.desks && d.desks[name]; if (!x) return false; desk = JSON.parse(JSON.stringify(x)); x.movedTo = to; x.movedAt = now; });
-        if (desk) { delete desk.movedTo; await saveDoc('team-desk-' + to.toLowerCase(), d => { d.desks = d.desks || {}; d.desks[name] = { ...desk, ...(d.desks[name] || {}), tpls: [...(desk.tpls || []), ...((d.desks[name] || {}).tpls || [])].filter((t, i, a) => a.findIndex(z => z.id === t.id) === i) }; }); }
+      /* pindah subdivisi (Helpdesk ⇄ AM) atau arsipkan (keluar tim, mis. pindah ke CC) — riwayat task/notes tetap di board lama */
+      if (op === 'roster.transfer' || op === 'roster.archive') {
+        if (!spv) return json(res, { error: 'spv-login-required', detail: 'Hanya SPV yang bisa memindahkan / mengarsipkan anggota.' }, 401);
+        const to = op === 'roster.archive' ? null : String(b.to || '').toUpperCase(), name = nm(b.name);
+        if (!name || (to !== null && (!TEAMS.includes(to) || to === team))) return json(res, { error: 'invalid', detail: 'Tujuan tidak valid.' }, 400);
+        const log = await rosterMove(team, name, to, str(b.reason, 120), 'SPV');
+        if (!log) return json(res, { error: 'not-found', detail: 'Anggota tidak ditemukan di tim ini.' }, 404);
         const cur = await read(); return json(res, { board: cur.data, revision: cur.revision, transferred: log });
+      }
+      /* jadwalkan pindah / arsip pada tanggal tertentu (berjalan otomatis saat dashboard dibuka pada/ setelah tanggal itu) */
+      if (op === 'roster.schedule' || op === 'roster.unschedule') {
+        if (!spv) return json(res, { error: 'spv-login-required', detail: 'Hanya SPV yang bisa menjadwalkan.' }, 401);
+        const sc = await readSchedule();
+        if (op === 'roster.unschedule') sc.list = sc.list.filter(x => x.id !== b.id);
+        else { const at = String(b.at || ''), to = b.to === 'ARCHIVE' ? 'ARCHIVE' : String(b.to || '').toUpperCase(), name = nm(b.name);
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(at) || !name || !(to === 'ARCHIVE' || (TEAMS.includes(to) && to !== team))) return json(res, { error: 'invalid', detail: 'Tanggal / tujuan tidak valid.' }, 400);
+          sc.list = sc.list.filter(x => !(x.name === name && x.team === team)).concat([{ id: randomUUID(), team, name, to, at, reason: str(b.reason, 120), by: 'SPV', created: now }]); }
+        await saveSchedule(sc); await runSchedule(); const cur = await read();
+        return json(res, { board: cur.data, revision: cur.revision, schedule: (await readSchedule()).list.filter(x => x.team === team || x.to === team) });
       }
       if (nm(b.by) === 'SPV' && !spv) return json(res, { error: 'spv-login-required', detail: 'Hanya SPV yang bisa menulis sebagai SPV.' }, 401);
       if (op === 'note.seen' && !spv) return json(res, { error: 'spv-login-required' }, 401);
@@ -323,12 +356,12 @@ export default async function handler(req, res) {
       if (b.copy) {
         const { from, to } = b.copy;
         if (!okMonth(from) || !okMonth(to) || from === to) return json(res, { error: 'bad-month' }, 400);
-        const exist = must(await db().from('gx_tasks').select('id').eq('month', to).limit(1));
-        if (exist && exist.length) return json(res, { error: 'target-not-empty', detail: 'Bulan tujuan sudah punya task.' }, 409);
+        /* bulan tujuan boleh sudah berisi task (mis. task bulanan yang dibuat duluan) — task dengan section + judul sama tidak disalin dua kali */
+        const exist = must(await db().from('gx_tasks').select('section,title').eq('month', to)) || [], has = new Set(exist.map(t => t.section + '|' + String(t.title).trim().toLowerCase()));
         const src = must(await db().from('gx_tasks').select('*').eq('month', from).in('section', RECURRING));
-        const rows = (src || []).map(t => ({ ...clean({ ...t, month: to, status: 'NOT STARTED', due: shiftDue(t.due, to) }), team_note: '', team_by: '' }));
+        const rows = (src || []).filter(t => !has.has(t.section + '|' + String(t.title).trim().toLowerCase())).map(t => ({ ...clean({ ...t, month: to, status: 'NOT STARTED', due: shiftDue(t.due, to) }), team_note: '', team_by: '' }));
         if (rows.length) must(await db().from('gx_tasks').insert(rows));
-        return json(res, { ok: true, copied: rows.length });
+        return json(res, { ok: true, copied: rows.length, skipped: (src || []).length - rows.length });
       }
       if (Array.isArray(b.import)) {
         const rows = b.import.slice(0, 500).map(clean);

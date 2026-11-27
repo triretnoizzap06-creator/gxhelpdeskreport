@@ -56,7 +56,11 @@ async function mutateJoin(c, fn) {   // baca → ubah → simpan dengan cek revi
 /* progres live per peserta: gx_docs key quiz-prog-<pin>-<nama> (satu dokumen per peserta → tidak saling bentrok) */
 const progKey = (c, n) => 'quiz-prog-' + c.toLowerCase() + '-' + nkey(n).replace(/[^a-z0-9]+/g, '_').slice(0, 40);
 const pubQ = s => (s.questions || []).map(x => ({ q: x.q, o: x.o }));
-const board = async code => must(await db().from('gx_quiz_results').select('player,score,correct,total,duration_ms,created_at').eq('code', code).order('score', { ascending: false }).order('duration_ms', { ascending: true }).limit(200)) || [];
+const board = async code => { const R = must(await db().from('gx_quiz_results').select('player,score,correct,total,duration_ms,created_at').eq('code', code).order('score', { ascending: false }).order('duration_ms', { ascending: true }).limit(200)) || [];
+  /* avatar pilihan peserta (disimpan di dokumen approval) ikut ditampilkan di leaderboard & podium */
+  try { const J = (await getJoin(code)).data; R.forEach(r => { const p = J.players[nkey(r.player)]; if (p && p.av) r.av = p.av; }); } catch (e) {}
+  return R; };
+const AVS = 24;   // jumlah avatar animasi yang bisa dipilih (indeks 0..23, lihat quiz.html)
 
 export default async function handler(req, res) {
   const q = new URL(req.url, 'http://x').searchParams;
@@ -108,7 +112,8 @@ export default async function handler(req, res) {
           const k = nkey(player), p = J.players[k];
           if (p && p.token === tok0 && tok0) return { abort: true, status: p.status, token: p.token, player: p.name };
           if (p && p.status !== 'rejected') return { abort: true, error: 'name-taken' };
-          const np = { name: player, token: randomUUID(), status: 'pending', at: new Date().toISOString() };
+          const av = Number.isInteger(b.join.av) && b.join.av >= 0 && b.join.av < AVS ? b.join.av : null;
+          const np = { name: player, token: randomUUID(), status: 'pending', at: new Date().toISOString(), ...(av != null ? { av } : {}) };
           J.players[k] = np; return { status: np.status, token: np.token, player: np.name };
         });
         if (out.error) return json(res, { error: 'name-taken', detail: 'Nama ini sudah dipakai peserta lain di sesi ini — pakai nama lain.' }, 409);

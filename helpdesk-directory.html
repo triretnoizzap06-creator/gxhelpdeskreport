@@ -91,7 +91,7 @@ h2 .count{font-size:12px;font-weight:700;background:var(--grey);color:var(--mute
 .emp dd.miss{color:var(--muted);font-weight:500;font-style:italic}
 .emp .foot{margin-top:auto;display:flex;gap:6px;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
 .emp.inactive{opacity:.78}.emp.inactive .ph img{filter:grayscale(.85)}
-.chip.xs.resigned{background:#FDECEC;color:#B3261E}.chip.xs.cut{background:#F3E8FF;color:#6B21A8}.chip.xs.eoc{background:#EEF2F7;color:#334155}.chip.xs.inactive{background:#F2F2F2;color:#555}
+.chip.xs.resigned{background:#FDECEC;color:#B3261E}.chip.xs.cut{background:#F3E8FF;color:#6B21A8}.chip.xs.eoc{background:#EEF2F7;color:#334155}.chip.xs.transfer{background:#E0F2FE;color:#075985}.chip.xs.inactive{background:#F2F2F2;color:#555}
 details.arch{grid-column:1/-1;margin-top:18px;border:1px dashed #D6D6DB;border-radius:14px;padding:4px 14px 14px;background:#FAFAFB}
 details.arch summary{cursor:pointer;padding:10px 0;font-weight:700;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}details.arch summary span{font-weight:400;color:#86868B;font-size:13px}
 details.arch .grid{margin-top:6px}.hint{font-size:12.5px;color:#6E6E73}.hidden{display:none!important}
@@ -185,9 +185,9 @@ details.arch .grid{margin-top:6px}.hint{font-size:12.5px;color:#6E6E73}.hidden{d
       <div class="f full"><label for="fPhoto">Photo</label>
         <div class="phrow"><span class="av lg" id="fPrev"></span><select class="inp" id="fPhoto"></select>
           <label class="btn sm">Upload<input type="file" accept="image/*" id="fUpload" hidden></label></div></div>
-      <div class="f"><label for="fStat">Employment status</label><select class="inp" id="fStat"><option value="active">Active</option><option value="resigned">Resigned</option><option value="cut">Cut</option><option value="eoc">End of Contract</option><option value="inactive">Inactive (lainnya)</option></select></div>
+      <div class="f"><label for="fStat">Employment status</label><select class="inp" id="fStat"><option value="active">Active</option><option value="resigned">Resigned</option><option value="cut">Cut</option><option value="eoc">End of Contract</option><option value="transfer">Transferred (pindah divisi)</option><option value="inactive">Inactive (lainnya)</option></select></div>
       <div class="f" id="fExitW"><label for="fExit">Last working day</label><input class="inp" type="date" id="fExit"></div>
-      <div class="f full"><div class="hint" id="fStatHint">Resigned / Cut / End of Contract → otomatis pindah ke <b>Archived</b>. Data karyawan & riwayat performance tetap tersimpan.</div><div class="hist" id="fHist"></div></div>
+      <div class="f full"><div class="hint" id="fStatHint">Resigned / Cut / End of Contract / Transferred → pindah ke <b>Archived</b> pada <i>last working day</i> (tanggal di masa depan = tetap aktif sampai hari itu). Data karyawan & riwayat performance tetap tersimpan.</div><div class="hist" id="fHist"></div></div>
     </div>
     <div class="err" id="edErr"></div>
     <div class="act"><button type="button" class="btn danger sp" id="edDel">Delete</button><button type="button" class="btn" id="edCancel">Cancel</button><button class="btn y" id="edSave">Save</button></div>
@@ -330,7 +330,7 @@ function render() {
 }
 
 function renderNotif(t) {
-  const act = ST.items.filter(e => e.active);
+  const act = ST.items.filter(e => !isArch(e));
   // ulang tahun hari ini
   const todayB = act.filter(e => { const b = parseD(e.birthday); return b && dnum(nextBirthday(b, t)) === dnum(t); });
   $('#pToday').className = 'panel bday' + (todayB.length ? '' : ' none');
@@ -358,13 +358,17 @@ function renderNotif(t) {
 }
 
 /* status keluar: entri {type:'exit'} terakhir di contract_history (hanya berlaku bila tidak aktif) */
-const EXIT_L = { resigned: 'Resigned', cut: 'Cut', eoc: 'End of Contract', inactive: 'Inactive' };
-function exitOf(e) { if (e.active) return null; const h = (e.contract_history || []).filter(x => x && x.type === 'exit'); return h.length ? h[h.length - 1] : { status: 'inactive' }; }
+const EXIT_L = { resigned: 'Resigned', cut: 'Cut', eoc: 'End of Contract', transfer: 'Transferred', inactive: 'Inactive' };
+const todayW = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
+const exitEntry = e => { const h = (e.contract_history || []).filter(x => x && x.type === 'exit'); return h.length ? h[h.length - 1] : null; };
+const isArch = e => !e.active || !!(exitEntry(e) && exitEntry(e).date && exitEntry(e).date <= todayW());
+function exitOf(e) { const x = exitEntry(e); if (!isArch(e)) return null; return x || { status: 'inactive' }; }
+function leavingOf(e) { const x = exitEntry(e); return x && x.date && x.date > todayW() && e.active ? x : null; }
 function empCard(e, t) {
   const s = contractStatus(e, t), b = parseD(e.birthday), ex = exitOf(e);
   const dd = (v, txt) => v ? `<dd>${txt}</dd>` : `<dd class="miss">not set</dd>`;
-  return `<article class="emp ${e.active ? '' : 'inactive'}">
-      <div class="ph">${e.photo ? `<img src="${esc(e.photo)}" alt="${esc(e.full_name)}" loading="lazy">` : `<span class="ini">${esc(initials(e.full_name))}</span>`}${ex ? `<span class="chip xs ${ex.status}">${EXIT_L[ex.status] || 'Inactive'}</span>` : `<span class="chip ${s.key}">${s.label}</span>`}</div>
+  return `<article class="emp ${isArch(e) ? "inactive" : ""}">
+      <div class="ph">${e.photo ? `<img src="${esc(e.photo)}" alt="${esc(e.full_name)}" loading="lazy">` : `<span class="ini">${esc(initials(e.full_name))}</span>`}${ex ? `<span class="chip xs ${ex.status}">${EXIT_L[ex.status] || 'Inactive'}</span>` : leavingOf(e) ? `<span class="chip xs ${leavingOf(e).status}">${EXIT_L[leavingOf(e).status]} · ${fmt(parseD(leavingOf(e).date))}</span>` : `<span class="chip ${s.key}">${s.label}</span>`}</div>
       <div class="bd"><div><h3>${esc(e.full_name)}${e.nickname ? ` <span class="nick">(${esc(e.nickname)})</span>` : ''}</h3><div class="eid ${e.subdivision ? '' : 'miss'}">${e.subdivision ? esc(e.subdivision) : 'Subdivision not set'}</div></div>
         <dl><dt>Birthday</dt>${dd(b, b && fmt(b))}<dt>Start Contract</dt>${dd(e.start_contract, fmt(parseD(e.start_contract)))}<dt>End Contract</dt>${dd(e.end_contract, fmt(parseD(e.end_contract)))}${ex && ex.date ? `<dt>Last day</dt><dd>${fmt(parseD(ex.date))}</dd>` : ''}</dl>
         ${ex ? '' : attBlock(e)}
@@ -381,7 +385,7 @@ function renderGrid(t) {
     if (f.startsWith('sub:')) return (e.subdivision || '') === f.slice(4);
     return true;
   });
-  const list = all.filter(e => e.active), arch = all.filter(e => !e.active), nAct = ST.items.filter(e => e.active).length;
+  const list = all.filter(e => !isArch(e)), arch = all.filter(isArch), nAct = ST.items.filter(e => !isArch(e)).length;
   $('#count').textContent = list.length === nAct ? nAct : `${list.length} / ${nAct}`;
   const archHtml = arch.length ? `<details class="arch" ${ARCH_OPEN ? 'open' : ''}><summary>🗄 Archived <b>${arch.length}</b><span>Resigned · Cut · End of Contract — data & riwayat performance tetap tersimpan</span></summary><div class="grid">${arch.map(e => empCard(e, t)).join('')}</div></details>` : '';
   $('#grid').innerHTML = (list.length ? list.map(e => empCard(e, t)).join('') : `<div class="empty">No active employee matches your search.</div>`) + archHtml;
@@ -395,7 +399,7 @@ function openEditor(e) {
   $('#edT').textContent = e ? 'Edit employee' : 'Add employee';
   $('#fName').value = EDIT.full_name; $('#fNick').value = EDIT.nickname || ''; $('#fSub').value = EDIT.subdivision || '';
   $('#fBday').value = EDIT.birthday || ''; $('#fStart').value = EDIT.start_contract || ''; $('#fEnd').value = EDIT.end_contract || '';
-  const ex = exitOf(EDIT); $('#fStat').value = ex ? ex.status : 'active'; $('#fExit').value = (ex && ex.date) || ''; syncStat();
+  const ex = exitOf(EDIT) || leavingOf(EDIT); $('#fStat').value = ex ? ex.status : 'active'; $('#fExit').value = (ex && ex.date) || ''; syncStat();
   const opts = ['', ...PHOTO_FILES]; if (EDIT.photo && !opts.includes(EDIT.photo)) opts.push(EDIT.photo);
   $('#fPhoto').innerHTML = opts.map(p => `<option value="${esc(p)}">${p ? (p.startsWith('data:') ? 'Uploaded photo' : p.replace(/^photo-|\.jpg$/g, '').replace(/-/g, ' ')) : 'No photo'}</option>`).join('');
   $('#fPhoto').value = EDIT.photo || ''; paintPrev();
@@ -417,13 +421,13 @@ $('#fUpload').onchange = async ev => {
   } catch (e) { toast('Foto tidak bisa dibaca'); }
 };
 function syncStat() { const v = $('#fStat').value; $('#fExitW').classList.toggle('hidden', v === 'active' || v === 'inactive'); }
-$('#fStat').onchange = () => { syncStat(); if (['resigned', 'cut', 'eoc'].includes($('#fStat').value) && !$('#fExit').value) $('#fExit').value = new Date().toISOString().slice(0, 10); };
+$('#fStat').onchange = () => { syncStat(); if (['resigned', 'cut', 'eoc', 'transfer'].includes($('#fStat').value) && !$('#fExit').value) $('#fExit').value = new Date().toISOString().slice(0, 10); };
 $('#edCancel').onclick = () => $('#editor').classList.add('hidden');
 $('#edForm').onsubmit = async ev => {
   ev.preventDefault();
   const body = { id: EDIT.id, full_name: $('#fName').value, nickname: $('#fNick').value, subdivision: $('#fSub').value, birthday: $('#fBday').value || null,
     start_contract: $('#fStart').value || null, end_contract: $('#fEnd').value || null, photo: $('#fPhoto').value || null, active: $('#fStat').value === 'active' };
-  const st = $('#fStat').value; body.exit = ['resigned', 'cut', 'eoc'].includes(st) ? { status: st, date: $('#fExit').value || null } : null;
+  const st = $('#fStat').value; body.exit = ['resigned', 'cut', 'eoc', 'transfer'].includes(st) ? { status: st, date: $('#fExit').value || null } : null;
   if (EDIT.id == null) delete body.id;
   $('#edSave').disabled = true;
   try {

@@ -136,6 +136,38 @@ body.embed .top{display:none}body.embed main{padding-top:14px}
 .bhs-dots button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--card,#fff);color:var(--ink);font:700 11.5px var(--font,inherit);cursor:pointer}.bhs-dots button.hard{border-color:#E5484D;color:#C62828}.bhs-dots button.on{background:#1D1D1F;color:#fff;border-color:#1D1D1F}
 .bhs-leg{font-size:11.5px;color:var(--muted);margin-top:8px;text-align:center}.bhs-leg .hard{color:#C62828;font-weight:700}
 @media (max-width:640px){.bhs-nav{flex-wrap:wrap}.bhs-dots{order:3;flex-basis:100%}}
+
+/* live scoreboard */
+.race{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.rr{display:flex;align-items:center;gap:10px;background:var(--card,#fff);border:1px solid var(--line);border-radius:12px;padding:7px 10px;will-change:transform}
+.rr .rk{width:26px;text-align:center;font-weight:900;font-size:14px;color:var(--muted)}.rr .av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:11.5px;font-weight:800;color:#fff;background:#6E6E73;flex:none}
+.rr .mid{flex:1;min-width:0}.rr .nm{display:flex;gap:8px;align-items:baseline}.rr .nm b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rr .nm small{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.rr .rb{height:6px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:4px}.rr .rb i{display:block;height:100%;background:linear-gradient(90deg,#1368CE,#7C3AED);border-radius:999px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.rr .sc{font-size:17px;font-weight:900;min-width:64px;text-align:right;font-variant-numeric:tabular-nums}
+.rr .mv{font-size:11.5px;font-weight:800;min-width:30px;text-align:right}.rr .mv.up{color:#1E8E3E}.rr .mv.dn{color:#C62828}
+.rr.lead{border-color:#F5C518;background:linear-gradient(90deg,rgba(245,197,24,.16),transparent 70%)}.rr.lead .av{background:linear-gradient(135deg,#F5C518,#E09A00)}.rr.lead .rb i{background:linear-gradient(90deg,#F5C518,#E09A00)}
+.rr.done .av{background:#34C759}.rr.done.lead .av{background:linear-gradient(135deg,#F5C518,#E09A00)}
+.racefs .rf-in{width:min(1000px,96vw);max-height:94vh;overflow:auto;background:var(--card,#fff);border-radius:22px;padding:20px 24px}.rf-h{display:flex;align-items:center;gap:10px;margin-bottom:6px}.rf-h small{display:block;font-size:11px;font-weight:800;letter-spacing:.12em;color:#7C3AED}.rf-h b{font-size:20px}.rf-h .sp{flex:1}
+.race.big{gap:9px}.race.big .rr{padding:12px 16px;border-radius:16px}.race.big .rr .rk{font-size:20px;width:36px}.race.big .rr .av{width:42px;height:42px;font-size:14px}.race.big .rr .nm b{font-size:20px}.race.big .rr .nm small{font-size:13px}.race.big .rr .rb{height:10px}.race.big .rr .sc{font-size:26px;min-width:100px}.race.big .rr .mv{font-size:14px}
+@media (prefers-reduced-motion:reduce){.rr .rb i{transition:none}}
+
+/* avatar animasi */
+.qav{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6,transparent 55%),var(--ac);box-shadow:0 3px 8px rgba(0,0,0,.15);vertical-align:middle;flex:none}
+.qav i{font-style:normal;font-size:19px;line-height:1;animation:avbob 1.6s ease-in-out var(--d) infinite;display:block}.qav.sm{width:28px;height:28px}.qav.sm i{font-size:16px}
+.qav.xl{width:96px;height:96px;margin:0 auto 14px;display:grid}.qav.xl i{font-size:56px;animation:avdance 1.2s ease-in-out infinite}
+@keyframes avbob{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-2px) rotate(-8deg)}75%{transform:translateY(1px) rotate(8deg)}}
+@keyframes avdance{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-10px) scale(1.08) rotate(-10deg)}60%{transform:translateY(0) scale(.96) rotate(10deg)}}
+.avpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:8px;max-width:460px;margin:0 auto 16px}
+.avpick button{aspect-ratio:1;border-radius:50%;border:3px solid transparent;background:radial-gradient(circle at 35% 30%,#fff6,transparent 55%),var(--ac);cursor:pointer;display:grid;place-items:center;transition:transform .15s,border-color .15s;padding:0}
+.avpick button i{font-style:normal;font-size:26px;animation:avbob 1.6s ease-in-out var(--d) infinite}.avpick button:hover{transform:scale(1.08)}
+.avpick button[aria-checked="true"]{border-color:#1D1D1F;transform:scale(1.12);box-shadow:0 0 0 3px #F5C518}
+.pd-av .pd-emo{font-size:28px;line-height:1}.p1 .pd-av .pd-emo{font-size:34px}.podium.big .pd-av .pd-emo{font-size:46px}.podium.big .p1 .pd-av .pd-emo{font-size:58px}
+.podium.live{margin:10px 0 8px}.podium.live .p1 .pd-st{height:76px}.podium.live .p2 .pd-st{height:56px}.podium.live .p3 .pd-st{height:42px}.podium.live .pd-st span{font-size:20px}.podium.live .pd-av{width:44px;height:44px}.podium.live .p1 .pd-av{width:54px;height:54px}
+.podium.live.big .p1 .pd-st{height:150px}.podium.live.big .p2 .pd-st{height:110px}.podium.live.big .p3 .pd-st{height:84px}.podium.live.big .pd-av{width:76px;height:76px}.podium.live.big .p1 .pd-av{width:92px;height:92px}
+.rr .qav.av,.rr.lead .qav.av,.rr.done .qav.av{width:30px;height:30px;background:radial-gradient(circle at 35% 30%,#fff6,transparent 55%),var(--ac)}.race.big .rr .qav.av{width:42px;height:42px}.race.big .rr .qav.av i{font-size:24px}
+.mute{border:0;background:var(--soft,#F2F2F7);border-radius:999px;width:32px;height:32px;cursor:pointer;font-size:15px;margin-left:6px}
+.timer.urgent i{background:#FF3B30!important;animation:tpulse .5s ease-in-out infinite}@keyframes tpulse{50%{opacity:.55}}
+@media (prefers-reduced-motion:reduce){.qav i,.avpick button i{animation:none}}
 </style>
 </head>
 <body>
@@ -194,8 +226,8 @@ const API = {
     s.results.push(row); const jp = (s.joins || {})[player.toLowerCase()]; if (jp) jp.status = 'done'; LOCAL.save(d); const B = await this.board(code);
     return { status: 200, j: { result: row, rank: B.findIndex(x => x.player === player) + 1, players: B.length, review: s.questions.map((x, i) => ({ ...x, ...ans[i] })) } };
   },
-  async join(code, player, token) {
-    const r = await call('', { method: 'POST', body: JSON.stringify({ join: { code, player, token } }) }); if (r) return r;
+  async join(code, player, token, av) {
+    const r = await call('', { method: 'POST', body: JSON.stringify({ join: { code, player, token, av } }) }); if (r) return r;
     const d = LOCAL.all(), s = d[code]; if (!s) return { status: 404, j: { error: 'not-found' } }; s.joins = s.joins || {};
     const k = player.toLowerCase(), p = s.joins[k]; if (p && p.token === token) return { status: 200, j: p };
     if ((p && p.status !== 'rejected') || s.results.some(x => x.player.toLowerCase() === k)) return { status: 409, j: { error: 'name-taken', detail: 'Nama ini sudah dipakai di sesi ini — pakai nama lain.' } };
@@ -277,7 +309,7 @@ async function host(code) {
   app.innerHTML = `<p style="margin:0 0 14px"><button class="btn sm" data-home>← Semua sesi</button></p><h1>${esc(s.title || 'Live quiz')}</h1><p class="lead">${esc(SETNAME[s.set_key] || '')} · ${s.n ?? s.questions.length} soal · ${s.timer_s} detik per soal</p>
     <div class="host"><div class="pin"><small>SCAN ATAU MASUKKAN PIN</small><div class="code">${esc(code)}</div><div class="qr" id="qr"></div><div class="url">${esc(url)}</div>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px"><button class="btn sm" id="cpy">Salin link</button><button class="btn sm" id="tog">${s.status === 'open' ? 'Tutup sesi' : 'Buka lagi'}</button><button class="btn sm" id="qref" title="Ganti soal sesi ini dengan bank soal terbaru (sebelum ada peserta mulai)">↻ Refresh soal</button><button class="btn sm danger" id="del">Hapus</button></div></div>
-      <div><div class="lb"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Leaderboard</b><span id="cnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span><button class="btn sm" id="bhsBtn" title="Bahas soal satu per satu: sebaran jawaban, kunci & penjelasan">📖 Bahas soal</button><button class="btn sm y" id="podBtn" title="Tampilkan podium layar penuh">🏆 Podium</button><span class="pill ${s.status}">${s.status === 'open' ? 'Live' : 'Ditutup'}</span></div><div id="prog" class="prog hidden"></div><div id="pod"></div><div id="lb"></div><div style="font-size:12px;color:var(--muted);margin-top:8px">Klik nama peserta untuk review jawabannya.</div></div>
+      <div><div class="lb"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Leaderboard</b><span id="cnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span> <button class="btn sm mute" data-mute data-host-live type="button"></button><button class="btn sm" id="bhsBtn" title="Bahas soal satu per satu: sebaran jawaban, kunci & penjelasan">📖 Bahas soal</button><button class="btn sm y" id="podBtn" title="Tampilkan podium layar penuh">🏆 Podium</button><span class="pill ${s.status}">${s.status === 'open' ? 'Live' : 'Ditutup'}</span></div><div id="prog" class="prog hidden"></div><div id="pod"></div><div id="lb"></div><div style="font-size:12px;color:var(--muted);margin-top:8px">Klik nama peserta untuk review jawabannya.</div></div>
       <div class="appr"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Peserta & approval</b><span id="pcnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span><button class="btn sm y hidden" id="apAll">Approve semua</button></div><div id="ap"></div>
       <div style="font-size:12px;color:var(--muted);margin-top:8px">Peserta baru bisa mulai mengerjakan setelah kamu approve.</div></div></div></div>`;
   try { const qr = qrcode(0, 'M'); qr.addData(url); qr.make(); $('#qr').innerHTML = qr.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); const sv = $('#qr svg'); sv.style.width = '230px'; sv.style.height = '230px'; } catch (e) { $('#qr').innerHTML = '<div class="msg">QR tidak bisa dimuat — bagikan link/PIN.</div>'; }
@@ -292,19 +324,60 @@ async function host(code) {
   let LASTB = []; PODSIG = '';
   $('#podBtn').onclick = async () => { const B = await API.board(code); podiumFull(B, s.title, code); };
   $('#bhsBtn').onclick = () => discuss(code, s.title);
+  let RACE = [];
+  $('#prog').onclick = e => { if (e.target.closest('[data-racefs]')) raceFull(s.title, () => RACE); };
   let PG = {}, AUTO_POD = LS.get('gx-quiz-pod', {})[code] || false;
   const tick = async () => { const [B, Jr, PR] = await Promise.all([API.board(code), API.joins(code), API.progress(code)]); PG = {}; PR.forEach(p => { PG[String(p.name).toLowerCase()] = p; }); const el = $('#lb'); if (!el) return; $('#cnt').textContent = B.length + ' selesai'; LASTB = B; paintPodium($('#pod'), B);
-    el.innerHTML = B.length ? B.map((x, i) => `<div class="lbr click" data-rv="${esc(x.player)}" title="Review jawaban"><span class="rk">${i + 1}</span><div><b>${esc(x.player)}</b><span>${x.correct}/${x.total} benar · ${fmtS(x.duration_ms)}</span></div><span class="sc">${x.score}</span></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Belum ada yang selesai.</div>';
+    el.innerHTML = B.length ? B.map((x, i) => `<div class="lbr click" data-rv="${esc(x.player)}" title="Review jawaban"><span class="rk">${i + 1}</span>${avHtml(x.av, x.player, 'sm')}<div><b>${esc(x.player)}</b><span>${x.correct}/${x.total} benar · ${fmtS(x.duration_ms)}</span></div><span class="sc">${x.score}</span></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Belum ada yang selesai.</div>';
     const P = (Jr && Jr.status === 200 && Jr.j.players) || [], pend = P.filter(p => p.status === 'pending');
     $('#pcnt').textContent = P.length ? `${P.length} peserta · ${pend.length} menunggu` : ''; $('#apAll').classList.toggle('hidden', pend.length < 2);
     const order = { pending: 0, approved: 1, done: 2, rejected: 3 };
-    $('#ap').innerHTML = P.length ? P.slice().sort((a, b) => order[a.status] - order[b.status]).map(p => `<div class="apr"><div><b>${esc(p.name)}</b><span class="s"><span class="pill ${p.status}">${ST[p.status] || p.status}</span> · daftar ${new Date(p.at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>${progRow(p, PG[String(p.name).toLowerCase()], B)}</div><div class="acts">${p.status === 'pending' ? `<button class="btn sm y" data-dec="approve" data-p="${esc(p.name)}">Approve</button><button class="btn sm danger" data-dec="reject" data-p="${esc(p.name)}">Tolak</button>` : p.status === 'rejected' ? `<button class="btn sm" data-dec="approve" data-p="${esc(p.name)}">Approve</button>` : p.status === 'done' ? `<button class="btn sm" data-rv="${esc(p.name)}">Review</button><button class="btn sm" data-dec="allowRetry" data-p="${esc(p.name)}">Izinkan ulang</button>` : ''}</div></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Menunggu peserta… minta tim scan QR di HP.</div>';
+    $('#ap').innerHTML = P.length ? P.slice().sort((a, b) => order[a.status] - order[b.status]).map(p => `<div class="apr"><div>${avHtml(p.av, p.name, 'sm')} <b>${esc(p.name)}</b><span class="s"><span class="pill ${p.status}">${ST[p.status] || p.status}</span> · daftar ${new Date(p.at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>${progRow(p, PG[String(p.name).toLowerCase()], B)}</div><div class="acts">${p.status === 'pending' ? `<button class="btn sm y" data-dec="approve" data-p="${esc(p.name)}">Approve</button><button class="btn sm danger" data-dec="reject" data-p="${esc(p.name)}">Tolak</button>` : p.status === 'rejected' ? `<button class="btn sm" data-dec="approve" data-p="${esc(p.name)}">Approve</button>` : p.status === 'done' ? `<button class="btn sm" data-rv="${esc(p.name)}">Review</button><button class="btn sm" data-dec="allowRetry" data-p="${esc(p.name)}">Izinkan ulang</button>` : ''}</div></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Menunggu peserta… minta tim scan QR di HP.</div>';
     const act = P.filter(p => p.status === 'approved'), done = P.filter(p => p.status === 'done'), pr = $('#prog');
     if (pr) { pr.classList.toggle('hidden', !act.length && !done.length); const tot = act.length + done.length, avg = tot ? Math.round((done.length * 100 + act.reduce((t, p) => { const g = PG[String(p.name).toLowerCase()]; return t + (g ? g.i / g.n * 100 : 0); }, 0)) / tot) : 0;
-      pr.innerHTML = `<div class="pg-h"><b>Progres live</b><span>${done.length}/${tot} selesai · ${act.length} sedang mengerjakan</span><span class="sp"></span><b>${avg}%</b></div><div class="pg-bar"><i style="width:${avg}%"></i></div>`; }
+      if (!pr.querySelector('.pg-h')) pr.innerHTML = `<div class="pg-h"><b>⚡ Live scoreboard</b><span class="pg-c"></span><span class="sp"></span><b class="pg-p"></b><button class="btn sm" data-racefs title="Tampilkan layar penuh untuk diproyeksikan">📺 Layar penuh</button></div><div class="pg-bar"><i></i></div><div class="livepod"></div><div class="race" id="race"></div>`;
+      pr.querySelector('.pg-c').textContent = `${done.length}/${tot} selesai · ${act.length} sedang mengerjakan`; pr.querySelector('.pg-p').textContent = avg + '%'; pr.querySelector('.pg-bar i').style.width = avg + '%';
+      RACE = raceRows(P, PG, B); paintRace(pr.querySelector('#race'), RACE); const fs = document.querySelector('.racefs #raceFs'); if (fs) paintRace(fs, RACE, true); }
     if (!AUTO_POD && B.length && !act.length && !P.some(p => p.status === 'pending') && done.length) { AUTO_POD = true; LS.set('gx-quiz-pod', { ...LS.get('gx-quiz-pod', {}), [code]: true }); toast('Semua peserta selesai 🎉'); podiumFull(B, s.title, code); } };
   HOSTCODE = code; HOSTTICK = tick;
   tick(); clearInterval(poll); poll = setInterval(() => { if (!$('#lb')) return clearInterval(poll); if (!document.hidden) tick(); }, 3000);
+}
+
+/* ===== Live scoreboard ala Kahoot: skor sementara semua peserta, posisi bergeser beranimasi saat saling salip ===== */
+function raceRows(P, PG, B) {
+  const by = {}; (B || []).forEach(x => { by[x.player.toLowerCase()] = x; });
+  return P.filter(p => p.status === 'approved' || p.status === 'done').map(p => { const k = String(p.name).toLowerCase(), f = by[k], g = PG[k];
+    return f ? { av: p.av, name: p.name, score: f.score, i: f.total, n: f.total, correct: f.correct, done: true } : { av: p.av, name: p.name, score: g ? g.score : 0, i: g ? g.i : 0, n: g ? g.n : 0, correct: g ? g.correct : 0, done: false }; })
+    .sort((a, b) => b.score - a.score || b.correct - a.correct || a.name.localeCompare(b.name));
+}
+const RANKS = new WeakMap();
+function paintRace(box, rows, big) {
+  if (!box) return; const lp = box.previousElementSibling && box.previousElementSibling.classList.contains('livepod') ? box.previousElementSibling : null;
+  if (lp) { const top = rows.filter(r => r.score > 0).slice(0, 3).map(r => ({ player: r.name, av: r.av, score: r.score, correct: r.correct, total: r.n || 0, duration_ms: 0, done: r.done })), sig = top.map(x => x.player + x.score).join('|');
+    if (lp.dataset.sig !== sig) { lp.dataset.sig = sig; lp.innerHTML = top.length ? podiumHtml(top, null, big, true) : ''; } } const prevPos = {}, prevRank = RANKS.get(box) || {}, top = Math.max(1, ...rows.map(r => r.score));
+  box.querySelectorAll('.rr').forEach(el => { prevPos[el.dataset.k] = el.getBoundingClientRect().top; });
+  const keep = new Set();
+  rows.forEach((r, idx) => { const k = r.name.toLowerCase(); keep.add(k); let el = box.querySelector(`.rr[data-k="${CSS.escape(k)}"]`);
+    if (!el) { el = document.createElement('div'); el.className = 'rr'; el.dataset.k = k; el.innerHTML = `<span class="rk"></span><span class="av"></span><div class="mid"><div class="nm"><b></b><small></small></div><div class="rb"><i></i></div></div><span class="mv"></span><b class="sc">0</b>`; el.querySelector('.av').outerHTML = avHtml(r.av, r.name, 'av'); el.querySelector('.nm b').textContent = r.name; }
+    const was = prevRank[k], mv = el.querySelector('.mv');
+    if (was != null && was !== idx) { mv.textContent = was > idx ? '▲' + (was - idx) : '▼' + (idx - was); mv.className = 'mv ' + (was > idx ? 'up' : 'dn'); clearTimeout(el._mv); el._mv = setTimeout(() => { mv.textContent = ''; mv.className = 'mv'; }, 4000); }
+    el.classList.toggle('done', r.done); el.classList.toggle('lead', idx === 0 && r.score > 0);
+    el.querySelector('.rk').textContent = idx < 3 && r.score > 0 ? ['🥇', '🥈', '🥉'][idx] : idx + 1;
+    el.querySelector('.nm small').textContent = r.done ? `✓ selesai · ${r.correct}/${r.n} benar` : r.n ? `soal ${r.i}/${r.n} · ${r.correct} benar` : 'belum menjawab';
+    el.querySelector('.rb i').style.width = Math.round(r.score / top * 100) + '%';
+    countUp(el.querySelector('.sc'), r.score); box.appendChild(el); });
+  box.querySelectorAll('.rr').forEach(el => { if (!keep.has(el.dataset.k)) el.remove(); });
+  /* FLIP: geser dari posisi lama ke posisi baru */
+  box.querySelectorAll('.rr').forEach(el => { const t0 = prevPos[el.dataset.k]; if (t0 == null) { el.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 350 }); return; }
+    const d = t0 - el.getBoundingClientRect().top; if (Math.abs(d) > 2) el.animate([{ transform: `translateY(${d}px)` }, { transform: 'none' }], { duration: 650, easing: 'cubic-bezier(.2,.8,.2,1)' }); });
+  const nr = {}; rows.forEach((r, idx) => { nr[r.name.toLowerCase()] = idx; }); RANKS.set(box, nr);
+  if (!rows.length) box.innerHTML = '<div class="msg" style="border:0;padding:8px 0">Skor muncul setelah peserta menjawab soal pertama.</div>';
+}
+function countUp(el, to) { const from = +el.dataset.v || 0; el.dataset.v = to; if (from === to) { el.textContent = to.toLocaleString('id-ID'); return; }
+  const t0 = performance.now(), D = 700; const step = t => { const k = Math.min(1, (t - t0) / D), v = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3))); el.textContent = v.toLocaleString('id-ID'); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }
+function raceFull(title, get) {
+  const m = document.createElement('div'); m.className = 'modal racefs'; m.innerHTML = `<div class="rf-in"><div class="rf-h"><div><small>⚡ LIVE SCOREBOARD</small><b>${esc(title || 'Live quiz')}</b></div><span class="sp"></span><button class="btn sm" data-x>Tutup</button></div><div class="livepod"></div><div class="race big" id="raceFs"></div></div>`;
+  m.onclick = e => { if (e.target === m || e.target.closest('[data-x]')) m.remove(); }; document.body.appendChild(m); paintRace(m.querySelector('#raceFs'), get(), true);
 }
 
 /* progres per peserta (sisi SPV) */
@@ -369,16 +442,19 @@ async function joinScreen(code) {
   if (!s) { app.innerHTML = `<div class="msg">PIN <b>${esc(code)}</b> tidak ditemukan. Cek lagi PIN dari SPV.</div><p><button class="btn" data-home>← Kembali</button></p>`; return; }
   if (s.status !== 'open') { app.innerHTML = `<div class="msg">Sesi <b>${esc(s.title)}</b> sudah ditutup.</div><p><button class="btn" data-home>← Kembali</button></p>`; return; }
   app.innerHTML = `<div class="play"><div class="res"><div style="font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--muted)">PIN ${esc(code)}</div><h1 style="margin:8px 0 4px">${esc(s.title)}</h1><p class="lead" style="margin:0 0 18px">${s.n ?? (s.questions || []).length} soal · ${s.timer_s} detik per soal · jawab cepat & tepat untuk poin maksimal</p>
+    <div class="avpick" id="avPick" role="radiogroup" aria-label="Pilih avatar">${AVATARS.map((a, i) => `<button type="button" role="radio" aria-checked="${i === LS.get('gx-quiz-av', 0)}" data-av="${i}" style="--ac:${AVC[i]};--d:${(i % 5) * .17}s"><i>${a}</i></button>`).join('')}</div>
     <form id="nameF" style="display:flex;gap:10px;max-width:420px;margin:0 auto;flex-wrap:wrap"><input id="nm" placeholder="Nama kamu" maxlength="40" value="${esc(LS.get('gx-quiz-name', ''))}" style="flex:1;min-width:180px;border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;font-weight:700;outline:none"><button class="btn y" style="font-size:16px">Daftar</button></form>
     <p style="font-size:12.5px;color:var(--muted);margin:12px 0 0">Setelah daftar, tunggu SPV meng-approve — quiz mulai otomatis.</p></div></div>`;
+  $('#avPick').onclick = e => { const b = e.target.closest('[data-av]'); if (!b) return; LS.set('gx-quiz-av', +b.dataset.av); $('#avPick').querySelectorAll('[data-av]').forEach(x => x.setAttribute('aria-checked', x === b)); musicCtx() && sfx('lock'); };
   $('#nameF').onsubmit = async e => { e.preventDefault(); const n = $('#nm').value.trim(); if (n.length < 2) return toast('Isi nama minimal 2 huruf');
-    const btn = e.target.querySelector('button'); btn.disabled = true; const r = await API.join(code, n); btn.disabled = false;
+    musicCtx();   // buka izin audio dari klik user, supaya musik bisa jalan saat quiz mulai
+    const btn = e.target.querySelector('button'); btn.disabled = true; const r = await API.join(code, n, undefined, LS.get('gx-quiz-av', 0)); btn.disabled = false;
     if (!r || r.status !== 200) return toast((r && r.j.detail) || 'Gagal mendaftar');
     LS.set('gx-quiz-name', n); const T = LS.get('gx-quiz-tok', {}); T[code] = { token: r.j.token, player: r.j.player || n }; LS.set('gx-quiz-tok', T); waitApproval(code, T[code]); };
 }
 async function waitApproval(code, tk) {
   const forget = () => { const T = LS.get('gx-quiz-tok', {}); delete T[code]; LS.set('gx-quiz-tok', T); };
-  const render = (title, body) => { app.innerHTML = `<div class="play"><div class="wait">${body}<p style="margin-top:18px"><button class="btn sm" id="ganti">Ganti nama</button> <button class="btn sm" data-home>← Kembali</button></p></div></div>`; $('#ganti').onclick = () => { forget(); joinScreen(code); }; };
+  const render = (title, body) => { app.innerHTML = `<div class="play"><div class="wait">${avHtml(LS.get('gx-quiz-av', null), tk.player, 'xl')}${body}<p style="margin-top:18px"><button class="btn sm" id="ganti">Ganti nama</button> <button class="btn sm" data-home>← Kembali</button></p></div></div>`; $('#ganti').onclick = () => { forget(); joinScreen(code); }; };
   const check = async () => {
     const r = await API.me(code, tk.token);
     if (!r || r.status === 404) { clearInterval(poll); forget(); return joinScreen(code); }
@@ -391,20 +467,21 @@ async function waitApproval(code, tk) {
   };
   clearInterval(poll); await check(); if ($('#waitBox')) poll = setInterval(() => { if (!$('#waitBox')) return clearInterval(poll); if (!document.hidden) check(); }, 3000);
 }
-function start(g) { G = { ...g, i: 0, answers: [], score: 0, correct: 0 }; question(); }
+function start(g) { G = { ...g, i: 0, answers: [], score: 0, correct: 0 }; if (g.mode === 'live') sfx('gong'); musicStart('quiz'); question(); }
 function question() {
   const q = G.qs[G.i], T = G.timer * 1000; G.t0 = performance.now(); G.locked = false;
-  app.innerHTML = `<div class="play"><div class="qhead"><span>Soal ${G.i + 1} / ${G.qs.length}</span><span class="sp"></span><span id="tl">${G.timer}</span><span>· ${G.mode === 'live' ? 'PIN ' + esc(G.code) : 'Skor ' + G.score}</span></div>
+  app.innerHTML = `<div class="play"><div class="qhead"><span>Soal ${G.i + 1} / ${G.qs.length}</span><span class="sp"></span><span id="tl">${G.timer}</span><span>· ${G.mode === 'live' ? 'PIN ' + esc(G.code) : 'Skor ' + G.score}</span>${G.mode === 'live' ? avHtml(LS.get('gx-quiz-av', null), G.player, 'sm') : ''}<button class="mute" data-mute type="button"></button></div>
     <div class="timer"><i id="tb"></i></div><div class="qbox">${esc(q.q)}</div>
     <div class="tiles">${q.o.map((o, j) => `<button class="tile t${j % 4}" data-c="${j}"><span class="sh">${SHAPES[j % 4]}</span><span>${esc(o)}</span></button>`).join('')}</div><div id="fb"></div></div>`;
   cancelAnimationFrame(timerRaf);
-  const step = () => { const el = performance.now() - G.t0, left = Math.max(0, T - el); const tb = $('#tb'); if (!tb || G.locked) return;
+  MUSIC.urgent = false; paintMute();
+  const step = () => { const el = performance.now() - G.t0, left = Math.max(0, T - el); const tb = $('#tb'); if (!tb || G.locked) return; const urg = left < 5000; if (urg !== MUSIC.urgent) { MUSIC.urgent = urg; tb.parentNode.classList.toggle('urgent', urg); }
     tb.style.width = (left / T * 100) + '%'; $('#tl').textContent = Math.ceil(left / 1000); if (left <= 0) return answer(null); timerRaf = requestAnimationFrame(step); };
   timerRaf = requestAnimationFrame(step);
   window.scrollTo(0, 0);
 }
 function answer(c) {
-  if (G.locked) return; G.locked = true; cancelAnimationFrame(timerRaf);
+  if (G.locked) return; G.locked = true; cancelAnimationFrame(timerRaf); MUSIC.urgent = false; sfx('lock');
   const ms = Math.min(G.timer * 1000, Math.round(performance.now() - G.t0)), q = G.qs[G.i];
   G.answers.push({ c, ms });
   if (G.mode === 'live' && G.token) API.sendProgress(G.code, G.token, G.answers);   // SPV bisa memantau progres live
@@ -433,7 +510,7 @@ async function next() {
   const done = LS.get('gx-quiz-done', {}); done[G.code] = res; LS.set('gx-quiz-done', done); const T = LS.get('gx-quiz-tok', {}); delete T[G.code]; LS.set('gx-quiz-tok', T);
   result(res);
 }
-async function result(res) {
+async function result(res) { musicStop(); sfx('win');
   app.innerHTML = `<div class="play"><div class="res"><div style="font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--muted)">${esc(res.title || '')}</div>
     <div class="big" style="margin-top:10px">${res.score}</div><div style="color:var(--muted);font-weight:700">poin${res.player ? ' · ' + esc(res.player) : ''}</div>
     <div class="kp"><div><b>${res.correct}/${res.total}</b><span>Benar</span></div><div><b>${fmtS(res.duration_ms)}</b><span>Total waktu</span></div>${res.rank ? `<div><b>#${res.rank}</b><span>dari ${res.players} peserta</span></div>` : ''}</div>
@@ -450,18 +527,47 @@ async function result(res) {
   }
   window.scrollTo(0, 0);
 }
+/* ===== Avatar animasi ala Kahoot ===== */
+const AVATARS = ['🦊', '🐼', '🐨', '🐯', '🦁', '🐸', '🐵', '🐧', '🦄', '🐙', '🐳', '🦖', '🐶', '🐱', '🐰', '🐻', '🐮', '🐷', '🐔', '🦉', '🐝', '🦋', '🐢', '🦀'];
+const AVC = ['#FF9F0A', '#64D2FF', '#A2845E', '#FF6B3D', '#FFD60A', '#30D158', '#BF5AF2', '#0A84FF', '#FF375F', '#5E5CE6', '#40C8E0', '#34C759', '#FF9F0A', '#FF453A', '#FF8FAB', '#AC8E68', '#8E8E93', '#FF6482', '#FFCC00', '#7D7AFF', '#FFD60A', '#66D4CF', '#32D74B', '#FF6961'];
+const avIx = (av, name) => Number.isInteger(av) && av >= 0 && av < AVATARS.length ? av : [...String(name || '?')].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % AVATARS.length;
+const avHtml = (av, name, cls = '') => { const i = avIx(av, name); return `<span class="qav ${cls}" style="--ac:${AVC[i]};--d:${(i % 5) * .17}s"><i>${AVATARS[i]}</i></span>`; };
+/* ===== Musik tegang (disintesis WebAudio — original, tanpa file) ===== */
+const MUSIC = { ctx: null, on: false, timer: 0, step: 0, urgent: false, mode: 'quiz', muted: (() => { try { return localStorage.getItem('gx-quiz-mute') === '1'; } catch (e) { return false; } })() };
+function musicCtx() { if (!MUSIC.ctx) { try { MUSIC.ctx = new (window.AudioContext || window.webkitAudioContext)(); MUSIC.gain = MUSIC.ctx.createGain(); MUSIC.gain.gain.value = .22; MUSIC.gain.connect(MUSIC.ctx.destination); } catch (e) { return null; } } if (MUSIC.ctx.state === 'suspended') MUSIC.ctx.resume(); return MUSIC.ctx; }
+function tone(f, t, d, type = 'square', v = .5) { const c = MUSIC.ctx, o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.value = f; g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + d); o.connect(g); g.connect(MUSIC.gain); o.start(t); o.stop(t + d + .02); }
+function noise(t, d, v = .25, hp = 6000) { const c = MUSIC.ctx, n = Math.floor(c.sampleRate * d), b = c.createBuffer(1, n, c.sampleRate), x = b.getChannelData(0); for (let i = 0; i < n; i++) x[i] = Math.random() * 2 - 1;
+  const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); f.type = 'highpass'; f.frequency.value = hp; g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + d); s.buffer = b; s.connect(f); f.connect(g); g.connect(MUSIC.gain); s.start(t); }
+const BASS = [55, 55, 65.4, 55, 82.4, 55, 77.8, 73.4], LEAD = [440, 0, 523, 0, 494, 0, 466, 0, 440, 0, 659, 0, 622, 0, 587, 0];
+function musicStart(mode) { MUSIC.mode = mode || 'quiz'; if (MUSIC.on || MUSIC.muted || !musicCtx()) return; MUSIC.on = true; MUSIC.step = 0; MUSIC.next = MUSIC.ctx.currentTime + .05; musicTick(); paintMute(); }
+function musicTick() { if (!MUSIC.on) return; const c = MUSIC.ctx, bpm = MUSIC.urgent ? 168 : MUSIC.mode === 'lobby' ? 104 : 136, st = 60 / bpm / 2, up = MUSIC.urgent ? 1.06 : 1;
+  while (MUSIC.next < c.currentTime + .25) { const i = MUSIC.step, t = MUSIC.next;
+    tone(BASS[(i >> 1) % 8] * up, t, st * .9, 'sawtooth', .32); if (i % 2 === 0) noise(t, .03, .14, 7000); if (i % 4 === 2) noise(t, .09, .2, 2500);
+    if (MUSIC.mode !== 'lobby' && LEAD[i % 16]) tone(LEAD[i % 16] * up, t, st * .7, 'triangle', MUSIC.urgent ? .16 : .1);
+    if (MUSIC.urgent && i % 2 === 1) tone(1760, t, .03, 'square', .06);
+    MUSIC.step++; MUSIC.next += st; }
+  MUSIC.timer = setTimeout(musicTick, 60); }
+function musicStop() { MUSIC.on = false; clearTimeout(MUSIC.timer); MUSIC.urgent = false; paintMute(); }
+function sfx(kind) { if (MUSIC.muted || !musicCtx()) return; const t = MUSIC.ctx.currentTime;
+  if (kind === 'lock') { tone(660, t, .08, 'square', .3); tone(990, t + .07, .12, 'square', .25); }
+  if (kind === 'win') [523, 659, 784, 1047, 784, 1047].forEach((f, k) => tone(f, t + k * .14, .22, 'triangle', .45));
+  if (kind === 'gong') { tone(98, t, 1.4, 'sine', .7); tone(147, t, 1.2, 'sine', .4); } }
+function toggleMute() { if (!MUSIC.muted && !MUSIC.on && (G && G.qs || document.querySelector('[data-host-live]'))) { musicStart('quiz'); return; } MUSIC.muted = !MUSIC.muted; try { localStorage.setItem('gx-quiz-mute', MUSIC.muted ? '1' : '0'); } catch (e) {} if (MUSIC.muted) musicStop(); else if (G && G.qs) musicStart('quiz'); else if (document.querySelector('[data-host-live]')) musicStart('quiz'); paintMute(); }
+function paintMute() { document.querySelectorAll('[data-mute]').forEach(b => { b.textContent = MUSIC.muted ? '🔇' : MUSIC.on ? '🎵' : '🔈'; b.title = MUSIC.muted ? 'Nyalakan musik' : 'Matikan musik'; }); }
+document.addEventListener('click', e => { if (e.target.closest('[data-mute]')) toggleMute(); });
+
 /* ===== Podium kemenangan (Top 3) — tampil di host, hasil peserta, dan layar penuh untuk diproyeksikan ===== */
-function podiumHtml(B, me, big) {
+function podiumHtml(B, me, big, live) {
   const T = (B || []).slice(0, 3); if (!T.length) return '';
   const ini = n => String(n || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
-  const slot = (x, place) => x ? `<div class="pd p${place}${me && x.player.toLowerCase() === me.toLowerCase() ? ' me' : ''}"><div class="pd-av"><span>${esc(ini(x.player))}</span><i>${['🥇', '🥈', '🥉'][place - 1]}</i>${place === 1 ? '<b class="pd-cr">👑</b>' : ''}</div><div class="pd-nm">${esc(x.player)}</div><div class="pd-sc">${x.score} <small>poin</small></div><div class="pd-st"><span>${place}</span><small>${x.correct}/${x.total} · ${fmtS(x.duration_ms)}</small></div></div>` : '<div class="pd empty"></div>';
-  const conf = [...Array(big ? 46 : 24).keys()].map(i => `<i style="--x:${(i * 37) % 100}%;--d:${(i % 7) * .18}s;--c:${['#F5C518', '#34C759', '#0A84FF', '#FF375F', '#AF52DE', '#FF9F0A'][i % 6]};--r:${(i * 53) % 360}deg"></i>`).join('');
-  return `<div class="podium${big ? ' big' : ''}"><div class="pd-conf" aria-hidden="true">${conf}</div><div class="pd-ttl">🏆 Podium Kemenangan</div><div class="pd-row">${slot(T[1], 2)}${slot(T[0], 1)}${slot(T[2], 3)}</div></div>`;
+  const slot = (x, place) => x ? `<div class="pd p${place}${me && x.player.toLowerCase() === me.toLowerCase() ? ' me' : ''}"><div class="pd-av"><span class="pd-emo">${AVATARS[avIx(x.av, x.player)]}</span><i>${['🥇', '🥈', '🥉'][place - 1]}</i>${place === 1 ? '<b class="pd-cr">👑</b>' : ''}</div><div class="pd-nm">${esc(x.player)}</div><div class="pd-sc">${x.score} <small>poin</small></div><div class="pd-st"><span>${place}</span><small>${live ? `${x.correct} benar${x.done ? ' · ✓' : ''}` : `${x.correct}/${x.total} · ${fmtS(x.duration_ms)}`}</small></div></div>` : '<div class="pd empty"></div>';
+  const conf = live ? [] : [...Array(big ? 46 : 24).keys()].map(i => `<i style="--x:${(i * 37) % 100}%;--d:${(i % 7) * .18}s;--c:${['#F5C518', '#34C759', '#0A84FF', '#FF375F', '#AF52DE', '#FF9F0A'][i % 6]};--r:${(i * 53) % 360}deg"></i>`).join('');
+  return `<div class="podium${big ? ' big' : ''}${live ? ' live' : ''}"><div class="pd-conf" aria-hidden="true">${conf}</div><div class="pd-ttl">${live ? '🏁 Podium sementara' : '🏆 Podium Kemenangan'}</div><div class="pd-row">${slot(T[1], 2)}${slot(T[0], 1)}${slot(T[2], 3)}</div></div>`;
 }
 let PODSIG = '';
 function paintPodium(el, B, me) { if (!el) return; const sig = (B || []).slice(0, 3).map(x => x.player + ':' + x.score).join('|'); if (sig === PODSIG && el.innerHTML) return; PODSIG = sig; el.innerHTML = podiumHtml(B, me); }
 function podiumFull(B, title, code) {
-  const m = document.createElement('div'); m.className = 'modal pdm'; m.innerHTML = `<div class="pdm-in"><button class="btn sm" data-x style="position:absolute;top:14px;right:14px">Tutup</button><div class="pdm-t">${esc(title || 'Live quiz')}</div>${code && IS_SPV ? `<button class="btn sm" data-bahas style="position:absolute;top:14px;left:14px">📖 Bahas soal</button>` : ''}${podiumHtml(B, null, true) || '<div class="msg">Belum ada peserta yang selesai.</div>'}${(B || []).length > 3 ? `<div class="pdm-rest">${B.slice(3, 10).map((x, i) => `<span><b>${i + 4}</b> ${esc(x.player)} · ${x.score}</span>`).join('')}</div>` : ''}</div>`;
+  musicStop(); sfx('win'); const m = document.createElement('div'); m.className = 'modal pdm'; m.innerHTML = `<div class="pdm-in"><button class="btn sm" data-x style="position:absolute;top:14px;right:14px">Tutup</button><div class="pdm-t">${esc(title || 'Live quiz')}</div>${code && IS_SPV ? `<button class="btn sm" data-bahas style="position:absolute;top:14px;left:14px">📖 Bahas soal</button>` : ''}${podiumHtml(B, null, true) || '<div class="msg">Belum ada peserta yang selesai.</div>'}${(B || []).length > 3 ? `<div class="pdm-rest">${B.slice(3, 10).map((x, i) => `<span><b>${i + 4}</b> ${esc(x.player)} · ${x.score}</span>`).join('')}</div>` : ''}</div>`;
   m.onclick = e => { if (e.target.closest('[data-bahas]')) { m.remove(); return discuss(code, title); } if (e.target === m || e.target.closest('[data-x]')) m.remove(); }; document.body.appendChild(m);
 }
 function historyHtml(set) {

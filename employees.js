@@ -50,7 +50,8 @@ function clean(b) {
   return row;
 }
 
-const EXIT = new Set(['resigned', 'cut', 'eoc']);
+const EXIT = new Set(['resigned', 'cut', 'eoc', 'transfer']);
+const todayWita = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
 function exitOf(x) {
   if (!x || typeof x !== 'object' || !EXIT.has(String(x.status))) return null;
   const date = x.date === '' || x.date == null ? null : String(x.date);
@@ -99,7 +100,7 @@ export default async function handler(req, res) {
     if (body.exit !== undefined) {
       const ex = exitOf(body.exit), hist = (Array.isArray(r.data.contract_history) ? r.data.contract_history : []).filter(x => !x || x.type !== 'exit');
       const next = ex ? hist.concat([ex]) : hist;
-      const u = await db().from('hd_employees').update({ contract_history: next, ...(ex ? { active: false } : {}) }).eq('id', r.data.id).select(COLS).maybeSingle();
+      const u = await db().from('hd_employees').update({ contract_history: next, ...(ex && (!ex.date || ex.date <= todayWita()) ? { active: false } : {}) })   /* tanggal keluar di masa depan → tetap aktif sampai tanggal itu (diarsipkan otomatis di tampilan) */.eq('id', r.data.id).select(COLS).maybeSingle();
       if (u.error) throw dbError(u.error);
       if (u.data) r = u;
     }

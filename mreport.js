@@ -79,8 +79,10 @@
 .mr-dot{flex:none;width:max(7px,.7cqw);height:max(7px,.7cqw);border-radius:50%;margin-top:.45cqw}
 .mr-dot.d{background:#16A34A}.mr-dot.p{background:#F59E0B}.mr-dot.l{background:#94A3B8}.mr-dot.n{background:#CBD5E1}.mr-dot.x{background:#E5484D}
 .mr-tk .tt{flex:1;min-width:0}.mr-tk .cat{font-size:max(8px,.72cqw);font-weight:700;color:var(--mut);margin-left:.5cqw;letter-spacing:.05em}
-.mr-tk a{color:var(--y);display:inline-flex;vertical-align:-2px;margin-left:.4cqw}.mr-tk a svg{width:max(10px,1cqw);height:max(10px,1cqw);stroke:currentColor;fill:none;stroke-width:2.2}
-.mr-more{font-size:max(9.5px,.9cqw);color:var(--mut);padding-top:.5cqw;font-weight:600}
+.mr-tk a.ic{color:#2563EB;display:inline-flex;vertical-align:-2px;margin-left:.4cqw}.mr-tk a.ic svg{width:max(10px,1cqw);height:max(10px,1cqw);stroke:currentColor;fill:none;stroke-width:2.2}
+.mr-more{font:600 max(9.5px,.9cqw) inherit;color:#2563EB;padding:.5cqw 0 0;background:none;border:0;cursor:pointer}.mr-more:hover{text-decoration:underline}
+.mr-rest{display:none}.mr-card.all .mr-rest{display:block}.mr-card.all{max-height:34cqw;overflow:auto}.mr-card.all .mr-more{display:none}
+.mr-tk a.ttl{color:var(--ink);text-decoration:none;border-bottom:1px solid rgba(37,99,235,.35)}.mr-tk a.ttl:hover{color:#2563EB;border-bottom-color:#2563EB}
 .mr-empty{color:var(--mut);font-size:max(10.5px,1cqw);padding:.4cqw 0}
 /* controls */
 .mr-ctl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px}
@@ -102,10 +104,12 @@
   const pctTxt = (a, b) => b ? Math.round(a / b * 100) + '%' : '—';
 
   function tk(t, suffix, missed) {
-    const k0 = (ST[t.status] || ST['NOT STARTED'])[1], k = missed && t.status !== 'DONE' && t.status !== 'IN PROGRESS' ? 'x' : k0, links = (t.links || []).map(l => safeUrl(l.url)).filter(Boolean).slice(0, 1);
-    return `<div class="mr-tk"><i class="mr-dot ${k}" title="${esc((ST[t.status] || ST['NOT STARTED'])[0])}"></i><div class="tt">${esc(t.title)}${suffix ? ` <span class="cat">${esc(suffix)}</span>` : t.cat && t.cat !== 'General' ? `<span class="cat">${esc(String(t.cat).toUpperCase())}</span>` : ''}${links.map(u => `<a href="${esc(u)}" target="_blank" rel="noopener" title="Open link">${LINK}</a>`).join('')}</div></div>`;
+    const k0 = (ST[t.status] || ST['NOT STARTED'])[1], k = missed && t.status !== 'DONE' && t.status !== 'IN PROGRESS' ? 'x' : k0, links = (t.links || []).map(l => safeUrl(l.url)).filter(Boolean);
+    /* judul task = link ke hasil kerjanya (link pertama); link lain tetap sebagai ikon */
+    const ttl = links.length ? `<a class="ttl" href="${esc(links[0])}" target="_blank" rel="noopener" title="Buka: ${esc(links[0])}">${esc(t.title)}</a>` : esc(t.title);
+    return `<div class="mr-tk"><i class="mr-dot ${k}" title="${esc((ST[t.status] || ST['NOT STARTED'])[0])}"></i><div class="tt">${ttl}${suffix ? ` <span class="cat">${esc(suffix)}</span>` : t.cat && t.cat !== 'General' ? `<span class="cat">${esc(String(t.cat).toUpperCase())}</span>` : ''}${links.map((u, i) => `<a class="ic" href="${esc(u)}" target="_blank" rel="noopener" title="${i ? 'Link ' + (i + 1) : 'Open link'}">${LINK}</a>`).join('')}</div></div>`;
   }
-  const list = (arr, max, fn, empty) => arr.length ? arr.slice(0, max).map(fn).join('') + (arr.length > max ? `<div class="mr-more">+${arr.length - max} more</div>` : '') : `<div class="mr-empty">${empty}</div>`;
+  const list = (arr, max, fn, empty) => arr.length ? arr.slice(0, max).map(fn).join('') + (arr.length > max ? `<div class="mr-rest">${arr.slice(max).map(fn).join('')}</div><button type="button" class="mr-more" data-mr-more>+${arr.length - max} more</button>` : '') : `<div class="mr-empty">${empty}</div>`;
   const LEG = (missed) => `<div class="mr-leg"><span><i style="background:${COL.d}"></i>Done</span><span><i style="background:${COL.p}"></i>In progress</span><span><i style="background:${COL.l}"></i>Planned</span><span><i style="background:${COL.n}"></i>Open</span>${missed ? `<span><i style="background:${COL.x}"></i>Not completed (closed month)</span>` : ''}</div>`;
   function donut(parts, sz, center) {
     const size = 120, r = (size - 16) / 2, C = 2 * Math.PI * r, tot = parts.reduce((a, p) => a + p.v, 0) || 1; let off = 0;
@@ -249,6 +253,7 @@
       el.querySelector('.mr-prog').style.width = ((i + 1) / sl.length * 100) + '%';
       if (opt.onPage) opt.onPage(i);
     };
+    el.querySelector('.mr-stage').addEventListener('click', e => { const m = e.target.closest('[data-mr-more]'); if (m) { e.stopPropagation(); m.closest('.mr-card').classList.add('all'); } });
     el.querySelector('.mr-ctl').addEventListener('click', e => {
       const b = e.target.closest('[data-mr],[data-mr-go]'); if (!b) return;
       if (b.dataset.mrGo != null) return go(+b.dataset.mrGo);

@@ -1407,7 +1407,8 @@ $('#offPause').onclick = () => { OF.paused = !OF.paused; try { localStorage.setI
 $('#offPause').textContent = OF.paused ? '▶ Walk' : '⏸ Pause';
 { const m = /#desk=([^&]+)/.exec(location.hash); if (m) setTimeout(() => { const n = decodeURIComponent(m[1]); if (n === 'SPV' || CFG.roster.some(r => r[0] === n)) openDesk(n); }, 900); }
 loadOther();
-loadAuth(); load(); loadBoard(); loadDesk(); setInterval(() => { if (!document.hidden && !document.activeElement.matches('textarea,input') && !document.querySelector('.md')) { load(); loadBoard(); loadDesk(); loadOther(); } }, 60000);
+loadAuth(); load(); loadBoard(); loadDesk(); setInterval(() => { if (!document.hidden && !document.activeElement.matches('textarea,input,[contenteditable]') && !document.querySelector('.md')) { load(); loadBoard(); loadDesk(); loadOther(); } }, 60000);
 </script>
+<script>window.RTE_SEL='textarea:not([data-f="title"]):not([data-f="text"])';</script><script src="rte.js"></script>
 </body>
 </html>

@@ -813,7 +813,8 @@ $('#inbox').addEventListener('click', e => {
   if (e.target.closest('[data-iseen]')) return iop(tm, { op: 'note.seen', id, reply: tx });
 });
 $('#inbox').addEventListener('change', e => { if (e.target.id === 'iDone') { INB.showDone = e.target.checked; renderInbox(); } });
-loadInbox(); setInterval(() => { if (!document.hidden && !document.activeElement.matches('textarea,input')) loadInbox(); }, 90000);
+loadInbox(); setInterval(() => { if (!document.hidden && !document.activeElement.matches('textarea,input,[contenteditable]')) loadInbox(); }, 90000);
 </script>
+<script>window.RTE_SEL='textarea:not([data-f="title"])';window.RTE_SKIP='#h1wrap';</script><script src="rte.js"></script>
 </body>
 </html>

@@ -95,6 +95,28 @@
 .mr-foot{position:absolute;left:5cqw;right:5cqw;bottom:1.8cqw;display:flex;justify-content:space-between;align-items:center;font-size:max(9px,.8cqw);color:var(--mut);pointer-events:none;z-index:1}.mr-foot.inv{color:rgba(255,255,255,.55)}
 @media (prefers-reduced-motion:reduce){.mr *{transition:none!important;animation:none!important}}
 @media (max-width:760px){.mr-stage{aspect-ratio:auto}.mr-slide{position:relative;padding:24px 18px 46px}.mr-slide:not(.on){display:none}.mr-grid2,.mr-mgrid,.mr-lists{grid-template-columns:1fr}.mr-kpis{grid-template-columns:1fr 1fr}.mr-hb{grid-template-columns:86px 1fr 40px}.mr-cols3{height:200px}.mr-foot{left:18px;right:18px;bottom:14px}}
+
+/* cover variants */
+.mr-cover .cv-main{position:relative;z-index:1}.mr-cover .mr-by{position:relative;z-index:1}.mr-cover .cv-art{position:absolute;pointer-events:none}
+.mr .mr-cover.cv-clean,.mr-stage:fullscreen .mr-cover.cv-clean{background:#fff!important;color:var(--ink);box-shadow:inset 1.1cqw 0 0 #F5C518}
+.mr-cover.cv-clean .mr-kick{color:#B07D00}.mr-cover.cv-clean .t2{color:#B07D00}.mr-cover.cv-clean .per{color:var(--mut)}.mr-cover.cv-clean .rule{background:#F5C518}
+.mr-cover.cv-clean .cv-art{right:-1cqw;bottom:-5cqw;font-size:26cqw;font-weight:900;letter-spacing:-.06em;line-height:1;color:#F1F5F9}
+.mr-cover:not(.cv-navy):not(.cv-mono) .mr-by small{color:var(--mut)}.mr-cover:not(.cv-navy):not(.cv-mono) .mr-by span{color:var(--mut)}.mr-cover:not(.cv-navy):not(.cv-mono) .mr-by b{color:var(--ink)}
+.mr .mr-cover.cv-split,.mr-stage:fullscreen .mr-cover.cv-split{background:linear-gradient(90deg,#fff 0 58%,#F5C518 58%)!important;color:var(--ink)}
+.mr-cover.cv-split .cv-main,.mr-cover.cv-split .mr-by{max-width:50%}.mr-cover.cv-split .mr-kick{color:#B07D00}.mr-cover.cv-split .t2{color:var(--ink)}.mr-cover.cv-split .per{color:var(--mut)}.mr-cover.cv-split .rule{background:var(--ink)}
+.mr-cover.cv-split .cv-art{left:58%;right:0;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;padding:0 4cqw;color:var(--navy)}
+.mr-cover.cv-split .a1{font-size:15cqw;font-weight:900;letter-spacing:-.05em;line-height:.9}.mr-cover.cv-split .a2{font-size:5cqw;font-weight:800;letter-spacing:-.03em;opacity:.85}.mr-cover.cv-split .a3{margin-top:2cqw;font-size:max(9px,1cqw);font-weight:700;letter-spacing:.18em;text-transform:uppercase;opacity:.7}
+.mr .mr-cover.cv-gold,.mr-stage:fullscreen .mr-cover.cv-gold{background:linear-gradient(135deg,#FFE066 0%,#F5C518 45%,#E8A200 100%)!important;color:var(--navy)}
+.mr-cover.cv-gold .mr-kick{color:var(--navy);opacity:.75}.mr-cover.cv-gold .t2{color:#fff;text-shadow:0 .2cqw .8cqw rgba(120,70,0,.25)}.mr-cover.cv-gold .per{color:rgba(11,27,51,.7)}.mr-cover.cv-gold .rule{background:var(--navy)}
+.mr-cover.cv-gold .mr-by small,.mr-cover.cv-gold .mr-by span{color:rgba(11,27,51,.6)!important}
+.mr-cover.cv-gold .cv-art{inset:0}.mr-cover.cv-gold .cv-art i{position:absolute;border-radius:50%;border:.25cqw solid rgba(255,255,255,.45)}.mr-cover.cv-gold .cv-art i:nth-child(1){width:38cqw;height:38cqw;right:-8cqw;top:-10cqw}.mr-cover.cv-gold .cv-art i:nth-child(2){width:24cqw;height:24cqw;right:6cqw;top:4cqw;border-color:rgba(11,27,51,.12)}.mr-cover.cv-gold .cv-art i:nth-child(3){width:14cqw;height:14cqw;right:24cqw;bottom:-4cqw;background:rgba(255,255,255,.22);border:0}
+.mr .mr-cover.cv-mono,.mr-stage:fullscreen .mr-cover.cv-mono{background:#0A0A0B!important;color:#fff}
+.mr-cover.cv-mono .mr-kick{color:#F5C518}.mr-cover.cv-mono .t2{color:#F5C518}.mr-cover.cv-mono .rule{background:#F5C518}
+.mr-cover.cv-mono .cv-art{right:3cqw;top:50%;transform:translateY(-50%);font-size:24cqw;font-weight:900;letter-spacing:-.05em;line-height:1;color:transparent;-webkit-text-stroke:.18cqw rgba(245,197,24,.55)}
+.mr-cvp{display:flex;gap:12px;align-items:flex-end;overflow-x:auto;padding:4px 2px 10px;margin-bottom:10px}.mr-cvl{font-size:12px;font-weight:700;color:var(--mut);align-self:center;white-space:nowrap}
+.mr-cvb{flex:0 0 auto;width:168px;border:2px solid transparent;background:none;border-radius:12px;padding:3px;cursor:pointer;font:inherit;color:var(--ink);text-align:center}.mr-cvb[aria-pressed="true"]{border-color:#0A84FF}.mr-cvb:hover{border-color:var(--line)}.mr-cvb[aria-pressed="true"]:hover{border-color:#0A84FF}
+.mr-cvb span{display:block;font-size:12px;font-weight:600;margin-top:5px}.mini-w{width:160px;height:90px;overflow:hidden;border-radius:8px;box-shadow:0 1px 4px rgba(15,23,42,.15)}.mr-stage.mini{text-align:left;width:1280px;aspect-ratio:16/9!important;transform:scale(.125);transform-origin:0 0;border-radius:0;box-shadow:none;pointer-events:none}.mr-stage.mini .mr-slide{position:absolute!important;padding:4.4cqw 5cqw 5.2cqw!important}.mr-stage.mini .mr-in{animation:none!important}
+@media (max-width:760px){.mr-cover.cv-split .cv-main,.mr-cover.cv-split .mr-by{max-width:56%}}
 `;
   function injectCss() { if (document.getElementById('mr-css2')) return; const s = document.createElement('style'); s.id = 'mr-css2'; s.textContent = CSS; document.head.appendChild(s); }
 
@@ -152,9 +174,7 @@
     const tag = `${S.title || 'Management Report'} · ${S.division || 'Customer Service'}`;
     const best = closed.length ? closed.reduce((a, b) => stats(allTasks(b)).pct > stats(allTasks(a)).pct ? b : a) : null;
     /* 1 cover */
-    out.push(['Cover', `<div class="mr-slide mr-cover" data-inv><div><img class="logo mr-in" src="wordmark-white.png" alt="GlobalXtreme" onerror="this.remove()"><div class="mr-kick mr-in" style="margin-top:3cqw">${esc(S.kicker || 'Management Report')}</div>
-      <div class="t1 mr-in">${esc(S.title1 || 'Management')}</div><div class="t2 mr-in">${esc(S.title2 || S.title || '')}</div><div class="per mr-in">${esc(S.period || '')}${S.division ? ' · ' + esc(S.division) : ''}</div><div class="rule mr-in"></div></div>
-      <div class="mr-by mr-in"><div><small>PREPARED BY</small><b>${esc(S.by || '')}</b><span>${esc(S.role || '')}</span></div>${S.generatedAt ? `<div><small>DATA AS OF</small><b>${esc(new Date(S.generatedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }))}</b></div>` : ''}</div></div>`]);
+    out.push(['Cover', coverHtml(S)]);
     /* 2 executive summary */
     const leadPct = closed.length ? cs.pct : tot.pct;
     out.push(['Summary', `<div class="mr-slide">${head('Executive summary', esc(S.period || ''), '', tag)}
@@ -238,6 +258,25 @@
     });
   }
 
+  /* ---------- cover styles (Putri picks one; stored in the snapshot so the viewer link shows the same cover) ---------- */
+  const COVERS = [['clean', 'Clean white'], ['navy', 'Navy'], ['split', 'Split yellow'], ['gold', 'Gold'], ['mono', 'Black']];
+  const DARK = { navy: 1, mono: 1 };
+  function coverHtml(S, cv) {
+    cv = (COVERS.find(c => c[0] === (cv || S.cover)) || COVERS[0])[0]; const dark = !!DARK[cv];
+    const yr = (String(S.period || '').match(/20\d\d/) || String(S.title2 || S.title || '').match(/20\d\d/) || [new Date(S.generatedAt || Date.now()).getFullYear()])[0];
+    const big = (String(S.title2 || S.title || '').match(/\b(H[12]|Q[1-4])\b/i) || [''])[0].toUpperCase();
+    const asOf = S.generatedAt ? `<div><small>DATA AS OF</small><b>${esc(new Date(S.generatedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }))}</b></div>` : '';
+    const art = cv === 'split' ? `<div class="cv-art"><span class="a1">${esc(big || yr)}</span>${big ? `<span class="a2">${esc(yr)}</span>` : ''}<span class="a3">${esc(S.division || 'Customer Service')}</span></div>`
+      : cv === 'clean' ? `<div class="cv-art"><span>${esc(yr)}</span></div>` : cv === 'mono' ? `<div class="cv-art"><span>${esc(big || yr)}</span></div>` : cv === 'gold' ? '<div class="cv-art"><i></i><i></i><i></i></div>' : '';
+    return `<div class="mr-slide mr-cover cv-${cv}"${dark ? ' data-inv' : ''}>${art}<div class="cv-main"><img class="logo mr-in" src="${dark ? 'wordmark-white.png' : 'wordmark.png'}" alt="GlobalXtreme" onerror="this.remove()"><div class="mr-kick mr-in" style="margin-top:3cqw">${esc(S.kicker || 'Management Report')}</div>
+      <div class="t1 mr-in">${esc(S.title1 || 'Management')}</div><div class="t2 mr-in">${esc(S.title2 || S.title || '')}</div><div class="per mr-in">${esc(S.period || '')}${S.division ? ' · ' + esc(S.division) : ''}</div><div class="rule mr-in"></div></div>
+      <div class="mr-by mr-in"><div><small>PREPARED BY</small><b>${esc(S.by || '')}</b><span>${esc(S.role || '')}</span></div>${asOf}</div></div>`;
+  }
+  function coverPicker(el, S, cur, onPick) {
+    injectCss(); cur = (COVERS.find(c => c[0] === cur) || COVERS[0])[0];
+    el.innerHTML = `<div class="mr mr-cvp"><span class="mr-cvl">Cover style</span>${COVERS.map(([k, n]) => `<button type="button" class="mr-cvb" data-cv="${k}" aria-pressed="${k === cur}" title="${esc(n)}"><div class="mini-w"><div class="mr-stage mini">${coverHtml(S, k).replace('mr-slide mr-cover', 'mr-slide mr-cover on')}</div></div><span>${esc(n)}${k === cur ? ' ✓' : ''}</span></button>`).join('')}</div>`;
+    el.querySelectorAll('[data-cv]').forEach(b => b.onclick = () => onPick && onPick(b.dataset.cv));
+  }
   function render(el, S, opt = {}) {
     injectCss();
     const sl = slides(S); let i = Math.min(opt.start || 0, sl.length - 1);
@@ -291,5 +330,5 @@
     const months = (D.months || []).map((m, k) => ({ ym: `2026-${String(k + 1).padStart(2, '0')}`, name: ymName(`2026-${String(k + 1).padStart(2, '0')}`), sections: (m.sections || []).map((s, j) => ({ key: 'S' + j, name: s.name, tasks: (s.tasks || []).map(t => ({ title: t.title, status: map[t.status] || 'PLAN', priority: '', links: safeUrl(t.link) ? [{ label: 'Link', url: t.link }] : [] })) })) }));
     return { months, generatedAt: new Date().toISOString(), ...meta };
   }
-  window.MReport = { render, fromTasks, fromH1, stats, ymName };
+  window.MReport = { render, coverPicker, covers: COVERS.map(c => c[0]), fromTasks, fromH1, stats, ymName };
 })();

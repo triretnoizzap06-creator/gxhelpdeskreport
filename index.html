@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -10,7 +10,7 @@
 (function(){var d=document.documentElement;d.classList.add('gating');var t=setTimeout(function(){d.classList.remove('gating')},3000);
 fetch('/api/login',{cache:'no-store',credentials:'same-origin'}).then(function(r){return r.json()}).then(function(j){window.GXUSER=j;
   if(j&&j.membersConfigured&&!j.member&&!j.authed){location.replace('/login?next='+encodeURIComponent(location.pathname+location.search+location.hash));return}
-  clearTimeout(t);d.classList.remove('gating');var w=document.getElementById('who');if(w&&j&&(j.member||j.authed)){w.innerHTML='<span>'+(j.member?'👤 '+String(j.member.nick||j.member.name).replace(/[<>&]/g,''):'⭐ Putri Izza (SPV)')+'</span><button type="button" id="logoutBtn">Logout</button>';
+  clearTimeout(t);d.classList.remove('gating');var w=document.getElementById('who');if(w&&j&&(j.member||j.authed)){w.innerHTML='<span>'+(j.member?'👤 '+String(j.member.nick||j.member.name).replace(/[<>&]/g,''):'⭐ Putri Izza')+'</span><button type="button" id="logoutBtn">Logout</button>';
     document.getElementById('logoutBtn').onclick=function(){fetch('/api/login?logout=member',{credentials:'same-origin'}).finally(function(){location.href='/api/login?logout=1'})}}
 }).catch(function(){clearTimeout(t);d.classList.remove('gating')})})();</script>
 <script>(function(){try{var m=localStorage.getItem("gx-theme");if(m==="dark"||m==="light")document.documentElement.setAttribute("data-theme",m)}catch(e){}})()</script>
@@ -122,8 +122,8 @@ const TXT = {
   en: { light: 'Light', dark: 'Dark', title: 'All CS Reports', lede: 'Choose a report below. All data is stored online, so everyone who opens the link sees the same data.',
         all: 'All', search: 'Search menu…', soon: 'Coming soon', empty: 'No menu found.', locked: 'Password' },
 };
-let lang = 'id';
-try { const v = localStorage.getItem('gx-dash-lang'); if (v === 'en' || v === 'id') lang = v; } catch (e) {}
+let lang = 'en';
+try { const v = localStorage.getItem('gx-dash-lang'); if (v === 'en') lang = v; } catch (e) {}
 const t = k => TXT[lang][k];
 
 const ICONS = {

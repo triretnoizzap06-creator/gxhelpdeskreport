@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -53,21 +53,21 @@ label{display:block;font-size:12.5px;font-weight:700;color:#6E6E73;margin:0 0 7p
     <div class="note"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>Forgot your password? Contact the admin/CSO Supervisor to reset it.</span></div>
   </form>
   <form class="card hidden" id="f2">
-    <h2>Set your new password</h2><p class="sub">Kamu masih pakai password awal. Ganti sekarang supaya akunmu hanya kamu yang pakai.</p>
+    <h2>Set your new password</h2><p class="sub">You are still using the initial password. Change it now so only you can use your account.</p>
     <label for="n1">New password (min. 6 karakter)</label>
     <div class="fld"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="n1" type="password" autocomplete="new-password" minlength="6" required><button class="eye" type="button" data-eye="n1" aria-label="Tampilkan password"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
     <label for="n2">Repeat new password</label>
     <div class="fld"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="n2" type="password" autocomplete="new-password" minlength="6" required></div>
     <p class="err" id="e2" role="alert"></p>
     <button class="btn" id="b2">Save &amp; continue</button>
-    <button class="link" type="button" id="later">Nanti saja</button>
+    <button class="link" type="button" id="later">Later</button>
   </form>
   <p class="foot">Helpdesk Workspace · GlobalXtreme</p>
 </div>
 <script>
 const $ = s => document.querySelector(s);
 const next = (() => { const n = new URLSearchParams(location.search).get('next') || '/'; return /^\/(?![\/\\])/.test(n) && !/^\/login/.test(n) ? n : '/'; })();
-const post = async b => { try { const r = await fetch('/api/login', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify(b) }); return { s: r.status, j: await r.json().catch(() => ({})) }; } catch (e) { return { s: 0, j: { detail: 'Tidak bisa terhubung ke server.' } }; } };
+const post = async b => { try { const r = await fetch('/api/login', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify(b) }); return { s: r.status, j: await r.json().catch(() => ({})) }; } catch (e) { return { s: 0, j: { detail: 'Could not connect to the server.' } }; } };
 document.addEventListener('click', e => { const b = e.target.closest('[data-eye]'); if (!b) return; const i = document.getElementById(b.dataset.eye); i.type = i.type === 'password' ? 'text' : 'password'; });
 let oldPw = '';
 /* sudah login? langsung masuk */
@@ -75,10 +75,10 @@ fetch('/api/login', { cache: 'no-store', credentials: 'same-origin' }).then(r =>
 $('#f1').onsubmit = async e => { e.preventDefault(); const b = $('#b1'); b.disabled = true; $('#e1').textContent = '';
   oldPw = $('#p').value; const r = await post({ member: 1, name: $('#u').value, password: oldPw }); b.disabled = false;
   if (r.s === 200 && r.j.ok) { if (r.j.member && r.j.member.mustChange) { $('#f1').classList.add('hidden'); $('#f2').classList.remove('hidden'); $('#n1').focus(); } else location.replace(next); return; }
-  $('#e1').textContent = r.j.detail || 'Username atau password salah.'; $('#p').select(); };
-$('#f2').onsubmit = async e => { e.preventDefault(); if ($('#n1').value !== $('#n2').value) { $('#e2').textContent = 'Password baru tidak sama.'; return; }
+  $('#e1').textContent = r.j.detail || 'Wrong username or password.'; $('#p').select(); };
+$('#f2').onsubmit = async e => { e.preventDefault(); if ($('#n1').value !== $('#n2').value) { $('#e2').textContent = 'New passwords do not match.'; return; }
   const b = $('#b2'); b.disabled = true; const r = await post({ member: 1, change: { old: oldPw, new: $('#n1').value } }); b.disabled = false;
-  if (r.s === 200) location.replace(next); else $('#e2').textContent = r.j.detail || 'Gagal mengganti password.'; };
+  if (r.s === 200) location.replace(next); else $('#e2').textContent = r.j.detail || 'Could not change the password.'; };
 $('#later').onclick = () => location.replace(next);
 </script>
 </body>

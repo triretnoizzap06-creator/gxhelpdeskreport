@@ -177,6 +177,36 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 .schedb{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:0 0 14px;font-size:13px}.schedb>b{margin-right:4px}.sc1{background:#F2F2F7;border-radius:999px;padding:4px 10px}.sc1 i{color:var(--muted);font-style:normal}.lk{border:0;background:none;color:#0A84FF;cursor:pointer;font:inherit;font-size:12px}
 .odue{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;color:#C62828;background:rgba(255,59,48,.1);border-radius:999px;padding:1px 7px}
 .tboard .tools-h h2{text-transform:none;letter-spacing:-.02em;font-size:22px;font-weight:700}
+.nudge{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;margin:0 0 14px;overflow:hidden}
+.nmsg{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;padding:12px 16px 4px;font-size:13.5px}.nmsg>b{color:#B45309}.nmsg .nt{background:rgba(118,118,128,.1);border-radius:999px;padding:3px 10px;font-size:12.5px}.nmsg .nt i{font-style:normal;color:var(--muted)}.nmsg .btn{margin-left:auto}
+.ntrack{position:relative;height:96px;border-top:1px dashed var(--line);background:linear-gradient(180deg,transparent 70%,rgba(118,118,128,.07))}
+.walker{position:absolute;bottom:2px;left:0;width:118px;height:92px;animation:walkX 16s linear infinite}
+.walker .gcat{width:118px;height:92px;animation:flipX 16s steps(1) infinite;transform-origin:center}
+@keyframes walkX{0%{left:0}46%{left:calc(100% - 118px)}54%{left:calc(100% - 118px)}96%{left:0}100%{left:0}}
+@keyframes flipX{0%{transform:scaleX(1)}50%{transform:scaleX(-1)}100%{transform:scaleX(1)}}
+.gcat .legs .l1,.gcat .legs .l4{transform-origin:top;animation:leg .45s ease-in-out infinite alternate}.gcat .legs .l2,.gcat .legs .l3{transform-origin:top;animation:leg .45s ease-in-out infinite alternate-reverse}
+@keyframes leg{from{transform:rotate(14deg)}to{transform:rotate(-14deg)}}
+.gcat .bod{animation:bob .45s ease-in-out infinite alternate}@keyframes bob{to{transform:translateY(-1.5px)}}
+.gcat .tail{transform-origin:24px 70px;animation:tail 1.2s ease-in-out infinite alternate}@keyframes tail{to{transform:rotate(-14deg)}}
+.gcat .arm{transform-origin:92px 70px;animation:armc 16s ease-in-out infinite}.gcat .whip{stroke-dasharray:80;animation:lash 16s ease-in-out infinite}.gcat .crk{opacity:0;animation:crk 16s ease-out infinite;transform-origin:138px 18px}
+@keyframes armc{0%,42%,58%,92%,100%{transform:rotate(0)}47%,97%{transform:rotate(-40deg)}49%,99%{transform:rotate(12deg)}}
+@keyframes lash{0%,42%,58%,92%,100%{stroke-dashoffset:80}48%,98%{stroke-dashoffset:0}}
+@keyframes crk{0%,47%,51%,97%,100%{opacity:0;transform:scale(.5)}48.5%,98.5%{opacity:1;transform:scale(1.2)}}
+.walker:hover{animation-play-state:paused}.walker:hover .gcat,.walker:hover .gcat *{animation-play-state:paused}
+.wcat-wrap{position:relative;width:200px;height:160px;margin:0 auto}.wcat-wrap .gcat{width:200px;height:160px}.wcat-wrap .legs *{animation:none!important}.wcat-wrap .tail{animation:tail 1s ease-in-out infinite alternate}
+.wcat-wrap .ding{position:absolute;right:-6px;top:28px;font-weight:800;color:#0A84FF;font-size:15px;animation:wcrack 1.6s ease-out infinite}
+.wcat-wrap .gcat .bod{animation:none}.wcat-wrap .gcat circle[fill="#E9E44B"]{transform-origin:101px 60px;animation:wbell 1.6s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.walker,.walker .gcat,.gcat *{animation:none!important}}
+#ofx{position:fixed;inset:0;pointer-events:none;z-index:20}
+#ofx .odp{position:absolute;left:0;top:0;background:#E03131;color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;white-space:nowrap;box-shadow:0 2px 8px rgba(224,49,49,.35);animation:odpulse 1.6s ease-in-out infinite;will-change:transform}
+#ofx .odp.big{background:var(--card);color:var(--ink);border:2px solid #E03131;border-radius:14px;padding:8px 11px;font-size:12px;font-weight:500;max-width:260px;white-space:normal;display:flex;flex-direction:column;gap:4px;animation:odpop .35s cubic-bezier(.2,1.4,.4,1);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#ofx .odp.big b{color:#E03131;font-size:12.5px}#ofx .odp.big span{line-height:1.3}#ofx .odp.big i{display:block;font-style:normal;color:#B45309;font-size:11px}
+#ofx .odp::after{content:'';position:absolute;left:50%;bottom:-5px;width:8px;height:8px;background:inherit;transform:translateX(-50%) rotate(45deg)}#ofx .odp.big::after{border-right:2px solid #E03131;border-bottom:2px solid #E03131;bottom:-6px}
+@keyframes odpulse{50%{box-shadow:0 2px 14px rgba(224,49,49,.7)}}@keyframes odpop{from{opacity:0;scale:.6}}
+#ofx .owhip{position:absolute;left:0;top:0;width:66px;height:44px}#ofx .owhip .ctak{position:absolute;left:50%;top:-10px;transform:translateX(-50%);font:900 11px system-ui;color:#E03131;-webkit-text-stroke:.4px #fff;animation:ock 1.05s ease-out infinite;white-space:nowrap}#ofx .owhip svg{width:100%;height:100%;overflow:visible}
+#ofx .owhip .wl{transform-origin:9px 70px;animation:owl 1.05s ease-in-out infinite}#ofx .owhip .wh{stroke-dasharray:90;animation:owh 1.05s ease-in-out infinite}#ofx .owhip .ck{transform-origin:78px 48px;animation:ock 1.05s ease-out infinite}
+@keyframes owl{0%,100%{transform:rotate(30deg)}45%{transform:rotate(-20deg)}55%{transform:rotate(8deg)}}@keyframes owh{0%,30%{stroke-dashoffset:90}50%,100%{stroke-dashoffset:0}}@keyframes ock{0%,48%{opacity:0;transform:scale(.3)}56%{opacity:1;transform:scale(1.15)}85%{opacity:1}100%{opacity:0;transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){#ofx .odp,#ofx .owhip *{animation:none!important}}
 </style>
 </head>
 <body>
@@ -184,8 +214,9 @@ main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}
 <main>
   <div class="hero"><div class="ic" id="heroIc">🎧</div><div><h1 id="title"></h1><p id="sub"></p></div>
     <label class="who"><span id="whoL">I am:</span> <select id="me"></select><span id="acct" class="acct"></span><button class="btn" id="teamBtn" type="button" title="Add / remove team members">👥 Team</button></label></div>
-  <section class="office"><div class="tools-h"><h2>Virtual Office ✨</h2><span class="sp"></span><span class="ofl"><i style="background:#2F9E44"></i>All clear 😌 <i style="background:#E8590C"></i>Tasks open <i style="background:#E03131"></i>Overdue 😭 <i style="background:#D97706"></i>SPV</span><button class="btn" id="offPause" type="button">⏸ Pause</button></div>
-    <div class="ofbar"><span id="ofPres" class="ofbar" style="margin:0"></span><span class="sp" style="flex:1"></span><span class="ofz"><span class="vseg"><button class="btn" type="button" data-view="3d">🧊 3D</button><button class="btn" type="button" data-view="2d">🗺 2D</button></span><button class="btn o3only" type="button" id="ofVibe" title="Auto-rotate">🌀 Vibe mode</button><button class="btn" id="ofZout" type="button" aria-label="Zoom out">−</button><b id="ofZoomL">100%</b><button class="btn" id="ofZin" type="button" aria-label="Zoom in">+</button><button class="btn" id="ofZfit" type="button">Fit</button><button class="btn" id="ofZme" type="button">📍 Me</button></span></div><div class="ofscroll"><div class="ofc" id="ofc"></div><div class="ofpad" aria-label="Kontrol peta"><button type="button" data-pan="0,-1" aria-label="Geser ke atas">▲</button><button type="button" data-pan="-1,0" aria-label="Geser ke kiri">◀</button><button type="button" data-pan="1,0" aria-label="Geser ke kanan">▶</button><button type="button" data-pan="0,1" aria-label="Geser ke bawah">▼</button><button type="button" class="z" id="ofZin2" aria-label="Zoom in">＋</button><button type="button" class="z" id="ofZout2" aria-label="Zoom out">－</button><button type="button" class="o3only r" data-rot="1" aria-label="Rotate left">⟲</button><button type="button" class="o3only r" data-rot="-1" aria-label="Rotate right">⟳</button></div></div><p class="ofh">Helpdesk, AM &amp; your SPV in one office 🏢 · drag to spin it 360°, Ctrl + scroll or pinch to zoom · click a desk or person to peek their desk · click the floor (or use arrow keys / WASD) to walk around 🕹️ · set ☕ break or 📅 meeting and your avatar heads there.</p></section>
+  <div id="nudge"></div>
+  <section class="office"><div class="tools-h"><h2>Virtual Office</h2><span class="sp"></span><span class="ofl"><i style="background:#2F9E44"></i>All clear <i style="background:#E8590C"></i>Tasks open <i style="background:#E03131"></i>Overdue <i style="background:#D97706"></i>Putri Izza</span><button class="btn" id="offPause" type="button">⏸ Pause</button></div>
+    <div class="ofbar"><span id="ofPres" class="ofbar" style="margin:0"></span><span class="sp" style="flex:1"></span><span class="ofz"><span class="vseg"><button class="btn" type="button" data-view="3d">🧊 3D</button><button class="btn" type="button" data-view="2d">🗺 2D</button></span><button class="btn o3only" type="button" id="ofVibe" title="Auto-rotate">🌀 Vibe mode</button><button class="btn" id="ofZout" type="button" aria-label="Zoom out">−</button><b id="ofZoomL">100%</b><button class="btn" id="ofZin" type="button" aria-label="Zoom in">+</button><button class="btn" id="ofZfit" type="button">Fit</button><button class="btn" id="ofZme" type="button">📍 Me</button></span></div><div class="ofscroll"><div class="ofc" id="ofc"></div><div class="ofpad" aria-label="Kontrol peta"><button type="button" data-pan="0,-1" aria-label="Geser ke atas">▲</button><button type="button" data-pan="-1,0" aria-label="Geser ke kiri">◀</button><button type="button" data-pan="1,0" aria-label="Geser ke kanan">▶</button><button type="button" data-pan="0,1" aria-label="Geser ke bawah">▼</button><button type="button" class="z" id="ofZin2" aria-label="Zoom in">＋</button><button type="button" class="z" id="ofZout2" aria-label="Zoom out">－</button><button type="button" class="o3only r" data-rot="1" aria-label="Rotate left">⟲</button><button type="button" class="o3only r" data-rot="-1" aria-label="Rotate right">⟳</button></div></div><p class="ofh">Helpdesk, AM &amp; Putri Izza in one office 🏢 · drag to spin it 360°, Ctrl + scroll or pinch to zoom · click a desk or person to peek their desk · click the floor (or use arrow keys / WASD) to walk around 🕹️ · set ☕ break or 📅 meeting and your avatar heads there.</p></section>
   <section class="tboard"><div class="tools-h"><h2>Message Templates</h2><span class="sp"></span><label class="ios-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="tbQ" type="search" placeholder="Search"></label><button class="ios-btn" id="tbNew" type="button">＋ New</button></div>
     <div class="ios-seg" id="tbWho"></div><div class="ios-grid" id="tboard"></div></section>
   <section class="desks"><div class="tools-h"><h2>Desks</h2><span class="sp"></span><span style="font-size:12px;color:var(--muted)">Each person's own desk — photo, message templates, tasks &amp; notes.</span><button class="btn pri" id="myDesk" type="button">🪑 My desk</button></div><div class="dgrid" id="desks"></div></section>
@@ -221,8 +252,21 @@ const CFGS = {
 const CFG = CFGS[TEAM];
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const rich = s => esc(s).replace(/\*\*(?=\S)([\s\S]*?\S)\*\*/g, '<b>$1</b>');
+
+/* Ctrl/⌘+B in any notes/remarks field wraps the selection in **bold** (shown as bold text when displayed) */
+document.addEventListener('keydown', e => {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || String(e.key).toLowerCase() !== 'b') return;
+  const el = e.target; if (!el || !(el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && el.hasAttribute('data-bold')))) return;
+  if (el.readOnly || el.disabled) return; e.preventDefault();
+  const a = el.selectionStart, b = el.selectionEnd, v = el.value, sel = v.slice(a, b);
+  if (sel.length >= 4 && sel.startsWith('**') && sel.endsWith('**')) { el.setRangeText(sel.slice(2, -2), a, b, 'select'); }
+  else if (v.slice(a - 2, a) === '**' && v.slice(b, b + 2) === '**') { el.setRangeText(sel, a - 2, b + 2, 'select'); }
+  else { el.setRangeText('**' + sel + '**', a, b, 'end'); el.setSelectionRange(a + 2, a + 2 + sel.length); }
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+});
 const safeUrl = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : '';
-const nick = n => n === 'SPV' ? '⭐ Putri (SPV)' : (CFG.roster.find(r => r[0] === n) || [, n])[1];
+const nick = n => n === 'SPV' ? '⭐ Putri Izza' : (CFG.roster.find(r => r[0] === n) || [, n])[1];
 const LINKSVG = '<svg viewBox="0 0 24 24"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
 function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2400); }
 document.title = CFG.title; document.body.classList.toggle('am', TEAM === 'AM');
@@ -238,46 +282,46 @@ function applyAuth() {
   if (AUTH.mem) ME = AUTH.mem.name; else if (AUTH.spv) ME = 'SPV'; else if (AUTH.cfg) ME = '';
   const legacy = !(AUTH.cfg || AUTH.mem || AUTH.spv); $('#me').style.display = legacy ? '' : 'none'; $('#whoL').style.display = legacy ? '' : 'none';
   $('#acct').innerHTML = AUTH.mem ? `<span class="acc">👤 <b>${esc(AUTH.mem.nick || nick(ME))}</b>${AUTH.mem.team !== TEAM ? ` <small>· ${AUTH.mem.team === 'AM' ? 'AM' : 'Helpdesk'}</small>` : ''}</span><button class="btn" type="button" data-pwchg>🔑 Password</button><button class="btn" type="button" data-logout>Logout</button>`
-    : AUTH.spv ? `<span class="acc">⭐ <b>Putri Izza (SPV)</b></span>${AUTH.cfg ? '<button class="btn" type="button" data-login title="Login sebagai anggota tim (pakai nickname)">🔐 Login member</button>' : ''}` : AUTH.cfg ? '<button class="btn pri" type="button" data-login>🔐 Login</button>' : '';
+    : AUTH.spv ? `<span class="acc">⭐ <b>Putri Izza</b></span>${AUTH.cfg ? '<button class="btn" type="button" data-login title="Log in as a team member (nickname)">🔐 Login member</button>' : ''}` : AUTH.cfg ? '<button class="btn pri" type="button" data-login>🔐 Login</button>' : '';
   if (typeof render === 'function') { try { render(); renderDesks(); } catch (e) {} }
   if (AUTH.mem && AUTH.mem.mustChange && !applyAuth.asked) { applyAuth.asked = 1; setTimeout(() => pwModal(true), 400); }
 }
 async function loginModal() {
   if (!AUTH.members.length) { try { const r = await fetch('/api/login?members=1', { cache: 'no-store' }); const j = await r.json(); AUTH.members = j.members || []; } catch (e) {} }
   const el = document.createElement('div'); el.className = 'md'; el.style.zIndex = 70;
-  el.innerHTML = `<form class="mdb" style="max-width:420px"><h3>🔐 Login</h3><p style="margin:-6px 0 14px;color:var(--muted);font-size:13px">Pakai <b>nickname</b> kamu (mis. Sita, Bagas). Belum pernah ganti password? Pakai password awal dari SPV, lalu ganti sendiri.</p>
-    <div class="f"><label>Nickname</label><input data-f="name" list="memList" autocomplete="username" required placeholder="mis. Sita"><datalist id="memList">${AUTH.members.map(m => `<option value="${esc(m.nick || m.name)}">${esc(m.name)}</option>`).join('')}</datalist></div>
+  el.innerHTML = `<form class="mdb" style="max-width:420px"><h3>🔐 Login</h3><p style="margin:-6px 0 14px;color:var(--muted);font-size:13px">Use your <b>nickname</b> (e.g. Sita, Bagas). First time? Use the initial password from your supervisor, then change it.</p>
+    <div class="f"><label>Nickname</label><input data-f="name" list="memList" autocomplete="username" required placeholder="e.g. Sita"><datalist id="memList">${AUTH.members.map(m => `<option value="${esc(m.nick || m.name)}">${esc(m.name)}</option>`).join('')}</datalist></div>
     <div class="f"><label>Password</label><input data-f="pw" type="password" autocomplete="current-password" required></div>
     <p class="err" style="color:#DC2626;font-size:13px;min-height:18px;margin:0"></p>
-    <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>Batal</button><button class="btn pri">Login</button></div></form>`;
+    <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>Cancel</button><button class="btn pri">Login</button></div></form>`;
   document.body.appendChild(el); el.querySelector('input').focus();
   el.onclick = e => { if (e.target === el || e.target.closest('[data-x]')) el.remove(); };
   el.querySelector('form').onsubmit = async e => { e.preventDefault(); const b = el.querySelector('button.pri'); b.disabled = true;
     const r = await jget('/api/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ member: 1, name: el.querySelector('[data-f=name]').value, password: el.querySelector('[data-f=pw]').value }) }); b.disabled = false;
-    if (r && r.status === 200) { el.remove(); AUTH.mem = r.j.member; toast('Hai ' + (AUTH.mem.nick || AUTH.mem.name.split(' ')[0]) + ' 👋'); applyAuth(); loadDesk(); try { renderOffice(); } catch (er) {} }
-    else el.querySelector('.err').textContent = (r && r.j && r.j.detail) || 'Login gagal'; };
+    if (r && r.status === 200) { el.remove(); AUTH.mem = r.j.member; toast('Hi ' + (AUTH.mem.nick || AUTH.mem.name.split(' ')[0]) + ' 👋'); applyAuth(); loadDesk(); try { renderOffice(); } catch (er) {} }
+    else el.querySelector('.err').textContent = (r && r.j && r.j.detail) || 'Login failed'; };
 }
 function pwModal(first) {
   const el = document.createElement('div'); el.className = 'md'; el.style.zIndex = 70;
-  el.innerHTML = `<form class="mdb" style="max-width:420px"><h3>🔑 ${first ? 'Ganti password awal' : 'Ganti password'}</h3>${first ? '<p style="margin:-6px 0 14px;color:var(--muted);font-size:13px">Kamu masih pakai password awal. Ganti sekarang supaya akunmu hanya kamu yang pakai.</p>' : ''}
-    <div class="f"><label>Password ${first ? 'awal' : 'lama'}</label><input data-f="old" type="password" autocomplete="current-password" required></div>
-    <div class="f"><label>Password baru (min. 6 karakter)</label><input data-f="nw" type="password" autocomplete="new-password" minlength="6" required></div>
-    <div class="f"><label>Ulangi password baru</label><input data-f="nw2" type="password" autocomplete="new-password" minlength="6" required></div>
+  el.innerHTML = `<form class="mdb" style="max-width:420px"><h3>🔑 ${first ? 'Change your initial password' : 'Change password'}</h3>${first ? '<p style="margin:-6px 0 14px;color:var(--muted);font-size:13px">You are still using the initial password. Change it now so only you can use your account.</p>' : ''}
+    <div class="f"><label>${first ? 'Initial' : 'Current'} password</label><input data-f="old" type="password" autocomplete="current-password" required></div>
+    <div class="f"><label>New password (min. 6 characters)</label><input data-f="nw" type="password" autocomplete="new-password" minlength="6" required></div>
+    <div class="f"><label>Repeat new password</label><input data-f="nw2" type="password" autocomplete="new-password" minlength="6" required></div>
     <p class="err" style="color:#DC2626;font-size:13px;min-height:18px;margin:0"></p>
-    <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>${first ? 'Nanti' : 'Batal'}</button><button class="btn pri">Simpan</button></div></form>`;
+    <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>${first ? 'Later' : 'Cancel'}</button><button class="btn pri">Save</button></div></form>`;
   document.body.appendChild(el); el.querySelector('input').focus();
   el.onclick = e => { if (e.target === el || e.target.closest('[data-x]')) el.remove(); };
   el.querySelector('form').onsubmit = async e => { e.preventDefault(); const v = k => el.querySelector(`[data-f=${k}]`).value;
-    if (v('nw') !== v('nw2')) { el.querySelector('.err').textContent = 'Password baru tidak sama.'; return; }
+    if (v('nw') !== v('nw2')) { el.querySelector('.err').textContent = 'New passwords do not match.'; return; }
     const r = await jget('/api/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ member: 1, change: { old: v('old'), new: v('nw') } }) });
-    if (r && r.status === 200) { el.remove(); if (AUTH.mem) AUTH.mem.mustChange = false; toast('Password diganti ✓'); } else el.querySelector('.err').textContent = (r && r.j && r.j.detail) || 'Gagal mengganti password'; };
+    if (r && r.status === 200) { el.remove(); if (AUTH.mem) AUTH.mem.mustChange = false; toast('Password changed ✓'); } else el.querySelector('.err').textContent = (r && r.j && r.j.detail) || 'Could not change password'; };
 }
 document.addEventListener('click', async e => {
   if (e.target.closest('[data-login]')) return loginModal();
   if (e.target.closest('[data-pwchg]')) return pwModal(false);
   if (e.target.closest('[data-logout]')) { await fetch('/api/login?logout=member', { credentials: 'same-origin' }).catch(() => {}); location.replace(AUTH.spv ? location.href : '/login?next=' + encodeURIComponent(location.pathname)); }
 });
-$('#me').innerHTML = '<option value="">— select your name —</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${f === ME ? 'selected' : ''}>${esc(k)}</option>`).join('') + `<option value="SPV" ${ME === 'SPV' ? 'selected' : ''}>⭐ Putri Izza (SPV)</option>`;
+$('#me').innerHTML = '<option value="">— select your name —</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${f === ME ? 'selected' : ''}>${esc(k)}</option>`).join('') + `<option value="SPV" ${ME === 'SPV' ? 'selected' : ''}>⭐ Putri Izza</option>`;
 $('#me').onchange = e => { ME = e.target.value; try { localStorage.setItem('gx-team-me-' + TEAM, ME); } catch (er) {} render(); renderDesks(); };
 /* ======================= Tools & Access (editable by SPV; passwords stored server-side only) ======================= */
 const newId = () => 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -427,37 +471,41 @@ let TASKS = [], FILTER = 'mine', PREVIEW = false, LOADED = { t: false, b: false 
 function taskEdit(t) {
   const R = CFG.roster.map(r => r[0]), el = document.createElement('div'); el.className = 'md'; el.style.zIndex = 60;
   el.innerHTML = `<form class="mdb" style="max-width:480px"><h3>✎ Edit task</h3>
-    <div class="f"><label>Judul</label><input data-f="title" value="${esc(t.title)}" maxlength="500" required></div>
-    <div class="f"><label>PIC</label><select data-f="assignee"><option value="">Whole team</option>${[...new Set([...R, t.assignee].filter(Boolean))].map(n => `<option value="${esc(n)}" ${n === t.assignee ? 'selected' : ''}>${esc(nick(n) || n)}${R.includes(n) ? '' : ' (bukan anggota tim ini)'}</option>`).join('')}</select></div>
+    <div class="f"><label>Title</label><input data-f="title" value="${esc(t.title)}" maxlength="500" required></div>
+    <div class="f"><label>PIC</label><select data-f="assignee"><option value="">Whole team</option>${[...new Set([...R, t.assignee].filter(Boolean))].map(n => `<option value="${esc(n)}" ${n === t.assignee ? 'selected' : ''}>${esc(nick(n) || n)}${R.includes(n) ? '' : ' (not in this team)'}</option>`).join('')}</select></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="f"><label>Due date</label><input type="date" data-f="due" value="${esc(t.due || '')}"></div>
-      <div class="f"><label>Prioritas</label><select data-f="priority">${['High', 'Medium', 'Low'].map(p => `<option ${p === t.priority ? 'selected' : ''}>${p}</option>`).join('')}</select></div></div>
-    <div class="f"><label>Catatan / instruksi</label><textarea data-f="remarks" rows="3" maxlength="4000">${esc(t.remarks || '')}</textarea></div>
-    <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>Batal</button><button class="btn pri">Simpan</button></div></form>`;
+      <div class="f"><label>Priority</label><select data-f="priority">${['High', 'Medium', 'Low'].map(p => `<option ${p === t.priority ? 'selected' : ''}>${p}</option>`).join('')}</select></div></div>
+    <div class="f"><label>Notes / instructions</label><textarea data-f="remarks" rows="3" maxlength="4000">${esc(t.remarks || '')}</textarea></div>
+    <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>Cancel</button><button class="btn pri">Save</button></div></form>`;
   document.body.appendChild(el); el.onclick = e => { if (e.target === el || e.target.closest('[data-x]')) el.remove(); };
   el.querySelector('form').onsubmit = async e => { e.preventDefault(); const v = k => el.querySelector(`[data-f="${k}"]`).value;
     const body = { task: { ...t, title: v('title').trim(), assignee: v('assignee'), due: v('due') || null, priority: v('priority'), remarks: v('remarks') } };
     const r = await jget('/api/todo', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
-    if (r && r.status === 200 && r.j.task) { Object.assign(t, r.j.task); el.remove(); render(); toast('Task updated ✓'); } else toast((r && r.j && (r.j.detail || r.j.error)) || 'Gagal menyimpan'); };
+    if (r && r.status === 200 && r.j.task) { Object.assign(t, r.j.task); el.remove(); render(); toast('Task updated ✓'); } else toast((r && r.j && (r.j.detail || r.j.error)) || 'Could not save'); };
 }
 /* ===== Task overdue → Gentle Reminder dari SPV cat (otomatis untuk orangnya) ===== */
 const witaToday = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
 function overdueOf(n) { if (!n) return []; const t0 = witaToday();
   return [...TASKS.map(t => ({ ...t, src: 'spv' })), ...((BD.data && BD.data.tasks) || []).map(t => ({ ...t, src: 'team' }))].filter(t => t.assignee === n && t.due && t.due < t0 && t.status !== 'DONE')
     .sort((a, b) => a.due.localeCompare(b.due)); }
-function whipCat() { return `<svg class="wcat" viewBox="0 0 220 200" aria-hidden="true">
-  <g class="wc-body"><ellipse cx="92" cy="176" rx="58" ry="10" fill="rgba(0,0,0,.12)"/>
-  <path d="M50 170 q-4-60 42-66 q46 6 42 66 z" fill="#F4A340"/><path d="M70 168 q22 -30 44 0" fill="#FFE2B8"/>
-  <rect x="80" y="122" width="24" height="30" rx="4" fill="#fff" stroke="#1D1D1F" stroke-width="2"/><text x="92" y="141" font-size="9" font-weight="900" text-anchor="middle" fill="#1D1D1F">SPV</text><path d="M84 122 l8 -12 l8 12" stroke="#0A84FF" stroke-width="3" fill="none"/>
-  <g class="wc-head"><path d="M52 72 l6 -30 l20 18 z M132 72 l-6 -30 l-20 18 z" fill="#F4A340"/><path d="M58 50 l4 -10 l10 10 z M126 50 l-4 -10 l-10 10 z" fill="#FFB7C5"/>
-  <ellipse cx="92" cy="80" rx="44" ry="38" fill="#F4A340"/><path d="M70 50 q22 -10 44 0" stroke="#D9822B" stroke-width="5" fill="none"/>
-  <g class="wc-eyes"><ellipse cx="76" cy="80" rx="7" ry="8" fill="#1D1D1F"/><ellipse cx="108" cy="80" rx="7" ry="8" fill="#1D1D1F"/><circle cx="78" cy="77" r="2.4" fill="#fff"/><circle cx="110" cy="77" r="2.4" fill="#fff"/></g>
-  <path d="M68 67 q8 -6 16 0 M100 67 q8 -6 16 0" stroke="#1D1D1F" stroke-width="3" fill="none" stroke-linecap="round"/>
-  <path d="M88 92 l4 4 l4 -4" fill="#FF7A90"/><path d="M82 100 q10 9 20 0" stroke="#1D1D1F" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-  <path d="M48 90 h-18 M48 96 h-16 M136 90 h18 M136 96 h16" stroke="#7A4A16" stroke-width="1.6"/></g>
-  <path d="M60 140 q-14 10 -6 22" stroke="#F4A340" stroke-width="12" fill="none" stroke-linecap="round"/></g>
-  <g class="wc-arm"><path d="M126 136 q18 -6 24 -20" stroke="#F4A340" stroke-width="13" fill="none" stroke-linecap="round"/>
-  <g class="wc-bell"><path d="M150 112 v-8" stroke="#8A6A1E" stroke-width="3" stroke-linecap="round"/><path d="M136 132 q0 -24 14 -26 q14 2 14 26 z" fill="#FFD60A" stroke="#E0A800" stroke-width="2"/><rect x="133" y="130" width="34" height="6" rx="3" fill="#E0A800"/><circle cx="150" cy="140" r="4" fill="#B8860B"/></g></g>
-  <g class="wc-crack"><path d="M176 92 q8 -8 0 -16 M184 98 q14 -14 0 -30" stroke="#FFB800" stroke-width="3" fill="none" stroke-linecap="round"/><text x="168" y="54" font-size="16" font-weight="800" fill="#0A84FF" font-family="system-ui">Ding~</text></g></svg>`; }
+/* Grey British-shorthair cat (yellow bell collar) — walks along the reminder banner and cracks a whip */
+function greyCat(withWhip) { return `<svg class="gcat" viewBox="0 0 140 110" aria-hidden="true">
+  <ellipse cx="66" cy="104" rx="44" ry="5" fill="rgba(0,0,0,.12)"/>
+  <path class="tail" d="M24 70 q-20 -6 -16 -30" stroke="#A9AEB4" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <g class="legs"><rect class="l1" x="34" y="78" width="9" height="22" rx="4.5" fill="#B9BDC2"/><rect class="l2" x="48" y="80" width="9" height="20" rx="4.5" fill="#A9AEB4"/><rect class="l3" x="78" y="78" width="9" height="22" rx="4.5" fill="#B9BDC2"/><rect class="l4" x="92" y="80" width="9" height="20" rx="4.5" fill="#A9AEB4"/>
+    <ellipse cx="38.5" cy="100" rx="6" ry="3.4" fill="#EEF0F2"/><ellipse cx="82.5" cy="100" rx="6" ry="3.4" fill="#EEF0F2"/></g>
+  <g class="bod"><ellipse cx="66" cy="70" rx="40" ry="20" fill="#C3C7CC"/><path d="M44 58 q6 10 0 22 M56 54 q6 12 0 28 M68 52 q5 12 0 28" stroke="#9EA3A9" stroke-width="2.6" fill="none" opacity=".7"/>
+    <ellipse cx="96" cy="76" rx="12" ry="12" fill="#ECEEF0"/>
+    <g class="hd"><path d="M92 36 l4 -20 l13 14 z M124 36 l-2 -20 l-12 13 z" fill="#B9BDC2"/><path d="M96 31 l2 -9 l6 7 z M120 31 l-1 -9 l-6 6 z" fill="#E7B8B0"/>
+      <ellipse cx="108" cy="44" rx="20" ry="17" fill="#C9CDD1"/><path d="M100 30 q8 -3 16 0 M102 34 q6 -2 12 0" stroke="#9EA3A9" stroke-width="2" fill="none"/>
+      <ellipse cx="108" cy="52" rx="11" ry="7.5" fill="#F1F2F4"/>
+      <g class="eyes"><ellipse cx="100" cy="43" rx="4.4" ry="4.8" fill="#C8D36A"/><ellipse cx="116" cy="43" rx="4.4" ry="4.8" fill="#C8D36A"/><rect x="99.4" y="39" width="1.3" height="8" rx=".6" fill="#2B2B2B"/><rect x="115.4" y="39" width="1.3" height="8" rx=".6" fill="#2B2B2B"/></g>
+      <path d="M105.5 50 h5 l-2.5 3 z" fill="#B06E5E"/><path d="M108 53 v2 M108 55 q-3 2 -5 0 M108 55 q3 2 5 0" stroke="#7A5148" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+      <path d="M96 52 h-12 M96 55 h-11 M120 52 h12 M120 55 h11" stroke="#fff" stroke-width=".9" opacity=".9"/></g>
+    <path d="M90 60 q10 6 22 0" stroke="#5B7FD6" stroke-width="2.4" fill="none"/><circle cx="101" cy="64" r="4.2" fill="#E9E44B" stroke="#C9C22E" stroke-width="1"/><path d="M99 64 h4" stroke="#6B6420" stroke-width="1"/></g>
+  ${withWhip ? `<g class="arm"><path d="M90 70 q10 -2 16 -12" stroke="#B9BDC2" stroke-width="7" fill="none" stroke-linecap="round"/><rect x="103" y="46" width="5" height="16" rx="2" fill="#6B3E12" transform="rotate(25 105 54)"/>
+    <path class="whip" d="M108 48 q20 -34 34 -14 q-6 14 -24 8" stroke="#5B3412" stroke-width="2.2" fill="none" stroke-linecap="round"/><g class="crk"><path d="M134 20 l4 -9 l1 8 l8 -4 l-5 8 l9 3 l-9 2" fill="#FFD60A" stroke="#FF9F0A" stroke-width="1"/></g></g>` : ''}</svg>`; }
+function whipCat() { return `<div class="wcat-wrap">${greyCat(false)}<span class="ding">Ding~</span></div>`; }
 function whipSound() { try { const A = new (window.AudioContext || window.webkitAudioContext)(), t = A.currentTime;
   [[1318, 0], [1760, .16]].forEach(([f, d]) => { const o = A.createOscillator(), g = A.createGain(); o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(.0001, t + d); g.gain.exponentialRampToValueAtTime(.25, t + d + .02); g.gain.exponentialRampToValueAtTime(.0001, t + d + 1.1); o.connect(g); g.connect(A.destination); o.start(t + d); o.stop(t + d + 1.2); });
   setTimeout(() => A.close(), 1600); } catch (e) {} }
@@ -465,16 +513,26 @@ function whipModal(n, L, bySpv) {
   if (!L.length) return; document.querySelector('.whipm') && document.querySelector('.whipm').remove();
   const el = document.createElement('div'); el.className = 'md whipm'; el.style.zIndex = 70; const days = d => Math.max(1, Math.round((Date.parse(witaToday()) - Date.parse(d)) / 864e5));
   el.innerHTML = `<div class="mdb whipb"><div class="wstage">${whipCat()}<span class="wme">${esc((nick(n) || '?').slice(0, 2).toUpperCase())}</span></div>
-    <h3>${bySpv ? `Gentle reminder terkirim ke ${esc(nick(n))} 🔔` : `Hai ${esc(nick(n))}, gentle reminder 🔔`}</h3>
-    <p class="wsub">${bySpv ? 'Popup ini juga akan muncul otomatis saat dia membuka dashboard.' : `Ada ${L.length} task yang sudah lewat due date — yuk dibantu selesaikan ya 🙏`}</p>
-    <ul class="wlist">${L.slice(0, 8).map(t => `<li><span class="wt">${esc(t.title.split('\n')[0])}</span><span class="wd">due ${esc(fmtD(t.due))} · telat ${days(t.due)} hari</span></li>`).join('')}${L.length > 8 ? `<li class="wd">+${L.length - 8} lainnya</li>` : ''}</ul>
-    <div class="mfoot"><span class="sp"></span>${bySpv ? '<button class="btn pri" data-wok>OK</button>' : '<button class="btn" data-wlater>Ingatkan 1 jam lagi</button><button class="btn pri" data-wgo>Siap, kerjain sekarang!</button>'}</div></div>`;
+    <h3>${bySpv ? `Gentle reminder sent to ${esc(nick(n))}` : `Hi ${esc(nick(n))}, gentle reminder`}</h3>
+    <p class="wsub">${bySpv ? 'This reminder also pops up automatically when they open their dashboard.' : `${L.length} task${L.length > 1 ? 's are' : ' is'} past the due date — please wrap ${L.length > 1 ? 'them' : 'it'} up when you can.`}</p>
+    <ul class="wlist">${L.slice(0, 8).map(t => `<li><span class="wt">${esc(t.title.split('\n')[0])}</span><span class="wd">due ${esc(fmtD(t.due))} · ${days(t.due)} day${days(t.due) > 1 ? 's' : ''} late</span></li>`).join('')}${L.length > 8 ? `<li class="wd">+${L.length - 8} more</li>` : ''}</ul>
+    <div class="mfoot"><span class="sp"></span>${bySpv ? '<button class="btn pri" data-wok>OK</button>' : '<button class="btn" data-wlater>Remind me in 1 hour</button><button class="btn pri" data-wgo>On it!</button>'}</div></div>`;
   document.body.appendChild(el); whipSound(); el.querySelector('.wstage').addEventListener('click', whipSound);
   el.onclick = e => { if (e.target.closest('[data-wlater]')) { try { localStorage.setItem('gx-whip-snooze', String(Date.now() + 3600e3)); } catch (er) {} el.remove(); }
     else if (e.target.closest('[data-wgo]')) { el.remove(); FILTER = 'mine'; render(); const t = document.querySelector('#tasks, .tasks'); if (t) t.scrollIntoView({ behavior: 'smooth' }); }
     else if (e.target.closest('[data-wok]') || e.target === el) el.remove(); };
 }
-function maybeWhip() {
+/* Reminder banner on each person's own dashboard — grey cat patrols back and forth and cracks the whip while tasks are overdue */
+function renderNudge() {
+  const el = $('#nudge'); if (!el || !LOADED.t || !LOADED.b) return;
+  let html = '';
+  if (ME && ME !== 'SPV') { const L = overdueOf(ME); if (L.length) html = `<b>Reminder:</b> ${L.length} task${L.length > 1 ? 's are' : ' is'} past the due date — ${L.slice(0, 3).map(t => `<span class="nt">${esc(t.title.split('\n')[0])} <i>· due ${esc(fmtD(t.due))}</i></span>`).join('')}${L.length > 3 ? `<span class="nt">+${L.length - 3} more</span>` : ''}`; }
+  else if (AUTH.spv) { const P = CFG.roster.map(r => [r[0], overdueOf(r[0]).length]).filter(x => x[1]); if (P.length) html = `<b>Overdue in this team:</b> ${P.map(([n, k]) => `<span class="nt">${esc(nick(n))} <i>· ${k} task${k > 1 ? 's' : ''}</i></span>`).join('')}`; }
+  if (!html) { el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="nudge"><div class="nmsg">${html}<button class="btn sm" type="button" data-nview>View tasks</button></div><div class="ntrack"><div class="walker">${greyCat(true)}</div></div></div>`;
+  el.querySelector('[data-nview]').onclick = () => { FILTER = AUTH.spv ? 'all' : 'mine'; render(); const t = document.querySelector('#list'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+}
+function maybeWhip() { renderNudge();
   if (!LOADED.t || !LOADED.b || !ME || ME === 'SPV' || maybeWhip.done) return; const L = overdueOf(ME); if (!L.length) return; maybeWhip.done = true;
   let snooze = 0; try { snooze = +localStorage.getItem('gx-whip-snooze') || 0; } catch (e) {} if (Date.now() < snooze) return;
   setTimeout(() => whipModal(ME, L), 900);
@@ -483,20 +541,20 @@ function maybeWhip() {
 let SCHEDULE = [];
 function schedModal(n) {
   const el = document.createElement('div'); el.className = 'md'; el.style.zIndex = 60; const d1 = (() => { const t = new Date(Date.now() + 8 * 3600e3); return new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth() + 1, 1)).toISOString().slice(0, 10); })();
-  el.innerHTML = `<form class="mdb" style="max-width:440px"><h3>📅 Jadwalkan perubahan — ${esc(nick(n))}</h3>
-    <div class="f"><label>Tanggal efektif</label><input type="date" data-f="at" value="${d1}" required></div>
-    <div class="f"><label>Perubahan</label><select data-f="to"><option value="${OTHER}">🔁 Pindah ke ${OTHER === 'AM' ? 'Account Manager' : 'Helpdesk'}</option><option value="ARCHIVE">🗄 Archive (keluar tim)</option></select></div>
-    <div class="f"><label>Catatan</label><input data-f="reason" maxlength="120" placeholder="mis. pindah ke CC"></div>
-    <p style="font-size:12.5px;color:var(--muted)">Berjalan otomatis pada tanggal itu. Task, catatan & riwayat tetap tersimpan.</p>
-    <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>Batal</button><button class="btn pri">Jadwalkan</button></div></form>`;
+  el.innerHTML = `<form class="mdb" style="max-width:440px"><h3>📅 Schedule a change — ${esc(nick(n))}</h3>
+    <div class="f"><label>Effective date</label><input type="date" data-f="at" value="${d1}" required></div>
+    <div class="f"><label>Change</label><select data-f="to"><option value="${OTHER}">🔁 Move to ${OTHER === 'AM' ? 'Account Manager' : 'Helpdesk'}</option><option value="ARCHIVE">🗄 Archive (leave the team)</option></select></div>
+    <div class="f"><label>Note</label><input data-f="reason" maxlength="120" placeholder="e.g. moving to CC"></div>
+    <p style="font-size:12.5px;color:var(--muted)">Runs automatically on that date. Tasks, notes and history are kept.</p>
+    <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>Cancel</button><button class="btn pri">Schedule</button></div></form>`;
   document.body.appendChild(el); el.onclick = e => { if (e.target === el || e.target.closest('[data-x]')) el.remove(); };
   el.querySelector('form').onsubmit = async e => { e.preventDefault(); const v = k => el.querySelector(`[data-f="${k}"]`).value;
     const r = await jget('/api/todo?board=' + TEAM, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ op: 'roster.schedule', name: n, to: v('to'), at: v('at'), reason: v('reason'), by: 'SPV' }) });
-    if (r && r.status === 200) { el.remove(); closeDesk(); SCHEDULE = r.j.schedule || []; renderSchedule(); toast('📅 Dijadwalkan ' + fmtD(v('at'))); } else toast((r && r.j && (r.j.detail || r.j.error)) || 'Gagal menjadwalkan'); };
+    if (r && r.status === 200) { el.remove(); closeDesk(); SCHEDULE = r.j.schedule || []; renderSchedule(); toast('📅 Scheduled for ' + fmtD(v('at'))); } else toast((r && r.j && (r.j.detail || r.j.error)) || 'Could not schedule'); };
 }
 function renderSchedule() { const el = $('#sched'); if (!el) return; const L = SCHEDULE.slice().sort((a, b) => a.at.localeCompare(b.at));
-  el.innerHTML = L.length ? `<div class="schedb"><b>📅 Perubahan terjadwal</b>${L.map(x => `<span class="sc1">${esc(fmtD(x.at))}: <b>${esc(nick(x.name) || x.name.split(' ')[0])}</b> ${x.to === 'ARCHIVE' ? '→ 🗄 archive' : x.to === TEAM ? `masuk ${TEAM === 'AM' ? 'Account Manager' : 'Helpdesk'} 👋` : `→ ${x.to === 'AM' ? 'Account Manager' : 'Helpdesk'}`}${x.reason ? ` <i>(${esc(x.reason)})</i>` : ''}${AUTH.spv ? ` <button type="button" class="lk" data-unsched="${esc(x.id)}">batal</button>` : ''}</span>`).join('')}</div>` : ''; }
-document.addEventListener('click', async e => { const u = e.target.closest('[data-unsched]'); if (!u || !confirm('Batalkan jadwal ini?')) return;
+  el.innerHTML = L.length ? `<div class="schedb"><b>📅 Scheduled changes</b>${L.map(x => `<span class="sc1">${esc(fmtD(x.at))}: <b>${esc(nick(x.name) || x.name.split(' ')[0])}</b> ${x.to === 'ARCHIVE' ? '→ 🗄 archive' : x.to === TEAM ? `joins ${TEAM === 'AM' ? 'Account Manager' : 'Helpdesk'}` : `→ ${x.to === 'AM' ? 'Account Manager' : 'Helpdesk'}`}${x.reason ? ` <i>(${esc(x.reason)})</i>` : ''}${AUTH.spv ? ` <button type="button" class="lk" data-unsched="${esc(x.id)}">cancel</button>` : ''}</span>`).join('')}</div>` : ''; }
+document.addEventListener('click', async e => { const u = e.target.closest('[data-unsched]'); if (!u || !confirm('Cancel this scheduled change?')) return;
   const r = await jget('/api/todo?board=' + TEAM, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ op: 'roster.unschedule', id: u.dataset.unsched, by: 'SPV' }) }); if (r && r.status === 200) { SCHEDULE = r.j.schedule || []; renderSchedule(); } });
 const today = () => new Date().toISOString().slice(0, 10);
 const ymL = ym => { const [y, m] = String(ym || '').split('-'); return y ? new Date(+y, +m - 1, 1).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }) : ''; };
@@ -508,7 +566,7 @@ async function load() {
     $('#banner').innerHTML = '<div class="banner w"><b>Preview mode</b> — server not connected. Showing tasks assigned in the SPV preview (saved in this browser only).</div>'; }
   else if (r.status !== 200) $('#banner').innerHTML = `<div class="banner e">Failed to load tasks: ${esc(j.detail || j.error || r.status)}</div>`;
   else { $('#banner').innerHTML = ''; TASKS = j.tasks || []; }
-  LOADED.t = true; render(); maybeWhip();
+  LOADED.t = true; render(); maybeWhip(); renderNudge();
 }
 const mine = t => !t.assignee || t.assignee === ME;
 function render() {
@@ -528,7 +586,7 @@ function card(t) {
   const links = (t.links || []).filter(l => safeUrl(l.url));
   return `<div class="card ${t.status === 'DONE' ? 'done' : ''}" data-id="${esc(t.id)}"><div class="ch"><div class="ti">${esc(t.title)}</div>${AUTH.spv && !PREVIEW ? `<button class="btn sm" data-tedit title="Edit task (SPV)">✎ Edit</button>` : ''}</div>
     <div class="meta"><span class="tag">${esc(ymL(t.month))}</span><span class="tag acc">${t.assignee ? esc(nick(t.assignee)) : 'Whole team'}</span><span class="tag ${esc(t.priority)}">${esc(t.priority)}</span>${t.due ? `<span class="tag ${late ? 'late' : ''}">Due ${new Date(t.due + 'T00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>` : ''}${t.category ? `<span class="tag">${esc(t.category)}</span>` : ''}</div>
-    ${t.remarks ? `<div class="rm">${esc(t.remarks)}</div>` : ''}
+    ${t.remarks ? `<div class="rm">${rich(t.remarks)}</div>` : ''}
     ${links.length ? `<div class="lks">${links.map(l => `<a class="lk" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener" title="${esc(l.url)}">${LINKSVG}${esc(l.label || new URL(l.url).hostname)}</a>`).join('')}</div>` : ''}
     <div class="act">${[['NOT STARTED', 'Not started'], ['IN PROGRESS', 'In progress'], ['DONE', 'Done']].map(([s, l]) => `<button class="sb ${s.replace(/\s/g, '')}" data-s="${s}" aria-pressed="${t.status === s}">${l}</button>`).join('')}
       <div class="note"><textarea placeholder="Note / update for SPV…" maxlength="2000">${esc(t.team_note)}</textarea><button class="btn pri" data-save="1">Save</button></div></div>
@@ -558,14 +616,14 @@ const PKEY = 'gx-preview-board-' + TEAM;
 function applyRoster() {
   const R = (BD.data.roster && BD.data.roster.length ? BD.data.roster : (BD.data.roster ? [] : DEF_ROSTER));
   CFG.roster = R.map(x => [x.name, x.nick || x.name.split(' ')[0]]);
-  $('#me').innerHTML = '<option value="">— select your name —</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${f === ME ? 'selected' : ''}>${esc(k)}</option>`).join('') + `<option value="SPV" ${ME === 'SPV' ? 'selected' : ''}>⭐ Putri Izza (SPV)</option>`;
-  $('#nTo').innerHTML = '<option value="">For: whole team</option><option value="SPV">For: ⭐ SPV (review / info)</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}">For: ${esc(k)}</option>`).join('');
+  $('#me').innerHTML = '<option value="">— select your name —</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}" ${f === ME ? 'selected' : ''}>${esc(k)}</option>`).join('') + `<option value="SPV" ${ME === 'SPV' ? 'selected' : ''}>⭐ Putri Izza</option>`;
+  $('#nTo').innerHTML = '<option value="">For: whole team</option><option value="SPV">For: ⭐ Putri Izza (review / info)</option>' + CFG.roster.map(([f, k]) => `<option value="${esc(f)}">For: ${esc(k)}</option>`).join('');
   if (typeof renderDesks === 'function') renderDesks();
 }
 function localOp(b) {   // preview tanpa server: logika sama dengan /api/todo?board
   const D = BD.data, now = new Date().toISOString(), id = 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
   if (!D.roster) D.roster = DEF_ROSTER.slice();
-  if (b.op === 'roster.add') { if (D.roster.some(x => x.name.toLowerCase() === b.name.toLowerCase())) return 'Nama sudah ada.'; D.roster.push({ name: b.name, nick: b.nick || b.name.split(' ')[0] }); }
+  if (b.op === 'roster.add') { if (D.roster.some(x => x.name.toLowerCase() === b.name.toLowerCase())) return 'Name already exists.'; D.roster.push({ name: b.name, nick: b.nick || b.name.split(' ')[0] }); }
   else if (b.op === 'roster.del') D.roster = D.roster.filter(x => x.name !== b.name);
   else if (b.op === 'roster.edit') { const x = D.roster.find(y => y.name === b.name); if (x) x.nick = b.nick || x.nick; }
   else if (b.op === 'task.add') D.tasks.unshift({ id, title: b.title, by: b.by, assignee: b.assignee, due: b.due || '', note: b.note || '', status: 'NOT STARTED', at: now, updated_at: now, upd_by: b.by });
@@ -601,15 +659,15 @@ function renderBoard() {
   $('#btCnt').textContent = `· ${o.length} open`;
   const tc = t => { const late = t.due && t.due < today() && t.status !== 'DONE';
     return `<div class="card ${t.status === 'DONE' ? 'done' : ''}" data-bt="${esc(t.id)}"><div class="ch"><div class="ti">${esc(t.title)}</div><span class="ops"><button class="ib2" data-bedit title="Edit">✎</button><button class="ib2" data-bdel title="Delete">🗑</button></span></div>
-      <div class="meta">${t.assignee === 'SPV' ? '<span class="tag spv">⭐ For SPV · review</span>' : `<span class="tag acc">${t.assignee ? 'For ' + esc(nick(t.assignee)) : 'Whole team'}</span>`}${t.by ? `<span class="tag">by ${esc(nick(t.by))}</span>` : ''}${t.due ? `<span class="tag ${late ? 'late' : ''}">Due ${fmtD(t.due)}</span>` : ''}</div>
-      ${t.spvReply ? `<div class="spvr"><b>⭐ SPV:</b> ${esc(t.spvReply)}</div>` : ''}
+      <div class="meta">${t.assignee === 'SPV' ? '<span class="tag spv">⭐ For Putri Izza · review</span>' : `<span class="tag acc">${t.assignee ? 'For ' + esc(nick(t.assignee)) : 'Whole team'}</span>`}${t.by ? `<span class="tag">by ${esc(nick(t.by))}</span>` : ''}${t.due ? `<span class="tag ${late ? 'late' : ''}">Due ${fmtD(t.due)}</span>` : ''}</div>
+      ${t.spvReply ? `<div class="spvr"><b>⭐ Putri Izza:</b> ${rich(t.spvReply)}</div>` : ''}
       <div class="act">${[['NOT STARTED', 'Not started'], ['IN PROGRESS', 'In progress'], ['DONE', 'Done']].map(([s, l]) => `<button class="sb ${s.replace(/\s/g, '')}" data-bs="${s}" aria-pressed="${t.status === s}">${l}</button>`).join('')}
         <div class="note"><textarea placeholder="Note / update…" maxlength="2000">${esc(t.note)}</textarea><button class="btn pri" data-bsave>Save</button></div></div>
       ${t.upd_by ? `<div class="upd">Last update by ${esc(nick(t.upd_by))} · ${fmtT(t.updated_at)}</div>` : ''}</div>`; };
   $('#btList').innerHTML = (o.length ? o.map(tc).join('') : '<div class="empty" style="padding:18px">No open team tasks. Click <b>+ New task</b>.</div>') + (d.length ? `<div class="grp">Done · ${d.length}</div>` + d.map(tc).join('') : '');
   const nn = N.filter(n => FILTER === 'all' || FILTER === 'mine' ? (FILTER === 'all' || !ME || !n.to || n.to === ME || n.by === ME) : (!n.to || n.to === FILTER.slice(2) || n.by === FILTER.slice(2))).sort((a, b) => (b.pinned - a.pinned) || String(b.at).localeCompare(String(a.at)));
   $('#ntCnt').textContent = `· ${nn.length}`;
-  $('#nList').innerHTML = nn.length ? nn.map(n => `<div class="nt ${n.pinned ? 'pin' : ''} ${n.to === 'SPV' ? 'tospv' : ''}" data-nt="${esc(n.id)}"><div class="nh"><b>${esc(n.by ? nick(n.by) : '—')}</b>${n.to ? ` → <b>${esc(nick(n.to))}</b>` : ''} · ${fmtT(n.at)}<span style="flex:1"></span><button class="ib2" data-npin title="${n.pinned ? 'Unpin' : 'Pin'}">${n.pinned ? '📌' : '📍'}</button>${!n.by || n.by === ME ? '<button class="ib2" data-ndel title="Delete">🗑</button>' : ''}</div><div class="tx">${esc(n.text)}</div>${n.to === 'SPV' ? `<div class="upd">${n.seen ? '✓ Seen by SPV' : 'Waiting for SPV'}</div>` : ''}${n.spvReply ? `<div class="spvr"><b>⭐ SPV:</b> ${esc(n.spvReply)}</div>` : ''}</div>`).join('') : '<div class="empty" style="padding:18px">No notes yet.</div>';
+  $('#nList').innerHTML = nn.length ? nn.map(n => `<div class="nt ${n.pinned ? 'pin' : ''} ${n.to === 'SPV' ? 'tospv' : ''}" data-nt="${esc(n.id)}"><div class="nh"><b>${esc(n.by ? nick(n.by) : '—')}</b>${n.to ? ` → <b>${esc(nick(n.to))}</b>` : ''} · ${fmtT(n.at)}<span style="flex:1"></span><button class="ib2" data-npin title="${n.pinned ? 'Unpin' : 'Pin'}">${n.pinned ? '📌' : '📍'}</button>${!n.by || n.by === ME ? '<button class="ib2" data-ndel title="Delete">🗑</button>' : ''}</div><div class="tx">${rich(n.text)}</div>${n.to === 'SPV' ? `<div class="upd">${n.seen ? '✓ Seen by SPV' : 'Waiting for SPV'}</div>` : ''}${n.spvReply ? `<div class="spvr"><b>⭐ Putri Izza:</b> ${rich(n.spvReply)}</div>` : ''}</div>`).join('') : '<div class="empty" style="padding:18px">No notes yet.</div>';
 }
 function taskModal(t) {
   if (!ME) { needLogin(); return; }
@@ -625,7 +683,7 @@ function taskModal(t) {
   el.querySelector('form').onsubmit = async e => { e.preventDefault(); const v = k => (el.querySelector(`[data-f="${k}"]`) || {}).value;
     const title = (v('title') || '').trim(); if (!title) return;
     const ok = await bop(t ? { op: 'task.upd', id: t.id, title, assignee: v('assignee'), due: v('due') } : { op: 'task.add', title, assignee: v('assignee'), due: v('due'), note: v('note') || '' });
-    if (ok) { el.remove(); if (!t && v('assignee') && v('assignee') !== ME) toast(v('assignee') === 'SPV' ? 'Sent to SPV for review ✓' : 'Task assigned to ' + nick(v('assignee')) + ' ✓'); } };
+    if (ok) { el.remove(); if (!t && v('assignee') && v('assignee') !== ME) toast(v('assignee') === 'SPV' ? 'Sent to Putri Izza for review ✓' : 'Task assigned to ' + nick(v('assignee')) + ' ✓'); } };
 }
 function rosterModal() {
   const el = document.createElement('div'); el.className = 'md';
@@ -642,7 +700,7 @@ function rosterModal() {
   };
   draw(); document.body.appendChild(el);
   el.addEventListener('click', async e => { if (e.target === el || e.target.closest('[data-x]')) return el.remove();
-    const rp = e.target.closest('[data-rpw]'); if (rp && confirm('Kembalikan password ' + rp.dataset.rpw + ' ke password awal?')) { const r = await jget('/api/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ member: 1, reset: rp.dataset.rpw }) }); toast(r && r.status === 200 ? 'Password direset ke password awal ✓' : 'Gagal reset password'); return; }
+    const rp = e.target.closest('[data-rpw]'); if (rp && confirm('Reset ' + rp.dataset.rpw + ' to the initial password?')) { const r = await jget('/api/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ member: 1, reset: rp.dataset.rpw }) }); toast(r && r.status === 200 ? 'Password reset to the initial password ✓' : 'Could not reset password'); return; }
     const d = e.target.closest('[data-rdel]'); if (d && confirm('Remove ' + d.dataset.rdel + ' from the team list?')) { if (await bop({ op: 'roster.del', name: d.dataset.rdel })) draw(); } });
   el.addEventListener('change', async e => { const n = e.target.closest('[data-nick]'); if (n && n.value.trim()) await bop({ op: 'roster.edit', name: n.dataset.nick, nick: n.value.trim() }); });
 }
@@ -696,7 +754,7 @@ async function dop(b, quiet) {
 /* ---------- Templates board (gaya sticky notes — semua template terlihat sekaligus) ---------- */
 const TB = { who: null, q: '' };
 function renderTboard() {
-  const el = $('#tboard'); if (!el) return; const R = CFG.roster.map(([f, k]) => [f, k]).concat(DK.data.desks.SPV ? [['SPV', 'Putri (SPV)']] : []);
+  const el = $('#tboard'); if (!el) return; const R = CFG.roster.map(([f, k]) => [f, k]).concat(DK.data.desks.SPV ? [['SPV', 'Putri Izza']] : []);
   if (TB.who == null) TB.who = AUTH.mem && R.some(r => r[0] === AUTH.mem.name) ? AUTH.mem.name : '*';
   $('#tbWho').innerHTML = [['*', 'All'], ...R].map(([f, k]) => `<button class="seg" type="button" data-tbw="${esc(f)}" aria-pressed="${TB.who === f}">${f === '*' ? 'All' : esc(k)}${f !== '*' ? ` <small>${(deskOf(f).tpls || []).length}</small>` : ''}</button>`).join('');
   const q = TB.q.toLowerCase(), L = [];
@@ -773,7 +831,7 @@ function renderDesks() {
     return `<div class="dk ${f === ME ? 'me' : ''}" data-desk="${esc(f)}" style="--dc:${esc(dColor(f))}" role="button" tabindex="0">${d.emoji ? `<span class="em">${esc(d.emoji)}</span>` : ''}${deskScene(f)}<b>${esc(k)}${f === ME ? ' (me)' : ''}</b><div class="tl">${esc(d.tagline || '')}</div>
       <div class="st"><span>💬 ${(d.tpls || []).length} template</span>${open ? `<span>📋 ${open} open</span>` : ''}${overdueOf(f).length ? `<span class="odue">⏰ ${overdueOf(f).length} overdue</span>` : ''}</div></div>`; }).join('') || '<div class="empty">No members yet — add them via 👥 Team.</div>';
 }
-const fillVars = (tx, owner) => tx.replace(/\{nama\}/gi, DK.cust || '{nama}').replace(/\{agent\}/gi, nick(owner)).replace(/\{tanggal\}/gi, new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }));
+const fillVars = (tx, owner) => tx.replace(/\{(nama|name)\}/gi, DK.cust || '{name}').replace(/\{agent\}/gi, nick(owner)).replace(/\{(tanggal|date)\}/gi, new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }));
 function openDesk(name) { DK.open = name; DK.tab = 'tpl'; DK.q = ''; DK.cat = '';
   const el = document.createElement('div'); el.className = 'md'; el.id = 'deskMd'; document.body.appendChild(el);
   el.addEventListener('click', deskClick); el.addEventListener('input', e => { if (e.target.id === 'tpQ') { DK.q = e.target.value; drawTpls(); } if (e.target.id === 'tpCust') { DK.cust = e.target.value; } });
@@ -786,10 +844,10 @@ function drawDesk() {
   const N = both('notes').filter(x => x.to === n || x.by === n).sort((a, b) => String(b.at).localeCompare(String(a.at)));
   const ps = presenceOf(n), canPs = !!((AUTH.mem && AUTH.mem.name === n) || AUTH.spv || (!AUTH.cfg && ME === n));
   el.innerHTML = `<div class="mdb dsk" style="--dc:${esc(dColor(n))}"><div class="dsk-h">${deskScene(n, { big: 1 })}<div><h3>${d.emoji ? esc(d.emoji) + ' ' : ''}${esc(nick(n))}'s desk</h3><p>${esc(n)}${d.tagline ? ' · ' + esc(d.tagline) : ''}</p></div><span class="sp"></span>
-      ${canDesk(DK.open) ? `<label class="btn" style="cursor:pointer" title="Foto profil khusus Virtual Office & desk — tidak mengubah Helpdesk Directory">📷 Profile photo<input type="file" accept="image/*" id="dPhoto" hidden></label><button class="btn" data-dprof type="button">🎨 Customize</button>` : ''}<button class="btn" data-dx type="button">✕</button></div>
-    ${canDesk(DK.open) ? '' : (AUTH.cfg && !AUTH.mem ? `<div class="unl">🔐 Login pakai nickname-mu untuk mengubah desk milikmu (foto, template, tampilan meja). Membaca &amp; copy template tetap terbuka. <button class="btn pri" type="button" data-login>Login</button></div>` : AUTH.mem ? `<div class="unl" style="background:var(--grbg)">👀 Ini desk ${esc(nick(DK.open))} — kamu bisa baca &amp; copy template, dan <b>+ My desk</b> untuk menyalinnya ke desk-mu.</div>` : `<form class="unl" id="dUnl">🔒 Enter the team password to edit desks (photo &amp; templates). Reading &amp; copying templates is open.<input type="password" id="dPw" placeholder="Team password" autocomplete="current-password"><button class="btn pri">Unlock</button></form>`)}
+      ${canDesk(DK.open) ? `<label class="btn" style="cursor:pointer" title="Profile photo for the Virtual Office & desk only — the Helpdesk Directory is not changed">📷 Profile photo<input type="file" accept="image/*" id="dPhoto" hidden></label><button class="btn" data-dprof type="button">🎨 Customize</button>` : ''}<button class="btn" data-dx type="button">✕</button></div>
+    ${canDesk(DK.open) ? '' : (AUTH.cfg && !AUTH.mem ? `<div class="unl">🔐 Log in with your nickname to edit your own desk (photo, templates, look). Reading &amp; copying templates stays open. <button class="btn pri" type="button" data-login>Login</button></div>` : AUTH.mem ? `<div class="unl" style="background:var(--grbg)">👀 This is ${esc(nick(DK.open))}'s desk — you can read &amp; copy templates, or use <b>+ My desk</b> to copy one to your own desk.</div>` : `<form class="unl" id="dUnl">🔒 Enter the team password to edit desks (photo &amp; templates). Reading &amp; copying templates is open.<input type="password" id="dPw" placeholder="Team password" autocomplete="current-password"><button class="btn pri">Unlock</button></form>`)}
     <div class="dstat"><b>Status</b>${Object.entries(PRES).map(([k, [i, t]]) => `<button class="chip" type="button" data-dps="${k}" aria-pressed="${ps === k}" ${canPs ? '' : 'disabled'}>${i} ${t}</button>`).join('')}
-      ${AUTH.spv && n !== 'SPV' ? `<span class="sp"></span><button class="btn" type="button" data-dtransfer title="Pindahkan ke subdivisi lain — riwayat task & notes tetap ada">🔁 Pindah ke ${OTHER === 'AM' ? 'Account Manager' : 'Helpdesk'}</button><button class="btn" type="button" data-darch title="Keluarkan dari tim (mis. pindah ke CC) — riwayat tetap ada">🗄 Archive</button><button class="btn" type="button" data-dsched title="Jadwalkan pindah / archive di tanggal tertentu">📅 Jadwalkan</button>${overdueOf(n).length ? `<button class="btn" type="button" data-dwhip title="Kirim reminder task overdue">🔔 Gentle Reminder</button>` : ''}` : ''}</div>
+      ${AUTH.spv && n !== 'SPV' ? `<span class="sp"></span><button class="btn" type="button" data-dtransfer title="Move to the other sub-division — task & note history is kept">🔁 Move to ${OTHER === 'AM' ? 'Account Manager' : 'Helpdesk'}</button><button class="btn" type="button" data-darch title="Remove from the team (e.g. moving to CC) — history is kept">🗄 Archive</button><button class="btn" type="button" data-dsched title="Schedule a move / archive on a date">📅 Schedule</button>${overdueOf(n).length ? `<button class="btn" type="button" data-dwhip title="Send a reminder about overdue tasks">Gentle Reminder</button>` : ''}` : ''}</div>
     <div class="dtabs">${[['tpl', '💬 Templates · ' + (d.tpls || []).length], ['task', '📋 Tasks · ' + (T.filter(t => t.status !== 'DONE').length + S.filter(t => t.status !== 'DONE').length)], ['note', '🗒 Notes · ' + N.length]].map(([k, l]) => `<button class="chip" data-dtab="${k}" aria-pressed="${DK.tab === k}" type="button">${l}</button>`).join('')}</div>
     <div id="dBody"></div></div>`;
   const u = el.querySelector('#dUnl'); if (u) u.onsubmit = async e => { e.preventDefault(); const pw = el.querySelector('#dPw').value; if (!pw) return;
@@ -797,19 +855,19 @@ function drawDesk() {
     if (r && r.status === 200) { toast('Unlocked ✓'); await Promise.all([loadDesk(), loadBoard()]); } else toast('Wrong password'); };
   const B = el.querySelector('#dBody');
   if (DK.tab === 'tpl') { const cats = [...new Set((d.tpls || []).map(t => t.cat).filter(Boolean))].sort();
-    B.innerHTML = `<div class="tpbar"><input id="tpQ" type="search" placeholder="Search templates…" value="${esc(DK.q)}"><input id="tpCust" placeholder="Customer name → fills {nama}" value="${esc(DK.cust)}" style="max-width:240px">${canDesk(DK.open) ? '<button class="btn pri" data-tadd type="button">+ Template</button>' : ''}</div>
+    B.innerHTML = `<div class="tpbar"><input id="tpQ" type="search" placeholder="Search templates…" value="${esc(DK.q)}"><input id="tpCust" placeholder="Customer name → fills {name}" value="${esc(DK.cust)}" style="max-width:240px">${canDesk(DK.open) ? '<button class="btn pri" data-tadd type="button">+ Template</button>' : ''}</div>
       ${cats.length ? `<div class="bar" style="margin-bottom:10px"><button class="chip" data-tcat="" aria-pressed="${!DK.cat}" type="button">All</button>${cats.map(c => `<button class="chip" data-tcat="${esc(c)}" aria-pressed="${DK.cat === c}" type="button">${esc(c)}</button>`).join('')}</div>` : ''}
-      <p class="hint">Click <b>Copy</b> and paste into the chat. Variables: <code>{nama}</code> customer name, <code>{agent}</code> ${esc(nick(n))}, <code>{tanggal}</code> today. Don't save customer phone numbers / emails in templates.</p><div class="tps" id="tps"></div>`;
+      <p class="hint">Click <b>Copy</b> and paste into the chat. Variables: <code>{name}</code> customer name, <code>{agent}</code> ${esc(nick(n))}, <code>{tanggal}</code> today. Don't save customer phone numbers / emails in templates.</p><div class="tps" id="tps"></div>`;
     drawTpls(); }
-  else if (DK.tab === 'task') { const row = (t, src) => `<div class="card ${t.status === 'DONE' ? 'done' : ''}"><div class="ch"><div class="ti">${esc(t.title)}</div></div><div class="meta"><span class="tag">${src}</span>${t._tm && t._tm !== TEAM ? `<span class="tag">📁 ${t._tm === 'AM' ? 'dari AM' : 'dari Helpdesk'}</span>` : ''}<span class="tag">${esc(t.status)}</span>${t.assignee === 'SPV' ? '<span class="tag spv">⭐ Sent to SPV</span>' : ''}${t.due ? `<span class="tag">Due ${fmtD(t.due)}</span>` : ''}</div>${t.spvReply ? `<div class="spvr"><b>⭐ SPV:</b> ${esc(t.spvReply)}</div>` : ''}</div>`;
+  else if (DK.tab === 'task') { const row = (t, src) => `<div class="card ${t.status === 'DONE' ? 'done' : ''}"><div class="ch"><div class="ti">${esc(t.title)}</div></div><div class="meta"><span class="tag">${src}</span>${t._tm && t._tm !== TEAM ? `<span class="tag">📁 ${t._tm === 'AM' ? 'from AM' : 'from Helpdesk'}</span>` : ''}<span class="tag">${esc(t.status)}</span>${t.assignee === 'SPV' ? '<span class="tag spv">⭐ Sent to SPV</span>' : ''}${t.due ? `<span class="tag">Due ${fmtD(t.due)}</span>` : ''}</div>${t.spvReply ? `<div class="spvr"><b>⭐ Putri Izza:</b> ${rich(t.spvReply)}</div>` : ''}</div>`;
     const all = [...S.map(t => row(t, 'From SPV')), ...T.map(t => row(t, t.assignee === 'SPV' ? 'Review request' : 'Team task'))];
     B.innerHTML = all.length ? all.join('') : '<div class="empty" style="padding:18px">No tasks for this person.</div>'; }
-  else B.innerHTML = N.length ? N.map(x => `<div class="nt ${x.to === 'SPV' ? 'tospv' : ''}"><div class="nh"><b>${esc(x.by ? nick(x.by) : '—')}</b>${x.to ? ` → <b>${esc(nick(x.to))}</b>` : ''} · ${fmtT(x.at)}</div><div class="tx">${esc(x.text)}</div>${x.spvReply ? `<div class="spvr"><b>⭐ SPV:</b> ${esc(x.spvReply)}</div>` : ''}</div>`).join('') : '<div class="empty" style="padding:18px">No notes yet.</div>';
+  else B.innerHTML = N.length ? N.map(x => `<div class="nt ${x.to === 'SPV' ? 'tospv' : ''}"><div class="nh"><b>${esc(x.by ? nick(x.by) : '—')}</b>${x.to ? ` → <b>${esc(nick(x.to))}</b>` : ''} · ${fmtT(x.at)}</div><div class="tx">${rich(x.text)}</div>${x.spvReply ? `<div class="spvr"><b>⭐ Putri Izza:</b> ${rich(x.spvReply)}</div>` : ''}</div>`).join('') : '<div class="empty" style="padding:18px">No notes yet.</div>';
 }
 function drawTpls() {
   const box = $('#tps'); if (!box) return; const n = DK.open, d = deskOf(n), q = DK.q.toLowerCase();
   const L = (d.tpls || []).filter(t => (!DK.cat || t.cat === DK.cat) && (!q || (t.title + ' ' + t.text + ' ' + (t.cat || '')).toLowerCase().includes(q))).sort((a, b) => (b.uses || 0) - (a.uses || 0));
-  box.innerHTML = L.length ? L.map(t => `<div class="tp" data-tp="${esc(t.id)}"><div class="tph"><b>${esc(t.title)}</b>${t.cat ? `<span class="tag acc">${esc(t.cat)}</span>` : ''}</div><div class="tx">${esc(t.text)}</div>
+  box.innerHTML = L.length ? L.map(t => `<div class="tp" data-tp="${esc(t.id)}"><div class="tph"><b>${esc(t.title)}</b>${t.cat ? `<span class="tag acc">${esc(t.cat)}</span>` : ''}</div><div class="tx">${rich(t.text)}</div>
       <div class="tf"><small>${t.uses ? `copied ${t.uses}×` : ''}</small><button class="ib2" data-tmore type="button" title="Show all">⤢</button>${canDesk(DK.open) ? `<button class="ib2" data-tedit type="button" title="Edit">✎</button><button class="ib2" data-tdel type="button" title="Delete">🗑</button>` : ''}${(DK.canEdit || AUTH.mem) && ME && ME !== n ? '<button class="ib" data-tclone type="button" title="Copy to my desk">+ My desk</button>' : ''}<button class="cbtn" data-tcopy type="button">Copy</button></div></div>`).join('')
     : `<div class="empty" style="padding:18px;grid-column:1/-1">${(d.tpls || []).length ? 'No template matches.' : 'No templates yet.' + (canDesk(DK.open) ? ' Click <b>+ Template</b> to add your quick replies.' : '')}</div>`;
 }
@@ -819,7 +877,7 @@ function tplModal(t, owner) { owner = owner || DK.open;
   el.innerHTML = `<form class="mdb"><h3>${t ? 'Edit template' : 'New template'} — ${esc(nick(owner))}</h3>
     <div class="f"><label>Title</label><input data-f="title" maxlength="120" required value="${esc(t ? t.title : '')}" placeholder="e.g. Greeting pagi / Info gangguan / Reminder billing"></div>
     <div class="f"><label>Category (optional)</label><input data-f="cat" maxlength="40" list="tcats" value="${esc(t ? t.cat : '')}" placeholder="Greeting / Gangguan / Billing / Closing"><datalist id="tcats">${cats.map(c => `<option>${esc(c)}</option>`).join('')}</datalist></div>
-    <div class="f"><label>Message — {nama} = customer name, {agent} = your name, {tanggal} = today</label><textarea data-f="text" rows="9" maxlength="4000" required>${esc(t ? t.text : '')}</textarea></div>
+    <div class="f"><label>Message — {name} = customer name, {agent} = your name, {date} = today</label><textarea data-f="text" rows="9" maxlength="4000" required>${esc(t ? t.text : '')}</textarea></div>
     <div class="mfoot"><span class="sp"></span><button type="button" class="btn" data-x>Cancel</button><button class="btn pri">${t ? 'Save' : 'Add template'}</button></div></form>`;
   document.body.appendChild(el); el.querySelector('input').focus();
   el.onclick = e => { if (e.target === el || e.target.closest('[data-x]')) el.remove(); };
@@ -830,7 +888,7 @@ function tplModal(t, owner) { owner = owner || DK.open;
 function profModal() {
   const d = deskOf(DK.open), el = document.createElement('div'); el.className = 'md'; el.style.zIndex = 60;
   el.innerHTML = `<form class="mdb" style="max-width:520px"><h3>🎨 Customize desk — ${esc(nick(DK.open))}</h3>
-    <div class="f"><label>Profile photo — Virtual Office avatar &amp; desk</label><div style="display:flex;gap:12px;align-items:center"><span class="pfph">${d.photo ? `<img src="${esc(d.photo)}" alt="">` : esc(nick(DK.open)).slice(0, 2).toUpperCase()}</span><label class="btn" style="cursor:pointer">📷 Upload photo<input type="file" accept="image/*" id="pfPh" hidden></label></div><div style="font-size:12px;color:var(--muted);margin-top:6px">Bebas pakai foto apa saja. Hanya dipakai di dashboard tim &amp; Virtual Office — foto di Helpdesk Directory tidak berubah.</div></div>
+    <div class="f"><label>Profile photo — Virtual Office avatar &amp; desk</label><div style="display:flex;gap:12px;align-items:center"><span class="pfph">${d.photo ? `<img src="${esc(d.photo)}" alt="">` : esc(nick(DK.open)).slice(0, 2).toUpperCase()}</span><label class="btn" style="cursor:pointer">📷 Upload photo<input type="file" accept="image/*" id="pfPh" hidden></label></div><div style="font-size:12px;color:var(--muted);margin-top:6px">Use any photo you like. It is only used on the team dashboards &amp; Virtual Office — the Helpdesk Directory photo is not changed.</div></div>
     <div class="f"><label>Tagline / status</label><input data-f="tagline" maxlength="80" value="${esc(d.tagline || '')}" placeholder="e.g. Fast reply, slow coffee ☕"></div>
     <div class="f"><label>Emoji</label><input data-f="emoji" maxlength="8" value="${esc(d.emoji || '')}" placeholder="🐣"></div>
     <div class="f"><label>Desk color</label><div style="display:flex;gap:8px;flex-wrap:wrap">${COLORS.map(c => `<label style="cursor:pointer"><input type="radio" name="dc" value="${c}" ${dColor(DK.open) === c ? 'checked' : ''} hidden><span style="display:inline-block;width:30px;height:30px;border-radius:50%;background:${c};border:2px solid ${dColor(DK.open) === c ? '#1D1D1F' : '#E5E5EA'}"></span></label>`).join('')}</div></div>
@@ -863,22 +921,22 @@ async function deskClick(e) {
   const el = $('#deskMd'); if (e.target === el || e.target.closest('[data-dx]')) return closeDesk();
   const tb = e.target.closest('[data-dtab]'); if (tb) { DK.tab = tb.dataset.dtab; return drawDesk(); }
   const dp = e.target.closest('[data-dps]'); if (dp && !dp.disabled) { if (await setPresence(DK.open, TEAM, dp.dataset.dps)) { toast(nick(DK.open) + ': ' + PRES[dp.dataset.dps].join(' ')); renderOffice(); renderPresenceBar(); drawDesk(); } return; }
-  if (e.target.closest('[data-darch]')) { const n = DK.open, why = prompt(`Arsipkan ${nick(n)} dari tim ${TEAM === 'AM' ? 'Account Manager' : 'Helpdesk'}?\nAlasan (mis. pindah ke CC):`, 'Pindah ke CC'); if (why == null) return;
+  if (e.target.closest('[data-darch]')) { const n = DK.open, why = prompt(`Archive ${nick(n)} from ${TEAM === 'AM' ? 'Account Manager' : 'Helpdesk'}?\nReason (e.g. moving to CC):`, 'Moving to CC'); if (why == null) return;
     const r = await jget('/api/todo?board=' + TEAM, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ op: 'roster.archive', name: n, reason: why, by: 'SPV', defaultRoster: DEF_ROSTER }) });
-    if (r && r.status === 200) { closeDesk(); toast('🗄 ' + nick(n) + ' diarsipkan — riwayat tetap tersimpan'); await Promise.all([loadBoard(), loadDesk()]); } else toast((r && r.j && (r.j.detail || r.j.error)) || 'Gagal'); return; }
+    if (r && r.status === 200) { closeDesk(); toast('🗄 ' + nick(n) + ' archived — history is kept'); await Promise.all([loadBoard(), loadDesk()]); } else toast((r && r.j && (r.j.detail || r.j.error)) || 'Failed'); return; }
   if (e.target.closest('[data-dsched]')) return schedModal(DK.open);
   if (e.target.closest('[data-dwhip]')) { const n = DK.open, L = overdueOf(n);
-    const r = await jget('/api/todo?board=' + TEAM, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ op: 'note.add', by: 'SPV', to: n, text: `🔔 Gentle reminder dari SPV — ${L.length} task lewat due date: ${L.map(t => `"${t.title.split('\n')[0]}" (due ${fmtD(t.due)})`).join(', ')}. Yuk dibantu selesaikan ya 🙏` }) });
-    if (r && r.status === 200) { whipModal(n, L, true); loadBoard(true); } else toast((r && r.j && (r.j.detail || r.j.error)) || 'Gagal kirim reminder'); return; }
-  if (e.target.closest('[data-dtransfer]')) { const n = DK.open, to = OTHER; if (!confirm(`Pindahkan ${nick(n)} ke ${to === 'AM' ? 'Account Manager' : 'Helpdesk'}?\n\nDesk, foto & template ikut pindah. Task & catatan lama tetap tersimpan sebagai riwayat.`)) return;
+    const r = await jget('/api/todo?board=' + TEAM, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ op: 'note.add', by: 'SPV', to: n, text: `Gentle reminder from Putri — ${L.length} task${L.length > 1 ? 's' : ''} past due: ${L.map(t => `"${t.title.split('\n')[0]}" (due ${fmtD(t.due)})`).join(', ')}. Please wrap up when you can 🙏` }) });
+    if (r && r.status === 200) { whipModal(n, L, true); loadBoard(true); } else toast((r && r.j && (r.j.detail || r.j.error)) || 'Could not send the reminder'); return; }
+  if (e.target.closest('[data-dtransfer]')) { const n = DK.open, to = OTHER; if (!confirm(`Move ${nick(n)} to ${to === 'AM' ? 'Account Manager' : 'Helpdesk'}?\n\nDesk, photo & templates move along. Old tasks & notes stay as history.`)) return;
     const r = await jget('/api/todo?board=' + TEAM, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ op: 'roster.transfer', name: n, to, by: 'SPV', defaultRoster: DEF_ROSTER }) });
-    if (r && r.status === 200) { closeDesk(); toast('🔁 ' + nick(n) + ' sekarang di ' + (to === 'AM' ? 'Account Manager' : 'Helpdesk')); await Promise.all([loadBoard(), loadDesk(), loadOther()]); } else toast((r && r.j && (r.j.detail || r.j.error)) || 'Gagal memindahkan'); return; }
+    if (r && r.status === 200) { closeDesk(); toast('🔁 ' + nick(n) + ' is now in ' + (to === 'AM' ? 'Account Manager' : 'Helpdesk')); await Promise.all([loadBoard(), loadDesk(), loadOther()]); } else toast((r && r.j && (r.j.detail || r.j.error)) || 'Could not move'); return; }
   const tc = e.target.closest('[data-tcat]'); if (tc) { DK.cat = tc.dataset.tcat; return drawDesk(); }
   if (e.target.closest('[data-dprof]')) return profModal();
   if (e.target.closest('[data-tadd]')) return tplModal(null);
   const card = e.target.closest('[data-tp]'); if (!card) return; const t = (deskOf(DK.open).tpls || []).find(x => x.id === card.dataset.tp); if (!t) return;
   if (e.target.closest('[data-tcopy]')) { const tx = fillVars(t.text, DK.open);
-    try { await navigator.clipboard.writeText(tx); toast(/\{nama\}/i.test(tx) ? 'Copied ✓ — {nama} still empty' : 'Copied ✓'); } catch (er) { prompt('Copy:', tx); }
+    try { await navigator.clipboard.writeText(tx); toast(/\{(nama|name)\}/i.test(tx) ? 'Copied ✓ — {name} still empty' : 'Copied ✓'); } catch (er) { prompt('Copy:', tx); }
     if (canDesk(DK.open)) dop({ op: 'tpl.use', name: DK.open, id: t.id }, true); return; }
   if (e.target.closest('[data-tmore]')) return card.querySelector('.tx').classList.toggle('open');
   if (e.target.closest('[data-tedit]')) return tplModal(t);
@@ -967,7 +1025,7 @@ function layout() {
   F.push(`<polygon points="${pts([P2(0, 0, WH), P2(GW, 0, WH), P2(GW, 0, WH + 6), P2(0, 0, WH + 6)])}" fill="#CBD5E1"/><polygon points="${pts([P2(0, 0, WH), P2(0, GH, WH), P2(0, GH, WH + 6), P2(0, 0, WH + 6)])}" fill="#D6C9B8"/>`);
   { const a = P2(0, 1.4, 30), b = P2(0, 6, 30), c = P2(0, 6, 74), d = P2(0, 1.4, 74), t = P2(0, 5.72, 64);   // logo GlobalXtreme di dinding
     F.push(`<polygon points="${pts([a, b, c, d])}" fill="#FFFFFF" stroke="#E4E4E7" stroke-width="2"/><polygon points="${pts([P2(0, 1.4, 30), P2(0, 6, 30), P2(0, 6, 33), P2(0, 1.4, 33)])}" fill="#F5C518"/><image href="gx-logo.png" width="138" height="23.8" transform="matrix(1,-.5,0,1,${t[0].toFixed(1)},${t[1].toFixed(1)})"/>`); }
-  F.push(floorText(1.4, corY - .75, 'HELPDESK', '#B08900'), floorText(16.4, corY - .75, 'ACCOUNT MANAGER', '#4C55B8'), floorText(11.4, 1.1, 'SPV ROOM', '#B45309', 12), floorText(.6, B + .3, 'LOUNGE & PANTRY', '#64748B', 13), floorText(16.4, B + .3, 'MEETING ROOM', '#047857', 13));
+  F.push(floorText(1.4, corY - .75, 'HELPDESK', '#B08900'), floorText(16.4, corY - .75, 'ACCOUNT MANAGER', '#4C55B8'), floorText(11.4, 1.1, 'PUTRI IZZA', '#B45309', 12), floorText(.6, B + .3, 'LOUNGE & PANTRY', '#64748B', 13), floorText(16.4, B + .3, 'MEETING ROOM', '#047857', 13));
   /* meja kerja */
   const people = [];
   const station = (p, dx, dy, ring) => { const s = stat(p), c = p.name === 'SPV' ? '#D97706' : s.late ? '#E03131' : s.open ? '#E8590C' : '#2F9E44';
@@ -1080,7 +1138,7 @@ function build3d(L) {
     for (let x = 0; x < GW; x++) for (let y = 0; y < GH; y++) { const o = (x + y) % 2, hd = x >= 1 && x <= 10 && y < corY, am = x >= 16 && x <= 25 && y < corY, sv = x >= 11 && x <= 15 && y < corY - 1, lo = x <= 9 && y >= B, me = x >= 16 && y >= B;
       g.fillStyle = hd ? (o ? '#EFD9B8' : '#EAD3AF') : am ? (o ? '#E4E6F4' : '#DEE1F1') : sv ? (o ? '#F6EAD0' : '#F2E3C4') : lo ? (o ? '#F2EEE8' : '#ECE7DF') : me ? (o ? '#E8D3B4' : '#E3CCAA') : (o ? '#D7DAE0' : '#D1D5DC'); g.fillRect(x * px, y * px, px, px); }
     const lab = (t, x, y, c, s = 34) => { g.font = `900 ${s}px system-ui,sans-serif`; g.fillStyle = c; g.globalAlpha = .55; g.fillText(t, x * px, y * px); g.globalAlpha = 1; };
-    lab('HELPDESK HQ', 1.3, corY - .25, '#B08900'); lab('ACCOUNT MANAGER', 16.3, corY - .25, '#4C55B8'); lab('SPV ROOM', 11.25, .8, '#B45309', 26); lab('LOUNGE & PANTRY', 1.6, GH - .35, '#64748B', 30); lab('MEETING ROOM', 16.4, GH - .3, '#047857', 30);
+    lab('HELPDESK HQ', 1.3, corY - .25, '#B08900'); lab('ACCOUNT MANAGER', 16.3, corY - .25, '#4C55B8'); lab('PUTRI IZZA', 11.25, .8, '#B45309', 26); lab('LOUNGE & PANTRY', 1.6, GH - .35, '#64748B', 30); lab('MEETING ROOM', 16.4, GH - .3, '#047857', 30);
     g.strokeStyle = '#3B82F6'; g.lineWidth = 6; g.setLineDash([]); g.strokeRect(16 * px + 6, B * px + 6, (GW - 16) * px - 12, (GH - B) * px - 12); g.setLineDash([]);
     L.people.forEach(p => { const dx = p.home[0] - 1, dy = p.home[1] + .55; g.strokeStyle = p.ring; g.lineWidth = 7; g.fillStyle = p.ring + '22'; rr(g, (dx - .35) * px, (dy - 1.4) * px, 2.7 * px, 2.55 * px, 26); g.fill(); g.stroke(); });
     rr(g, 1.5 * px, (B + 1.4) * px, 6 * px, 3.2 * px, 20); g.fillStyle = '#D9C6A5'; g.fill(); rr(g, 1.7 * px, (B + 1.6) * px, 5.6 * px, 2.8 * px, 16); g.fillStyle = '#E8D9BE'; g.fill(); });
@@ -1163,8 +1221,9 @@ function renderOffice3D(L) {
     if (o && o.mode !== 'work') { w.mode = o.mode; w.x = o.x; w.y = o.y; w.sit = o.sit; w.state = o.state; w.dest = o.dest; w.q = o.q || []; }
     O3.root.add(obj); OF.W.push(w); syncPresence(w); });
   if (!OF.cat) OF.cat = { x: 9.5, y: L.corY + .5, q: [], wait: 2 };
-  const cg = new THREE.Group(); cg.add(sph(.15, '#3F3F46', 0, .15, 0, 1.5, .8, 1)); cg.add(sph(.1, '#3F3F46', .2, .28, 0)); [-.05, .05].forEach(z => { const e = new THREE.Mesh(new THREE.ConeGeometry(.035, .08, 4), mat('#3F3F46')); e.position.set(.22, .38, z); cg.add(e); });
-  const tl = new THREE.Group(); tl.position.set(-.2, .15, 0); tl.add(cyl(.02, .02, .3, '#3F3F46', 0, .15, 0)); cg.add(tl); cg.userData.tail = tl; O3.root.add(cg); OF.cat.obj = cg; delete OF.cat.g;
+  const cg = new THREE.Group(); cg.add(sph(.15, '#B9BDC2', 0, .15, 0, 1.5, .8, 1)); cg.add(sph(.11, '#C9CDD1', .2, .29, 0)); [-.055, .055].forEach(z => { const e = new THREE.Mesh(new THREE.ConeGeometry(.035, .08, 4), mat('#B9BDC2')); e.position.set(.22, .4, z); cg.add(e); cg.add(sph(.018, '#9CCB3B', .3, .31, z * .7)); });
+  cg.add(sph(.03, '#E9E44B', .27, .19, 0)); cg.scale.setScalar(1.35);
+  const tl = new THREE.Group(); tl.position.set(-.2, .15, 0); tl.add(cyl(.02, .02, .3, '#A9AEB4', 0, .15, 0)); cg.add(tl); cg.userData.tail = tl; O3.root.add(cg); OF.cat.obj = cg; delete OF.cat.g;
   drawLabels(); OF.W.forEach(place); place(OF.cat); start(); renderPresenceBar();
 }
 function place3d(w) {
@@ -1172,7 +1231,7 @@ function place3d(w) {
   if (w.q && w.q.length) { const [tx, ty] = w.q[0], dx = tx - w.x, dy = ty - w.y; if (Math.abs(dx) + Math.abs(dy) > .01) w.rot = Math.atan2(dx, dy); } else if (w.sit && w.state === 'seat') w.rot = 0;
   o.rotation.y = w.rot != null ? w.rot : 0; if (ud.legs) { ud.legs.visible = !w.sit && !w.away; ud.up.visible = !w.away; ud.up.position.y = w.sit ? -.04 : 0; } }
 function bubble3d(w, e) { const b = w.obj && w.obj.userData.bub; if (!b) return; if (!e) { b.visible = false; return; } if (b.material.map) b.material.map.dispose(); b.material.map = emojiTex(e); b.material.needsUpdate = true; b.visible = true; }
-function labels3d() { OF.W.forEach(w => { const ps = presenceOf(w.p.name), ic = ps !== 'work' ? PRES[ps][0] + ' ' : '', n = w.p.st.open && w.p.name !== 'SPV' ? ` · ${w.p.st.open}` : '', t = ic + w.p.nk + (w.p.name === 'SPV' ? ' · SPV' : '') + (AWAY.has(ps) ? ' · ' + PRES[ps][1] : n);
+function labels3d() { OF.W.forEach(w => { const ps = presenceOf(w.p.name), ic = ps !== 'work' ? PRES[ps][0] + ' ' : '', n = w.p.st.open && w.p.name !== 'SPV' ? ` · ${w.p.st.open}` : '', t = ic + w.p.nk + '' + (AWAY.has(ps) ? ' · ' + PRES[ps][1] : n);
   const s = w.obj && w.obj.userData.lab; if (!s || s.userData.t === t + w.me) return; s.userData.t = t + w.me; if (s.material.map) s.material.map.dispose(); const tx = labelTex(t, w.me); s.material.map = tx; s.material.needsUpdate = true; s.scale.set(tx.userData.w / 48 * .3, .3, 1); }); }
 function tick3d(t, dt) {
   if (!O3.ren || !O3.vis) return; const T = t / 1000;
@@ -1216,11 +1275,11 @@ function renderOffice2D() {
     if (o && o.mode !== 'work') { w.mode = o.mode; w.x = o.x; w.y = o.y; w.sit = o.sit; w.state = o.state; w.dest = o.dest; }
     OF.W.push(w); layer.appendChild(g); syncPresence(w); });
   if (!OF.cat) OF.cat = { x: 9.5, y: L.corY + .5, q: [], wait: 2 };
-  { const g = document.createElementNS('http://www.w3.org/2000/svg', 'g'); g.setAttribute('class', 'cat'); g.innerHTML = '<g class="flip"><ellipse cx="0" cy="0" rx="9" ry="3" fill="#000" opacity=".15"/><ellipse cx="0" cy="-6" rx="9" ry="5.5" fill="#3F3F46"/><circle cx="-8" cy="-11" r="4.6" fill="#3F3F46"/><path d="M-12 -14l1-5 3 3zM-7 -14l1-5 2 4z" fill="#3F3F46"/><circle cx="-9.5" cy="-11" r=".9" fill="#FDE047"/><path class="ctail" d="M8 -7q8 -2 7 -12" stroke="#3F3F46" stroke-width="2.6" fill="none" stroke-linecap="round"/></g>'; layer.appendChild(g); OF.cat.g = g; }
+  { const g = document.createElementNS('http://www.w3.org/2000/svg', 'g'); g.setAttribute('class', 'cat'); g.innerHTML = '<g transform="scale(1.6)"><g class="flip"><ellipse cx="0" cy="0" rx="10" ry="3.2" fill="#000" opacity=".15"/><path class="ctail" d="M8 -7q8 -2 7 -12" stroke="#A9AEB4" stroke-width="2.8" fill="none" stroke-linecap="round"/><ellipse cx="0" cy="-6.5" rx="10" ry="6" fill="#B9BDC2"/><path d="M-1 -11q1.5 4 0 8M3 -11q1.5 4 0 8" stroke="#9EA3A9" stroke-width=".9" fill="none"/><circle cx="-8.5" cy="-12" r="5.4" fill="#C9CDD1"/><path d="M-13.4 -15l1-5.5 3.6 3.4zM-7.6 -15.8l1.6-5 2.4 4.4z" fill="#B9BDC2"/><circle cx="-10.6" cy="-12.6" r="1.15" fill="#9CCB3B"/><circle cx="-6.8" cy="-12.6" r="1.15" fill="#9CCB3B"/><circle cx="-8.6" cy="-7.2" r="1.5" fill="#E9E44B" stroke="#C9C22E" stroke-width=".5"/></g></g>'; layer.appendChild(g); OF.cat.g = g; }
   applyView();
   drawLabels(); OF.W.forEach(place); place(OF.cat); start(); renderPresenceBar();
 }
-function drawLabels() { if (OF.is3d) return labels3d(); OF.W.forEach(w => { const ps = presenceOf(w.p.name), ic = ps !== 'work' ? PRES[ps][0] + ' ' : '', n = w.p.st.open && w.p.name !== 'SPV' ? ` · ${w.p.st.open}` : '', t = ic + w.p.nk + (w.p.name === 'SPV' ? ' · SPV' : '') + (AWAY.has(ps) ? ' · ' + PRES[ps][1] : n), wd = t.length * 5.6 + 14;
+function drawLabels() { if (OF.is3d) return labels3d(); OF.W.forEach(w => { const ps = presenceOf(w.p.name), ic = ps !== 'work' ? PRES[ps][0] + ' ' : '', n = w.p.st.open && w.p.name !== 'SPV' ? ` · ${w.p.st.open}` : '', t = ic + w.p.nk + '' + (AWAY.has(ps) ? ' · ' + PRES[ps][1] : n), wd = t.length * 5.6 + 14;
   w.g.querySelector('.lab').innerHTML = `<rect x="${-wd / 2}" y="-92" width="${wd}" height="15" rx="7.5" fill="${w.p.name === ME && w.p.tm === TEAM || (w.p.name === 'SPV' && ME === 'SPV') ? '#F5C518' : '#1D1D1F'}" opacity=".88"/><text x="0" y="-81.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="${w.p.name === ME && w.p.tm === TEAM || (w.p.name === 'SPV' && ME === 'SPV') ? '#1D1D1F' : '#fff'}" font-family="system-ui,sans-serif">${esc(t)}</text><g class="bub"></g>`; }); }
 function syncPresence(w) {   // break → sofa, meeting → kursi meeting, work → kembali ke meja
   const m = presenceOf(w.p.name), L = OF.L; if (m === w.mode || (m === 'work' && w.mode === 'manual')) return; const wasAway = AWAY.has(w.mode); w.mode = m;
@@ -1252,14 +1311,48 @@ function frame(t) {
     else if (w.state === 'home') { w.state = 'seat'; w.sit = true; bubble(w, ''); place(w); }
     else if (w.state === 'there' && w.wait !== Infinity) { w.wait -= dt; if (w.wait <= 0) { bubble(w, ''); goHome(w); } }
   }
-  if (live && t > OF.next) { OF.next = t + 2600 + Math.random() * 3000; const seated = OF.W.filter(w => w.mode === 'work' && w.state === 'seat'), moving = OF.W.filter(w => w.mode === 'work' && w.state !== 'seat').length;
+  if (live && t > OF.next) { OF.next = t + 2600 + Math.random() * 3000; const seated = OF.W.filter(w => w.mode === 'work' && w.state === 'seat' && !(OF.cat && OF.cat.tn === w.p.name && OF.cat.tt === w.p.tm)), moving = OF.W.filter(w => w.mode === 'work' && w.state !== 'seat').length;
     if (seated.length && moving < Math.max(2, Math.ceil(OF.W.length / 4))) { const w = seated[Math.floor(Math.random() * seated.length)];
       if (Math.random() > (w.p.st.open >= 3 ? .65 : 0)) { const L = OF.L; let d; if (Math.random() < .3) { const m = L.people.filter(q => q.name !== w.p.name); if (m.length) { const q = m[Math.floor(Math.random() * m.length)]; d = { x: q.home[0] + 1.2, y: q.home[1] + .1, cell: [q.homeCell[0] + 2, q.homeCell[1]], e: ['💬', '🤝', '📎', '😄'][Math.floor(Math.random() * 4)] }; } }
         if (!d) d = L.POI[Math.floor(Math.random() * L.POI.length)]; goTo(w, d, false); } } }
-  const c = OF.cat; if (c && (c.g || c.obj) && live) { if (c.q.length) step(c, dt, .9); else if ((c.wait -= dt) <= 0) { const L = OF.L; let tgt; for (let k = 0; k < 20 && !tgt; k++) { const x = Math.floor(Math.random() * L.GW), y = Math.floor(Math.random() * L.GH); if (!L.blocked.has(x + ',' + y)) tgt = [x, y]; }
-      const pth = tgt && bfs(L, [Math.floor(c.x), Math.floor(c.y)], tgt); c.q = pth ? pth.slice(0, 12) : []; c.wait = 3 + Math.random() * 7; } if (c.g) c.g.classList.toggle('walking', c.q.length > 0); place(c); }
+  const c = OF.cat; if (c && (c.g || c.obj) && live) { if (c.q.length) step(c, dt, c.tn ? 1.7 : .9);
+    else if (c.tn && !c.whip) { const w = OF.W.find(v => v.p.name === c.tn && v.p.tm === c.tt); if (w) { c.whip = 4.2; OF.fx = { n: c.tn, tm: c.tt, until: t + 7000 }; bubble(w, '😣'); const sx = w.x - c.x; c.face = sx - (w.y - c.y) < 0 ? -1 : 1; } else { c.tn = null; c.wait = 1; } }
+    else if (c.whip) { c.whip -= dt; if (c.whip <= 0) { c.whip = 0; const w = OF.W.find(v => v.p.name === c.tn && v.p.tm === c.tt); if (w && w.state === 'seat') bubble(w, ''); c.tn = null; c.wait = 2.5 + Math.random() * 3; } }
+    else if ((c.wait -= dt) <= 0 && catHunt(c)) { /* on the way to someone with overdue tasks */ }
+    else if (c.wait <= 0) { const L = OF.L; let tgt; for (let k = 0; k < 20 && !tgt; k++) { const x = Math.floor(Math.random() * L.GW), y = Math.floor(Math.random() * L.GH); if (!L.blocked.has(x + ',' + y)) tgt = [x, y]; }
+      const pth = tgt && bfs(L, [Math.floor(c.x), Math.floor(c.y)], tgt); c.q = pth ? pth.slice(0, 12) : []; c.wait = 3 + Math.random() * 7; } if (c.g) { c.g.classList.toggle('walking', c.q.length > 0); c.g.classList.toggle('whipping', !!c.whip); } place(c); }
   if (OF.is3d) tick3d(t, dt);
+  ofFx(t);
   start(); }
+/* ---------- Grey office cat: walks to whoever has overdue tasks, cracks the whip, and shows the reminder details above their head ---------- */
+function odList(p) { if (!p || p.name === 'SPV') return []; if (p.tm === TEAM) return overdueOf(p.name); const t0 = witaToday(); return (p.tasks || []).filter(t => t.assignee === p.name && t.due && t.due < t0 && t.status !== 'DONE').sort((a, b) => a.due.localeCompare(b.due)); }
+function catHunt(c) { const L = OF.L, T = OF.W.filter(w => !w.away && w.state === 'seat' && odList(w.p).length); if (!T.length) return false;
+  c.ti = ((c.ti || 0) + 1) % T.length; const w = T[c.ti], [hx, hy] = w.p.homeCell, from = [Math.floor(c.x), Math.floor(c.y)];
+  for (const [ax, ay] of [[hx + 1, hy - 1], [hx + 2, hy - 1], [hx, hy - 1], [hx + 2, hy], [hx - 1, hy], [hx, hy]]) { if (L.blocked.has(ax + ',' + ay)) continue; const pth = bfs(L, from, [ax, ay]); if (pth) { c.q = [...pth, [ax + .3, ay + .5]]; c.tn = w.p.name; c.tt = w.p.tm; c.wait = 0; return true; } }
+  c.wait = 2; return false; }
+function ofScr(x, y, up2, up3) { const box = $('#ofc'); if (!box) return null;
+  if (OF.is3d) { if (!O3.cam || !O3.ren || !window.THREE) return null; const v = new THREE.Vector3(x, up3, y).project(O3.cam); if (v.z > 1) return null; const r = O3.ren.domElement.getBoundingClientRect(); return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; }
+  const svg = box.querySelector('svg'), m = svg && svg.getScreenCTM(); if (!m) return null; const [X, Y] = P2(x, y), pt = svg.createSVGPoint(); pt.x = X; pt.y = Y - up2; const q = pt.matrixTransform(m); return [q.x, q.y]; }
+function lateTxt(d) { const n = Math.round((new Date(witaToday()) - new Date(d)) / 864e5); return n <= 0 ? '' : n === 1 ? '1 day late' : n + ' days late'; }
+function ofFx(t) {
+  let ox = document.getElementById('ofx'); const box = $('#ofc');
+  if (!box || !OF.L) { if (ox) ox.innerHTML = ''; return; }
+  if (!ox) { ox = document.createElement('div'); ox.id = 'ofx'; ox.setAttribute('aria-hidden', 'true'); document.body.appendChild(ox); OF.fxEls = new Map(); }
+  const r = box.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight || !r.width) { ox.style.display = 'none'; return; }
+  const hb = ($('.top') || { getBoundingClientRect: () => ({ bottom: 0 }) }).getBoundingClientRect().bottom; ox.style.display = ''; ox.style.clipPath = `inset(${Math.max(0, hb, r.top)}px ${Math.max(0, innerWidth - r.right)}px ${Math.max(0, innerHeight - r.bottom)}px ${Math.max(0, r.left)}px)`;
+  if (OF.fx && t > OF.fx.until) OF.fx = null;
+  const seen = new Set(), E = OF.fxEls;
+  OF.W.forEach(w => { const L = odList(w.p); if (!L.length || w.away) return; const k = w.p.tm + '|' + w.p.name; seen.add(k);
+    const big = !!(OF.fx && OF.fx.n === w.p.name && OF.fx.tm === w.p.tm), sig = (big ? 'B' : 's') + L.length + L.map(x => x.id || x.title).join();
+    let el = E.get(k); if (!el) { el = document.createElement('div'); el.className = 'odp'; ox.appendChild(el); E.set(k, el); }
+    if (el.dataset.sig !== sig) { el.dataset.sig = sig; el.classList.toggle('big', big);
+      el.innerHTML = big ? `<b>⏰ ${esc(w.p.nk || nick(w.p.name))} — ${L.length} overdue</b>${L.slice(0, 3).map(x => `<span>${esc(String(x.title).split('\n')[0])}<i>due ${esc(fmtD(x.due))}${lateTxt(x.due) ? ' · ' + lateTxt(x.due) : ''}</i></span>`).join('')}${L.length > 3 ? `<span><i>+${L.length - 3} more</i></span>` : ''}` : `⏰ ${L.length} overdue`; }
+    const p = ofScr(w.x, w.y, w.sit ? 98 : 104, 2.3); if (!p) { el.style.display = 'none'; return; } el.style.display = ''; el.style.transform = `translate(${p[0].toFixed(1)}px,${p[1].toFixed(1)}px) translate(-50%,-100%)`; });
+  E.forEach((el, k) => { if (!seen.has(k)) { el.remove(); E.delete(k); } });
+  let wp = ox.querySelector('.owhip'); const c = OF.cat;
+  if (c && c.whip) { if (!wp) { wp = document.createElement('div'); wp.className = 'owhip'; wp.innerHTML = `<svg viewBox="0 0 120 80"><g class="wl"><rect x="6" y="52" width="6" height="22" rx="2.5" fill="#6B3E12" transform="rotate(-25 9 63)"/><path class="wh" d="M12 52 q24 -46 52 -30 q14 10 4 26" stroke="#5B3412" stroke-width="2.6" fill="none" stroke-linecap="round"/></g><g class="ck"><path d="M70 48 l5 -12 l2 10 l11 -6 l-7 11 l12 4 l-12 3 l6 10 l-11 -6 l-3 11 l-3 -11 l-10 5 l6 -10 z" fill="#FFD60A" stroke="#FF9F0A" stroke-width="1.4"/></g></svg><b class="ctak">CTAK!</b>`; ox.appendChild(wp); }
+    const p = ofScr(c.x, c.y, 22, .55); if (p) { wp.style.display = ''; wp.firstChild.style.transform = c.face === -1 ? 'scaleX(-1)' : ''; wp.style.transform = `translate(${p[0].toFixed(1)}px,${p[1].toFixed(1)}px) translate(-12%,-82%) scale(${(OF.is3d ? 1 : Math.max(.8, Math.min(1.8, (OF.view && OF.view.s || 1) * .8)))},${OF.is3d ? 1 : Math.max(.8, Math.min(1.8, (OF.view && OF.view.s || 1) * .8))})`; } else wp.style.display = 'none'; }
+  else if (wp) wp.remove(); }
 function start() { if (!OF.raf) OF.raf = requestAnimationFrame(frame); }
 /* ---------- zoom & geser (tombol, Ctrl/⌘ + scroll, pinch, drag) ---------- */
 function applyView() { const v = OF.view, b = OF.vb0, svg = $('#ofc svg'); if (!v || !b || !svg) return; v.s = Math.max(1, Math.min(4, v.s));

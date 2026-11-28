@@ -132,10 +132,10 @@ function secBar() { return `<div class="secs">${SECS.map(x => `<button class="se
 function render() {
   const S_ = SEC(V.sec), src = `https://docs.google.com/spreadsheets/d/${(V.data && V.data.sheet) || S_.sheet}`;
   const head = `<div class="hero"><div class="ic">💎</div><div><h1>Dashboard VIP</h1><p>${esc(S_.name)}${V.data && V.data.updatedAt ? ' · last updated ' + esc(new Date(V.data.updatedAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })) : ''}${V.data && V.data.syncedAt ? ' · synced ' + esc(new Date(V.data.syncedAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })) : ''}</p></div><span class="sp"></span>
-      <span id="state"></span><button class="btn pri" id="sync" title="Ambil data terbaru dari Google Sheets">↻ Sync dari Google Sheets</button>${V.data && V.data.tabs && V.data.tabs.length ? `<button class="btn" id="edit">${V.edit ? '✓ Done' : '✎ Edit'}</button>` : ''}<button class="btn" id="imp">⤓ Import .xlsx</button><button class="btn" id="srcB" title="Ganti link sumber">⚙</button></div>
+      <span id="state"></span><button class="btn pri" id="sync" title="Fetch the latest data from Google Sheets">↻ Sync from Google Sheets</button>${V.data && V.data.tabs && V.data.tabs.length ? `<button class="btn" id="edit">${V.edit ? '✓ Done' : '✎ Edit'}</button>` : ''}<button class="btn" id="imp">⤓ Import .xlsx</button><button class="btn" id="srcB" title="Ganti link sumber">⚙</button></div>
     ${secBar()}${V.online ? '' : '<div class="empty" style="padding:10px;margin-bottom:12px;text-align:left"><b>Preview mode</b> — saved in this browser only. Sync needs the server.</div>'}`;
   if (!V.data || !V.data.tabs || !V.data.tabs.length) {
-    app.innerHTML = head + `<div class="empty"><b>Belum ada data ${esc(S_.name)}.</b><br><br>Klik <b>↻ Sync dari Google Sheets</b> untuk mengambil data dari <a href="${esc(src)}" target="_blank" rel="noopener">spreadsheet sumber</a>,<br>atau <b>Import .xlsx</b> (Google Sheets → File → Download → Microsoft Excel).</div>`;
+    app.innerHTML = head + `<div class="empty"><b>No ${esc(S_.name)} data yet.</b><br><br>Click <b>↻ Sync from Google Sheets</b> to pull data from <a href="${esc(src)}" target="_blank" rel="noopener">the source spreadsheet</a>,<br>or <b>Import .xlsx</b> (Google Sheets → File → Download → Microsoft Excel).</div>`;
     return bind();
   }
   const T = V.data.tabs[V.tab] || V.data.tabs[0], ql = V.q.toLowerCase();
@@ -154,7 +154,7 @@ function render() {
   app.innerHTML = head + `<div class="kpis">${K.slice(0, 4).join('')}</div>
     <div class="tabs">${V.data.tabs.map((t, i) => `<button class="tab" data-tab="${i}" aria-pressed="${i === V.tab}">${esc(t.name)}<small>${t.rows.length}</small></button>`).join('')}</div>
     <div class="bar"><input type="search" id="q" placeholder="Search…" value="${esc(V.q)}">${sales.length ? `<select id="f"><option value="">${isGen ? 'All PIC' : 'All sales'}</option>${sales.map(s => `<option ${s === V.f ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>` : ''}<span class="sp"></span>
-      <span class="src">Sumber: <a href="${esc(src)}" target="_blank" rel="noopener">Google Sheets ↗</a>${V.data.seeded ? ' · dari import Masterlist sebelumnya — klik Sync untuk data terbaru' : ''}</span>
+      <span class="src">Source: <a href="${esc(src)}" target="_blank" rel="noopener">Google Sheets ↗</a>${V.data.seeded ? ' · from the earlier Masterlist import — click Sync for the latest data' : ''}</span>
       ${V.edit ? `<button class="btn pri" id="add">+ Add ${S_.what}</button><button class="btn" id="addcol">+ Column</button>` : ''}</div>
     <div class="sheet ${V.edit ? 'editing' : ''}"><table><thead><tr><th>#</th>${cols.map(c => `<th>${esc(c)}</th>`).join('')}${V.edit ? '<th></th>' : ''}</tr></thead>
       <tbody>${rows.map(r => { const i = T.rows.indexOf(r); return `<tr data-r="${esc(r.id)}"><td class="no">${i + 1}${r.manual ? ' <span title="Ditambah di app" style="color:var(--acc)">●</span>' : ''}</td>${cols.map(c => `<td data-c="${esc(c)}" class="${isMoney(c) ? 'money' : ''}">${c === 'PIC (tgl 25)' && !(c in r.cells) ? (getV(r, c) ? `<span class="tag pic">${esc(getV(r, c))}</span>` : '<span style="color:#C4C4C8">—</span>') : cell(c, r.cells[c], r.links && r.links[c])}</td>`).join('')}${V.edit ? `<td><button class="btn sm danger rowdel" data-del="${esc(r.id)}">✕</button></td>` : ''}</tr>`; }).join('') || `<tr><td colspan="${cols.length + 1}" style="color:var(--muted);padding:20px">No matching rows.</td></tr>`}</tbody></table></div>`;
@@ -168,9 +168,9 @@ function bind() {
   $('#sync').onclick = () => sync(false);
   if ($('#edit')) $('#edit').onclick = () => { V.edit = !V.edit; render(); };
   $('#imp').onclick = pickFile;
-  $('#srcB').onclick = () => { const cur = `https://docs.google.com/spreadsheets/d/${(V.data && V.data.sheet) || SEC(V.sec).sheet}`; const v = prompt('Link Google Sheets sumber untuk ' + SEC(V.sec).name + ':', cur); if (v == null) return;
-    const m = String(v).match(/\/d\/([A-Za-z0-9_-]{20,80})/) || String(v).match(/^([A-Za-z0-9_-]{20,80})$/); if (!m) return toast('Link tidak valid');
-    V.data = V.data || { tabs: [] }; V.data.sheet = m[1] === SEC(V.sec).sheet ? undefined : m[1]; save(); render(); toast('Sumber disimpan — klik Sync'); };
+  $('#srcB').onclick = () => { const cur = `https://docs.google.com/spreadsheets/d/${(V.data && V.data.sheet) || SEC(V.sec).sheet}`; const v = prompt('Source Google Sheets link for ' + SEC(V.sec).name + ':', cur); if (v == null) return;
+    const m = String(v).match(/\/d\/([A-Za-z0-9_-]{20,80})/) || String(v).match(/^([A-Za-z0-9_-]{20,80})$/); if (!m) return toast('Invalid link');
+    V.data = V.data || { tabs: [] }; V.data.sheet = m[1] === SEC(V.sec).sheet ? undefined : m[1]; save(); render(); toast('Source saved — click Sync'); };
 }
 function rowModal(id) {
   const T = V.data.tabs[V.tab], r = id ? T.rows.find(x => x.id === id) : { id: newId(), cells: {}, links: {}, manual: true };
@@ -248,10 +248,10 @@ async function sync(auto) {
   if (!V.online) return toast('Sync butuh server — di preview pakai Import .xlsx');
   const id = (V.data && V.data.sheet) || SEC(V.sec).sheet, b = $('#sync'); if (b) { b.disabled = true; b.textContent = '↻ Syncing…'; }
   const r = await jget(`/api/todo?vip=1&s=${V.sec}&sync=${encodeURIComponent(id)}`);
-  if (b) { b.disabled = false; b.textContent = '↻ Sync dari Google Sheets'; }
-  if (!r || r.status !== 200 || !r.j.b64) return toast((r && r.j && (r.j.detail || r.j.error)) || 'Sync gagal');
+  if (b) { b.disabled = false; b.textContent = '↻ Sync from Google Sheets'; }
+  if (!r || r.status !== 200 || !r.j.b64) return toast((r && r.j && (r.j.detail || r.j.error)) || 'Sync failed');
   const bin = atob(r.j.b64), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
-  const tabs = parseWorkbook(u8); if (!tabs.length) return toast('Tidak ada tabel di spreadsheet');
+  const tabs = parseWorkbook(u8); if (!tabs.length) return toast('No table found in the spreadsheet');
   const old = V.data && !V.data.seeded ? V.data.tabs : null;
   V.data = { ...(V.data || {}), tabs: merge(old, tabs), syncedAt: new Date().toISOString(), source: 'Google Sheets' }; if (V.tab >= V.data.tabs.length) V.tab = 0;
   save(); render(); toast(`Synced ✓ — ${tabs.length} tab, ${tabs.reduce((a, t) => a + t.rows.length, 0)} baris`);
@@ -261,7 +261,7 @@ async function importFile(file) {
   if (!window.XLSX) return toast('Importer failed to load');
   const tabs = parseWorkbook(await file.arrayBuffer());
   if (!tabs.length) return toast('No tables found in this file for ' + SEC(V.sec).name);
-  if (!confirm(`Import ${tabs.length} tab(s) ke ${SEC(V.sec).name}: ${tabs.map(t => `${t.name} (${t.rows.length})`).join(', ')}?\n\nData sheet diganti; kolom & baris yang ditambah di app tetap disimpan.`)) return;
+  if (!confirm(`Import ${tabs.length} tab(s) into ${SEC(V.sec).name}: ${tabs.map(t => `${t.name} (${t.rows.length})`).join(', ')}?\n\nSheet data is replaced; columns & rows added in the app are kept.`)) return;
   V.data = { ...(V.data || {}), tabs: merge(V.data && !V.data.seeded ? V.data.tabs : null, tabs), updatedAt: new Date().toISOString(), source: file.name }; V.tab = 0; save(); render(); toast('Imported ✓');
 }
 app.addEventListener('click', e => {

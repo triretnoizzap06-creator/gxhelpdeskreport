@@ -164,17 +164,17 @@ details.arch .grid{margin-top:6px}.hint{font-size:12.5px;color:#6E6E73}.hidden{d
 
 <div class="modal hidden" id="login" role="dialog" aria-modal="true" aria-labelledby="lgT">
   <form class="box" id="loginForm" style="width:min(380px,100%)">
-    <h3 id="lgT">Admin login</h3><p>Masukkan password publish (PUBLISH_KEY).</p>
+    <h3 id="lgT">Admin login</h3><p>Enter the publish password (PUBLISH_KEY).</p>
     <input class="inp" type="password" id="lgKey" autocomplete="current-password" required>
     <div class="err" id="lgErr"></div>
-    <div class="act"><button type="button" class="btn" id="lgCancel">Batal</button><button class="btn y">Masuk</button></div>
+    <div class="act"><button type="button" class="btn" id="lgCancel">Cancel</button><button class="btn y">Log in</button></div>
   </form>
 </div>
 
 <div class="modal hidden" id="editor" role="dialog" aria-modal="true" aria-labelledby="edT">
   <form class="box" id="edForm">
     <h3 id="edT">Edit employee</h3>
-    <p>Mengubah End Contract = perpanjangan kontrak; kontrak lama otomatis disimpan di riwayat dan reminder mengikuti tanggal terbaru.</p>
+    <p>Changing End Contract = contract extension; the old contract is kept in the history and reminders follow the latest date.</p>
     <div class="fgrid">
       <div class="f full"><label for="fName">Full name</label><input class="inp" id="fName" required maxlength="120"></div>
       <div class="f"><label for="fNick">Nickname</label><input class="inp" id="fNick" maxlength="40" placeholder="mis. Bagas"></div>
@@ -187,7 +187,7 @@ details.arch .grid{margin-top:6px}.hint{font-size:12.5px;color:#6E6E73}.hidden{d
           <label class="btn sm">Upload<input type="file" accept="image/*" id="fUpload" hidden></label></div></div>
       <div class="f"><label for="fStat">Employment status</label><select class="inp" id="fStat"><option value="active">Active</option><option value="resigned">Resigned</option><option value="cut">Cut</option><option value="eoc">End of Contract</option><option value="transfer">Transferred (pindah divisi)</option><option value="inactive">Inactive (lainnya)</option></select></div>
       <div class="f" id="fExitW"><label for="fExit">Last working day</label><input class="inp" type="date" id="fExit"></div>
-      <div class="f full"><div class="hint" id="fStatHint">Resigned / Cut / End of Contract / Transferred → pindah ke <b>Archived</b> pada <i>last working day</i> (tanggal di masa depan = tetap aktif sampai hari itu). Data karyawan & riwayat performance tetap tersimpan.</div><div class="hist" id="fHist"></div></div>
+      <div class="f full"><div class="hint" id="fStatHint">Resigned / Cut / End of Contract / Transferred → pindah ke <b>Archived</b> pada <i>last working day</i> (a future date = stays active until that day). Employee data & performance history are kept.</div><div class="hist" id="fHist"></div></div>
     </div>
     <div class="err" id="edErr"></div>
     <div class="act"><button type="button" class="btn danger sp" id="edDel">Delete</button><button type="button" class="btn" id="edCancel">Cancel</button><button class="btn y" id="edSave">Save</button></div>
@@ -317,13 +317,13 @@ function render() {
   $('#notifSec').classList.toggle('hidden', locked);
   $('#dirSec').classList.toggle('hidden', locked);
   let notes = '';
-  if (locked) { setStatus('warn', 'Locked'); notes = `<div class="lock"><h2>🔒 Protected</h2><p>Data karyawan (ulang tahun & kontrak) dilindungi password. Masuk sebagai admin untuk melihat.</p><button class="btn y" onclick="openLogin()">Admin login</button></div>`; }
+  if (locked) { setStatus('warn', 'Locked'); notes = `<div class="lock"><h2>🔒 Protected</h2><p>Employee data (birthdays & contracts) is password protected. Log in as admin to view.</p><button class="btn y" onclick="openLogin()">Admin login</button></div>`; }
   else if (ST.online === true) { setStatus('ok', 'Online · synced'); }
-  else if (ST.err === 'schema-missing') { setStatus('err', 'Table missing'); notes = `<div class="note warn">Tabel <b>hd_employees</b> belum ada. Jalankan <b>directory-schema.sql</b> di Supabase → SQL Editor → Run, lalu muat ulang.</div>`; }
-  else if (ST.err === 'storage-not-configured') { setStatus('err', 'Supabase not set'); notes = `<div class="note warn">Env <b>SUPABASE_URL</b> / <b>SUPABASE_SERVICE_ROLE_KEY</b> belum diisi di Vercel.</div>`; }
-  else { setStatus('err', ST.online === false ? 'Offline' : 'Server error'); notes = `<div class="note warn">Server <b>/api/employees</b> tidak bisa dihubungi${ST.detail ? ': ' + esc(ST.detail) : ''}. Data belum bisa ditampilkan.</div>`; }
+  else if (ST.err === 'schema-missing') { setStatus('err', 'Table missing'); notes = `<div class="note warn">Table <b>hd_employees</b> does not exist yet. Run <b>directory-schema.sql</b> in Supabase → SQL Editor → Run, then reload.</div>`; }
+  else if (ST.err === 'storage-not-configured') { setStatus('err', 'Supabase not set'); notes = `<div class="note warn">Env <b>SUPABASE_URL</b> / <b>SUPABASE_SERVICE_ROLE_KEY</b> are not set in Vercel.</div>`; }
+  else { setStatus('err', ST.online === false ? 'Offline' : 'Server error'); notes = `<div class="note warn">Server <b>/api/employees</b> is unreachable${ST.detail ? ': ' + esc(ST.detail) : ''}. Data cannot be shown yet.</div>`; }
   const missing = ST.items.filter(e => !e.subdivision || !e.birthday || !e.start_contract || !e.end_contract);
-  if (ST.online === true && !locked && missing.length) notes += `<div class="note"><b>${missing.length} karyawan</b> datanya belum lengkap (Subdivision / Birthday / Contract). ${canEdit() ? 'Klik <b>Edit</b> di kartunya untuk melengkapi.' : ''}</div>`;
+  if (ST.online === true && !locked && missing.length) notes += `<div class="note"><b>${missing.length}  employee(s)</b> with incomplete data (Subdivision / Birthday / Contract). ${canEdit() ? 'Click <b>Edit</b> on the card to complete it.' : ''}</div>`;
   $('#notes').innerHTML = notes;
   if (locked || ST.online !== true) { $('#grid').innerHTML = ''; return; }
   renderNotif(t); renderGrid(t);
@@ -387,7 +387,7 @@ function renderGrid(t) {
   });
   const list = all.filter(e => !isArch(e)), arch = all.filter(isArch), nAct = ST.items.filter(e => !isArch(e)).length;
   $('#count').textContent = list.length === nAct ? nAct : `${list.length} / ${nAct}`;
-  const archHtml = arch.length ? `<details class="arch" ${ARCH_OPEN ? 'open' : ''}><summary>🗄 Archived <b>${arch.length}</b><span>Resigned · Cut · End of Contract — data & riwayat performance tetap tersimpan</span></summary><div class="grid">${arch.map(e => empCard(e, t)).join('')}</div></details>` : '';
+  const archHtml = arch.length ? `<details class="arch" ${ARCH_OPEN ? 'open' : ''}><summary>🗄 Archived <b>${arch.length}</b><span>Resigned · Cut · End of Contract — data & performance history are kept</span></summary><div class="grid">${arch.map(e => empCard(e, t)).join('')}</div></details>` : '';
   $('#grid').innerHTML = (list.length ? list.map(e => empCard(e, t)).join('') : `<div class="empty">No active employee matches your search.</div>`) + archHtml;
   const d = $('#grid details.arch'); if (d) d.ontoggle = () => { ARCH_OPEN = d.open; };
 }
@@ -418,7 +418,7 @@ $('#fUpload').onchange = async ev => {
         c.getContext('2d').drawImage(img, (img.width - m) / 2, 0, m, m, 0, 0, s, s); URL.revokeObjectURL(u); res(c.toDataURL('image/jpeg', .82)); };
       img.onerror = rej; img.src = u; });
     const o = document.createElement('option'); o.value = url; o.textContent = 'Uploaded photo'; $('#fPhoto').appendChild(o); $('#fPhoto').value = url; paintPrev();
-  } catch (e) { toast('Foto tidak bisa dibaca'); }
+  } catch (e) { toast('Could not read the photo'); }
 };
 function syncStat() { const v = $('#fStat').value; $('#fExitW').classList.toggle('hidden', v === 'active' || v === 'inactive'); }
 $('#fStat').onchange = () => { syncStat(); if (['resigned', 'cut', 'eoc', 'transfer'].includes($('#fStat').value) && !$('#fExit').value) $('#fExit').value = new Date().toISOString().slice(0, 10); };
@@ -435,14 +435,14 @@ $('#edForm').onsubmit = async ev => {
     if (r.status === 200) { $('#editor').classList.add('hidden'); toast('Saved — synced for everyone'); await load(); }
     else if (r.status === 401) { $('#edErr').textContent = 'Password admin dibutuhkan.'; }
     else $('#edErr').textContent = r.j.detail || r.j.error || ('HTTP ' + r.status);
-  } catch (e) { $('#edErr').textContent = 'Server tidak terjangkau.'; }
+  } catch (e) { $('#edErr').textContent = 'Server unreachable.'; }
   $('#edSave').disabled = false;
 };
 $('#edDel').onclick = async () => {
   if (!EDIT || EDIT.id == null) return;
   if ($('#edDel').dataset.armed !== '1') { $('#edDel').dataset.armed = '1'; $('#edDel').textContent = 'Click again to delete'; setTimeout(() => { $('#edDel').dataset.armed = ''; $('#edDel').textContent = 'Delete'; }, 3000); return; }
   const r = await api('?del=' + EDIT.id, { method: 'POST' });
-  if (r.status === 200) { $('#editor').classList.add('hidden'); toast('Employee deleted'); await load(); } else $('#edErr').textContent = r.j.detail || r.j.error || 'Gagal menghapus';
+  if (r.status === 200) { $('#editor').classList.add('hidden'); toast('Employee deleted'); await load(); } else $('#edErr').textContent = r.j.detail || r.j.error || 'Could not delete';
 };
 $('#grid').addEventListener('click', ev => { const b = ev.target.closest('[data-edit]'); if (!b) return; const e = ST.items.find(x => String(x.id) === b.dataset.edit); if (e) openEditor(e); });
 $('#addBtn').onclick = () => openEditor(null);
@@ -454,8 +454,8 @@ $('#lgCancel').onclick = () => $('#login').classList.add('hidden');
 $('#loginForm').onsubmit = async ev => {
   ev.preventDefault(); const k = $('#lgKey').value;
   try { const r = await fetch(API + '?check=1', { method: 'POST', headers: { 'x-publish-key': k } });
-    if (r.status === 200) { ls.set(KEY_PUB, k); $('#login').classList.add('hidden'); toast('Admin mode on'); await load(); } else $('#lgErr').textContent = 'Password salah.';
-  } catch (e) { $('#lgErr').textContent = 'Server tidak terjangkau.'; }
+    if (r.status === 200) { ls.set(KEY_PUB, k); $('#login').classList.add('hidden'); toast('Admin mode on'); await load(); } else $('#lgErr').textContent = 'Wrong password.';
+  } catch (e) { $('#lgErr').textContent = 'Server unreachable.'; }
 };
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { $('#editor').classList.add('hidden'); $('#login').classList.add('hidden'); } });
 

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -133,15 +133,15 @@ main{max-width:1400px;margin:0 auto;padding:22px 20px 60px}
   <!-- ================= TO-DO ================= -->
   <section id="tab-todo">
     <div class="bar">
-      <select id="month" aria-label="Bulan"></select>
+      <select id="month" aria-label="Month"></select>
       <button class="btn pri" id="addBtn">+ Task</button>
-      <button class="btn" id="copyBtn" title="Salin task Daily, Weekly, Monthly & Pak Ferre dari bulan sebelumnya (status direset)">Salin task rutin dari bulan lalu</button>
+      <button class="btn" id="copyBtn" title="Copy Daily, Weekly, Monthly & Pak Ferre tasks from the previous month (status reset)">Copy routine tasks from last month</button>
       <button class="btn y hidden" id="importBtn">Import Monthly Tracker</button>
-      <button class="btn hidden" id="inv25Btn" title="Buat task bulanan tim: update INV VIP di Reminder Bill 25 sesuai pembagian per orang">+ Task INV VIP tgl 25</button>
+      <button class="btn hidden" id="inv25Btn" title="Create the team monthly task: update INV VIP in Reminder Bill 25 per assignee">+ Task INV VIP (25th)</button>
       <span class="grow"></span>
-      <select id="fAs" aria-label="Filter assign"><option value="">Personal + Team</option><option value="me">Personal saja</option><option value="HD">Team Helpdesk saja</option><option value="AM">Team AM saja</option></select>
-      <select id="fSt" aria-label="Filter status"><option value="">Semua status</option><option>NOT STARTED</option><option>PLAN</option><option>IN PROGRESS</option><option>DONE</option><option value="OPEN">Belum selesai</option></select>
-      <input id="fQ" type="search" placeholder="Cari task…" aria-label="Cari task">
+      <select id="fAs" aria-label="Filter assign"><option value="">Personal + Team</option><option value="me">Personal only</option><option value="HD">Team Helpdesk only</option><option value="AM">Team AM only</option></select>
+      <select id="fSt" aria-label="Filter status"><option value="">All statuses</option><option>NOT STARTED</option><option>PLAN</option><option>IN PROGRESS</option><option>DONE</option><option value="OPEN">Not done</option></select>
+      <input id="fQ" type="search" placeholder="Search tasks…" aria-label="Search tasks">
     </div>
     <div id="inbox"></div>
     <div class="kpis" id="kpis"></div>
@@ -153,7 +153,7 @@ main{max-width:1400px;margin:0 auto;padding:22px 20px 60px}
     <div class="h2t" style="margin-top:0">Management Report history</div>
     <div class="mrh" id="mrHist"></div>
     <div class="mrbar" id="mrBar"></div>
-    <div id="mrDeck"></div>
+    <div id="mrCover"></div><div id="mrDeck"></div>
     <div class="h1wrap hidden" id="h1wrap">
       <div class="h1nav" id="h1nav"></div>
       <div id="h1page"></div>
@@ -162,11 +162,11 @@ main{max-width:1400px;margin:0 auto;padding:22px 20px 60px}
 
   <!-- ================= LINKS ================= -->
   <section id="tab-links" class="hidden">
-    <div class="h2t">Tools Helpdesk (terkunci password)</div>
+    <div class="h2t">Helpdesk tools (password protected)</div>
     <div class="ql" id="qlTools"></div>
-    <div class="h2t">Dashboard tim (terbuka untuk tim)</div>
+    <div class="h2t">Team dashboards (open to the team)</div>
     <div class="ql" id="qlTeam"></div>
-    <div class="h2t">Sumber data</div>
+    <div class="h2t">Data sources</div>
     <div class="ql" id="qlSrc"></div>
   </section>
 </main>
@@ -382,12 +382,25 @@ const H1_DEFAULT = {
 /* ======================= util ======================= */
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const rich = s => esc(s).replace(/\*\*(?=\S)([\s\S]*?\S)\*\*/g, '<b>$1</b>');
+
+/* Ctrl/⌘+B in any notes/remarks field wraps the selection in **bold** (shown as bold text when displayed) */
+document.addEventListener('keydown', e => {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || String(e.key).toLowerCase() !== 'b') return;
+  const el = e.target; if (!el || !(el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && el.hasAttribute('data-bold')))) return;
+  if (el.readOnly || el.disabled) return; e.preventDefault();
+  const a = el.selectionStart, b = el.selectionEnd, v = el.value, sel = v.slice(a, b);
+  if (sel.length >= 4 && sel.startsWith('**') && sel.endsWith('**')) { el.setRangeText(sel.slice(2, -2), a, b, 'select'); }
+  else if (v.slice(a - 2, a) === '**' && v.slice(b, b + 2) === '**') { el.setRangeText(sel, a - 2, b + 2, 'select'); }
+  else { el.setRangeText('**' + sel + '**', a, b, 'end'); el.setSelectionRange(a + 2, a + 2 + sel.length); }
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+});
 const clone = o => JSON.parse(JSON.stringify(o));
 const safeUrl = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : '';
 const LINKSVG = '<svg viewBox="0 0 24 24"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
 function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2600); }
 const ymNow = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; };
-const ymLabel = ym => { const [y, m] = ym.split('-'); return new Date(+y, +m - 1, 1).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }); };
+const ymLabel = ym => { const [y, m] = ym.split('-'); return new Date(+y, +m - 1, 1).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }); };
 const ymPrev = ym => { let [y, m] = ym.split('-').map(Number); m--; if (!m) { m = 12; y--; } return `${y}-${String(m).padStart(2, '0')}`; };
 function banner(kind, html) { $('#banner').innerHTML = html ? `<div class="banner ${kind}">${html}</div>` : ''; }
 async function api(path, opt = {}) {
@@ -401,10 +414,10 @@ const prevSave = () => { try { localStorage.setItem('gx-preview-tasks2', JSON.st
 const ST = { month: ymNow(), months: [], tasks: [], mode: 'online' };
 try { const m = localStorage.getItem('gx-spv-month'); if (/^\d{4}-\d{2}$/.test(m || '')) ST.month = m; } catch (e) {}
 function errText(r) {
-  if (r.j.error === 'login-required') return 'Sesi login habis. <a href="/spv">Login lagi</a>.';
-  if (r.j.error === 'schema-missing') return 'Tabel to-do belum dibuat di Supabase. Jalankan file <b>spv-schema.sql</b> di Supabase → SQL Editor → Run.';
-  if (r.j.error === 'storage-not-configured') return 'Supabase belum diisi di Vercel (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY).';
-  return 'Gagal: ' + esc(r.j.detail || r.j.error || 'HTTP ' + r.status);
+  if (r.j.error === 'login-required') return 'Sesi login habis. <a href="/spv">Log in again</a>.';
+  if (r.j.error === 'schema-missing') return 'The to-do table has not been created in Supabase yet. Run <b>spv-schema.sql</b> in Supabase → SQL Editor → Run.';
+  if (r.j.error === 'storage-not-configured') return 'Supabase is not configured in Vercel yet (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY).';
+  return 'Failed: ' + esc(r.j.detail || r.j.error || 'HTTP ' + r.status);
 }
 async function loadMonth() {
   let r;
@@ -412,7 +425,7 @@ async function loadMonth() {
   if (r.status === 200) { ST.mode = 'online'; ST.tasks = r.j.tasks || []; ST.months = r.j.months || []; banner('', ''); }
   else if (!r.json) {   // server API tidak ada (preview statis)
     ST.mode = 'preview'; if (!ST.local) { try { ST.local = JSON.parse(localStorage.getItem('gx-preview-tasks2') || 'null'); } catch (e) {} if (!Array.isArray(ST.local)) { ST.local = Object.values(SEEDS).flat().map((x, i) => ({ ...clone(x), id: 'p' + i, updated_at: new Date().toISOString() })); prevSave(); } } ST.months = [...new Set(ST.local.map(x => x.month))].sort(); ST.tasks = ST.local.filter(x => x.month === ST.month);
-    banner('w', '<b>Mode preview</b> — server belum tersambung, perubahan tidak tersimpan. Setelah di-deploy ke Vercel + <b>spv-schema.sql</b> dijalankan, data tersimpan online.');
+    banner('w', '<b>Mode preview</b> — server not connected, changes are not saved. Once deployed to Vercel + <b>spv-schema.sql</b> run, data is saved online.');
   } else { ST.tasks = []; ST.mode = 'error'; banner('e', errText(r)); }
   fillMonths(); renderTodo();
   if (ST.mode !== 'error') fixDia();
@@ -429,8 +442,8 @@ function fillMonths() {
 }
 const asKey = t => t.team ? (t.assignee ? `${t.team}:${t.assignee}` : `${t.team}:*`) : '';
 function asLabel(t) {
-  if (!t.team) return '<span class="as" style="color:var(--muted)">Saya</span>';
-  return `<span class="as ${t.team}">${esc(t.assignee ? nickOf(t.assignee) : TEAMNAME[t.team])}<small>${t.assignee ? TEAMNAME[t.team] : 'semua anggota'}</small></span>`;
+  if (!t.team) return '<span class="as" style="color:var(--muted)">Me</span>';
+  return `<span class="as ${t.team}">${esc(t.assignee ? nickOf(t.assignee) : TEAMNAME[t.team])}<small>${t.assignee ? TEAMNAME[t.team] : 'all members'}</small></span>`;
 }
 const stCls = s => String(s).replace(/\s/g, '');
 function filtered() {
@@ -442,11 +455,11 @@ function rowsHtml(rows, showSec) {
   const today = new Date().toISOString().slice(0, 10), SECN = Object.fromEntries(SECTIONS);
   return `<table class="tt"><thead><tr><th>${showSec ? 'Bagian' : 'Kategori'}</th><th>Task</th><th>Priority</th><th>Status</th><th>Assign</th><th class="hm">Due</th><th class="hm">Remarks</th></tr></thead><tbody>
     ${rows.map(x => `<tr data-id="${esc(x.id)}"><td>${showSec ? `<span class="cat">${esc(SECN[x.section] || x.section)}</span>` : `<span class="cat ${esc(x.category)}">${esc(x.category || '—')}</span>`}</td>
-      <td><div class="ti">${esc(x.title)}</div>${linkChips(x.links)}${x.team_note ? `<div class="tn"><b>${esc(nickOf(x.team_by) || 'Tim')}:</b> ${esc(x.team_note)}</div>` : ''}</td>
+      <td><div class="ti">${esc(x.title)}</div>${linkChips(x.links)}${x.team_note ? `<div class="tn"><b>${esc(nickOf(x.team_by) || 'Team')}:</b> ${rich(x.team_note)}</div>` : ''}</td>
       <td><span class="pri ${esc(x.priority)}">${esc(x.priority)}</span></td>
       <td><select class="st ${stCls(x.status)}" data-st="${esc(x.id)}">${STATUSES.map(s => `<option ${s === x.status ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
-      <td>${asLabel(x)}</td><td class="hm"><span class="due ${x.due && x.due < today && x.status !== 'DONE' ? 'late' : ''}">${x.due ? new Date(x.due + 'T00:00').toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '—'}</span></td>
-      <td class="hm"><div class="rm">${esc(x.remarks)}</div></td></tr>`).join('')}</tbody></table>`;
+      <td>${asLabel(x)}</td><td class="hm"><span class="due ${x.due && x.due < today && x.status !== 'DONE' ? 'late' : ''}">${x.due ? new Date(x.due + 'T00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—'}</span></td>
+      <td class="hm"><div class="rm">${rich(x.remarks)}</div></td></tr>`).join('')}</tbody></table>`;
 }
 const bySort = (a, b) => (a.sort - b.sort) || String(a.created_at || '').localeCompare(b.created_at || '');
 function renderTodo() {
@@ -462,13 +475,13 @@ function renderTodo() {
   if (!v || v === 'me') html += `<div class="blk-h"><h2>Personal To-Do List</h2></div>` + SECTIONS.map(([k, name]) => {
     const rows = list.filter(x => !x.team && x.section === k).sort(bySort), tot = mine.filter(x => x.section === k), dn = tot.filter(x => x.status === 'DONE').length;
     return `<div class="sec"><div class="sec-h"><h2>${name}</h2><span class="cnt">${dn}/${tot.length} done</span><span class="sp"></span><button class="btn sm" data-add="${k}">+ Task</button></div>
-      ${rows.length ? rowsHtml(rows) : `<div class="empty">${tot.length ? 'Tidak ada task yang cocok dengan filter.' : 'Belum ada task.'}</div>`}</div>`;
+      ${rows.length ? rowsHtml(rows) : `<div class="empty">${tot.length ? 'No tasks match the filter.' : 'No tasks yet.'}</div>`}</div>`;
   }).join('');
   const TB = [['HD', 'To-Do List Helpdesk Customer Support', '/dashboard-helpdesk'], ['AM', 'To-Do List Account Manager VIP', '/dashboard-am']].filter(([tm]) => !v || v === tm);
   if (TB.length) html += `<div class="blk-h"><h2>Team To-Do List</h2></div>` + TB.map(([tm, name, href]) => {
     const rows = list.filter(x => x.team === tm).sort((a, b) => (a.status === 'DONE') - (b.status === 'DONE') || String(a.due || '9999').localeCompare(b.due || '9999')), tot = teamT.filter(x => x.team === tm), dn = tot.filter(x => x.status === 'DONE').length;
-    return `<div class="sec team ${tm}"><div class="sec-h"><h2>${name}</h2><span class="cnt">${dn}/${tot.length} done</span><span class="sp"></span><a class="btn sm" href="${href}" target="_blank" rel="noopener">Buka dashboard tim ↗</a><button class="btn sm" data-addteam="${tm}">+ Task tim</button></div>
-      ${rows.length ? rowsHtml(rows, true) : `<div class="empty">${tot.length ? 'Tidak ada task yang cocok dengan filter.' : 'Belum ada task untuk tim ini.'}</div>`}</div>`;
+    return `<div class="sec team ${tm}"><div class="sec-h"><h2>${name}</h2><span class="cnt">${dn}/${tot.length} done</span><span class="sp"></span><a class="btn sm" href="${href}" target="_blank" rel="noopener">Open team dashboard ↗</a><button class="btn sm" data-addteam="${tm}">+ Task tim</button></div>
+      ${rows.length ? rowsHtml(rows, true) : `<div class="empty">${tot.length ? 'No tasks match the filter.' : 'No tasks for this team yet.'}</div>`}</div>`;
   }).join('');
   $('#secs').innerHTML = html;
 }
@@ -477,51 +490,51 @@ function linkChips(links) {
   return a.length ? `<div class="lks">${a.map(l => `<a class="lk" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener" title="${esc(l.url)}">${LINKSVG}${esc(l.label || new URL(l.url).hostname)}</a>`).join('')}</div>` : '';
 }
 async function saveTask(t) {
-  if (ST.mode === 'preview') { t.updated_at = new Date().toISOString(); if (!t.id) { t.id = 'p' + Date.now() + Math.random().toString(36).slice(2, 6); ST.local.push(t); } else Object.assign(ST.local.find(x => x.id === t.id), t); ST.tasks = ST.local.filter(x => x.month === ST.month); if (!ST.months.includes(ST.month)) ST.months.push(ST.month); prevSave(); fillMonths(); renderTodo(); toast('Mode preview — tersimpan di browser ini saja'); return true; }
+  if (ST.mode === 'preview') { t.updated_at = new Date().toISOString(); if (!t.id) { t.id = 'p' + Date.now() + Math.random().toString(36).slice(2, 6); ST.local.push(t); } else Object.assign(ST.local.find(x => x.id === t.id), t); ST.tasks = ST.local.filter(x => x.month === ST.month); if (!ST.months.includes(ST.month)) ST.months.push(ST.month); prevSave(); fillMonths(); renderTodo(); toast('Preview mode — saved in this browser only'); return true; }
   const r = await api('', { method: 'POST', body: JSON.stringify({ task: t }) });
-  if (r.status === 200) { const i = ST.tasks.findIndex(x => x.id === r.j.task.id); if (i >= 0) ST.tasks[i] = r.j.task; else ST.tasks.push(r.j.task); if (!ST.months.includes(ST.month)) ST.months.push(ST.month); fillMonths(); renderTodo(); toast('Tersimpan ✓'); return true; }
-  toast('Gagal menyimpan'); banner('e', errText(r)); return false;
+  if (r.status === 200) { const i = ST.tasks.findIndex(x => x.id === r.j.task.id); if (i >= 0) ST.tasks[i] = r.j.task; else ST.tasks.push(r.j.task); if (!ST.months.includes(ST.month)) ST.months.push(ST.month); fillMonths(); renderTodo(); toast('Saved ✓'); return true; }
+  toast('Could not save'); banner('e', errText(r)); return false;
 }
 async function delTask(id) {
   if (ST.mode === 'preview') { ST.local = ST.local.filter(x => x.id !== id); ST.tasks = ST.local.filter(x => x.month === ST.month); prevSave(); renderTodo(); return true; }
   const r = await api('?id=' + encodeURIComponent(id), { method: 'DELETE' });
-  if (r.status === 200) { ST.tasks = ST.tasks.filter(x => x.id !== id); renderTodo(); toast('Task dihapus'); return true; }
+  if (r.status === 200) { ST.tasks = ST.tasks.filter(x => x.id !== id); renderTodo(); toast('Task deleted'); return true; }
   banner('e', errText(r)); return false;
 }
 function taskModal(t) {
   const isNew = !t.id;
   const el = document.createElement('div'); el.className = 'md';
-  const asOpts = `<option value="">— Saya sendiri (tidak di-assign) —</option>` + ['HD', 'AM'].map(tm => `<optgroup label="${TEAMNAME[tm]}"><option value="${tm}:*">${TEAMNAME[tm]} (semua anggota)</option>${ROSTER[tm].map(([f, k]) => `<option value="${tm}:${esc(f)}">${esc(k)} — ${esc(f)}</option>`).join('')}</optgroup>`).join('');
-  el.innerHTML = `<div class="mdb" role="dialog" aria-modal="true"><h3>${isNew ? 'Tambah task' : 'Edit task'} · ${ymLabel(t.month)}</h3>
+  const asOpts = `<option value="">— Myself (not assigned) —</option>` + ['HD', 'AM'].map(tm => `<optgroup label="${TEAMNAME[tm]}"><option value="${tm}:*">${TEAMNAME[tm]} (all members)</option>${ROSTER[tm].map(([f, k]) => `<option value="${tm}:${esc(f)}">${esc(k)} — ${esc(f)}</option>`).join('')}</optgroup>`).join('');
+  el.innerHTML = `<div class="mdb" role="dialog" aria-modal="true"><h3>${isNew ? 'Add task' : 'Edit task'} · ${ymLabel(t.month)}</h3>
     <div class="fg">
       <div class="f"><label>Bagian</label><select data-f="section">${SECTIONS.map(([k, n]) => `<option value="${k}" ${k === t.section ? 'selected' : ''}>${n}</option>`).join('')}</select></div>
       <div class="f"><label>Kategori</label><input data-f="category" list="catList" value="${esc(t.category)}" placeholder="General / VIP / Pribadi"><datalist id="catList"><option>General</option><option>VIP</option><option>Pribadi</option><option>Helpdesk</option><option>AM</option></datalist></div>
       <div class="f full"><label>Task</label><textarea data-f="title" rows="2">${esc(t.title)}</textarea></div>
-      <div class="f full"><label>Link (judul + URL lengkap, dibuka di tab baru)</label><div id="lrows"></div><button class="btn sm" type="button" id="addL">+ Link</button></div>
+      <div class="f full"><label>Links (title + full URL, opens in a new tab)</label><div id="lrows"></div><button class="btn sm" type="button" id="addL">+ Link</button></div>
       <div class="f"><label>Priority</label><select data-f="priority">${PRIOS.map(p => `<option ${p === t.priority ? 'selected' : ''}>${p}</option>`).join('')}</select></div>
       <div class="f"><label>Status</label><select data-f="status">${STATUSES.map(s => `<option ${s === t.status ? 'selected' : ''}>${s}</option>`).join('')}</select></div>
       <div class="f"><label>Assign ke</label><select data-f="as">${asOpts}</select></div>
       <div class="f"><label>Due date</label><input data-f="due" type="date" value="${esc(t.due || '')}"></div>
-      <div class="f full"><label>Remarks / instruksi</label><textarea data-f="remarks" rows="3">${esc(t.remarks)}</textarea></div>
-      ${t.team_note ? `<div class="f full"><label>Catatan dari tim</label><div class="tnbox"><b>${esc(t.team_by || 'Tim')}:</b> ${esc(t.team_note)}</div></div>` : ''}
+      <div class="f full"><label>Remarks / instructions</label><textarea data-f="remarks" rows="3">${esc(t.remarks)}</textarea></div>
+      ${t.team_note ? `<div class="f full"><label>Note from the team</label><div class="tnbox"><b>${esc(t.team_by || 'Team')}:</b> ${rich(t.team_note)}</div></div>` : ''}
     </div>
-    <div class="mfoot">${isNew ? '' : '<button class="btn danger" data-act="del">Hapus</button>'}<span class="sp"></span><button class="btn" data-act="x">Batal</button><button class="btn pri" data-act="ok">Simpan</button></div></div>`;
+    <div class="mfoot">${isNew ? '' : '<button class="btn danger" data-act="del">Delete</button>'}<span class="sp"></span><button class="btn" data-act="x">Cancel</button><button class="btn pri" data-act="ok">Save</button></div></div>`;
   document.body.appendChild(el);
   el.querySelector('[data-f="as"]').value = asKey(t);
   const lr = el.querySelector('#lrows');
-  const addRow = (l = { label: '', url: '' }) => { const d = document.createElement('div'); d.className = 'lrow'; d.innerHTML = `<input placeholder="Judul link" value="${esc(l.label)}"><input placeholder="https://…" value="${esc(l.url)}"><button class="btn sm" type="button">✕</button>`; d.querySelector('button').onclick = () => d.remove(); lr.appendChild(d); };
+  const addRow = (l = { label: '', url: '' }) => { const d = document.createElement('div'); d.className = 'lrow'; d.innerHTML = `<input placeholder="Link title" value="${esc(l.label)}"><input placeholder="https://…" value="${esc(l.url)}"><button class="btn sm" type="button">✕</button>`; d.querySelector('button').onclick = () => d.remove(); lr.appendChild(d); };
   (t.links || []).forEach(addRow); el.querySelector('#addL').onclick = () => addRow();
   const close = () => el.remove();
   el.addEventListener('click', async e => {
     const a = e.target.closest('[data-act]'); if (e.target === el) return close(); if (!a) return;
     if (a.dataset.act === 'x') return close();
-    if (a.dataset.act === 'del') { if (confirm('Hapus task ini?') && await delTask(t.id)) close(); return; }
+    if (a.dataset.act === 'del') { if (confirm('Delete this task?') && await delTask(t.id)) close(); return; }
     const g = f => el.querySelector(`[data-f="${f}"]`).value;
     const links = [...lr.querySelectorAll('.lrow')].map(d => { const [a1, b1] = d.querySelectorAll('input'); return { label: a1.value.trim(), url: b1.value.trim() }; }).filter(l => l.url);
-    const bad = links.find(l => !safeUrl(l.url)); if (bad) { alert('URL harus diawali https:// — cek: ' + bad.url); return; }
+    const bad = links.find(l => !safeUrl(l.url)); if (bad) { alert('URLs must start with https:// — check: ' + bad.url); return; }
     const as = g('as'), [team, who] = as ? as.split(':') : [null, ''];
     const out = { ...t, section: g('section'), category: g('category').trim(), title: g('title').trim(), links, priority: g('priority'), status: g('status'), team: team || null, assignee: who && who !== '*' ? who : '', due: g('due') || null, remarks: g('remarks') };
-    if (!out.title) { alert('Judul task wajib diisi.'); return; }
+    if (!out.title) { alert('Task title is required.'); return; }
     if (await saveTask(out)) close();
   });
 }
@@ -537,15 +550,15 @@ $('#month').onchange = e => { ST.month = e.target.value; try { localStorage.setI
 ['#fAs', '#fSt'].forEach(s => $(s).onchange = renderTodo); $('#fQ').oninput = renderTodo;
 $('#copyBtn').onclick = async () => {
   const from = ST.months.filter(m => m < ST.month).sort().pop() || ymPrev(ST.month);
-  if (!confirm(`Salin task Daily, Weekly, Monthly & Pak Ferre dari ${ymLabel(from)} ke ${ymLabel(ST.month)}? Status direset ke NOT STARTED.`)) return;
-  if (ST.mode === 'preview') { toast('Mode preview — tidak bisa menyalin'); return; }
+  if (!confirm(`Copy Daily, Weekly, Monthly & Pak Ferre tasks from ${ymLabel(from)} to ${ymLabel(ST.month)}? Status resets to NOT STARTED.`)) return;
+  if (ST.mode === 'preview') { toast('Preview mode — cannot copy'); return; }
   const r = await api('', { method: 'POST', body: JSON.stringify({ copy: { from, to: ST.month } }) });
   if (r.status === 200) { toast(`${r.j.copied} task disalin ✓`); loadMonth(); } else banner('e', errText(r));
 };
 $('#importBtn').onclick = async () => {
   const miss = Object.keys(SEEDS).filter(m => !ST.months.includes(m)); if (!miss.length) return;
   const n = miss.reduce((a, m) => a + SEEDS[m].length, 0);
-  if (!confirm(`Import ${n} task dari Monthly Tracker - Putri.xlsx (${miss.map(ymLabel).join(', ')})? Bulan yang sudah punya task tidak disentuh.`)) return;
+  if (!confirm(`Import ${n} tasks from Monthly Tracker - Putri.xlsx (${miss.map(ymLabel).join(', ')})? Months that already have tasks are left untouched.`)) return;
   let ok = 0, last = null;
   for (const m of miss) { const r = await api('', { method: 'POST', body: JSON.stringify({ import: SEEDS[m] }) }); if (r.status === 200) ok += r.j.imported; else last = r; }
   if (last) banner('e', errText(last)); else toast(`${ok} task diimport ✓`);
@@ -553,11 +566,11 @@ $('#importBtn').onclick = async () => {
 };
 function inv25Missing() { const have = new Set(ST.tasks.filter(t => t.team).map(t => t.team + '|' + t.assignee + '|' + t.title)); return inv25Tasks(ST.month).filter(t => !have.has(t.team + '|' + t.assignee + '|' + t.title)); }
 $('#inv25Btn').onclick = async () => {
-  const add = inv25Missing(), old = inv25Legacy(); if (!add.length && !old.length) return toast('Task INV VIP tgl 25 bulan ini sudah lengkap');
-  if (!confirm(`${add.length} task "Update INV VIP tgl 25" (1 task per group, due ${ST.month}-25) untuk ${ymLabel(ST.month)}:\n\n` + add.map(t => '• ' + nickOf(t.assignee) + ' — ' + t.title.split('— ')[1]).join('\n') + (old.length ? `\n\n${old.length} task gabungan versi lama akan dihapus.` : ''))) return;
+  const add = inv25Missing(), old = inv25Legacy(); if (!add.length && !old.length) return toast('INV VIP (25th) tasks for this month are already complete');
+  if (!confirm(`${add.length} task "Update INV VIP tgl 25" (1 task per group, due ${ST.month}-25) for ${ymLabel(ST.month)}:\n\n` + add.map(t => '• ' + nickOf(t.assignee) + ' — ' + t.title.split('— ')[1]).join('\n') + (old.length ? `\n\n${old.length} old combined tasks will be deleted.` : ''))) return;
   for (const t of add) if (!(await saveTask(t))) return;
   for (const t of old) await delTask(t.id);
-  toast(`${add.length} task tim dibuat ✓`); fillMonths();
+  toast(`${add.length} team tasks created ✓`); fillMonths();
 };
 /* DIA: mulai Nov 2026 pakai sheet Outstanding Bills — Dedicated Package yang baru */
 async function fixDia() {
@@ -579,12 +592,12 @@ async function loadDoc() {
 }
 let saveT = null;
 function saveDoc() {
-  if (!R.online) { $('#saveState').textContent = 'Preview — tidak tersimpan'; return; }
-  clearTimeout(saveT); $('#saveState').textContent = 'Menyimpan…';
+  if (!R.online) { $('#saveState').textContent = 'Preview — not saved'; return; }
+  clearTimeout(saveT); $('#saveState').textContent = 'Saving…';
   saveT = setTimeout(async () => {
     const r = await api('', { method: 'POST', body: JSON.stringify({ doc: DOC, data: R.data, revision: R.rev }) });
-    if (r.status === 200) { R.rev = r.j.revision; $('#saveState').textContent = 'Report tersimpan ✓'; publish('h1-2026', h1Snap()); }
-    else if (r.status === 409) { $('#saveState').textContent = ''; banner('e', 'Report diubah di tab/perangkat lain. Muat ulang halaman lalu ulangi perubahan.'); }
+    if (r.status === 200) { R.rev = r.j.revision; $('#saveState').textContent = 'Report saved ✓'; publish('h1-2026', h1Snap()); }
+    else if (r.status === 409) { $('#saveState').textContent = ''; banner('e', 'The report was changed in another tab/device. Reload the page and redo your change.'); }
     else { $('#saveState').textContent = ''; banner('e', errText(r)); }
   }, 500);
 }
@@ -594,7 +607,7 @@ function renderH1() {
   const i = pages.findIndex(p => p[0] === R.page);
   $('#h1nav').innerHTML = `<button data-go="${pages[Math.max(0, i - 1)][0]}">←</button>${pages.map(([k, l]) => `<button data-go="${k}" aria-pressed="${k === R.page}">${l}</button>`).join('')}<button data-go="${pages[Math.min(pages.length - 1, i + 1)][0]}">→</button>
     <span style="font-size:12px;color:var(--muted);margin-left:8px">${i + 1} / ${pages.length}</span>
-    <button class="btn sm ed" id="edToggle">${R.edit ? '✓ Selesai edit' : '✎ Edit report'}</button>${R.edit ? '<button class="btn sm danger" id="edReset" title="Kembalikan ke isi awal report H1">Reset ke versi awal</button>' : ''}
+    <button class="btn sm ed" id="edToggle">${R.edit ? '✓ Done editing' : '✎ Edit report'}</button>${R.edit ? '<button class="btn sm danger" id="edReset" title="Restore the original H1 report">Reset to original</button>' : ''}
     <button class="btn sm" id="h1Slides">▶ View as slides</button>`;
   const wrap = $('#h1wrap'); wrap.classList.toggle('editing', R.edit);
   const P = $('#h1page'), C = D.cover;
@@ -610,8 +623,8 @@ function renderH1() {
       <div class="sumk"><div><span>Total Tasks</span><b>${tot}</b></div><div><span>Total Done</span><b style="color:#16A34A">${dn}</b></div><div><span>Avg Completion</span><b style="color:#EAB308">${avg}%</b></div><div><span>Months Covered</span><b>${ms.length}</b></div></div>
       <table class="sumt"><thead><tr><th>Month</th><th>Progress</th><th>Done</th><th>Progress</th><th>Plan</th><th>Not started</th><th>Rate</th></tr></thead><tbody>
       ${ms.map(({ m, s }) => `<tr><td>${esc(m.name.replace(/ \d{4}$/, ''))}</td><td><div class="pb"><i style="width:${s.pct}%"></i></div></td><td style="color:#16A34A">${s.done}</td><td style="color:#D97706">${s.prog}</td><td style="color:#71717A">${s.plan}</td><td style="color:#DC2626">${s.ns}</td><td style="color:#16A34A">${s.pct}%</td></tr>`).join('')}</tbody></table>
-      <div class="h2t">Recurring Responsibilities</div><div class="rec">${D.summary.recurring.map(([a, b], k) => `<div data-edc="rec.${k}"><b>${esc(a)}</b><p>${esc(b)}</p></div>`).join('')}${R.edit ? '<div data-edc="rec.new" style="border-left-style:dashed;color:var(--muted);font-size:12px">+ tambah</div>' : ''}</div>
-      <div class="h2t">Notes</div><div class="notes">${D.summary.notes.map(([a, b], k) => `<div data-edc="note.${k}"><b>${esc(a)}</b><p>${esc(b)}</p></div>`).join('')}${R.edit ? '<div data-edc="note.new" style="color:var(--muted);font-size:12px">+ tambah note</div>' : ''}</div></div>`;
+      <div class="h2t">Recurring Responsibilities</div><div class="rec">${D.summary.recurring.map(([a, b], k) => `<div data-edc="rec.${k}"><b>${esc(a)}</b><p>${esc(b)}</p></div>`).join('')}${R.edit ? '<div data-edc="rec.new" style="border-left-style:dashed;color:var(--muted);font-size:12px">+ add</div>' : ''}</div>
+      <div class="h2t">Notes</div><div class="notes">${D.summary.notes.map(([a, b], k) => `<div data-edc="note.${k}"><b>${esc(a)}</b><p>${esc(b)}</p></div>`).join('')}${R.edit ? '<div data-edc="note.new" style="color:var(--muted);font-size:12px">+ add note</div>' : ''}</div></div>`;
     return;
   }
   const mi = D.months.findIndex(m => m.key === R.page), M = D.months[mi], s = mStats(M);
@@ -619,27 +632,27 @@ function renderH1() {
     <div class="mstat"><div><b style="color:#16A34A">${s.done}</b><span>Done</span></div><div><b style="color:#D97706">${s.prog}</b><span>Progress</span></div><div><b style="color:#71717A">${s.plan}</b><span>Plan</span></div><div><b style="color:#DC2626">${s.ns}</b><span>Not started</span></div></div>${ring(s.pct)}</div>
     <div class="cols">${M.sections.map((sec, si) => { const d = sec.tasks.filter(x => isDone(x.status)).length;
       return `<div class="scard"><div class="scard-h"><b data-sec="${si}">${esc(sec.name)}</b><span>${d}/${sec.tasks.length}</span></div>
-        ${sec.tasks.map((x, ti) => `<div class="tk" data-tk="${si}.${ti}"><div class="tx"><div>${esc(x.title)}${safeUrl(x.link) ? `<a class="li" href="${esc(safeUrl(x.link))}" target="_blank" rel="noopener" title="${esc(x.link)}">${LINKSVG}</a>` : ''}</div>${x.note ? `<div class="nt">${esc(x.note)}</div>` : ''}</div><span class="sp2 ${SN(x.status)}">${esc(x.status)}</span></div>`).join('')}
+        ${sec.tasks.map((x, ti) => `<div class="tk" data-tk="${si}.${ti}"><div class="tx"><div>${esc(x.title)}${safeUrl(x.link) ? `<a class="li" href="${esc(safeUrl(x.link))}" target="_blank" rel="noopener" title="${esc(x.link)}">${LINKSVG}</a>` : ''}</div>${x.note ? `<div class="nt">${rich(x.note)}</div>` : ''}</div><span class="sp2 ${SN(x.status)}">${esc(x.status)}</span></div>`).join('')}
         <button class="addtk" data-addtk="${si}">+ task</button></div>`; }).join('')}
-      ${R.edit ? '<div class="scard"><button class="addtk" data-addsec="1" style="margin:4px 0 12px">+ section baru</button></div>' : ''}</div></div>`;
+      ${R.edit ? '<div class="scard"><button class="addtk" data-addsec="1" style="margin:4px 0 12px">+ new section</button></div>' : ''}</div></div>`;
 }
 function h1TaskModal(si, ti) {
   const M = R.data.months.find(m => m.key === R.page), sec = M.sections[si], isNew = ti == null, x = isNew ? { title: '', status: 'Done', link: '', note: '' } : sec.tasks[ti];
   const el = document.createElement('div'); el.className = 'md';
-  el.innerHTML = `<div class="mdb"><h3>${isNew ? 'Tambah task' : 'Edit task'} · ${esc(sec.name)} · ${esc(M.name)}</h3><div class="fg">
+  el.innerHTML = `<div class="mdb"><h3>${isNew ? 'Add task' : 'Edit task'} · ${esc(sec.name)} · ${esc(M.name)}</h3><div class="fg">
     <div class="f full"><label>Task</label><textarea data-f="title" rows="2">${esc(x.title)}</textarea></div>
     <div class="f"><label>Status</label><select data-f="status">${['Done', 'Solved', 'In Progress', 'Plan', 'Not Started'].map(s => `<option ${s === x.status ? 'selected' : ''}>${s}</option>`).join('')}</select></div>
-    <div class="f"><label>Link (URL lengkap)</label><input data-f="link" value="${esc(x.link)}" placeholder="https://…"></div>
-    <div class="f full"><label>Catatan</label><textarea data-f="note" rows="4">${esc(x.note)}</textarea></div></div>
-    <div class="mfoot">${isNew ? '' : '<button class="btn danger" data-act="del">Hapus task</button>'}<span class="sp"></span><button class="btn" data-act="x">Batal</button><button class="btn pri" data-act="ok">Simpan</button></div></div>`;
+    <div class="f"><label>Link (full URL)</label><input data-f="link" value="${esc(x.link)}" placeholder="https://…"></div>
+    <div class="f full"><label>Notes</label><textarea data-f="note" rows="4">${esc(x.note)}</textarea></div></div>
+    <div class="mfoot">${isNew ? '' : '<button class="btn danger" data-act="del">Delete task</button>'}<span class="sp"></span><button class="btn" data-act="x">Cancel</button><button class="btn pri" data-act="ok">Save</button></div></div>`;
   document.body.appendChild(el);
   el.addEventListener('click', e => {
     const a = e.target.closest('[data-act]'); if (e.target === el) return el.remove(); if (!a) return;
     if (a.dataset.act === 'x') return el.remove();
-    if (a.dataset.act === 'del') { if (!confirm('Hapus task ini dari report?')) return; sec.tasks.splice(ti, 1); el.remove(); renderH1(); saveDoc(); return; }
+    if (a.dataset.act === 'del') { if (!confirm('Delete this task from the report?')) return; sec.tasks.splice(ti, 1); el.remove(); renderH1(); saveDoc(); return; }
     const g = f => el.querySelector(`[data-f="${f}"]`).value.trim(), link = g('link');
-    if (link && !safeUrl(link)) { alert('Link harus diawali https://'); return; }
-    if (!g('title')) { alert('Judul task wajib diisi.'); return; }
+    if (link && !safeUrl(link)) { alert('Links must start with https://'); return; }
+    if (!g('title')) { alert('Task title is required.'); return; }
     const nx = { title: g('title'), status: el.querySelector('[data-f="status"]').value, link, note: el.querySelector('[data-f="note"]').value };
     if (isNew) sec.tasks.push(nx); else sec.tasks[ti] = nx;
     el.remove(); renderH1(); saveDoc();
@@ -650,20 +663,20 @@ $('#h1wrap').addEventListener('click', e => {
   const go = e.target.closest('[data-go]'); if (go) { R.page = go.dataset.go; renderH1(); window.scrollTo({ top: 0 }); return; }
   if (e.target.id === 'edToggle') { R.edit = !R.edit; renderH1(); return; }
   if (e.target.id === 'h1Slides') { MR.h1edit = false; openReport('h1-2026'); return; }
-  if (e.target.id === 'edReset') { if (confirm('Kembalikan seluruh report H1 ke isi awal? Semua edit akan hilang.')) { R.data = clone(H1_DEFAULT); renderH1(); saveDoc(); } return; }
+  if (e.target.id === 'edReset') { if (confirm('Restore the whole H1 report to the original? All edits will be lost.')) { R.data = clone(H1_DEFAULT); renderH1(); saveDoc(); } return; }
   if (!R.edit || e.target.closest('a')) return;
   const tk = e.target.closest('[data-tk]'); if (tk) { const [si, ti] = tk.dataset.tk.split('.').map(Number); return h1TaskModal(si, ti); }
   const at = e.target.closest('[data-addtk]'); if (at) return h1TaskModal(+at.dataset.addtk, null);
   const M = R.data.months.find(m => m.key === R.page);
-  const sh = e.target.closest('[data-sec]'); if (sh) { const sec = M.sections[+sh.dataset.sec]; const v = prompt('Nama section (kosongkan untuk menghapus section beserta isinya):', sec.name); if (v == null) return; if (!v.trim()) { if (confirm('Hapus section "' + sec.name + '"?')) M.sections.splice(+sh.dataset.sec, 1); } else sec.name = v.trim(); renderH1(); saveDoc(); return; }
-  if (e.target.closest('[data-addsec]')) { const v = prompt('Nama section baru:'); if (v && v.trim()) { M.sections.push({ name: v.trim(), tasks: [] }); renderH1(); saveDoc(); } return; }
+  const sh = e.target.closest('[data-sec]'); if (sh) { const sec = M.sections[+sh.dataset.sec]; const v = prompt('Section name (leave empty to delete the section and its content):', sec.name); if (v == null) return; if (!v.trim()) { if (confirm('Delete section "' + sec.name + '"?')) M.sections.splice(+sh.dataset.sec, 1); } else sec.name = v.trim(); renderH1(); saveDoc(); return; }
+  if (e.target.closest('[data-addsec]')) { const v = prompt('New section name:'); if (v && v.trim()) { M.sections.push({ name: v.trim(), tasks: [] }); renderH1(); saveDoc(); } return; }
   const ed = e.target.closest('[data-edc]'); if (!ed) return; const k = ed.dataset.edc, D = R.data;
-  if (k === 'mname') { const v = textEdit('Nama bulan:', M.name); if (v) M.name = v; }
+  if (k === 'mname') { const v = textEdit('Month name:', M.name); if (v) M.name = v; }
   else if (k.startsWith('rec.') || k.startsWith('note.')) {
     const [arr, idx] = k.split('.'), list = arr === 'rec' ? D.summary.recurring : D.summary.notes, cur = idx === 'new' ? ['', ''] : list[+idx];
-    const a = textEdit('Judul (kosongkan untuk menghapus):', cur[0]); if (a == null) return;
-    if (!a.trim()) { if (idx !== 'new') list.splice(+idx, 1); } else { const b = textEdit('Isi:', cur[1]); if (b == null) return; if (idx === 'new') list.push([a.trim(), b]); else list[+idx] = [a.trim(), b]; }
-  } else if (k in D.cover) { const v = textEdit('Ubah teks:', D.cover[k]); if (v != null) D.cover[k] = v; }
+    const a = textEdit('Title (leave empty to delete):', cur[0]); if (a == null) return;
+    if (!a.trim()) { if (idx !== 'new') list.splice(+idx, 1); } else { const b = textEdit('Content:', cur[1]); if (b == null) return; if (idx === 'new') list.push([a.trim(), b]); else list[+idx] = [a.trim(), b]; }
+  } else if (k in D.cover) { const v = textEdit('Edit text:', D.cover[k]); if (v != null) D.cover[k] = v; }
   renderH1(); saveDoc();
 });
 
@@ -678,7 +691,15 @@ for (let y = 2026; y <= 2030; y++) {
 }
 const repState = r => { const now = ymNow(), from = r.from || '2026-01', to = r.to || '2026-06'; return now > to ? 'done' : now < from ? 'next' : 'now'; };
 const REP_TAG = { done: 'ARCHIVE', now: 'IN PROGRESS', next: 'UPCOMING' };
-const MR = { sel: (REPORTS.find(r => repState(r) === 'now') || REPORTS[1]).key, rev: {}, h1edit: false, snap: {}, year: null };
+const MR = { sel: (REPORTS.find(r => repState(r) === 'now') || REPORTS[1]).key, rev: {}, h1edit: false, snap: {}, year: null, cover: null };
+/* Cover style for the Management Report — shared setting (DB doc 'mr-cover'); localStorage is only a cache */
+async function loadCover() { if (MR.cover) return MR.cover; try { MR.cover = localStorage.getItem('gx-mr-cover') || null; } catch (e) {}
+  if (ST.mode !== 'preview' && R.online) { const g = await api('?doc=mr-cover'); if (g.status === 200 && g.j.data && g.j.data.style) MR.cover = g.j.data.style; }
+  return MR.cover || 'clean'; }
+async function saveCover(v) { MR.cover = v; try { localStorage.setItem('gx-mr-cover', v); } catch (e) {}
+  if (ST.mode === 'preview' || !R.online) return true; const r = await api('', { method: 'POST', body: JSON.stringify({ doc: 'mr-cover', data: { style: v, at: new Date().toISOString() }, revision: null }) }); return r.status === 200; }
+function showCover(key) { const snap = MR.snap[key]; if (!snap) { $('#mrCover').innerHTML = ''; return; }
+  MReport.coverPicker($('#mrCover'), snap, snap.cover, async v => { snap.cover = v; showCover(key); MReport.render($('#mrDeck'), snap); const [a, b] = await Promise.all([saveCover(v), publish(key, snap)]); toast(a && b ? 'Cover updated ✓' : 'Cover changed here, but could not be saved online'); }); }
 try { const k = localStorage.getItem('gx-spv-mr'); if (REPORTS.some(r => r.key === k)) MR.sel = k; } catch (e) {}
 const viewerUrl = key => new URL('/management-report?r=' + key, location.href).href;
 function h1Snap() { const C = R.data.cover || {}; return MReport.fromH1(R.data, { key: 'h1-2026', title: 'Report H1 2026', kicker: (C.kicker || 'Management Report').replace(/\|/g, ' · '), title1: C.title1 || 'Report', title2: C.title2 || 'H1 2026', period: C.months || 'Januari – Juni 2026', division: C.division || PREP.division, by: C.by || PREP.by, role: C.role || PREP.role }); }
@@ -712,11 +733,11 @@ async function openReport(key) {
   $('#mrBar').innerHTML = `<b style="font-size:13px">Viewer link:</b><code title="${esc(url)}">${esc(url)}</code><button class="btn sm" data-mr-copy="${key}">Copy link</button><a class="btn sm" href="/management-report?r=${key}" target="_blank" rel="noopener">Open viewer ↗</a><span class="grow"></span>
     ${def.h1 ? `<button class="btn sm" data-mr-h1edit>${MR.h1edit ? '▶ View as slides' : '✎ Edit H1 report'}</button>` : '<button class="btn sm" data-mr-refresh>↻ Refresh from to-do</button>'}<span id="mrPub" style="font-size:12px;color:var(--muted)"></span>`;
   const editing = !!(def.h1 && MR.h1edit);
-  $('#h1wrap').classList.toggle('hidden', !editing); $('#mrDeck').classList.toggle('hidden', editing);
+  $('#h1wrap').classList.toggle('hidden', !editing); $('#mrDeck').classList.toggle('hidden', editing); $('#mrCover').classList.toggle('hidden', editing);
   if (editing) { renderH1(); return; }
   $('#mrDeck').innerHTML = '<div class="empty">Preparing report…</div>';
   const snap = def.h1 ? h1Snap() : await autoSnap(def); if (!snap) return;
-  MR.snap[key] = snap;
+  snap.cover = await loadCover(); MR.snap[key] = snap; showCover(key);
   MReport.render($('#mrDeck'), snap);
   const ok = await publish(key, snap);
   const st = $('#mrPub'); if (st) st.textContent = ok ? (ST.mode === 'preview' ? 'Preview — viewer reads this browser’s data' : 'Viewer updated ✓') : '';
@@ -760,7 +781,7 @@ async function loadInbox() {
 function renderInbox() {
   const box = $('#inbox'); if (!box) return;
   const nk = (tm, n) => { const R = (INB[tm] && INB[tm].roster) || []; const x = R.find(y => y.name === n); return n === 'SPV' ? 'SPV' : x ? (x.nick || x.name.split(' ')[0]) : (n || '—'); };
-  const fmt = t => t ? new Date(t).toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+  const fmt = t => t ? new Date(t).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
   const items = [];
   ['HD', 'AM'].forEach(tm => { const B = INB[tm]; if (!B) return;
     (B.tasks || []).filter(t => t.assignee === 'SPV').forEach(t => items.push({ k: 't', tm, x: t, open: t.status !== 'DONE', at: t.at }));
@@ -768,21 +789,21 @@ function renderInbox() {
   const openN = items.filter(i => i.open).length, b = $('#iBadge'); if (b) { b.textContent = openN; b.classList.toggle('hidden', !openN); }
   if (!items.length) { box.innerHTML = ''; return; }
   const L = items.filter(i => INB.showDone || i.open).sort((a, b) => (b.open - a.open) || String(b.at).localeCompare(String(a.at)));
-  box.innerHTML = `<div class="inb"><div class="sec-h"><h2>📥 Dari tim — review &amp; catatan</h2><span class="cnt">${openN} perlu dilihat</span><span class="sp"></span><label style="font-size:12px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="iDone" ${INB.showDone ? 'checked' : ''}> Tampilkan yang selesai</label><button class="btn sm" id="iRef" type="button">↻</button></div>
+  box.innerHTML = `<div class="inb"><div class="sec-h"><h2>📥 From the team — reviews &amp; notes</h2><span class="cnt">${openN} to check</span><span class="sp"></span><label style="font-size:12px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="iDone" ${INB.showDone ? 'checked' : ''}> Show completed</label><button class="btn sm" id="iRef" type="button">↻</button></div>
     <div class="inb-l">${L.map(({ k, tm, x, open }) => k === 't'
-      ? `<div class="ic ${open ? '' : 'done'}" data-ik="t" data-tm="${tm}" data-id="${esc(x.id)}"><div class="ih"><span class="pill ${tm}">${tm === 'AM' ? 'AM' : 'Helpdesk'}</span>${open && x.status === 'NOT STARTED' ? '<span class="pill new">BARU</span>' : ''}<span class="pill">📋 Task review · ${esc(x.status)}</span><b>${esc(nk(tm, x.by))}</b> · ${fmt(x.at)}${x.due ? ' · due ' + esc(x.due) : ''}</div>
-          <div class="it">${esc(x.title)}</div>${x.note ? `<div class="in">${esc(x.note)}</div>` : ''}
-          <textarea placeholder="Balasan / hasil review untuk ${esc(nk(tm, x.by))}…" maxlength="2000">${esc(x.spvReply || '')}</textarea>
-          <div class="ia"><button class="btn sm" data-ist="IN PROGRESS" type="button">Sedang direview</button><button class="btn sm pri" data-ist="DONE" type="button">✓ Selesai</button><button class="btn sm" data-isave type="button">Kirim balasan</button>${x.spvAt ? `<span style="font-size:11px;color:var(--muted)">dibalas ${fmt(x.spvAt)}</span>` : ''}</div></div>`
-      : `<div class="ic ${open ? '' : 'done'}" data-ik="n" data-tm="${tm}" data-id="${esc(x.id)}"><div class="ih"><span class="pill ${tm}">${tm === 'AM' ? 'AM' : 'Helpdesk'}</span>${open ? '<span class="pill new">BARU</span>' : '<span class="pill">✓ dilihat</span>'}<span class="pill">🗒 Catatan</span><b>${esc(nk(tm, x.by))}</b> · ${fmt(x.at)}</div>
-          <div class="it">${esc(x.text)}</div>
+      ? `<div class="ic ${open ? '' : 'done'}" data-ik="t" data-tm="${tm}" data-id="${esc(x.id)}"><div class="ih"><span class="pill ${tm}">${tm === 'AM' ? 'AM' : 'Helpdesk'}</span>${open && x.status === 'NOT STARTED' ? '<span class="pill new">NEW</span>' : ''}<span class="pill">📋 Task review · ${esc(x.status)}</span><b>${esc(nk(tm, x.by))}</b> · ${fmt(x.at)}${x.due ? ' · due ' + esc(x.due) : ''}</div>
+          <div class="it">${esc(x.title)}</div>${x.note ? `<div class="in">${rich(x.note)}</div>` : ''}
+          <textarea placeholder="Reply / review result for ${esc(nk(tm, x.by))}…" maxlength="2000">${esc(x.spvReply || '')}</textarea>
+          <div class="ia"><button class="btn sm" data-ist="IN PROGRESS" type="button">In review</button><button class="btn sm pri" data-ist="DONE" type="button">✓ Done</button><button class="btn sm" data-isave type="button">Send reply</button>${x.spvAt ? `<span style="font-size:11px;color:var(--muted)">dibalas ${fmt(x.spvAt)}</span>` : ''}</div></div>`
+      : `<div class="ic ${open ? '' : 'done'}" data-ik="n" data-tm="${tm}" data-id="${esc(x.id)}"><div class="ih"><span class="pill ${tm}">${tm === 'AM' ? 'AM' : 'Helpdesk'}</span>${open ? '<span class="pill new">NEW</span>' : '<span class="pill">✓ seen</span>'}<span class="pill">🗒 Note</span><b>${esc(nk(tm, x.by))}</b> · ${fmt(x.at)}</div>
+          <div class="it">${rich(x.text)}</div>
           <textarea placeholder="Balas (opsional)…" maxlength="2000">${esc(x.spvReply || '')}</textarea>
-          <div class="ia"><button class="btn sm pri" data-iseen type="button">✓ ${open ? 'Tandai dilihat' : 'Simpan balasan'}</button></div></div>`).join('') || '<div style="color:var(--muted);font-size:13px">Semua sudah dilihat ✓</div>'}</div></div>`;
+          <div class="ia"><button class="btn sm pri" data-iseen type="button">✓ ${open ? 'Mark as seen' : 'Save reply'}</button></div></div>`).join('') || '<div style="color:var(--muted);font-size:13px">All seen ✓</div>'}</div></div>`;
 }
 async function iop(tm, body) {
   try { const r = await fetch('/api/todo?board=' + tm, { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...body, by: 'SPV' }) });
-    const j = await r.json().catch(() => null); if (r.ok && j && j.board) { INB[tm] = j.board; renderInbox(); toast('Tersimpan ✓ — terlihat di dashboard tim'); return true; }
-    toast((j && (j.detail || j.error)) || 'Gagal menyimpan'); } catch (e) { toast('Gagal menyimpan (offline / preview)'); } return false;
+    const j = await r.json().catch(() => null); if (r.ok && j && j.board) { INB[tm] = j.board; renderInbox(); toast('Saved ✓ — visible on the team dashboard'); return true; }
+    toast((j && (j.detail || j.error)) || 'Could not save'); } catch (e) { toast('Could not save (offline / preview)'); } return false;
 }
 $('#inbox').addEventListener('click', e => {
   if (e.target.id === 'iRef') return loadInbox();

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -187,7 +187,7 @@ function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('o
 const LS = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
 let CATS = window.KB_CATS || [], BASE = window.KB_MATERI || [];
 let SETS = [], SETNAME = {};
-const setSets = () => { SETS = [...CATS.map(c => [c[0], c[1]]), ['all', 'Semua materi']]; SETNAME = Object.fromEntries(SETS); };
+const setSets = () => { SETS = [...CATS.map(c => [c[0], c[1]]), ['all', 'All materials']]; SETNAME = Object.fromEntries(SETS); };
 setSets();
 let MAT = BASE;   // materi setelah edit SPV (override, tambahan, hapus) dari Knowledge Base
 const SHAPES = ['<svg viewBox="0 0 24 24"><path d="M12 3 22 20H2z"/></svg>', '<svg viewBox="0 0 24 24"><path d="M12 2 22 12 12 22 2 12z"/></svg>', '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>', '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>'];
@@ -220,7 +220,7 @@ const API = {
   async submit(code, player, answers, token) {
     const r = await call('', { method: 'POST', body: JSON.stringify({ code, player, token, answers }) }); if (r) return r;
     const d = LOCAL.all(), s = d[code]; if (!s) return { status: 404, j: { error: 'not-found' } };
-    if (s.results.some(x => x.player.toLowerCase() === player.toLowerCase())) return { status: 409, j: { error: 'name-taken', detail: 'Nama ini sudah dipakai di sesi ini — pakai nama lain.' } };
+    if (s.results.some(x => x.player.toLowerCase() === player.toLowerCase())) return { status: 409, j: { error: 'name-taken', detail: 'This name is already used in this session — pick another name.' } };
     const ans = s.questions.map((x, i) => { const a = answers[i] || {}; const ms = Math.min(s.timer_s * 1000, a.ms || s.timer_s * 1000); return { c: a.c ?? null, ms, p: pts(a.c === x.a, ms, s.timer_s) }; });
     const row = { player, score: ans.reduce((t, a) => t + a.p, 0), correct: ans.filter((a, i) => a.c === s.questions[i].a).length, total: s.questions.length, duration_ms: ans.reduce((t, a) => t + a.ms, 0), answers: ans, created_at: new Date().toISOString() };
     s.results.push(row); const jp = (s.joins || {})[player.toLowerCase()]; if (jp) jp.status = 'done'; LOCAL.save(d); const B = await this.board(code);
@@ -230,7 +230,7 @@ const API = {
     const r = await call('', { method: 'POST', body: JSON.stringify({ join: { code, player, token, av } }) }); if (r) return r;
     const d = LOCAL.all(), s = d[code]; if (!s) return { status: 404, j: { error: 'not-found' } }; s.joins = s.joins || {};
     const k = player.toLowerCase(), p = s.joins[k]; if (p && p.token === token) return { status: 200, j: p };
-    if ((p && p.status !== 'rejected') || s.results.some(x => x.player.toLowerCase() === k)) return { status: 409, j: { error: 'name-taken', detail: 'Nama ini sudah dipakai di sesi ini — pakai nama lain.' } };
+    if ((p && p.status !== 'rejected') || s.results.some(x => x.player.toLowerCase() === k)) return { status: 409, j: { error: 'name-taken', detail: 'This name is already used in this session — pick another name.' } };
     s.joins[k] = { player, name: player, token: Math.random().toString(36).slice(2), status: 'pending', at: new Date().toISOString() }; LOCAL.save(d); return { status: 200, j: s.joins[k] };
   },
   async me(code, token) {
@@ -248,7 +248,7 @@ const API = {
     LOCAL.save(d); return { status: 200, j: { ok: true } };
   },
   async results(code) { const r = await call('?code=' + code + '&results=1'); if (r) return r; const s = LOCAL.get(code); return { status: 200, j: { questions: s.questions, timer_s: s.timer_s, results: s.results } }; },
-  async refresh(code, qs) { const r = await call('', { method: 'POST', body: JSON.stringify({ refresh: { code, questions: qs } }) }); if (r) return r; const d = LOCAL.all(); if (d[code] && !d[code].results.length) { d[code].questions = qs; LOCAL.save(d); return { status: 200, j: { ok: true } }; } return { status: 409, j: { detail: 'Sudah ada peserta yang mengerjakan.' } }; },
+  async refresh(code, qs) { const r = await call('', { method: 'POST', body: JSON.stringify({ refresh: { code, questions: qs } }) }); if (r) return r; const d = LOCAL.all(); if (d[code] && !d[code].results.length) { d[code].questions = qs; LOCAL.save(d); return { status: 200, j: { ok: true } }; } return { status: 409, j: { detail: 'Players have already started.' } }; },
   async create(c) { const r = await call('', { method: 'POST', body: JSON.stringify({ create: c }) }); if (r) return r; return { status: 200, j: { code: LOCAL.create(c) } }; },
   async list() { const r = await call('?list=1'); if (r) return r; const d = LOCAL.all(); return { status: 200, j: { sessions: Object.values(d).reverse().map(s => ({ ...s, n: s.questions.length, players: s.results.length })) } }; },
   async setStatus(code, close) { const r = await call('', { method: 'POST', body: JSON.stringify(close ? { close: code } : { reopen: code }) }); if (r) return r; const d = LOCAL.all(); if (d[code]) d[code].status = close ? 'closed' : 'open'; LOCAL.save(d); return { status: 200, j: {} }; },
@@ -257,13 +257,13 @@ const API = {
 const joinUrl = code => new URL('/knowledge-base#quiz?c=' + code, location.href).href;   // QR membuka tab Quiz di Knowledge Base
 const EMBED = new URLSearchParams(location.search).has('embed'); if (EMBED) document.body.classList.add('embed');
 function lockScreen() {
-  app.innerHTML = `<div class="lock"><div class="ic">🔒</div><h1>Quiz dikunci</h1><p class="lead" style="margin:0"><a href="/login?next=%2Fknowledge-base%23quiz" target="_top" style="font-weight:700">Login dengan username kamu</a> untuk membuka quiz, atau masukkan password tim. Materi Knowledge Base tetap bisa dibaca tanpa password.</p>
-    <form id="lkF"><input type="password" id="lkPw" placeholder="Password tim" autocomplete="current-password" autofocus><button class="btn y">Buka</button></form>
+  app.innerHTML = `<div class="lock"><div class="ic">🔒</div><h1>Quiz dikunci</h1><p class="lead" style="margin:0"><a href="/login?next=%2Fknowledge-base%23quiz" target="_top" style="font-weight:700">Log in with your username</a> to open the quiz, or enter the team password. Knowledge Base materials can still be read without a password.</p>
+    <form id="lkF"><input type="password" id="lkPw" placeholder="Password tim" autocomplete="current-password" autofocus><button class="btn y">Open</button></form>
     <p style="font-size:12.5px;color:var(--muted);margin:14px 0 0">SPV? <a href="#" id="lkSpv">Login SPV</a></p>
     <form id="spvF" method="post" action="/api/login" class="hidden" target="_top"><input type="hidden" name="next" value="/knowledge-base#quiz"><input type="password" name="password" placeholder="Password dashboard SPV"><button class="btn pri">Login</button></form></div>`;
   $('#lkF').onsubmit = async e => { e.preventDefault(); const pw = $('#lkPw').value; if (!pw) return;
     let r = null; try { r = await fetch('/api/login', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ team: 1, password: pw }) }); } catch (e) {}
-    if (r && r.ok) { toast('Quiz terbuka ✓'); route(); } else toast(r && r.status === 503 ? 'Password tim belum diatur di server (GX_TEAM_PASSWORD)' : 'Password salah'); };
+    if (r && r.ok) { toast('Quiz terbuka ✓'); route(); } else toast(r && r.status === 503 ? 'Team password is not set on the server (GX_TEAM_PASSWORD)' : 'Wrong password'); };
   $('#lkSpv').onclick = e => { e.preventDefault(); $('#spvF').classList.remove('hidden'); $('#lkF').classList.add('hidden'); $('#spvF input[type=password]').focus(); };
 }
 async function unlocked() { if (!ONLINE) return true; try { const r = await fetch('/api/login', { cache: 'no-store', credentials: 'same-origin' }); const j = await r.json(); return !!(j && (j.team || j.authed || j.member)); } catch (e) { return true; } }
@@ -272,73 +272,73 @@ async function unlocked() { if (!ONLINE) return true; try { const r = await fetc
 function home() {
   history.replaceState(null, '', location.pathname + (EMBED ? '?embed=1' : ''));
   const best = LS.get('gx-quiz-best', {});
-  app.innerHTML = `<h1>Quiz Knowledge Base</h1><p class="lead">Masukkan PIN dari SPV untuk ikut live quiz, atau latihan sendiri per kategori. Setiap soal ada timernya — makin cepat jawab benar, makin besar poinnya.</p>
-    <form class="join" id="joinF"><input id="pinIn" placeholder="PIN" maxlength="8" autocomplete="off" aria-label="PIN quiz"><button class="btn y" style="font-size:16px;padding:12px 22px">Ikut quiz →</button></form>
+  app.innerHTML = `<h1>Quiz Knowledge Base</h1><p class="lead">Enter the PIN from Putri to join a live quiz, or practise on your own by category. Every question is timed — the faster you answer correctly, the more points you get.</p>
+    <form class="join" id="joinF"><input id="pinIn" placeholder="PIN" maxlength="8" autocomplete="off" aria-label="PIN quiz"><button class="btn y" style="font-size:16px;padding:12px 22px">Join quiz →</button></form>
     ${IS_SPV ? `<div class="h2">Live quiz (SPV)</div><div class="panel"><div class="fg">
-      <div><label>Set soal</label><select id="hSet">${SETS.map(([k, l]) => `<option value="${k}" ${k === 'admin' ? 'selected' : ''}>${esc(l)} (${questions(k).length} soal)</option>`).join('')}</select></div>
-      <div><label>Jumlah soal</label><select id="hN"><option value="10">10 soal acak</option><option value="20">20 soal acak</option><option value="35" selected>35 soal</option><option value="0">Semua soal</option></select></div>
-      <div><label>Waktu per soal</label><select id="hT"><option value="10">10 detik</option><option value="20" selected>20 detik</option><option value="30">30 detik</option><option value="45">45 detik</option></select></div>
-      <div><label>Judul sesi</label><input id="hTitle" placeholder="mis. Test Administrasi — Nov 2026"></div></div>
-      <button class="btn pri" id="hCreate">Buat sesi & tampilkan QR</button></div>
-      <div class="h2">Riwayat sesi</div><div id="sessList" class="panel"><div class="msg" style="border:0;padding:0">Memuat…</div></div>
-      <details class="h2d"${QB.open ? ' open' : ''}><summary class="h2">📝 Bank soal (SPV) — ubah, tambah & hapus soal</summary><div id="bank" class="panel"></div></details>` : ''}
-    <div class="h2">Latihan per kategori</div><div class="sets">${SETS.map(([k, l]) => { const n = questions(k).length, b = best[k]; return `<div class="set ${k}"><b>${esc(l)}</b><span>${n} soal${b ? ` · skor terbaikmu ${b.score} (${b.correct}/${b.total})` : ''}</span><div class="row"><button class="btn sm" data-prac="${k}" data-n="10">10 soal</button><button class="btn sm pri" data-prac="${k}" data-n="35">35 soal</button></div></div>`; }).join('')}</div>`;
+      <div><label>Question set</label><select id="hSet">${SETS.map(([k, l]) => `<option value="${k}" ${k === 'admin' ? 'selected' : ''}>${esc(l)} (${questions(k).length} questions)</option>`).join('')}</select></div>
+      <div><label>Number of questions</label><select id="hN"><option value="10">10 random questions</option><option value="20">20 random questions</option><option value="35" selected>35 questions</option><option value="0">All questions</option></select></div>
+      <div><label>Time per question</label><select id="hT"><option value="10">10 seconds</option><option value="20" selected>20 seconds</option><option value="30">30 seconds</option><option value="45">45 seconds</option></select></div>
+      <div><label>Session title</label><input id="hTitle" placeholder="mis. Test Administrasi — Nov 2026"></div></div>
+      <button class="btn pri" id="hCreate">Create session & show QR</button></div>
+      <div class="h2">Session history</div><div id="sessList" class="panel"><div class="msg" style="border:0;padding:0">Memuat…</div></div>
+      <details class="h2d"${QB.open ? ' open' : ''}><summary class="h2">📝 Question bank — edit, add & delete questions</summary><div id="bank" class="panel"></div></details>` : ''}
+    <div class="h2">Practice by category</div><div class="sets">${SETS.map(([k, l]) => { const n = questions(k).length, b = best[k]; return `<div class="set ${k}"><b>${esc(l)}</b><span>${n} questions${b ? ` · your best score ${b.score} (${b.correct}/${b.total})` : ''}</span><div class="row"><button class="btn sm" data-prac="${k}" data-n="10">10 questions</button><button class="btn sm pri" data-prac="${k}" data-n="35">35 questions</button></div></div>`; }).join('')}</div>`;
   $('#joinF').onsubmit = e => { e.preventDefault(); const c = $('#pinIn').value.trim().toUpperCase(); if (c) go('?c=' + c); };
   if (IS_SPV) { $('#hCreate').onclick = createSession; loadSessions(); drawBank(); const d = document.querySelector('details.h2d'); if (d) d.ontoggle = () => { QB.open = d.open; }; }
 }
 async function loadSessions() {
   const r = await API.list(), el = $('#sessList'); if (!el) return;
-  if (!r || r.status !== 200) { el.innerHTML = `<div class="msg" style="border:0;padding:0">${r && r.j.error === 'schema-missing' ? 'Tabel quiz belum dibuat — jalankan <b>spv-schema.sql</b> di Supabase.' : 'Gagal memuat sesi.'}</div>`; return; }
+  if (!r || r.status !== 200) { el.innerHTML = `<div class="msg" style="border:0;padding:0">${r && r.j.error === 'schema-missing' ? 'Quiz tables not created yet — run <b>spv-schema.sql</b> in Supabase.' : 'Could not load sessions.'}</div>`; return; }
   const S = r.j.sessions || [];
-  el.innerHTML = S.length ? `<table class="tbl"><thead><tr><th>PIN</th><th>Sesi</th><th>Soal</th><th>Peserta</th><th>Status</th><th></th></tr></thead><tbody>${S.map(s => `<tr><td><b>${esc(s.code)}</b></td><td>${esc(s.title || SETNAME[s.set_key] || s.set_key)}<br><span style="font-size:11.5px;color:var(--muted)">${new Date(s.created_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</span></td><td>${s.n} · ${s.timer_s}s</td><td>${s.players}</td><td><span class="pill ${s.status}">${s.status === 'open' ? 'Buka' : 'Tutup'}</span></td><td><button class="btn sm" data-host="${esc(s.code)}">Buka</button></td></tr>`).join('')}</tbody></table>` : '<div class="msg" style="border:0;padding:0">Belum ada sesi.</div>';
+  el.innerHTML = S.length ? `<table class="tbl"><thead><tr><th>PIN</th><th>Session</th><th>Questions</th><th>Players</th><th>Status</th><th></th></tr></thead><tbody>${S.map(s => `<tr><td><b>${esc(s.code)}</b></td><td>${esc(s.title || SETNAME[s.set_key] || s.set_key)}<br><span style="font-size:11.5px;color:var(--muted)">${new Date(s.created_at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}</span></td><td>${s.n} · ${s.timer_s}s</td><td>${s.players}</td><td><span class="pill ${s.status}">${s.status === 'open' ? 'Open' : 'Closed'}</span></td><td><button class="btn sm" data-host="${esc(s.code)}">Open</button></td></tr>`).join('')}</tbody></table>` : '<div class="msg" style="border:0;padding:0">No sessions yet.</div>';
 }
 async function createSession() {
-  const set = $('#hSet').value, all = questions(set); if (!all.length) return toast('Set ini belum punya soal');
-  const qs = prepare(all, +$('#hN').value), title = $('#hTitle').value.trim() || `Quiz ${SETNAME[set]} — ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+  const set = $('#hSet').value, all = questions(set); if (!all.length) return toast('This set has no questions yet');
+  const qs = prepare(all, +$('#hN').value), title = $('#hTitle').value.trim() || `Quiz ${SETNAME[set]} — ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`;
   $('#hCreate').disabled = true;
   const r = await API.create({ title, set_key: set, timer_s: +$('#hT').value, questions: qs });
   $('#hCreate').disabled = false;
-  if (r.status === 200) go('?host=' + r.j.code); else toast(r.j.error === 'login-required' ? 'Login SPV dulu di Helpdesk Management' : (r.j.detail || 'Gagal membuat sesi'));
+  if (r.status === 200) go('?host=' + r.j.code); else toast(r.j.error === 'login-required' ? 'Login SPV dulu di Helpdesk Management' : (r.j.detail || 'Could not create the session'));
 }
 
 /* ======================= HOST ======================= */
 let poll = null;
 async function host(code) {
-  const s = await API.session(code); if (!s) { app.innerHTML = '<div class="msg">Sesi tidak ditemukan.</div>'; return; }
+  const s = await API.session(code); if (!s) { app.innerHTML = '<div class="msg">Session not found.</div>'; return; }
   const url = joinUrl(code);
-  app.innerHTML = `<p style="margin:0 0 14px"><button class="btn sm" data-home>← Semua sesi</button></p><h1>${esc(s.title || 'Live quiz')}</h1><p class="lead">${esc(SETNAME[s.set_key] || '')} · ${s.n ?? s.questions.length} soal · ${s.timer_s} detik per soal</p>
+  app.innerHTML = `<p style="margin:0 0 14px"><button class="btn sm" data-home>← All sessions</button></p><h1>${esc(s.title || 'Live quiz')}</h1><p class="lead">${esc(SETNAME[s.set_key] || '')} · ${s.n ?? s.questions.length} questions · ${s.timer_s} seconds per question</p>
     <div class="host"><div class="pin"><small>SCAN ATAU MASUKKAN PIN</small><div class="code">${esc(code)}</div><div class="qr" id="qr"></div><div class="url">${esc(url)}</div>
-      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px"><button class="btn sm" id="cpy">Salin link</button><button class="btn sm" id="tog">${s.status === 'open' ? 'Tutup sesi' : 'Buka lagi'}</button><button class="btn sm" id="qref" title="Ganti soal sesi ini dengan bank soal terbaru (sebelum ada peserta mulai)">↻ Refresh soal</button><button class="btn sm danger" id="del">Hapus</button></div></div>
-      <div><div class="lb"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Leaderboard</b><span id="cnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span> <button class="btn sm mute" data-mute data-host-live type="button"></button><button class="btn sm" id="bhsBtn" title="Bahas soal satu per satu: sebaran jawaban, kunci & penjelasan">📖 Bahas soal</button><button class="btn sm y" id="podBtn" title="Tampilkan podium layar penuh">🏆 Podium</button><span class="pill ${s.status}">${s.status === 'open' ? 'Live' : 'Ditutup'}</span></div><div id="prog" class="prog hidden"></div><div id="pod"></div><div id="lb"></div><div style="font-size:12px;color:var(--muted);margin-top:8px">Klik nama peserta untuk review jawabannya.</div></div>
-      <div class="appr"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Peserta & approval</b><span id="pcnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span><button class="btn sm y hidden" id="apAll">Approve semua</button></div><div id="ap"></div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px">Peserta baru bisa mulai mengerjakan setelah kamu approve.</div></div></div></div>`;
-  try { const qr = qrcode(0, 'M'); qr.addData(url); qr.make(); $('#qr').innerHTML = qr.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); const sv = $('#qr svg'); sv.style.width = '230px'; sv.style.height = '230px'; } catch (e) { $('#qr').innerHTML = '<div class="msg">QR tidak bisa dimuat — bagikan link/PIN.</div>'; }
-  $('#cpy').onclick = async () => { try { await navigator.clipboard.writeText(url); toast('Link disalin ✓'); } catch (e) { prompt('Salin link:', url); } };
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px"><button class="btn sm" id="cpy">Copy link</button><button class="btn sm" id="tog">${s.status === 'open' ? 'Close session' : 'Reopen'}</button><button class="btn sm" id="qref" title="Replace this session&#39;s questions with the latest question bank (before anyone starts)">↻ Refresh questions</button><button class="btn sm danger" id="del">Delete</button></div></div>
+      <div><div class="lb"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Leaderboard</b><span id="cnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span> <button class="btn sm mute" data-mute data-host-live type="button"></button><button class="btn sm" id="bhsBtn" title="Go through questions one by one: answer spread, key & explanation">📖 Review questions</button><button class="btn sm y" id="podBtn" title="Tampilkan podium layar penuh">🏆 Podium</button><span class="pill ${s.status}">${s.status === 'open' ? 'Live' : 'Ditutup'}</span></div><div id="prog" class="prog hidden"></div><div id="pod"></div><div id="lb"></div><div style="font-size:12px;color:var(--muted);margin-top:8px">Click a player&#39;s name to review their answers.</div></div>
+      <div class="appr"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><b style="font-size:17px">Players & approval</b><span id="pcnt" style="color:var(--muted);font-size:13px"></span><span style="flex:1"></span><button class="btn sm y hidden" id="apAll">Approve all</button></div><div id="ap"></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">Players can start once you approve them.</div></div></div></div>`;
+  try { const qr = qrcode(0, 'M'); qr.addData(url); qr.make(); $('#qr').innerHTML = qr.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); const sv = $('#qr svg'); sv.style.width = '230px'; sv.style.height = '230px'; } catch (e) { $('#qr').innerHTML = '<div class="msg">QR could not load — share the link/PIN.</div>'; }
+  $('#cpy').onclick = async () => { try { await navigator.clipboard.writeText(url); toast('Link disalin ✓'); } catch (e) { prompt('Copy link:', url); } };
   $('#tog').onclick = async () => { const closing = s.status === 'open'; await API.setStatus(code, closing); if (closing) { const B = await API.board(code); host(code); podiumFull(B, s.title, code); } else host(code); };
-  $('#del').onclick = async () => { if (confirm('Hapus sesi ' + code + ' beserta semua hasilnya?')) { await API.del(code); go(''); } };
-  $('#qref').onclick = async () => { await loadBank(); const all = questions(s.set_key), n = s.n ?? (s.questions || []).length; if (!all.length) return toast('Set ini belum punya soal');
-    if (!confirm(`Ganti soal sesi ${code} dengan ${Math.min(n || all.length, all.length)} soal terbaru dari bank soal?`)) return;
-    const r = await API.refresh(code, prepare(all, n || all.length)); if (r.status === 200) { toast('Soal sesi diperbarui ✓'); host(code); } else toast(r.j.detail || 'Gagal memperbarui soal'); };
+  $('#del').onclick = async () => { if (confirm('Delete session ' + code + ' and all its results?')) { await API.del(code); go(''); } };
+  $('#qref').onclick = async () => { await loadBank(); const all = questions(s.set_key), n = s.n ?? (s.questions || []).length; if (!all.length) return toast('This set has no questions yet');
+    if (!confirm(`Replace the questions of session ${code} with the ${Math.min(n || all.length, all.length)} latest questions from the bank?`)) return;
+    const r = await API.refresh(code, prepare(all, n || all.length)); if (r.status === 200) { toast('Session questions updated ✓'); host(code); } else toast(r.j.detail || 'Could not update questions'); };
   $('#apAll').onclick = async () => { await API.decide(code, '', 'all'); tick(); };
-  const ST = { pending: 'Menunggu approval', approved: 'Sedang mengerjakan', done: 'Selesai', rejected: 'Ditolak' };
+  const ST = { pending: 'Waiting for approval', approved: 'In progress', done: 'Done', rejected: 'Ditolak' };
   let LASTB = []; PODSIG = '';
   $('#podBtn').onclick = async () => { const B = await API.board(code); podiumFull(B, s.title, code); };
   $('#bhsBtn').onclick = () => discuss(code, s.title);
   let RACE = [];
   $('#prog').onclick = e => { if (e.target.closest('[data-racefs]')) raceFull(s.title, () => RACE); };
   let PG = {}, AUTO_POD = LS.get('gx-quiz-pod', {})[code] || false;
-  const tick = async () => { const [B, Jr, PR] = await Promise.all([API.board(code), API.joins(code), API.progress(code)]); PG = {}; PR.forEach(p => { PG[String(p.name).toLowerCase()] = p; }); const el = $('#lb'); if (!el) return; $('#cnt').textContent = B.length + ' selesai'; LASTB = B; paintPodium($('#pod'), B);
-    el.innerHTML = B.length ? B.map((x, i) => `<div class="lbr click" data-rv="${esc(x.player)}" title="Review jawaban"><span class="rk">${i + 1}</span>${avHtml(x.av, x.player, 'sm')}<div><b>${esc(x.player)}</b><span>${x.correct}/${x.total} benar · ${fmtS(x.duration_ms)}</span></div><span class="sc">${x.score}</span></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Belum ada yang selesai.</div>';
+  const tick = async () => { const [B, Jr, PR] = await Promise.all([API.board(code), API.joins(code), API.progress(code)]); PG = {}; PR.forEach(p => { PG[String(p.name).toLowerCase()] = p; }); const el = $('#lb'); if (!el) return; $('#cnt').textContent = B.length + ' done'; LASTB = B; paintPodium($('#pod'), B);
+    el.innerHTML = B.length ? B.map((x, i) => `<div class="lbr click" data-rv="${esc(x.player)}" title="Review answers"><span class="rk">${i + 1}</span>${avHtml(x.av, x.player, 'sm')}<div><b>${esc(x.player)}</b><span>${x.correct}/${x.total} correct · ${fmtS(x.duration_ms)}</span></div><span class="sc">${x.score}</span></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Nobody has finished yet.</div>';
     const P = (Jr && Jr.status === 200 && Jr.j.players) || [], pend = P.filter(p => p.status === 'pending');
-    $('#pcnt').textContent = P.length ? `${P.length} peserta · ${pend.length} menunggu` : ''; $('#apAll').classList.toggle('hidden', pend.length < 2);
+    $('#pcnt').textContent = P.length ? `${P.length} players · ${pend.length} waiting` : ''; $('#apAll').classList.toggle('hidden', pend.length < 2);
     const order = { pending: 0, approved: 1, done: 2, rejected: 3 };
-    $('#ap').innerHTML = P.length ? P.slice().sort((a, b) => order[a.status] - order[b.status]).map(p => `<div class="apr"><div>${avHtml(p.av, p.name, 'sm')} <b>${esc(p.name)}</b><span class="s"><span class="pill ${p.status}">${ST[p.status] || p.status}</span> · daftar ${new Date(p.at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>${progRow(p, PG[String(p.name).toLowerCase()], B)}</div><div class="acts">${p.status === 'pending' ? `<button class="btn sm y" data-dec="approve" data-p="${esc(p.name)}">Approve</button><button class="btn sm danger" data-dec="reject" data-p="${esc(p.name)}">Tolak</button>` : p.status === 'rejected' ? `<button class="btn sm" data-dec="approve" data-p="${esc(p.name)}">Approve</button>` : p.status === 'done' ? `<button class="btn sm" data-rv="${esc(p.name)}">Review</button><button class="btn sm" data-dec="allowRetry" data-p="${esc(p.name)}">Izinkan ulang</button>` : ''}</div></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Menunggu peserta… minta tim scan QR di HP.</div>';
+    $('#ap').innerHTML = P.length ? P.slice().sort((a, b) => order[a.status] - order[b.status]).map(p => `<div class="apr"><div>${avHtml(p.av, p.name, 'sm')} <b>${esc(p.name)}</b><span class="s"><span class="pill ${p.status}">${ST[p.status] || p.status}</span> · joined ${new Date(p.at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>${progRow(p, PG[String(p.name).toLowerCase()], B)}</div><div class="acts">${p.status === 'pending' ? `<button class="btn sm y" data-dec="approve" data-p="${esc(p.name)}">Approve</button><button class="btn sm danger" data-dec="reject" data-p="${esc(p.name)}">Tolak</button>` : p.status === 'rejected' ? `<button class="btn sm" data-dec="approve" data-p="${esc(p.name)}">Approve</button>` : p.status === 'done' ? `<button class="btn sm" data-rv="${esc(p.name)}">Review</button><button class="btn sm" data-dec="allowRetry" data-p="${esc(p.name)}">Izinkan ulang</button>` : ''}</div></div>`).join('') : '<div class="msg" style="border:0;padding:8px 0">Waiting for players… ask the team to scan the QR on their phones.</div>';
     const act = P.filter(p => p.status === 'approved'), done = P.filter(p => p.status === 'done'), pr = $('#prog');
     if (pr) { pr.classList.toggle('hidden', !act.length && !done.length); const tot = act.length + done.length, avg = tot ? Math.round((done.length * 100 + act.reduce((t, p) => { const g = PG[String(p.name).toLowerCase()]; return t + (g ? g.i / g.n * 100 : 0); }, 0)) / tot) : 0;
-      if (!pr.querySelector('.pg-h')) pr.innerHTML = `<div class="pg-h"><b>⚡ Live scoreboard</b><span class="pg-c"></span><span class="sp"></span><b class="pg-p"></b><button class="btn sm" data-racefs title="Tampilkan layar penuh untuk diproyeksikan">📺 Layar penuh</button></div><div class="pg-bar"><i></i></div><div class="livepod"></div><div class="race" id="race"></div>`;
-      pr.querySelector('.pg-c').textContent = `${done.length}/${tot} selesai · ${act.length} sedang mengerjakan`; pr.querySelector('.pg-p').textContent = avg + '%'; pr.querySelector('.pg-bar i').style.width = avg + '%';
+      if (!pr.querySelector('.pg-h')) pr.innerHTML = `<div class="pg-h"><b>⚡ Live scoreboard</b><span class="pg-c"></span><span class="sp"></span><b class="pg-p"></b><button class="btn sm" data-racefs title="Show full screen for projecting">📺 Layar penuh</button></div><div class="pg-bar"><i></i></div><div class="livepod"></div><div class="race" id="race"></div>`;
+      pr.querySelector('.pg-c').textContent = `${done.length}/${tot} done · ${act.length} in progress`; pr.querySelector('.pg-p').textContent = avg + '%'; pr.querySelector('.pg-bar i').style.width = avg + '%';
       RACE = raceRows(P, PG, B); paintRace(pr.querySelector('#race'), RACE); const fs = document.querySelector('.racefs #raceFs'); if (fs) paintRace(fs, RACE, true); }
-    if (!AUTO_POD && B.length && !act.length && !P.some(p => p.status === 'pending') && done.length) { AUTO_POD = true; LS.set('gx-quiz-pod', { ...LS.get('gx-quiz-pod', {}), [code]: true }); toast('Semua peserta selesai 🎉'); podiumFull(B, s.title, code); } };
+    if (!AUTO_POD && B.length && !act.length && !P.some(p => p.status === 'pending') && done.length) { AUTO_POD = true; LS.set('gx-quiz-pod', { ...LS.get('gx-quiz-pod', {}), [code]: true }); toast('All players finished 🎉'); podiumFull(B, s.title, code); } };
   HOSTCODE = code; HOSTTICK = tick;
   tick(); clearInterval(poll); poll = setInterval(() => { if (!$('#lb')) return clearInterval(poll); if (!document.hidden) tick(); }, 3000);
 }
@@ -363,7 +363,7 @@ function paintRace(box, rows, big) {
     if (was != null && was !== idx) { mv.textContent = was > idx ? '▲' + (was - idx) : '▼' + (idx - was); mv.className = 'mv ' + (was > idx ? 'up' : 'dn'); clearTimeout(el._mv); el._mv = setTimeout(() => { mv.textContent = ''; mv.className = 'mv'; }, 4000); }
     el.classList.toggle('done', r.done); el.classList.toggle('lead', idx === 0 && r.score > 0);
     el.querySelector('.rk').textContent = idx < 3 && r.score > 0 ? ['🥇', '🥈', '🥉'][idx] : idx + 1;
-    el.querySelector('.nm small').textContent = r.done ? `✓ selesai · ${r.correct}/${r.n} benar` : r.n ? `soal ${r.i}/${r.n} · ${r.correct} benar` : 'belum menjawab';
+    el.querySelector('.nm small').textContent = r.done ? `✓ done · ${r.correct}/${r.n} correct` : r.n ? `question ${r.i}/${r.n} · ${r.correct} correct` : 'not answered yet';
     el.querySelector('.rb i').style.width = Math.round(r.score / top * 100) + '%';
     countUp(el.querySelector('.sc'), r.score); box.appendChild(el); });
   box.querySelectorAll('.rr').forEach(el => { if (!keep.has(el.dataset.k)) el.remove(); });
@@ -371,43 +371,43 @@ function paintRace(box, rows, big) {
   box.querySelectorAll('.rr').forEach(el => { const t0 = prevPos[el.dataset.k]; if (t0 == null) { el.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 350 }); return; }
     const d = t0 - el.getBoundingClientRect().top; if (Math.abs(d) > 2) el.animate([{ transform: `translateY(${d}px)` }, { transform: 'none' }], { duration: 650, easing: 'cubic-bezier(.2,.8,.2,1)' }); });
   const nr = {}; rows.forEach((r, idx) => { nr[r.name.toLowerCase()] = idx; }); RANKS.set(box, nr);
-  if (!rows.length) box.innerHTML = '<div class="msg" style="border:0;padding:8px 0">Skor muncul setelah peserta menjawab soal pertama.</div>';
+  if (!rows.length) box.innerHTML = '<div class="msg" style="border:0;padding:8px 0">Scores appear after players answer the first question.</div>';
 }
-function countUp(el, to) { const from = +el.dataset.v || 0; el.dataset.v = to; if (from === to) { el.textContent = to.toLocaleString('id-ID'); return; }
-  const t0 = performance.now(), D = 700; const step = t => { const k = Math.min(1, (t - t0) / D), v = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3))); el.textContent = v.toLocaleString('id-ID'); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }
+function countUp(el, to) { const from = +el.dataset.v || 0; el.dataset.v = to; if (from === to) { el.textContent = to.toLocaleString('en-GB'); return; }
+  const t0 = performance.now(), D = 700; const step = t => { const k = Math.min(1, (t - t0) / D), v = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3))); el.textContent = v.toLocaleString('en-GB'); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }
 function raceFull(title, get) {
-  const m = document.createElement('div'); m.className = 'modal racefs'; m.innerHTML = `<div class="rf-in"><div class="rf-h"><div><small>⚡ LIVE SCOREBOARD</small><b>${esc(title || 'Live quiz')}</b></div><span class="sp"></span><button class="btn sm" data-x>Tutup</button></div><div class="livepod"></div><div class="race big" id="raceFs"></div></div>`;
+  const m = document.createElement('div'); m.className = 'modal racefs'; m.innerHTML = `<div class="rf-in"><div class="rf-h"><div><small>⚡ LIVE SCOREBOARD</small><b>${esc(title || 'Live quiz')}</b></div><span class="sp"></span><button class="btn sm" data-x>Close</button></div><div class="livepod"></div><div class="race big" id="raceFs"></div></div>`;
   m.onclick = e => { if (e.target === m || e.target.closest('[data-x]')) m.remove(); }; document.body.appendChild(m); paintRace(m.querySelector('#raceFs'), get(), true);
 }
 
 /* progres per peserta (sisi SPV) */
 function progRow(p, g, B) {
-  if (p.status === 'done') { const x = (B || []).find(z => z.player.toLowerCase() === String(p.name).toLowerCase()); return x ? `<div class="pg-r done"><div class="pg-bar"><i style="width:100%"></i></div><small>✓ ${x.correct}/${x.total} benar · ${x.score} poin</small></div>` : ''; }
+  if (p.status === 'done') { const x = (B || []).find(z => z.player.toLowerCase() === String(p.name).toLowerCase()); return x ? `<div class="pg-r done"><div class="pg-bar"><i style="width:100%"></i></div><small>✓ ${x.correct}/${x.total} correct · ${x.score} pts</small></div>` : ''; }
   if (p.status !== 'approved') return '';
-  if (!g) return `<div class="pg-r"><div class="pg-bar"><i style="width:0"></i></div><small>Belum menjawab soal pertama</small></div>`;
+  if (!g) return `<div class="pg-r"><div class="pg-bar"><i style="width:0"></i></div><small>Has not answered the first question yet</small></div>`;
   const pc = Math.round(g.i / g.n * 100), ago = Math.round((Date.now() - new Date(g.at)) / 1000);
-  return `<div class="pg-r"><div class="pg-bar"><i style="width:${pc}%"></i></div><small>Soal ${g.i}/${g.n} · <b>${g.correct} benar</b> · ${g.score} poin${ago > 90 ? ` · <span style="color:var(--bad,#C62828)">diam ${Math.round(ago / 60)} mnt</span>` : ''}</small></div>`;
+  return `<div class="pg-r"><div class="pg-bar"><i style="width:${pc}%"></i></div><small>Question ${g.i}/${g.n} · <b>${g.correct} correct</b> · ${g.score} pts${ago > 90 ? ` · <span style="color:var(--bad,#C62828)">diam ${Math.round(ago / 60)} mnt</span>` : ''}</small></div>`;
 }
 /* ===== Bahas soal (SPV): satu soal per layar — sebaran jawaban, kunci, penjelasan & siapa memilih apa ===== */
 async function discuss(code, title, at) {
-  const r = await API.results(code); if (!r || r.status !== 200) return toast(r && r.j.error === 'login-required' ? 'Login SPV dulu' : 'Gagal memuat hasil');
-  const Q = r.j.questions || [], R = r.j.results || []; if (!Q.length) return toast('Soal tidak ditemukan');
-  if (!R.length) return toast('Belum ada peserta yang selesai');
+  const r = await API.results(code); if (!r || r.status !== 200) return toast(r && r.j.error === 'login-required' ? 'Login SPV dulu' : 'Could not load results');
+  const Q = r.j.questions || [], R = r.j.results || []; if (!Q.length) return toast('Questions not found');
+  if (!R.length) return toast('No players have finished yet');
   let i = Math.max(0, Math.min(Q.length - 1, at || 0)), names = false;
   const m = document.createElement('div'); m.className = 'modal bhs';
   const stats = k => { const q = Q[k], cnt = q.o.map(() => []), none = []; R.forEach(x => { const a = (x.answers || [])[k] || {}; if (a.c == null || !cnt[a.c]) none.push(x.player); else cnt[a.c].push(x.player); }); return { q, cnt, none, ok: cnt[q.a].length }; };
   const draw = () => { const { q, cnt, none, ok } = stats(i), n = R.length, pct = v => n ? Math.round(v / n * 100) : 0;
     const hard = Q.map((_, k) => stats(k).ok / n);
-    m.innerHTML = `<div class="bhs-in"><div class="bhs-top"><div><small>📖 PEMBAHASAN · ${esc(title || 'Live quiz')}</small><b>Soal ${i + 1} / ${Q.length}</b></div><span class="sp"></span><label class="bhs-nm"><input type="checkbox" id="bhNm" ${names ? 'checked' : ''}> tampilkan nama</label><button class="btn sm" data-x>Tutup</button></div>
+    m.innerHTML = `<div class="bhs-in"><div class="bhs-top"><div><small>📖 PEMBAHASAN · ${esc(title || 'Live quiz')}</small><b>Question ${i + 1} / ${Q.length}</b></div><span class="sp"></span><label class="bhs-nm"><input type="checkbox" id="bhNm" ${names ? 'checked' : ''}> tampilkan nama</label><button class="btn sm" data-x>Close</button></div>
       <div class="bhs-q">${esc(q.q)}</div>
       <div class="bhs-o">${q.o.map((o, j) => `<div class="bo ${j === q.a ? 'ok' : ''}"><div class="bo-t"><span class="sh">${SHAPES[j % 4]}</span><span class="tx">${esc(o)}</span><b>${cnt[j].length}</b></div><div class="bo-bar t${j % 4}"><i style="width:${pct(cnt[j].length)}%"></i></div>${names && cnt[j].length ? `<div class="bo-nm">${cnt[j].map(esc).join(', ')}</div>` : ''}</div>`).join('')}
-        ${none.length ? `<div class="bo none"><div class="bo-t"><span class="sh">⏱</span><span class="tx">Tidak menjawab / waktu habis</span><b>${none.length}</b></div>${names ? `<div class="bo-nm">${none.map(esc).join(', ')}</div>` : ''}</div>` : ''}</div>
-      <div class="bhs-k"><b>✓ Jawaban benar: ${esc(q.o[q.a])}</b> — ${ok}/${n} peserta (${pct(ok)}%) menjawab benar${q.e ? `<p>${esc(q.e)}</p>` : ''}</div>
+        ${none.length ? `<div class="bo none"><div class="bo-t"><span class="sh">⏱</span><span class="tx">No answer / time out</span><b>${none.length}</b></div>${names ? `<div class="bo-nm">${none.map(esc).join(', ')}</div>` : ''}</div>` : ''}</div>
+      <div class="bhs-k"><b>✓ Correct answer: ${esc(q.o[q.a])}</b> — ${ok}/${n} players (${pct(ok)}%) answered correctly${q.e ? `<p>${esc(q.e)}</p>` : ''}</div>
       ${(() => { const wrong = q.o.flatMap((o, j) => j === q.a ? [] : cnt[j].map(nm => [nm, o])), right = cnt[q.a];
-        return `<div class="bhs-who"><div class="bw bad"><b>✗ Salah (${wrong.length + none.length})</b>${wrong.length || none.length ? wrong.map(([nm, o]) => `<span title="Memilih: ${esc(o)}">${esc(nm)} <i>→ ${esc(o.length > 38 ? o.slice(0, 36) + '…' : o)}</i></span>`).join('') + none.map(nm => `<span>${esc(nm)} <i>→ tidak menjawab</i></span>`).join('') : '<em>Semua benar 🎉</em>'}</div>
-          <div class="bw ok"><b>✓ Benar (${right.length})</b>${right.length ? right.map(nm => `<span>${esc(nm)}</span>`).join('') : '<em>Belum ada</em>'}</div></div>`; })()}
-      <div class="bhs-nav"><button class="btn" id="bhP" ${i ? '' : 'disabled'}>← Sebelumnya</button><div class="bhs-dots">${hard.map((h, k) => `<button class="${k === i ? 'on' : ''} ${h < .5 ? 'hard' : ''}" data-bq="${k}" title="Soal ${k + 1}: ${Math.round(h * 100)}% benar">${k + 1}</button>`).join('')}</div><button class="btn pri" id="bhN">${i < Q.length - 1 ? 'Berikutnya →' : '🏆 Podium'}</button></div>
-      <div class="bhs-leg"><span class="hard">merah</span> = kurang dari 50% peserta menjawab benar — fokus dibahas</div></div>`;
+        return `<div class="bhs-who"><div class="bw bad"><b>✗ Wrong (${wrong.length + none.length})</b>${wrong.length || none.length ? wrong.map(([nm, o]) => `<span title="Memilih: ${esc(o)}">${esc(nm)} <i>→ ${esc(o.length > 38 ? o.slice(0, 36) + '…' : o)}</i></span>`).join('') + none.map(nm => `<span>${esc(nm)} <i>→ no answer</i></span>`).join('') : '<em>Everyone got it right 🎉</em>'}</div>
+          <div class="bw ok"><b>✓ Correct (${right.length})</b>${right.length ? right.map(nm => `<span>${esc(nm)}</span>`).join('') : '<em>None yet</em>'}</div></div>`; })()}
+      <div class="bhs-nav"><button class="btn" id="bhP" ${i ? '' : 'disabled'}>← Sebelumnya</button><div class="bhs-dots">${hard.map((h, k) => `<button class="${k === i ? 'on' : ''} ${h < .5 ? 'hard' : ''}" data-bq="${k}" title="Question ${k + 1}: ${Math.round(h * 100)}% correct">${k + 1}</button>`).join('')}</div><button class="btn pri" id="bhN">${i < Q.length - 1 ? 'Berikutnya →' : '🏆 Podium'}</button></div>
+      <div class="bhs-leg"><span class="hard">merah</span> = under 50% of players answered correctly — focus here</div></div>`;
   };
   const go = k => { i = k; draw(); };
   m.onclick = async e => { if (e.target === m || e.target.closest('[data-x]')) { m.remove(); document.removeEventListener('keydown', key); return; }
@@ -422,12 +422,12 @@ async function discuss(code, title, at) {
 /* review jawaban peserta (sisi SPV) */
 let HOSTCODE = null, HOSTTICK = null;
 async function reviewPlayer(code, player) {
-  const r = await API.results(code); if (!r || r.status !== 200) return toast(r && r.j.error === 'login-required' ? 'Login SPV dulu' : 'Gagal memuat jawaban');
-  const Q = r.j.questions || [], x = (r.j.results || []).find(z => z.player.toLowerCase() === player.toLowerCase()); if (!x) return toast('Hasil belum ada');
+  const r = await API.results(code); if (!r || r.status !== 200) return toast(r && r.j.error === 'login-required' ? 'Login SPV dulu' : 'Could not load answers');
+  const Q = r.j.questions || [], x = (r.j.results || []).find(z => z.player.toLowerCase() === player.toLowerCase()); if (!x) return toast('No results yet');
   const A = x.answers || [], m = document.createElement('div'); m.className = 'modal';
-  m.innerHTML = `<div class="box"><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="flex:1"><div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--muted)">REVIEW JAWABAN</div><b style="font-size:20px">${esc(x.player)}</b></div><button class="btn sm" data-x>Tutup</button></div>
-    <div class="res" style="padding:16px"><div class="kp" style="margin-top:0"><div><b>${x.score}</b><span>poin</span></div><div><b>${x.correct}/${x.total}</b><span>benar</span></div><div><b>${fmtS(x.duration_ms)}</b><span>total waktu</span></div><div><b>${A.filter(a => a.c == null).length}</b><span>tidak dijawab</span></div></div></div>
-    ${Q.map((q, i) => { const a = A[i] || {}; return `<div class="rv"><span class="pts">${a.c === q.a ? '+' + (a.p || 0) : '0'} · ${fmtS(a.ms || 0)}</span><div class="qt">${i + 1}. ${esc(q.q)}</div>${q.o.map((o, j) => `<div class="o ${j === q.a ? 'ok' : j === a.c ? 'bad' : ''}">${j === q.a ? '✓ ' : j === a.c ? '✗ ' : ''}${esc(o)}${j === a.c ? ' <i>(jawaban peserta)</i>' : ''}</div>`).join('')}${a.c == null ? '<div class="ex"><b>Tidak dijawab (waktu habis).</b></div>' : ''}<div class="ex">${esc(q.e)}${q.src ? ` <i>— ${esc(q.src)}</i>` : ''}</div></div>`; }).join('')}</div>`;
+  m.innerHTML = `<div class="box"><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="flex:1"><div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--muted)">ANSWER REVIEW</div><b style="font-size:20px">${esc(x.player)}</b></div><button class="btn sm" data-x>Close</button></div>
+    <div class="res" style="padding:16px"><div class="kp" style="margin-top:0"><div><b>${x.score}</b><span>pts</span></div><div><b>${x.correct}/${x.total}</b><span>correct</span></div><div><b>${fmtS(x.duration_ms)}</b><span>total time</span></div><div><b>${A.filter(a => a.c == null).length}</b><span>unanswered</span></div></div></div>
+    ${Q.map((q, i) => { const a = A[i] || {}; return `<div class="rv"><span class="pts">${a.c === q.a ? '+' + (a.p || 0) : '0'} · ${fmtS(a.ms || 0)}</span><div class="qt">${i + 1}. ${esc(q.q)}</div>${q.o.map((o, j) => `<div class="o ${j === q.a ? 'ok' : j === a.c ? 'bad' : ''}">${j === q.a ? '✓ ' : j === a.c ? '✗ ' : ''}${esc(o)}${j === a.c ? ' <i>(player&#39;s answer)</i>' : ''}</div>`).join('')}${a.c == null ? '<div class="ex"><b>Not answered (time out).</b></div>' : ''}<div class="ex">${esc(q.e)}${q.src ? ` <i>— ${esc(q.src)}</i>` : ''}</div></div>`; }).join('')}</div>`;
   m.onclick = e => { if (e.target === m || e.target.closest('[data-x]')) m.remove(); }; document.body.appendChild(m);
 }
 
@@ -439,38 +439,38 @@ async function joinScreen(code) {
   const tk = LS.get('gx-quiz-tok', {})[code];
   if (tk) return waitApproval(code, tk);   // sudah daftar → lanjut menunggu / mulai
   const s = await API.session(code);
-  if (!s) { app.innerHTML = `<div class="msg">PIN <b>${esc(code)}</b> tidak ditemukan. Cek lagi PIN dari SPV.</div><p><button class="btn" data-home>← Kembali</button></p>`; return; }
-  if (s.status !== 'open') { app.innerHTML = `<div class="msg">Sesi <b>${esc(s.title)}</b> sudah ditutup.</div><p><button class="btn" data-home>← Kembali</button></p>`; return; }
-  app.innerHTML = `<div class="play"><div class="res"><div style="font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--muted)">PIN ${esc(code)}</div><h1 style="margin:8px 0 4px">${esc(s.title)}</h1><p class="lead" style="margin:0 0 18px">${s.n ?? (s.questions || []).length} soal · ${s.timer_s} detik per soal · jawab cepat & tepat untuk poin maksimal</p>
-    <div class="avpick" id="avPick" role="radiogroup" aria-label="Pilih avatar">${AVATARS.map((a, i) => `<button type="button" role="radio" aria-checked="${i === LS.get('gx-quiz-av', 0)}" data-av="${i}" style="--ac:${AVC[i]};--d:${(i % 5) * .17}s"><i>${a}</i></button>`).join('')}</div>
-    <form id="nameF" style="display:flex;gap:10px;max-width:420px;margin:0 auto;flex-wrap:wrap"><input id="nm" placeholder="Nama kamu" maxlength="40" value="${esc(LS.get('gx-quiz-name', ''))}" style="flex:1;min-width:180px;border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;font-weight:700;outline:none"><button class="btn y" style="font-size:16px">Daftar</button></form>
-    <p style="font-size:12.5px;color:var(--muted);margin:12px 0 0">Setelah daftar, tunggu SPV meng-approve — quiz mulai otomatis.</p></div></div>`;
+  if (!s) { app.innerHTML = `<div class="msg">PIN <b>${esc(code)}</b> not found. Check the PIN from Putri again.</div><p><button class="btn" data-home>← Back</button></p>`; return; }
+  if (s.status !== 'open') { app.innerHTML = `<div class="msg">Session <b>${esc(s.title)}</b> has been closed.</div><p><button class="btn" data-home>← Back</button></p>`; return; }
+  app.innerHTML = `<div class="play"><div class="res"><div style="font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--muted)">PIN ${esc(code)}</div><h1 style="margin:8px 0 4px">${esc(s.title)}</h1><p class="lead" style="margin:0 0 18px">${s.n ?? (s.questions || []).length} questions · ${s.timer_s} seconds per question · answer fast & right for maximum points</p>
+    <div class="avpick" id="avPick" role="radiogroup" aria-label="Choose an avatar">${AVATARS.map((a, i) => `<button type="button" role="radio" aria-checked="${i === LS.get('gx-quiz-av', 0)}" data-av="${i}" style="--ac:${AVC[i]};--d:${(i % 5) * .17}s"><i>${a}</i></button>`).join('')}</div>
+    <form id="nameF" style="display:flex;gap:10px;max-width:420px;margin:0 auto;flex-wrap:wrap"><input id="nm" placeholder="Your name" maxlength="40" value="${esc(LS.get('gx-quiz-name', ''))}" style="flex:1;min-width:180px;border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;font-weight:700;outline:none"><button class="btn y" style="font-size:16px">Join</button></form>
+    <p style="font-size:12.5px;color:var(--muted);margin:12px 0 0">After joining, wait for Putri to approve you — the quiz starts automatically.</p></div></div>`;
   $('#avPick').onclick = e => { const b = e.target.closest('[data-av]'); if (!b) return; LS.set('gx-quiz-av', +b.dataset.av); $('#avPick').querySelectorAll('[data-av]').forEach(x => x.setAttribute('aria-checked', x === b)); musicCtx() && sfx('lock'); };
   $('#nameF').onsubmit = async e => { e.preventDefault(); const n = $('#nm').value.trim(); if (n.length < 2) return toast('Isi nama minimal 2 huruf');
     musicCtx();   // buka izin audio dari klik user, supaya musik bisa jalan saat quiz mulai
     const btn = e.target.querySelector('button'); btn.disabled = true; const r = await API.join(code, n, undefined, LS.get('gx-quiz-av', 0)); btn.disabled = false;
-    if (!r || r.status !== 200) return toast((r && r.j.detail) || 'Gagal mendaftar');
+    if (!r || r.status !== 200) return toast((r && r.j.detail) || 'Could not join');
     LS.set('gx-quiz-name', n); const T = LS.get('gx-quiz-tok', {}); T[code] = { token: r.j.token, player: r.j.player || n }; LS.set('gx-quiz-tok', T); waitApproval(code, T[code]); };
 }
 async function waitApproval(code, tk) {
   const forget = () => { const T = LS.get('gx-quiz-tok', {}); delete T[code]; LS.set('gx-quiz-tok', T); };
-  const render = (title, body) => { app.innerHTML = `<div class="play"><div class="wait">${avHtml(LS.get('gx-quiz-av', null), tk.player, 'xl')}${body}<p style="margin-top:18px"><button class="btn sm" id="ganti">Ganti nama</button> <button class="btn sm" data-home>← Kembali</button></p></div></div>`; $('#ganti').onclick = () => { forget(); joinScreen(code); }; };
+  const render = (title, body) => { app.innerHTML = `<div class="play"><div class="wait">${avHtml(LS.get('gx-quiz-av', null), tk.player, 'xl')}${body}<p style="margin-top:18px"><button class="btn sm" id="ganti">Change name</button> <button class="btn sm" data-home>← Back</button></p></div></div>`; $('#ganti').onclick = () => { forget(); joinScreen(code); }; };
   const check = async () => {
     const r = await API.me(code, tk.token);
     if (!r || r.status === 404) { clearInterval(poll); forget(); return joinScreen(code); }
     const st = r.j.status, s = r.j.session || {};
     if (st === 'approved' && s.questions && s.questions.length) { clearInterval(poll); return start({ mode: 'live', code, title: s.title, timer: s.timer_s, qs: s.questions, player: r.j.player, token: tk.token }); }
-    if (st === 'rejected') { clearInterval(poll); render('', `<h1 style="margin:0 0 6px">Belum bisa ikut</h1><p class="lead" style="margin:0">Pendaftaran <b>${esc(r.j.player)}</b> di sesi ini tidak di-approve SPV.</p>`); return; }
-    if (st === 'done') { clearInterval(poll); render('', `<h1 style="margin:0 0 6px">Sudah selesai</h1><p class="lead" style="margin:0">${esc(r.j.player)} sudah menyelesaikan quiz ini.</p>`); return; }
-    if (s.status && s.status !== 'open') { clearInterval(poll); render('', `<h1 style="margin:0 0 6px">Sesi ditutup</h1><p class="lead" style="margin:0">Sesi <b>${esc(s.title || code)}</b> sudah ditutup SPV.</p>`); return; }
-    if (!$('#waitBox')) render('', `<div id="waitBox"><div class="dot"></div><div style="font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--muted)">PIN ${esc(code)}</div><h1 style="margin:8px 0 4px">Menunggu approval SPV…</h1><p class="lead" style="margin:0">Halo <b>${esc(r.j.player)}</b>! Quiz <b>${esc(s.title || '')}</b> (${s.n || ''} soal · ${s.timer_s || ''} detik per soal) akan mulai otomatis setelah SPV meng-approve.</p></div>`);
+    if (st === 'rejected') { clearInterval(poll); render('', `<h1 style="margin:0 0 6px">Can&#39;t join yet</h1><p class="lead" style="margin:0"><b>${esc(r.j.player)}</b> was not approved for this session.</p>`); return; }
+    if (st === 'done') { clearInterval(poll); render('', `<h1 style="margin:0 0 6px">Already finished</h1><p class="lead" style="margin:0">${esc(r.j.player)} has already finished this quiz.</p>`); return; }
+    if (s.status && s.status !== 'open') { clearInterval(poll); render('', `<h1 style="margin:0 0 6px">Session closed</h1><p class="lead" style="margin:0">Session <b>${esc(s.title || code)}</b> was closed by Putri.</p>`); return; }
+    if (!$('#waitBox')) render('', `<div id="waitBox"><div class="dot"></div><div style="font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--muted)">PIN ${esc(code)}</div><h1 style="margin:8px 0 4px">Waiting for Putri's approval…</h1><p class="lead" style="margin:0">Hi <b>${esc(r.j.player)}</b>! Quiz <b>${esc(s.title || '')}</b> (${s.n || ''} questions · ${s.timer_s || ''} seconds per question) will start automatically once Putri approves you.</p></div>`);
   };
   clearInterval(poll); await check(); if ($('#waitBox')) poll = setInterval(() => { if (!$('#waitBox')) return clearInterval(poll); if (!document.hidden) check(); }, 3000);
 }
 function start(g) { G = { ...g, i: 0, answers: [], score: 0, correct: 0 }; if (g.mode === 'live') sfx('gong'); musicStart('quiz'); question(); }
 function question() {
   const q = G.qs[G.i], T = G.timer * 1000; G.t0 = performance.now(); G.locked = false;
-  app.innerHTML = `<div class="play"><div class="qhead"><span>Soal ${G.i + 1} / ${G.qs.length}</span><span class="sp"></span><span id="tl">${G.timer}</span><span>· ${G.mode === 'live' ? 'PIN ' + esc(G.code) : 'Skor ' + G.score}</span>${G.mode === 'live' ? avHtml(LS.get('gx-quiz-av', null), G.player, 'sm') : ''}<button class="mute" data-mute type="button"></button></div>
+  app.innerHTML = `<div class="play"><div class="qhead"><span>Question ${G.i + 1} / ${G.qs.length}</span><span class="sp"></span><span id="tl">${G.timer}</span><span>· ${G.mode === 'live' ? 'PIN ' + esc(G.code) : 'Score ' + G.score}</span>${G.mode === 'live' ? avHtml(LS.get('gx-quiz-av', null), G.player, 'sm') : ''}<button class="mute" data-mute type="button"></button></div>
     <div class="timer"><i id="tb"></i></div><div class="qbox">${esc(q.q)}</div>
     <div class="tiles">${q.o.map((o, j) => `<button class="tile t${j % 4}" data-c="${j}"><span class="sh">${SHAPES[j % 4]}</span><span>${esc(o)}</span></button>`).join('')}</div><div id="fb"></div></div>`;
   cancelAnimationFrame(timerRaf);
@@ -486,43 +486,43 @@ function answer(c) {
   G.answers.push({ c, ms });
   if (G.mode === 'live' && G.token) API.sendProgress(G.code, G.token, G.answers);   // SPV bisa memantau progres live
   document.querySelectorAll('.tile').forEach(t => { const j = +t.dataset.c; t.disabled = true; if (G.mode === 'practice') { if (j === q.a) t.classList.add('right'); else t.classList.add('dim'); } else { if (j === c) t.classList.add('pick'); else t.classList.add('dim'); } });
-  const last = G.i === G.qs.length - 1, nextBtn = `<span class="sp"></span><button class="btn pri" id="nx">${last ? 'Lihat hasil' : 'Soal berikutnya →'}</button>`;
+  const last = G.i === G.qs.length - 1, nextBtn = `<span class="sp"></span><button class="btn pri" id="nx">${last ? 'See results' : 'Next question →'}</button>`;
   if (G.mode === 'practice') {
     const ok = c === q.a, p = pts(ok, ms, G.timer); G.score += p; if (ok) G.correct++;
-    $('#fb').innerHTML = `<div class="fb ${ok ? 'ok' : 'bad'}">${c == null ? '⏱ Waktu habis' : ok ? '✓ Benar! +' + p : '✗ Kurang tepat'}${nextBtn}<p>${esc(q.e)}</p></div>`;
-  } else $('#fb').innerHTML = `<div class="fb lock">${c == null ? '⏱ Waktu habis — jawaban kosong' : '🔒 Jawaban terkunci'}${nextBtn}<p>Benar/salah & poin keluar di akhir quiz.</p></div>`;
+    $('#fb').innerHTML = `<div class="fb ${ok ? 'ok' : 'bad'}">${c == null ? '⏱ Time\'s up' : ok ? '✓ Correct! +' + p : '✗ Not quite'}${nextBtn}<p>${esc(q.e)}</p></div>`;
+  } else $('#fb').innerHTML = `<div class="fb lock">${c == null ? '⏱ Time\'s up — no answer' : '🔒 Answer locked'}${nextBtn}<p>Right/wrong & points are shown at the end of the quiz.</p></div>`;
   $('#nx').onclick = next; $('#nx').focus();
   if (G.mode === 'live') setTimeout(() => { if ($('#nx') && G.locked && G.qs[G.i] === q) next(); }, 1200);
 }
 async function next() {
   if (G.i < G.qs.length - 1) { G.i++; return question(); }
   if (G.mode === 'practice') {
-    const res = { mode: 'practice', set: G.set, title: 'Latihan ' + SETNAME[G.set], score: G.score, correct: G.correct, total: G.qs.length, duration_ms: G.answers.reduce((t, a) => t + a.ms, 0), review: G.qs.map((q, i) => ({ ...q, c: G.answers[i].c, ms: G.answers[i].ms, p: pts(G.answers[i].c === q.a, G.answers[i].ms, G.timer) })) };
+    const res = { mode: 'practice', set: G.set, title: 'Practice ' + SETNAME[G.set], score: G.score, correct: G.correct, total: G.qs.length, duration_ms: G.answers.reduce((t, a) => t + a.ms, 0), review: G.qs.map((q, i) => ({ ...q, c: G.answers[i].c, ms: G.answers[i].ms, p: pts(G.answers[i].c === q.a, G.answers[i].ms, G.timer) })) };
     const best = LS.get('gx-quiz-best', {}); if (!best[G.set] || res.score > best[G.set].score) { best[G.set] = { score: res.score, correct: res.correct, total: res.total }; LS.set('gx-quiz-best', best); }
     const hist = LS.get('gx-quiz-history', []); hist.unshift({ set: G.set, score: res.score, correct: res.correct, total: res.total, at: new Date().toISOString() }); LS.set('gx-quiz-history', hist.slice(0, 30));
     return result(res);
   }
-  app.innerHTML = '<div class="msg">Mengirim jawaban…</div>';
+  app.innerHTML = '<div class="msg">Sending answers…</div>';
   const r = await API.submit(G.code, G.player, G.answers, G.token);
   if (r.status === 409 && r.j.error === 'name-taken') { const n = prompt(r.j.detail + '\n\nNama baru:', G.player + ' 2'); if (n && n.trim().length >= 2) { G.player = n.trim(); LS.set('gx-quiz-name', G.player); G.i = G.qs.length - 1; return next(); } }
-  if (r.status !== 200) { app.innerHTML = `<div class="msg">Gagal mengirim: ${esc(r.j.detail || r.j.error)}</div><p><button class="btn" id="retry">Coba kirim lagi</button></p>`; $('#retry').onclick = () => { G.i = G.qs.length - 1; next(); }; return; }
+  if (r.status !== 200) { app.innerHTML = `<div class="msg">Could not send: ${esc(r.j.detail || r.j.error)}</div><p><button class="btn" id="retry">Try sending again</button></p>`; $('#retry').onclick = () => { G.i = G.qs.length - 1; next(); }; return; }
   const res = { mode: 'live', code: G.code, title: G.title, player: G.player, ...r.j.result, rank: r.j.rank, players: r.j.players, review: r.j.review };
   const done = LS.get('gx-quiz-done', {}); done[G.code] = res; LS.set('gx-quiz-done', done); const T = LS.get('gx-quiz-tok', {}); delete T[G.code]; LS.set('gx-quiz-tok', T);
   result(res);
 }
 async function result(res) { musicStop(); sfx('win');
   app.innerHTML = `<div class="play"><div class="res"><div style="font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--muted)">${esc(res.title || '')}</div>
-    <div class="big" style="margin-top:10px">${res.score}</div><div style="color:var(--muted);font-weight:700">poin${res.player ? ' · ' + esc(res.player) : ''}</div>
-    <div class="kp"><div><b>${res.correct}/${res.total}</b><span>Benar</span></div><div><b>${fmtS(res.duration_ms)}</b><span>Total waktu</span></div>${res.rank ? `<div><b>#${res.rank}</b><span>dari ${res.players} peserta</span></div>` : ''}</div>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px"><button class="btn pri" id="toRv">Review jawaban</button>${res.mode === 'practice' ? `<button class="btn" data-prac="${res.set}" data-n="${res.total}">Ulangi latihan</button>` : ''}<button class="btn" data-home>Quiz lain</button></div></div>
-    ${res.mode === 'live' ? '<div class="lb" style="margin-bottom:16px"><div style="display:flex;align-items:baseline;gap:10px"><b style="font-size:17px">Leaderboard</b><span style="font-size:12.5px;color:var(--muted)">update otomatis saat peserta lain selesai</span></div><div id="pod"></div><div id="lb"></div></div>' : historyHtml(res.set)}
-    <div id="rv"><div class="h2">Review jawaban</div>${res.review.map((q, i) => `<div class="rv"><span class="pts">${q.c === q.a ? '+' + q.p : '0'}</span><div class="qt">${i + 1}. ${esc(q.q)}</div>
+    <div class="big" style="margin-top:10px">${res.score}</div><div style="color:var(--muted);font-weight:700">pts${res.player ? ' · ' + esc(res.player) : ''}</div>
+    <div class="kp"><div><b>${res.correct}/${res.total}</b><span>Correct</span></div><div><b>${fmtS(res.duration_ms)}</b><span>Total time</span></div>${res.rank ? `<div><b>#${res.rank}</b><span>of ${res.players} players</span></div>` : ''}</div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px"><button class="btn pri" id="toRv">Review answers</button>${res.mode === 'practice' ? `<button class="btn" data-prac="${res.set}" data-n="${res.total}">Practice again</button>` : ''}<button class="btn" data-home>Quiz lain</button></div></div>
+    ${res.mode === 'live' ? '<div class="lb" style="margin-bottom:16px"><div style="display:flex;align-items:baseline;gap:10px"><b style="font-size:17px">Leaderboard</b><span style="font-size:12.5px;color:var(--muted)">auto-updates as other players finish</span></div><div id="pod"></div><div id="lb"></div></div>' : historyHtml(res.set)}
+    <div id="rv"><div class="h2">Review answers</div>${res.review.map((q, i) => `<div class="rv"><span class="pts">${q.c === q.a ? '+' + q.p : '0'}</span><div class="qt">${i + 1}. ${esc(q.q)}</div>
       ${q.o.map((o, j) => `<div class="o ${j === q.a ? 'ok' : j === q.c ? 'bad' : ''}">${j === q.a ? '✓ ' : j === q.c ? '✗ ' : ''}${esc(o)}</div>`).join('')}
-      ${q.c == null ? '<div class="ex"><b>Tidak dijawab (waktu habis).</b></div>' : ''}<div class="ex">${esc(q.e)}${q.src ? ` <i>— ${esc(q.src)}</i>` : ''}</div></div>`).join('')}</div></div>`;
+      ${q.c == null ? '<div class="ex"><b>Not answered (time out).</b></div>' : ''}<div class="ex">${esc(q.e)}${q.src ? ` <i>— ${esc(q.src)}</i>` : ''}</div></div>`).join('')}</div></div>`;
   $('#toRv').onclick = () => $('#rv').scrollIntoView({ behavior: 'smooth' });
   if (res.mode === 'live') {
     PODSIG = ''; const tick = async () => { const B = await API.board(res.code), el = $('#lb'); if (!el) return clearInterval(poll); paintPodium($('#pod'), B, res.player);
-      el.innerHTML = B.slice(0, 20).map((x, i) => `<div class="lbr ${x.player.toLowerCase() === (res.player || '').toLowerCase() ? 'me' : ''}"><span class="rk">${i + 1}</span><div><b>${esc(x.player)}</b><span>${x.correct}/${x.total} benar · ${fmtS(x.duration_ms)}</span></div><span class="sc">${x.score}</span></div>`).join(''); };
+      el.innerHTML = B.slice(0, 20).map((x, i) => `<div class="lbr ${x.player.toLowerCase() === (res.player || '').toLowerCase() ? 'me' : ''}"><span class="rk">${i + 1}</span><div><b>${esc(x.player)}</b><span>${x.correct}/${x.total} correct · ${fmtS(x.duration_ms)}</span></div><span class="sc">${x.score}</span></div>`).join(''); };
     tick(); clearInterval(poll); poll = setInterval(() => { if (!document.hidden) tick(); }, 4000);
   }
   window.scrollTo(0, 0);
@@ -560,21 +560,21 @@ document.addEventListener('click', e => { if (e.target.closest('[data-mute]')) t
 function podiumHtml(B, me, big, live) {
   const T = (B || []).slice(0, 3); if (!T.length) return '';
   const ini = n => String(n || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
-  const slot = (x, place) => x ? `<div class="pd p${place}${me && x.player.toLowerCase() === me.toLowerCase() ? ' me' : ''}"><div class="pd-av"><span class="pd-emo">${AVATARS[avIx(x.av, x.player)]}</span><i>${['🥇', '🥈', '🥉'][place - 1]}</i>${place === 1 ? '<b class="pd-cr">👑</b>' : ''}</div><div class="pd-nm">${esc(x.player)}</div><div class="pd-sc">${x.score} <small>poin</small></div><div class="pd-st"><span>${place}</span><small>${live ? `${x.correct} benar${x.done ? ' · ✓' : ''}` : `${x.correct}/${x.total} · ${fmtS(x.duration_ms)}`}</small></div></div>` : '<div class="pd empty"></div>';
+  const slot = (x, place) => x ? `<div class="pd p${place}${me && x.player.toLowerCase() === me.toLowerCase() ? ' me' : ''}"><div class="pd-av"><span class="pd-emo">${AVATARS[avIx(x.av, x.player)]}</span><i>${['🥇', '🥈', '🥉'][place - 1]}</i>${place === 1 ? '<b class="pd-cr">👑</b>' : ''}</div><div class="pd-nm">${esc(x.player)}</div><div class="pd-sc">${x.score} <small>pts</small></div><div class="pd-st"><span>${place}</span><small>${live ? `${x.correct} correct${x.done ? ' · ✓' : ''}` : `${x.correct}/${x.total} · ${fmtS(x.duration_ms)}`}</small></div></div>` : '<div class="pd empty"></div>';
   const conf = live ? [] : [...Array(big ? 46 : 24).keys()].map(i => `<i style="--x:${(i * 37) % 100}%;--d:${(i % 7) * .18}s;--c:${['#F5C518', '#34C759', '#0A84FF', '#FF375F', '#AF52DE', '#FF9F0A'][i % 6]};--r:${(i * 53) % 360}deg"></i>`).join('');
   return `<div class="podium${big ? ' big' : ''}${live ? ' live' : ''}"><div class="pd-conf" aria-hidden="true">${conf}</div><div class="pd-ttl">${live ? '🏁 Podium sementara' : '🏆 Podium Kemenangan'}</div><div class="pd-row">${slot(T[1], 2)}${slot(T[0], 1)}${slot(T[2], 3)}</div></div>`;
 }
 let PODSIG = '';
 function paintPodium(el, B, me) { if (!el) return; const sig = (B || []).slice(0, 3).map(x => x.player + ':' + x.score).join('|'); if (sig === PODSIG && el.innerHTML) return; PODSIG = sig; el.innerHTML = podiumHtml(B, me); }
 function podiumFull(B, title, code) {
-  musicStop(); sfx('win'); const m = document.createElement('div'); m.className = 'modal pdm'; m.innerHTML = `<div class="pdm-in"><button class="btn sm" data-x style="position:absolute;top:14px;right:14px">Tutup</button><div class="pdm-t">${esc(title || 'Live quiz')}</div>${code && IS_SPV ? `<button class="btn sm" data-bahas style="position:absolute;top:14px;left:14px">📖 Bahas soal</button>` : ''}${podiumHtml(B, null, true) || '<div class="msg">Belum ada peserta yang selesai.</div>'}${(B || []).length > 3 ? `<div class="pdm-rest">${B.slice(3, 10).map((x, i) => `<span><b>${i + 4}</b> ${esc(x.player)} · ${x.score}</span>`).join('')}</div>` : ''}</div>`;
+  musicStop(); sfx('win'); const m = document.createElement('div'); m.className = 'modal pdm'; m.innerHTML = `<div class="pdm-in"><button class="btn sm" data-x style="position:absolute;top:14px;right:14px">Close</button><div class="pdm-t">${esc(title || 'Live quiz')}</div>${code && IS_SPV ? `<button class="btn sm" data-bahas style="position:absolute;top:14px;left:14px">📖 Review questions</button>` : ''}${podiumHtml(B, null, true) || '<div class="msg">No players have finished yet.</div>'}${(B || []).length > 3 ? `<div class="pdm-rest">${B.slice(3, 10).map((x, i) => `<span><b>${i + 4}</b> ${esc(x.player)} · ${x.score}</span>`).join('')}</div>` : ''}</div>`;
   m.onclick = e => { if (e.target.closest('[data-bahas]')) { m.remove(); return discuss(code, title); } if (e.target === m || e.target.closest('[data-x]')) m.remove(); }; document.body.appendChild(m);
 }
 function historyHtml(set) {
   const H = LS.get('gx-quiz-history', []).filter(h => h.set === set).slice(0, 8);
-  return H.length ? `<div class="lb" style="margin-bottom:16px"><b style="font-size:17px">Riwayat latihanmu — ${esc(SETNAME[set])}</b>${H.map((h, i) => `<div class="lbr"><span class="rk">${i + 1}</span><div><b>${h.correct}/${h.total} benar</b><span>${new Date(h.at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</span></div><span class="sc">${h.score}</span></div>`).join('')}</div>` : '';
+  return H.length ? `<div class="lb" style="margin-bottom:16px"><b style="font-size:17px">Riwayat latihanmu — ${esc(SETNAME[set])}</b>${H.map((h, i) => `<div class="lbr"><span class="rk">${i + 1}</span><div><b>${h.correct}/${h.total} correct</b><span>${new Date(h.at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}</span></div><span class="sc">${h.score}</span></div>`).join('')}</div>` : '';
 }
-function practice(set, n) { const all = questions(set); if (!all.length) return toast('Belum ada soal'); history.replaceState(null, '', '?set=' + set + (EMBED ? '&embed=1' : '')); start({ mode: 'practice', set, timer: 20, qs: prepare(all, n) }); }
+function practice(set, n) { const all = questions(set); if (!all.length) return toast('No questions yet'); history.replaceState(null, '', '?set=' + set + (EMBED ? '&embed=1' : '')); start({ mode: 'practice', set, timer: 20, qs: prepare(all, n) }); }
 
 /* ======================= ROUTER ======================= */
 function go(qs) { const keep = EMBED ? (qs ? qs + '&embed=1' : '?embed=1') : qs; history.pushState(null, '', location.pathname + keep); route(); }
@@ -592,7 +592,7 @@ document.addEventListener('click', e => {
   const pr = e.target.closest('[data-prac]'); if (pr) return practice(pr.dataset.prac, +pr.dataset.n);
   const h = e.target.closest('[data-host]'); if (h) return go('?host=' + h.dataset.host);
   const rv = e.target.closest('[data-rv]'); if (rv && HOSTCODE) return reviewPlayer(HOSTCODE, rv.dataset.rv);
-  const dc = e.target.closest('[data-dec]'); if (dc && HOSTCODE) { if (dc.dataset.dec === 'allowRetry' && !confirm('Hapus hasil ' + dc.dataset.p + ' supaya bisa mengulang quiz? Peserta perlu daftar & di-approve lagi.')) return; dc.disabled = true; return API.decide(HOSTCODE, dc.dataset.p, dc.dataset.dec).then(() => HOSTTICK && HOSTTICK()); }
+  const dc = e.target.closest('[data-dec]'); if (dc && HOSTCODE) { if (dc.dataset.dec === 'allowRetry' && !confirm('Delete the result of ' + dc.dataset.p + ' so they can retake the quiz? They will need to join & be approved again.')) return; dc.disabled = true; return API.decide(HOSTCODE, dc.dataset.p, dc.dataset.dec).then(() => HOSTTICK && HOSTTICK()); }
   const t = e.target.closest('.tile[data-c]'); if (t && G && !G.locked) answer(+t.dataset.c);
 });
 document.addEventListener('keydown', e => { if (G && !G.locked && /^[1-6]$/.test(e.key) && document.querySelector('.tile')) { const t = document.querySelector(`.tile[data-c="${+e.key - 1}"]`); if (t) answer(+e.key - 1); } });
@@ -611,24 +611,24 @@ async function loadNotionTitles() { try { const r = await fetch('/api/todo?kb=no
 function bankHtml() {
   const ql = QB.q.toLowerCase(), M = MAT.filter(m => !HIDDEN.has(m.id) && (QB.set === 'all' || m.cat === QB.set) && (m.quiz || []).length);
   const rows = M.map(m => { const Q = (m.quiz || []).map((q, i) => ({ q, i })).filter(({ q }) => !ql || (q.q + ' ' + q.o.join(' ') + ' ' + m.title).toLowerCase().includes(ql)); if (!Q.length) return '';
-    return `<div class="bkm"><div class="bkh"><b>${esc(m.title)}</b><span>${(m.quiz || []).length} soal · ${esc(SETNAME[m.cat] || m.cat)}</span><span style="flex:1"></span><button class="btn sm" data-bkadd="${esc(m.id)}">+ Soal</button></div>
-      ${Q.map(({ q, i }) => `<div class="bkq"><span class="n">${i + 1}</span><div><div>${esc(q.q)}</div><small>✓ ${esc(q.o[q.a] || '—')}</small></div><button class="btn sm" data-bked="${esc(m.id)}|${i}" aria-label="Edit soal">✎</button><button class="btn sm danger" data-bkdel="${esc(m.id)}|${i}" aria-label="Hapus soal">🗑</button></div>`).join('')}</div>`; }).join('');
-  return rows || `<div class="msg" style="border:0;padding:6px 0">${ql ? 'Tidak ada soal yang cocok.' : 'Belum ada soal di set ini — klik + Soal baru.'}</div>`;
+    return `<div class="bkm"><div class="bkh"><b>${esc(m.title)}</b><span>${(m.quiz || []).length} questions · ${esc(SETNAME[m.cat] || m.cat)}</span><span style="flex:1"></span><button class="btn sm" data-bkadd="${esc(m.id)}">+ Question</button></div>
+      ${Q.map(({ q, i }) => `<div class="bkq"><span class="n">${i + 1}</span><div><div>${esc(q.q)}</div><small>✓ ${esc(q.o[q.a] || '—')}</small></div><button class="btn sm" data-bked="${esc(m.id)}|${i}" aria-label="Edit question">✎</button><button class="btn sm danger" data-bkdel="${esc(m.id)}|${i}" aria-label="Delete question">🗑</button></div>`).join('')}</div>`; }).join('');
+  return rows || `<div class="msg" style="border:0;padding:6px 0">${ql ? 'No matching questions.' : 'No questions in this set yet — click + New question.'}</div>`;
 }
 function drawBank() { const el = $('#bank'); if (!el) return; const n = questions(QB.set).length;
   el.innerHTML = `<div class="bkbar"><select id="bkSet">${SETS.map(([k, l]) => `<option value="${k}" ${k === QB.set ? 'selected' : ''}>${esc(l)} (${questions(k).length})</option>`).join('')}</select>
-    <input id="bkQ" type="search" placeholder="Cari soal…" value="${esc(QB.q)}"><span style="flex:1"></span><button class="btn sm" id="bkRef" title="Ambil soal terbaru (setelah diubah di Knowledge Base / perangkat lain)">↻ Refresh soal</button><button class="btn sm pri" id="bkNew">+ Soal baru</button></div>
-    <div class="bkl">${bankHtml()}</div><div class="bkfoot">${n} soal di set ini · perubahan langsung dipakai untuk latihan & sesi live baru, dan ikut tampil di materi Knowledge Base.</div>`; }
+    <input id="bkQ" type="search" placeholder="Search questions…" value="${esc(QB.q)}"><span style="flex:1"></span><button class="btn sm" id="bkRef" title="Load the latest questions (after changes in the Knowledge Base / another device)">↻ Refresh questions</button><button class="btn sm pri" id="bkNew">+ New question</button></div>
+    <div class="bkl">${bankHtml()}</div><div class="bkfoot">${n} questions in this set · changes apply right away to practice & new live sessions, and also show in the Knowledge Base materials.</div>`; }
 async function saveBank(mutate) {
   for (let t = 0; t < 2; t++) {
     if (!QB.doc) await loadBank(); const D = JSON.parse(JSON.stringify(QB.doc || {})); D.materi = D.materi || { over: {}, added: [], hidden: [] }; D.materi.over = D.materi.over || {}; D.materi.added = D.materi.added || [];
     mutate(D.materi);
     const r = await fetch('/api/todo', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ doc: 'knowledge-base', data: D, revision: QB.rev }) }).catch(() => null);
-    if (r && r.status === 200) { await loadBank(); drawBank(); toast('Soal tersimpan ✓'); return true; }
+    if (r && r.status === 200) { await loadBank(); drawBank(); toast('Question saved ✓'); return true; }
     if (r && r.status === 409) { await loadBank(); continue; }   // diubah di tempat lain → ambil versi terbaru lalu ulangi
-    toast(r && r.status === 401 ? 'Login SPV dulu' : 'Gagal menyimpan soal'); return false;
+    toast(r && r.status === 401 ? 'Login SPV dulu' : 'Could not save the question'); return false;
   }
-  toast('Soal sedang diubah di tempat lain — coba lagi'); return false;
+  toast('This question is being edited elsewhere — try again'); return false;
 }
 const quizOf = (MM, id) => { const b = BASE.find(x => x.id === id), ad = (MM.added || []).find(x => x.id === id), ov = MM.over[id] || {};
   return { get: () => JSON.parse(JSON.stringify(ad ? ad.quiz || [] : ov.quiz || (b ? b.quiz || [] : []))), set: Q => { if (ad) ad.quiz = Q; else MM.over[id] = { ...ov, quiz: Q }; } }; };
@@ -636,18 +636,18 @@ function qModal(mid, idx) {
   const m = MAT.find(x => x.id === mid), q = m && idx != null ? m.quiz[idx] : { q: '', o: ['', '', '', ''], a: 0, e: '' }, o = [...q.o, '', '', '', ''].slice(0, Math.max(4, q.o.length));
   const NP = Object.entries(QB.npages).filter(([id, p]) => p.n && !MAT.some(x => x.id === 'n-' + id) && !BASE.some(b => String(b.src || '').replace(/-/g, '').toLowerCase().endsWith(id)));
   const el = document.createElement('div'); el.className = 'modal';
-  el.innerHTML = `<div class="box" style="max-width:620px"><h3 style="margin:0 0 12px">${idx != null ? 'Edit soal' : 'Soal baru'}</h3>
-    ${mid ? `<p style="margin:0 0 10px;font-size:13px;color:var(--muted)">Materi: <b>${esc(m ? m.title : mid)}</b></p>` : `<label class="fl">Materi</label><select id="qmM">${MAT.filter(x => !HIDDEN.has(x.id)).map(x => `<option value="${esc(x.id)}" ${x.cat === QB.set ? 'selected' : ''}>${esc(x.title)} · ${esc(SETNAME[x.cat] || x.cat)}</option>`).join('')}${NP.length ? `<optgroup label="Halaman Notion (belum ada soal)">${NP.map(([id, p]) => `<option value="n-${id}">${esc(p.t)}</option>`).join('')}</optgroup>` : ''}</select>
-      <div id="qmCatW" class="hidden"><label class="fl">Masuk set quiz</label><select id="qmCat">${CATS.map(c => `<option value="${esc(c[0])}" ${c[0] === QB.set ? 'selected' : ''}>${esc(c[1])}</option>`).join('')}</select></div>`}
+  el.innerHTML = `<div class="box" style="max-width:620px"><h3 style="margin:0 0 12px">${idx != null ? 'Edit question' : 'New question'}</h3>
+    ${mid ? `<p style="margin:0 0 10px;font-size:13px;color:var(--muted)">Materi: <b>${esc(m ? m.title : mid)}</b></p>` : `<label class="fl">Materi</label><select id="qmM">${MAT.filter(x => !HIDDEN.has(x.id)).map(x => `<option value="${esc(x.id)}" ${x.cat === QB.set ? 'selected' : ''}>${esc(x.title)} · ${esc(SETNAME[x.cat] || x.cat)}</option>`).join('')}${NP.length ? `<optgroup label="Notion pages (no questions yet)">${NP.map(([id, p]) => `<option value="n-${id}">${esc(p.t)}</option>`).join('')}</optgroup>` : ''}</select>
+      <div id="qmCatW" class="hidden"><label class="fl">Quiz set</label><select id="qmCat">${CATS.map(c => `<option value="${esc(c[0])}" ${c[0] === QB.set ? 'selected' : ''}>${esc(c[1])}</option>`).join('')}</select></div>`}
     <label class="fl">Pertanyaan</label><textarea id="qmQ" rows="3">${esc(q.q)}</textarea>
-    <label class="fl">Pilihan jawaban — klik bulatan untuk jawaban yang benar</label>${o.map((v, j) => `<label class="qmo"><input type="radio" name="qmA" value="${j}" ${q.a === j ? 'checked' : ''}><input data-o="${j}" value="${esc(v)}" placeholder="Opsi ${'ABCDEF'[j]}${j > 1 ? ' (opsional)' : ''}"></label>`).join('')}
+    <label class="fl">Answer options — click the circle of the correct answer</label>${o.map((v, j) => `<label class="qmo"><input type="radio" name="qmA" value="${j}" ${q.a === j ? 'checked' : ''}><input data-o="${j}" value="${esc(v)}" placeholder="Opsi ${'ABCDEF'[j]}${j > 1 ? ' (opsional)' : ''}"></label>`).join('')}
     <label class="fl">Penjelasan (muncul saat review)</label><input id="qmE" value="${esc(q.e || '')}">
-    <div style="display:flex;gap:8px;margin-top:14px"><span style="flex:1"></span><button class="btn" data-x>Batal</button><button class="btn pri" data-ok>Simpan</button></div></div>`;
+    <div style="display:flex;gap:8px;margin-top:14px"><span style="flex:1"></span><button class="btn" data-x>Cancel</button><button class="btn pri" data-ok>Save</button></div></div>`;
   document.body.appendChild(el);
   const ms = el.querySelector('#qmM'), cw = el.querySelector('#qmCatW'); if (ms) { const f = () => cw.classList.toggle('hidden', !ms.value.startsWith('n-') || MAT.some(x => x.id === ms.value)); ms.onchange = f; f(); }
   el.onclick = async e => { if (e.target === el || e.target.closest('[data-x]')) return el.remove(); if (!e.target.closest('[data-ok]')) return;
     const qq = el.querySelector('#qmQ').value.trim(), opts = [...el.querySelectorAll('[data-o]')].map(i => ({ v: i.value.trim(), j: +i.dataset.o })).filter(x => x.v), aj = +((el.querySelector('[name=qmA]:checked') || {}).value ?? -1), a = opts.findIndex(x => x.j === aj);
-    if (!qq || opts.length < 2) return toast('Isi pertanyaan & minimal 2 opsi'); if (a < 0) return toast('Pilih jawaban yang benar (bulatan di opsi yang terisi)');
+    if (!qq || opts.length < 2) return toast('Isi pertanyaan & minimal 2 opsi'); if (a < 0) return toast('Choose the correct answer (the circle of a filled option)');
     const nq = { q: qq, o: opts.map(x => x.v), a, e: el.querySelector('#qmE').value.trim() }, id = mid || ms.value;
     const ok = await saveBank(MM => { const h = quizOf(MM, id), Q = h.get(); if (idx != null) Q[idx] = nq; else Q.push(nq); h.set(Q);
       if (id.startsWith('n-')) { const p = QB.npages[id.slice(2)] || {}; MM.over[id] = { ...MM.over[id], title: MM.over[id].title || p.t || 'Materi Notion', cat: MM.over[id].cat || (el.querySelector('#qmCat') || {}).value || QB.set } } });
@@ -655,7 +655,7 @@ function qModal(mid, idx) {
 }
 document.addEventListener('click', async e => {
   if (!$('#bank')) return;
-  if (e.target.id === 'bkRef') { e.target.disabled = true; await loadBank(); await loadNotionTitles(); drawBank(); toast('Soal terbaru dimuat ✓'); return; }
+  if (e.target.id === 'bkRef') { e.target.disabled = true; await loadBank(); await loadNotionTitles(); drawBank(); toast('Latest questions loaded ✓'); return; }
   if (e.target.id === 'bkNew') { await loadNotionTitles(); return qModal(null, null); }
   const a = e.target.closest('[data-bkadd]'); if (a) return qModal(a.dataset.bkadd, null);
   const ed = e.target.closest('[data-bked]'); if (ed) { const [id, i] = ed.dataset.bked.split('|'); return qModal(id, +i); }
@@ -667,7 +667,7 @@ document.addEventListener('input', e => { if (e.target.id === 'bkQ') { QB.q = e.
 addEventListener('popstate', route);
 (async () => {
   try { const r = await fetch('/api/todo?doc=knowledge-base', { cache: 'no-store', credentials: 'same-origin' }); await r.json(); await loadBank(); }
-  catch (e) { ONLINE = false; IS_SPV = true; app.insertAdjacentHTML('beforebegin', '<div style="max-width:1100px;margin:16px auto 0;padding:0 18px"><div class="banner" style="margin:0"><b>Mode preview</b> — server belum tersambung; sesi & leaderboard hanya tersimpan di browser ini.</div></div>'); }
+  catch (e) { ONLINE = false; IS_SPV = true; app.insertAdjacentHTML('beforebegin', '<div style="max-width:1100px;margin:16px auto 0;padding:0 18px"><div class="banner" style="margin:0"><b>Preview mode</b> — server not connected; sessions & leaderboard are saved in this browser only.</div></div>'); }
   route();
 })();
 </script>

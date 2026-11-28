@@ -212,3 +212,13 @@ Di pengaturan Repeat Complaint (Import data → kartu Repeat Complaint): **Probl
 
 - **Management Report**: judul task yang punya link sekarang bisa diklik (langsung ke hasil kerja), semua link tampil sebagai ikon, dan "+n more" bisa diklik untuk menampilkan semua task.
 - Bubble template mengikuti tema (terang/gelap) — teks selalu terbaca.
+
+## Update 27 Nov 2026 (2)
+- **Reminder overdue di atas dashboard**: anggota yang punya task lewat due date melihat banner *Reminder* di bagian atas dashboard-nya sendiri, dengan kucing abu (British shorthair, mata hijau, kalung lonceng kuning) yang mondar-mandir dan sesekali mengayunkan pecut. Banner hilang otomatis kalau semua task overdue sudah selesai. Putri melihat ringkasan "Overdue in this team" per orang. Popup Gentle Reminder juga memakai kucing abu yang sama.
+- Label nama sekarang **Putri Izza** (tanpa "SPV"); legend Virtual Office tanpa emoji; ruang di Virtual Office bernama "PUTRI IZZA".
+- **Semua tools dalam bahasa Inggris**: Team Dashboard (HD/AM), Personal To-Do List & Management (/spv), halaman menu, login, Quiz, Directory, VIP. Variabel template sekarang `{name}`, `{agent}`, `{date}` (`{nama}`/`{tanggal}` lama tetap berfungsi). Isi materi Knowledge Base, Helpdesk Report & Performance Report tidak diubah.
+- **Ctrl+B / ⌘+B = bold** di semua kolom remarks/notes (dashboard tim, to-do list) dan Kendala/Action/Notes di Repeat Complaint (Helpdesk Report). Teks ditulis sebagai `**teks**` dan tampil tebal; tekan lagi untuk membatalkan.
+
+## Update 28 Nov 2026
+- **Kucing abu di Virtual Office**: kucing office sekarang kucing abu (mata hijau, lonceng kuning). Kalau ada orang yang punya task lewat due date, kucingnya jalan ke meja orang itu, mengayunkan pecut ("CTAK!") dan muncul kartu reminder di atas kepalanya (nama, jumlah overdue, judul task + due date + berapa hari telat). Semua yang overdue juga punya label merah "⏰ n overdue" di atas namanya. Jalan di mode 2D dan 3D; kalau tidak ada yang overdue, kucingnya jalan-jalan biasa.
+- **Management Report — pilihan cover**: default sekarang **Clean white**; di atas slide ada "Cover style" dengan 5 pilihan (Clean white, Navy, Split yellow, Gold, Black). Klik salah satu → cover langsung berubah, disimpan online (doc `mr-cover`) dan ikut tampil di viewer link.
